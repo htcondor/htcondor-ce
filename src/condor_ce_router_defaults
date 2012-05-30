@@ -1,0 +1,105 @@
+#!/usr/bin/python
+
+import os
+import re
+
+job_router_defaults = \
+"""
+JOB_ROUTER_DEFAULTS = \\
+  [ \\
+    MaxIdleJobs = 10; \\
+    MaxJobs = 200; \\
+    /* by default, accept all jobs */ \\
+    Requirements = True; \\
+    \\
+    /* now modify routed job attributes */ \\
+    /* remove routed job if the client disappears for 48 hours or it is idle for 6 */ \\
+    set_PeriodicRemove = (LastClientContact - time() > 48*60*60) || \\
+                         (JobStatus == 1 && (time() - QDate) > 6*60); \\
+    delete_OSGCE = true; \\
+    set_RoutedJob = true; \\
+    copy_environment = orig_environment; \\
+    set_osg_environment = "@osg_environment@"; \\
+    eval_set_environment = \\
+        ifThenElse(orig_environment is undefined, osg_environment, \\
+          strcat(osg_environment, " ", orig_environment) \\
+        ); \\
+    \\
+    /* Set new requirements */ \\
+    set_requirements = LastClientContact - time() < 30*60; \\
+  ]
+"""
+
+osg_environment_files = [ \
+    "/var/lib/osg/osg-job-environment.conf",
+    "/var/lib/osg/osg-local-job-environment.conf"    
+]
+
+def condor_env_escape(val):
+    """
+    Escape the environment variable to match Condor's escape sequence.
+
+    From condor_submit's man page:
+    1 Put double quote marks around the entire argument string. Any literal 
+      double quote marks within the string must be escaped by repeating the 
+      double quote mark.
+    2 Use white space (space or tab characters) to separate environment
+      entries.
+    3 To put any white space in an environment entry, surround the space and 
+      as much of the surrounding entry as desired with single quote marks.
+    4 To insert a literal single quote mark, repeat the single quote mark 
+      anywhere inside of a section surrounded by single quote marks.
+
+    THIS IS NOT A GENERIC ESCAPER; we assume this only works on the OSG
+    environment file format.  We also assume the input is valid.
+    """
+    if val.startswith('"') and val.endswith('"'):
+        val = val[1:-1]
+    val = val.replace('\\', '') # Nuke escape sequences.
+    val = val.replace('"', '""')
+    val = val.replace("'", "''")
+    return "'" + val + "'"
+
+export_line_re = re.compile("^export\s+([a-zA-Z_]\w*)")
+variable_line_re = re.compile("([a-zA-Z_]\w*)=(.+)")
+def read_osg_environment_file(filename):
+    """
+    Parse the OSG environment file.
+
+    This file is maddening because it APPEARS to be a file you can source
+    with bash; however, it has a very limited syntax.
+    """
+    fd = open(filename, 'r')
+    export_lines = []
+    env = {}
+    for line in fd.readlines():
+        line = line.strip()
+        # Ignore comments
+        if line.startswith("#"):
+            continue
+        m = export_line_re.match(line)
+        if m:
+            export_lines.append(m.group(1))
+        m = variable_line_re.match(line)
+        if m:
+            env[m.group(1)] = condor_env_escape(m.group(2))
+    return dict([(i[0], i[1]) for i in env.items() if i[0] in export_lines])
+
+def main():
+    master_env = {}
+    env_file_contents = []
+    # Read in the environment files.
+    for filename in osg_environment_files:
+        if os.path.exists(filename) and os.access(filename, os.R_OK):
+            env_file_contents.append(read_osg_environment_file(filename))
+    # Merge the file contents, in order
+    for contents in env_file_contents:
+        for key, val in contents.items():
+            master_env[key] = val
+    # Mangle environment string
+    env_string = " ".join(["%s=%s" % (i[0], i[1]) for i in master_env.items()])
+    print job_router_defaults.replace("@osg_environment@", env_string)
+
+if __name__ == "__main__":
+    main()
+

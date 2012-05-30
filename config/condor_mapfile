@@ -1,0 +1,5 @@
+GSI "^\/DC\=org\/DC\=doegrids\/OU\=Services\/CN\=(host\/)?(.*)$" \2@daemon.opensciencegrid.org
+GSI (.*) GSS_ASSIST_GRIDMAP
+GSI (.*) anonymous@gsi
+CLAIMTOBE .* anonymous@claimtobe
+FS (.*) \1

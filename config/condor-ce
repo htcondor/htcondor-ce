@@ -1,0 +1,21 @@
+
+##############################################################################
+#
+# Condor-CE environment configuration.
+# 
+# This file is sourced prior to starting the Condor-CE daemons.  Add any
+# special configurations you might deem necessary.  Prior to sourcing this
+# file, /usr/libexec/condor-ce/condor_ce_env_bootstrap is sourced.
+#
+# Condor-CE upgrades will not change this file.
+#
+##############################################################################
+
+# Example: the base condor install for this host has been relocated into
+# /opt/condor
+# export PATH=/opt/condor/bin:/opt/condor/sbin:$PATH
+
+# Example: Have GSI authorization use a different plugin for Condor than the
+# rest of the system.
+# export GSI_AUTHZ_CONF=/etc/condor-ce/gsi-authz.conf
+

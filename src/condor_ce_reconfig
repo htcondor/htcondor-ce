@@ -1,0 +1,4 @@
+#!/bin/sh
+
+. /usr/share/condor-ce/condor_ce_env_bootstrap
+exec condor_reconfig "$@"
