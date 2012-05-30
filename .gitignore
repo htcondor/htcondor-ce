@@ -1,0 +1,11 @@
+Makefile
+Makefile.in
+*.tar.gz
+config.log
+config.status
+configure
+configure.in
+install-sh
+missing
+aclocal.m4
+autom4te.cache
