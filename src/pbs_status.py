@@ -258,9 +258,9 @@ def qstat(jobid=""):
         if os.WIFEXITED(exit_status):
             exit_code = os.WEXITSTATUS(exit_status)
         if exit_code == 153: # Completed
-            result = {jobid: {'BatchJobId': '"%s"' % jobid, "JobStatus": "4", "ExitCode": '0'}}
+            result = {jobid: {'BatchJobId': '"%s"' % jobid, "JobStatus": "4", "ExitCode": ' 0'}}
         elif exit_code == 271: # Removed
-            result = {jobid: {'BatchJobId': '"%s"' % jobid, 'JobStatus': '3', 'ExitCode': '0'}}
+            result = {jobid: {'BatchJobId': '"%s"' % jobid, 'JobStatus': '3', 'ExitCode': ' 0'}}
         else:
             raise Exception("qstat failed with exit code %s" % str(exit_status))
     return result
@@ -285,7 +285,7 @@ def get_qstat_location():
     return location
 
 job_id_re = re.compile("\s*Job Id: ([0-9]+[\.\w\-]+)")
-exec_host_re = re.compile("\s*exec_host = ([\w\-/]+)")
+exec_host_re = re.compile("\s*exec_host = ([\w\-\/.]+)")
 status_re = re.compile("\s*job_state = ([QRECH])")
 exit_status_re = re.compile("\s*exit_status = (-?[0-9]+)")
 status_mapping = {"Q": 1, "R": 2, "E": 2, "C": 4, "H": 5}
@@ -320,7 +320,7 @@ def parse_qstat_fd(fd):
             continue
         m = exit_status_re.match(line)
         if m:
-            cur_job_info["ExitCode"] = m.group(1)
+            cur_job_info["ExitCode"] = ' %s' % m.group(1)
             continue
     if cur_job_id:
         job_info[cur_job_id] = cur_job_info
@@ -328,7 +328,7 @@ def parse_qstat_fd(fd):
 
 def job_dict_to_string(info):
     result = ["%s=%s;" % (i[0], i[1]) for i in info.items()]
-    return "[" + " ".join(result) + "]"
+    return "[" + " ".join(result) + " ]"
 
 def fill_cache(cache_location):
     results = qstat()
@@ -404,6 +404,7 @@ def check_cache(jobid, recurse=True):
 def main():
     # To debug, uncommenting these lines is useful.
     fd = open("/dev/null", "w")
+    old_stderr = os.dup(2)
     os.dup2(fd.fileno(), 2)
     if len(sys.argv) != 2:
         print "1Usage: pbs_status.sh pbs/<date>/<jobid>"
