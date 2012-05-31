@@ -14,8 +14,8 @@ JOB_ROUTER_DEFAULTS = \\
     \\
     /* now modify routed job attributes */ \\
     /* remove routed job if the client disappears for 48 hours or it is idle for 6 */ \\
-    set_PeriodicRemove = (LastClientContact - time() > 48*60*60) || \\
-                         (JobStatus == 1 && (time() - QDate) > 6*60); \\
+    /*set_PeriodicRemove = (LastClientContact - time() > 48*60*60) || \\
+                         (JobStatus == 1 && (time() - QDate) > 6*60);*/ \\
     delete_OSGCE = true; \\
     set_RoutedJob = true; \\
     copy_environment = orig_environment; \\
@@ -26,7 +26,8 @@ JOB_ROUTER_DEFAULTS = \\
         ); \\
     \\
     /* Set new requirements */ \\
-    set_requirements = LastClientContact - time() < 30*60; \\
+    /* set_requirements = LastClientContact - time() < 30*60; */ \\
+    set_requirements = True \\
   ]
 """
 
