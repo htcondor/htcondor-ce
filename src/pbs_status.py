@@ -28,6 +28,7 @@ import sys
 import time
 import errno
 import fcntl
+import struct
 import tempfile
 
 cache_timeout = 60
@@ -375,7 +376,10 @@ def check_cache(jobid, recurse=True):
         # Create an empty file so we can hold the file lock
         fd = open(cache_location, "w+")
         ExclusiveLock(fd)
-        fill_cache(cache_location)
+        # If someone grabbed the lock between when we opened and tried to
+        # acquire, they may have filled the cache
+        if os.stat(cache_location).st_size == 0:
+            fill_cache(cache_location)
         fd.close()
         if recurse:
             return check_cache(jobid, recurse=False)
@@ -385,8 +389,12 @@ def check_cache(jobid, recurse=True):
     s = os.fstat(fd.fileno())
     if s.st_uid != uid:
         raise Exception("Unable to check cache file because it is owned by UID %d" % s.st_uid)
-    if (s.st_size == 0) or (launchtime - s.st_ctime > cache_timeout):
-        fill_cache(cache_location)
+    if (s.st_size == 0) or (launchtime - s.st_mtime > cache_timeout):
+        # If someone filled the cache between when we opened the file and
+        # grabbed the lock, we may not need to fill the cache.
+        s2 = os.stat(cache_location)
+        if (s2.st_size == 0) or (launchtime - s2.st_mtime > cache_timeout):
+            fill_cache(cache_location)
         if recurse:
             return check_cache(jobid, recurse=False)
         else:
@@ -395,8 +403,8 @@ def check_cache(jobid, recurse=True):
 
 def main():
     # To debug, uncommenting these lines is useful.
-    #fd = os.open("/dev/null", "w")
-    #os.dup2(fd.fileno(), 2)
+    fd = open("/dev/null", "w")
+    os.dup2(fd.fileno(), 2)
     if len(sys.argv) != 2:
         print "1Usage: pbs_status.sh pbs/<date>/<jobid>"
         return 1
