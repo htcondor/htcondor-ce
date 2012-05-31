@@ -6,10 +6,13 @@ export LLGT_VOMS_DISABLE_CREDENTIAL_CHECK=1
 export LCMAPS_DB_FILE=/etc/lcmaps.db
 # the globus_gridftp_mapping here is for backward compatibility, will
 #  be removed in a future release
-export LCMAPS_POLICY_NAME=globus_gridftp_mapping:osg_default
+export LCMAPS_POLICY_NAME=condor
 #level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
 #  4: also info, 5: maximum debug
 export LCMAPS_DEBUG_LEVEL=3
+
+# Condor does not want LCMAPS to change user for it
+export LLGT4_NO_CHANGE_USER=1
 
 # Pick up any configuration for condor-ce from /etc/sysconfig.
 # The big thing we are looking for is that Condor can sometimes be installed

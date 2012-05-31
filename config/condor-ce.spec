@@ -1,6 +1,6 @@
 
 Name: condor-ce
-Version: 0.1
+Version: 0.2
 Release: 1%{?dist}
 Summary: A framework to run Condor as a CE
 
@@ -14,6 +14,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires:  condor
+# This ought to pull in the Condor-CE specific version of the blahp
+Requires: blahp
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -94,6 +96,7 @@ fi
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_reconfig
 %{_bindir}/condor_ce_router_q
+%{_bindir}/condor_ce_status
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_router_defaults
@@ -126,4 +129,9 @@ fi
 %defattr(-,root,root,-)
 
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
+
+%changelog
+* Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
+- Release after a day of testing with PBS and Condor.
+
 

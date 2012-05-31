@@ -11,9 +11,10 @@
 
 # Set the collector to run on an alternate port
 CONDOR_HOST = $(FULL_HOSTNAME)
-COLLECTOR_HOST = $(CONDOR_HOST):9619
+PORT = 9619
+COLLECTOR_HOST = $(CONDOR_HOST):$(PORT)
 
-DAEMON_LIST = MASTER COLLECTOR_HOST SCHEDD JOB_ROUTER
+DAEMON_LIST = MASTER COLLECTOR SCHEDD JOB_ROUTER
 
 RELEASE_DIR = /usr
 
@@ -24,6 +25,8 @@ SCHEDD       = $(SBIN)/condor_schedd
 GRIDMANAGER  = $(SBIN)/condor_gridmanager
 GRID_MONITOR = $(SBIN)/grid_monitor.sh
 JOB_ROUTER    = $(LIBEXEC)/condor_job_router
+COLLECTOR     = $(SBIN)/condor_collector
+COLLECTOR_ARGS = -port $(PORT)
 
 LOCAL_DIR = /var
 RUN     = $(LOCAL_DIR)/run/condor-ce
