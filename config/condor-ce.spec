@@ -1,6 +1,6 @@
 
 Name: condor-ce
-Version: 0.2
+Version: 0.3
 Release: 1%{?dist}
 Summary: A framework to run Condor as a CE
 
@@ -64,6 +64,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
+install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -97,6 +98,7 @@ fi
 %{_bindir}/condor_ce_reconfig
 %{_bindir}/condor_ce_router_q
 %{_bindir}/condor_ce_status
+%{_bindir}/condor_ce_reschedule
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_router_defaults
@@ -119,6 +121,7 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %files condor
 %defattr(-,root,root,-)
@@ -131,6 +134,9 @@ fi
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 
 %changelog
+* Mon Jun 04 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.3-1
+- Add support for Gratia.
+
 * Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
 - Release after a day of testing with PBS and Condor.
 
