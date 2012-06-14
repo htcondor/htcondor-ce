@@ -7,8 +7,8 @@ job_router_defaults = \
 """
 JOB_ROUTER_DEFAULTS = \\
   [ \\
-    MaxIdleJobs = 10; \\
-    MaxJobs = 200; \\
+    MaxIdleJobs = 2000; \\
+    MaxJobs = 10000; \\
     /* by default, accept all jobs */ \\
     Requirements = True; \\
     \\
