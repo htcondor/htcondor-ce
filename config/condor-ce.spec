@@ -1,6 +1,6 @@
 
 Name: condor-ce
-Version: 0.3
+Version: 0.4
 Release: 1%{?dist}
 Summary: A framework to run Condor as a CE
 
@@ -134,6 +134,10 @@ fi
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 
 %changelog
+* Thu Jun 14 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.4-1
+- Tweak default route settings from limits hit in the scalability tests.
+- Add support for RSV.
+
 * Mon Jun 04 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.3-1
 - Add support for Gratia.
 
