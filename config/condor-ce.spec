@@ -1,6 +1,6 @@
 
 Name: condor-ce
-Version: 0.4
+Version: 0.5
 Release: 1%{?dist}
 Summary: A framework to run Condor as a CE
 
@@ -39,6 +39,8 @@ Group: Applications/System
 Summary: Default routes for submission to PBS
 
 Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
 
 %description pbs
 %{summary}
@@ -134,6 +136,9 @@ fi
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 
 %changelog
+* Tue Jun 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5-1
+- Fix RPM deps and some small pbs_status tweaks.
+
 * Thu Jun 14 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.4-1
 - Tweak default route settings from limits hit in the scalability tests.
 - Add support for RSV.

@@ -250,7 +250,7 @@ def qstat(jobid=""):
     Returns a python dictionary with the job info.
     """
     qstat = get_qstat_location()
-    child_stdout = os.popen("qstat -f %s" % jobid)
+    child_stdout = os.popen("%s -f %s" % (qstat, jobid))
     result = parse_qstat_fd(child_stdout)
     exit_status = child_stdout.close()
     if exit_status:
@@ -278,9 +278,10 @@ def get_qstat_location():
     else:
         cmd = 'which qstat'
     child_stdout = os.popen(cmd)
-    location = child_stdout.read().split("\n")[0].strip()
+    output = child_stdout.read()
+    location = output.split("\n")[0].strip()
     if child_stdout.close():
-        raise Exception("Unable to determine qstat location: %s" % stderr)
+        raise Exception("Unable to determine qstat location: %s" % output)
     _qstat_location_cache = location
     return location
 
