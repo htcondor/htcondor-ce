@@ -1,6 +1,6 @@
 
 Name: condor-ce
-Version: 0.5
+Version: 0.5.2
 Release: 1%{?dist}
 Summary: A framework to run Condor as a CE
 
@@ -136,6 +136,12 @@ fi
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 
 %changelog
+* Sat Jul 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.2-1
+- A second try at fixing the periodic hold expression.
+
+* Fri Jul 06 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.1-1
+- Fix incorrect attribute name in the periodic hold expression.
+
 * Tue Jun 19 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5-1
 - Fix RPM deps and some small pbs_status tweaks.
 
