@@ -1,36 +1,232 @@
 #!/usr/bin/python
 import os
 import sys
-import optparser
+import errno
+import tempfile
+import optparse
 
 # HTCondor-CE simple run script.
+# Mimics the venerable condor_run
+
+submit_file = """\
+universe = grid
+grid_universe = condor %(schedd_name)s %(collector_name)s
+
+executable = %(command)s
+output = %(stdout_file)s
+error = %(stderr_file)s
+log = %(log_file)s
+
+ShouldTransferFiles = YES
+WhenToTransferOutput = ON_EXIT
+
+use_x509userproxy = true
+
+queue
+"""
+
+submit_remote_file = """\
+universe = vanilla
+
+executable = %(command)s
+output = %(stdout_file)s
+error = %(stderr_file)s
+log = %(log_file)s
+
+ShouldTransferFiles = YES
+WhenToTransferOutput = ON_EXIT
+
+use_x509userproxy = true
+
+queue
+"""
+
+class CondorRunException(Exception):
+    pass
 
 def parse_opts():
-    parser = optparser.OptionParser()
+    parser = optparse.OptionParser()
     parser.add_option("-x", "--extra-attributes-file",
-        help="A file containing additional HTCondor ClassAd attributes to append to the submit ClassAd.",
+        help="A file containing additional HTCondor ClassAd attributes to " \
+             "append to the submit ClassAd.",
         dest="extra_attrs_file")
+    parser.add_option("-s", "--schedd-name",
+        help="Name of the schedd to use.",
+        dest="schedd_name")
+    parser.add_option("-d", "--debug", help="Print debugging info.",
+        dest="debug", default=False, action="store_true")
+    parser.add_option("-r", "--remote", help="Submit directly to remote " \
+        "schedd, bypassing the local one.", dest="remote", default=False,
+        action="store_true")
     parser.disable_interspersed_args()
 
     opts, args = parser.parse_args()
 
     return opts, args
 
-def generate_run_script():
+def generate_run_script(job_info):
+
+    if job_info['arguments']:
+        job_info['arguments'] = '"%s"' % ' '.join(['"%s"' % i for i in \
+            job_info['arguments']])
+
+    pid = os.getpid()
+
+    fd, job_info['stdout_file'] = tempfile.mkstemp(dir=".",
+        prefix="stdout_%d_" % pid)
+    os.close(fd)
+
+    fd, job_info['stderr_file'] = tempfile.mkstemp(dir=".",
+        prefix="stderr_%d_" % pid)
+    os.close(fd)
+
+    fd, job_info['log_file'] = tempfile.mkstemp(dir=".",
+        prefix="log_%d_" % pid)
+    os.close(fd)
+
+    fd, job_info['submit_file'] = tempfile.mkstemp(dir=".",
+        prefix="submit_%d_" % pid)
+
+    try:
+        if job_info['remote']:
+            os.write(fd, submit_remote_file % job_info)
+        else:
+            os.write(fd, submit_file % job_info)
+    finally:
+        os.close(fd)
+
+def submit_job(job_info):
+    # TODO: Here and in wait_job below, make sure we can tell the difference
+    # between condor_submit failure and failure to exec.
+    args = ['condor_submit', job_info['submit_file']]
+    if job_info['debug']:
+        args.append("-debug")
+
+    pid = os.fork()
+    if pid == 0:
+        try:
+            os.execvp("condor_submit", args)
+        finally:
+            os._exit(1)
+
+    tmp_pid = -1
+    while tmp_pid != pid:
+        tmp_pid, status = os.waitpid(pid, 0)
+    if os.WIFEXITED(status):
+        exit_code = os.WEXITSTATUS(status)
+        if exit_code:
+            raise CondorRunException("Failed to submit job; condor_submit " \
+                "exited with code %d." % exit_code)
+    elif os.WIFSIGNALED(status):
+        signal = os.WTERMSIG(status)
+        raise CondorRunException("Failed to submit job; condor_submit " \
+            "terminated with signal %d." % signal)
+    else:
+        raise CondorRunException("Failed to submit job; condor_submit " \
+            "stopped with unhandled status code %d." % status)
+
+def wait_for_job(job_info):
+    args = ['condor_wait', job_info['log_file']]
+    if job_info.debug:
+        args.append("-debug")
+
+    pid = os.fork()
+    if pid == 0:
+        try:
+           os.execvp("condor_wait", args)
+        finally:
+           os._exit(1)
+
+    tmp_pid = -1
+    while tmp_pid != pid:
+        tmp_pid, status = os.waitpid(pid, 0)
+    if os.WIFEXITED(status):
+        exit_code = os.WEXITSTATUS(status)
+        if exit_code:
+            raise CondorRunException("Failed to wait for job; condor_wait " \
+                "exited with code %d." % exit_code)
+    elif os.WIFSIGNALED(status):
+        signal = os.WTERMSIG(status)
+        raise CondorRunException("Failed to wait for job; condor_wait " \
+            "terminated with signal %d." % signal)
+    else:
+        raise CondorRunException("Failed to wait for job; condor_wait " \
+            "stopped with unhandled status code %d." % status)
+
+def check_remote_status(job_info):
     raise NotImplementedError()
 
-def wait_for_job():
+def wait_for_job_remote(job_info):
     raise NotImplementedError()
 
+def print_results(job_info):
+
+    for line in open(job_info["stdout_file"], "r").readlines():
+        print line,
+
+    for line in open(job_info["stderr_file"], "r").readlines():
+        print line,
+
+def cleanup(job_info):
+
+    if 'log_file' in job_info:
+        try:
+            os.unlink(job_info['log_file'])
+        except OSError, oe:
+            if oe.errno != errno.ENOENT:
+                raise
+
+    if 'stdout_file' in job_info:
+        try:
+            os.unlink(job_info['stdout_file'])
+        except OSError, oe:
+            if oe.errno != errno.ENOENT:
+                raise
+
+    if 'stderr_file' in job_info:
+        try:
+            os.unlink(job_info['stderr_file'])
+        except OSError, oe:
+            if oe.errno != errno.ENOENT:
+                raise
+
+    if 'submit_file' in job_info:
+        try:
+            os.unlink(job_info['submit_file'])
+        except OSError, oe:
+            if oe.errno != errno.ENOENT:
+                raise
 
 def main():
     opts, args = parse_opts()
 
     if len(args) < 2:
         print "Usage: condor_ce_run <hostname> <command> [arg1] [arg2] [...]"
+        return 1
 
-    
+    job_info = {'collector_name': args[0], 'command': args[1]}
+    if opts.schedd_name:
+        job_info['schedd_name'] = opts.schedd_name
+    else:
+        job_info['schedd_name'] = args[0].split(":")[0]
+
+    job_info['debug'] = opts.debug
+    os.environ.setdefault("TOOL_DEBUG", "D_FULLDEBUG")
+
+    job_info['remote'] = opts.remote
+
+    job_info['arguments'] = args[2:]
+
+    try:
+        generate_run_script(job_info)
+        submit_job(job_info)
+        wait_for_job(job_info)
+        print_results(job_info)
+    finally:
+        cleanup(job_info)
+
+    return 0
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
 
