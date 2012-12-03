@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import errno
+import socket
 import tempfile
 import optparse
 
@@ -222,11 +223,14 @@ def main():
         print "Usage: condor_ce_run <hostname> <command> [arg1] [arg2] [...]"
         return 1
 
-    job_info = {'collector_name': args[0], 'command': args[1]}
+    collector_hostname = args[0].split(":")[0]
+    collector_hostname = socket.getfqdn(collector_hostname)
+    collector_hostname = ":".join([collector_hostname] + args[0].split(":")[1:])
+    job_info = {'collector_name': collector_hostname, 'command': args[1]}
     if opts.schedd_name:
         job_info['schedd_name'] = opts.schedd_name
     else:
-        job_info['schedd_name'] = args[0].split(":")[0]
+        job_info['schedd_name'] = collector_hostname.split(":")[0]
 
     job_info['debug'] = opts.debug
     os.environ.setdefault("TOOL_DEBUG", "D_FULLDEBUG")
