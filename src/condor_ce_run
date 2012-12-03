@@ -10,9 +10,11 @@ import optparse
 
 submit_file = """\
 universe = grid
-grid_universe = condor %(schedd_name)s %(collector_name)s
+grid_resource = condor %(schedd_name)s %(collector_name)s
 
 executable = %(command)s
+arguments = %(arguments)s
+
 output = %(stdout_file)s
 error = %(stderr_file)s
 log = %(log_file)s
@@ -58,6 +60,8 @@ def parse_opts():
     parser.add_option("-r", "--remote", help="Submit directly to remote " \
         "schedd, bypassing the local one.", dest="remote", default=False,
         action="store_true")
+    parser.add_option("-n", "--no-clean", help="Do not clean temporary "
+        "files.", dest="clean", default=False, action="store_true")
     parser.disable_interspersed_args()
 
     opts, args = parser.parse_args()
@@ -67,25 +71,25 @@ def parse_opts():
 def generate_run_script(job_info):
 
     if job_info['arguments']:
-        job_info['arguments'] = '"%s"' % ' '.join(['"%s"' % i for i in \
+        job_info['arguments'] = '"%s"' % ' '.join(["'%s'" % i for i in \
             job_info['arguments']])
 
     pid = os.getpid()
 
     fd, job_info['stdout_file'] = tempfile.mkstemp(dir=".",
-        prefix="stdout_%d_" % pid)
+        prefix=".stdout_%d_" % pid)
     os.close(fd)
 
     fd, job_info['stderr_file'] = tempfile.mkstemp(dir=".",
-        prefix="stderr_%d_" % pid)
+        prefix=".stderr_%d_" % pid)
     os.close(fd)
 
     fd, job_info['log_file'] = tempfile.mkstemp(dir=".",
-        prefix="log_%d_" % pid)
+        prefix=".log_%d_" % pid)
     os.close(fd)
 
     fd, job_info['submit_file'] = tempfile.mkstemp(dir=".",
-        prefix="submit_%d_" % pid)
+        prefix=".submit_%d_" % pid)
 
     try:
         if job_info['remote']:
@@ -127,7 +131,7 @@ def submit_job(job_info):
 
 def wait_for_job(job_info):
     args = ['condor_wait', job_info['log_file']]
-    if job_info.debug:
+    if job_info['debug']:
         args.append("-debug")
 
     pid = os.fork()
@@ -223,7 +227,8 @@ def main():
         wait_for_job(job_info)
         print_results(job_info)
     finally:
-        cleanup(job_info)
+        if opts.clean:
+            cleanup(job_info)
 
     return 0
 
