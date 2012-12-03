@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os
+import re
 import sys
 import errno
 import tempfile
@@ -99,6 +100,8 @@ def generate_run_script(job_info):
     finally:
         os.close(fd)
 
+# Example output: 1 job(s) submitted to cluster 14.
+cluster_re = re.compile("(\d+) job\(s\) submitted to cluster (\d+)\.")
 def submit_job(job_info):
     # TODO: Here and in wait_job below, make sure we can tell the difference
     # between condor_submit failure and failure to exec.
@@ -106,12 +109,21 @@ def submit_job(job_info):
     if job_info['debug']:
         args.append("-debug")
 
+    r, w = os.pipe()
     pid = os.fork()
     if pid == 0:
         try:
+            os.close(r)
+            os.dup2(w, 1)
             os.execvp("condor_submit", args)
         finally:
             os._exit(1)
+    os.close(w)
+
+    for line in os.fdopen(r).readlines():
+        m = cluster_re.match(line)
+        if m:
+            job_info['cluster'] = m.groups()[1]
 
     tmp_pid = -1
     while tmp_pid != pid:
@@ -137,6 +149,8 @@ def wait_for_job(job_info):
     pid = os.fork()
     if pid == 0:
         try:
+           fd = os.open(os.devnull, os.O_WRONLY)
+           os.dup2(fd, 1)
            os.execvp("condor_wait", args)
         finally:
            os._exit(1)
