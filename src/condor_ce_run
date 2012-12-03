@@ -33,6 +33,7 @@ submit_remote_file = """\
 universe = vanilla
 
 executable = %(command)s
+arguments = %(arguments)s
 output = %(stdout_file)s
 error = %(stderr_file)s
 log = %(log_file)s
@@ -71,6 +72,13 @@ def parse_opts():
     return opts, args
 
 def generate_run_script(job_info):
+
+    if job_info['command'][0] != '/':
+        for dir in os.environ.get("PATH", "").split(":"):
+            test_path = os.path.join(dir, job_info['command'])
+            if os.path.exists(test_path):
+                job_info['command'] = test_path
+                break
 
     if job_info['arguments']:
         job_info['arguments'] = '"%s"' % ' '.join(["'%s'" % i for i in \
@@ -126,6 +134,10 @@ def submit_job(job_info):
         if m:
             job_info['cluster'] = m.groups()[1]
 
+    if job_info['remote'] and ('cluster' not in job_info):
+        raise CondorRunException("Could not parse job cluster from " \
+            "condor_submit output")
+
     tmp_pid = -1
     while tmp_pid != pid:
         tmp_pid, status = os.waitpid(pid, 0)
@@ -143,6 +155,9 @@ def submit_job(job_info):
             "stopped with unhandled status code %d." % status)
 
 def wait_for_job(job_info):
+    if job_info['remote']:
+        return wait_for_remote_job(job_info)
+
     args = ['condor_wait', job_info['log_file']]
     if job_info['debug']:
         args.append("-debug")
@@ -172,8 +187,42 @@ def wait_for_job(job_info):
         raise CondorRunException("Failed to wait for job; condor_wait " \
             "stopped with unhandled status code %d." % status)
 
+status_re = re.compile("(\d+)"
 def check_remote_status(job_info):
-    raise NotImplementedError()
+    args = ['condor_q', '-format', '%d\n', 'JobStatus']
+    if job_info['debug']:
+        args.append('-debug')
+
+    r, w = os.pipe()
+    pid = os.fork()
+    if pid == 0:
+        try:
+            os.close(r)
+            os.dup2(w, 1)
+            os.excevp("condor_q", args)
+        finally:
+            os._exit(1)
+    os.close(w)
+
+    for line in os.fdopen(r).readlines():
+        
+
+    tmp_pid = -1
+    while tmp_pid != pid:
+        tmp_pid, status = os.waitpid(pid, 0)
+    if os.WIFEXITED(status):
+        exit_code = os.WEXITSTATUS(status)
+        if exit_code:
+            raise CondorRunException("Failed to check job status; condor_q " \
+                "exited with code %d." % exit_code)
+    elif os.WIFSIGNALED(status):
+        signal = os.WTERMSIG(status)
+        raise CondorRunException("Failed to check job status; condor_q " \
+            "terminated with signal %d." % signal)
+    else:
+        raise CondorRunException("Failed to check job status; condor_q " \
+            "stopped with unhandled status code %d." % status)
+
 
 def wait_for_job_remote(job_info):
     raise NotImplementedError()
