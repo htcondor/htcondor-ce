@@ -1,0 +1,43 @@
+###############################################################################
+###############################################################################
+##
+##  DO NOT EDIT - file is being maintained by puppet
+##
+###############################################################################
+###############################################################################
+
+gumsclient = "lcmaps_gums_client.mod"
+             "-resourcetype ce"
+             "-actiontype execute-now"
+             "-capath /etc/grid-security/certificates"
+             "-cert   /etc/grid-security/hostcert.pem"
+             "-key    /etc/grid-security/hostkey.pem"
+             "--cert-owner root"
+             "--endpoint https://<%= gums_server %>:8443/gums/services/GUMSXACMLAuthorizationServicePort"
+
+posix_enf = "lcmaps_posix_enf.mod"
+            "-maxuid 1 -maxpgid 1 -maxsgid 32"
+
+verifyproxy = "lcmaps_verify_proxy.mod"
+          "--allow-limited-proxy"
+          " -certdir /etc/grid-security/certificates"
+
+good        = "lcmaps_dummy_good.mod"
+bad         = "lcmaps_dummy_bad.mod"
+
+#
+# Mapping policy: osg_default
+# Purpose:        Used for the programs that want lcmaps to switch user
+#       id for them, such as Globus gatekeeper and the gridftp server
+#
+osg_default:
+gumsclient -> posix_enf
+
+#
+# Mapping policy: authorize_only
+# Purpose:        Used for the programs that only want authorization,
+#       such as Condor
+#
+authorize_only:
+gumsclient -> good | bad
+
