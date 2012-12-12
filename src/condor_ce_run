@@ -2,6 +2,7 @@
 import os
 import re
 import sys
+import time
 import errno
 import socket
 import tempfile
@@ -43,6 +44,9 @@ WhenToTransferOutput = ON_EXIT
 
 use_x509userproxy = true
 
++Owner = undefined
++LeaveJobInQueue = ( StageOutFinish > 0 ) =!= true
+
 queue
 """
 
@@ -83,6 +87,8 @@ def generate_run_script(job_info):
     if job_info['arguments']:
         job_info['arguments'] = '"%s"' % ' '.join(["'%s'" % i for i in \
             job_info['arguments']])
+    else:
+        job_info['arguments'] = ''
 
     pid = os.getpid()
 
@@ -117,6 +123,9 @@ def submit_job(job_info):
     args = ['condor_submit', job_info['submit_file']]
     if job_info['debug']:
         args.append("-debug")
+
+    if job_info['remote']:
+        args += ['-remote', job_info['schedd_name'], '-pool', job_info['collector_name']]
 
     r, w = os.pipe()
     pid = os.fork()
@@ -156,7 +165,7 @@ def submit_job(job_info):
 
 def wait_for_job(job_info):
     if job_info['remote']:
-        return wait_for_remote_job(job_info)
+        return wait_for_job_remote(job_info)
 
     args = ['condor_wait', job_info['log_file']]
     if job_info['debug']:
@@ -187,9 +196,11 @@ def wait_for_job(job_info):
         raise CondorRunException("Failed to wait for job; condor_wait " \
             "stopped with unhandled status code %d." % status)
 
-status_re = re.compile("(\d+)"
+status_re = re.compile("(\d+)")
 def check_remote_status(job_info):
-    args = ['condor_q', '-format', '%d\n', 'JobStatus']
+    args = ['condor_q', '-format', '%d\n', 'JobStatus', '-pool',
+        job_info['collector_name'], '-name', job_info['schedd_name'],
+        job_info['cluster']]
     if job_info['debug']:
         args.append('-debug')
 
@@ -199,13 +210,16 @@ def check_remote_status(job_info):
         try:
             os.close(r)
             os.dup2(w, 1)
-            os.excevp("condor_q", args)
+            os.execvp("condor_q", args)
         finally:
             os._exit(1)
     os.close(w)
 
+    job_status = None
     for line in os.fdopen(r).readlines():
-        
+        m = status_re.match(line)
+        if m:
+            job_status = int(m.groups()[0])
 
     tmp_pid = -1
     while tmp_pid != pid:
@@ -223,9 +237,46 @@ def check_remote_status(job_info):
         raise CondorRunException("Failed to check job status; condor_q " \
             "stopped with unhandled status code %d." % status)
 
+    if job_status == None:
+        raise CondorRunException("condor_q did not return a valid job status.")
+
+    return job_status
 
 def wait_for_job_remote(job_info):
-    raise NotImplementedError()
+    while check_remote_status(job_info) != 4:
+        time.sleep(1)
+
+    args = ['condor_transfer_data', '-pool', job_info['collector_name'],
+        '-name', job_info['schedd_name'], job_info['cluster']]
+    if job_info['debug']:
+        args.append('-debug')
+
+    r, w = os.pipe()
+    pid = os.fork()
+    if pid == 0:
+        try:
+            os.close(r)
+            os.dup2(w, 1)
+            os.execvp("condor_transfer_data", args)
+        finally:
+            os._exit(1)
+    os.close(w)
+
+    tmp_pid = -1
+    while tmp_pid != pid:
+        tmp_pid, status = os.waitpid(pid, 0)
+    if os.WIFEXITED(status):
+        exit_code = os.WEXITSTATUS(status)
+        if exit_code:
+            raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
+                "exited with code %d." % exit_code)
+    elif os.WIFSIGNALED(status):
+        signal = os.WTERMSIG(status)
+        raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
+            "terminated with signal %d." % signal)
+    else:
+        raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
+            "stopped with unhandled status code %d." % status)
 
 def print_results(job_info):
 

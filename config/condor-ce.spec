@@ -1,8 +1,8 @@
 
 Name: condor-ce
-Version: 0.5.2
+Version: 0.5.3
 Release: 1%{?dist}
-Summary: A framework to run Condor as a CE
+Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
 License: Apache 2.0
@@ -14,8 +14,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 
 Requires:  condor
-# This ought to pull in the Condor-CE specific version of the blahp
+# This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
+Requires: %{name}-client
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -27,7 +28,7 @@ Requires(preun): initscripts
 
 %package condor
 Group: Applications/System
-Summary: Default routes for submission to Condor
+Summary: Default routes for submission to HTCondor
 
 Requires: %{name} = %{version}-%{release}
 
@@ -45,6 +46,19 @@ Requires: /usr/bin/voms-proxy-init
 %description pbs
 %{summary}
 
+%package client
+Group: Applications/System
+Summary: Client-side tools for submission to HTCondor-CE
+
+# Note the strange requirements (base package is not required!
+# Point is to be able to submit jobs without installing the server.
+Requires: condor
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+%description client
+%{summary}
+
 %prep
 %setup -q
 
@@ -57,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-# Directories necessary for Condor-CE files
+# Directories necessary for HTCondor-CE files
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/run/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
@@ -89,18 +103,7 @@ fi
 %defattr(-,root,root,-)
 
 %{_bindir}/condor_ce_history
-%{_bindir}/condor_ce_hold
-%{_bindir}/condor_ce_q
-%{_bindir}/condor_ce_qedit
-%{_bindir}/condor_ce_release
-%{_bindir}/condor_ce_rm
-%{_bindir}/condor_ce_submit
-%{_bindir}/condor_ce_version
-%{_bindir}/condor_ce_config_val
-%{_bindir}/condor_ce_reconfig
 %{_bindir}/condor_ce_router_q
-%{_bindir}/condor_ce_status
-%{_bindir}/condor_ce_reschedule
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_router_defaults
@@ -135,7 +138,25 @@ fi
 
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
 
+%files client
+%{_bindir}/condor_ce_config_val
+%{_bindir}/condor_ce_hold
+%{_bindir}/condor_ce_q
+%{_bindir}/condor_ce_qedit
+%{_bindir}/condor_ce_rm
+%{_bindir}/condor_ce_run
+%{_bindir}/condor_ce_release
+%{_bindir}/condor_ce_submit
+%{_bindir}/condor_ce_reconfig
+%{_bindir}/condor_ce_reschedule
+%{_bindir}/condor_ce_status
+%{_bindir}/condor_ce_version
+
 %changelog
+* Wed Dec 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.3-1
+- Implement the condor_ce_run helper utility.
+- Split out client tools subpackage.
+
 * Sat Jul 07 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.2-1
 - A second try at fixing the periodic hold expression.
 
@@ -153,6 +174,6 @@ fi
 - Add support for Gratia.
 
 * Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
-- Release after a day of testing with PBS and Condor.
+- Release after a day of testing with PBS and HTCondor.
 
 
