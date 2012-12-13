@@ -1,6 +1,6 @@
 
-Name: condor-ce
-Version: 0.5.3
+Name: htcondor-ce
+Version: 0.5.4
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -153,6 +153,11 @@ fi
 %{_bindir}/condor_ce_version
 
 %changelog
+* Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.4-1
+- Add DigiCert-CA-issued mapping in the default condor_mapfile
+- Add requirement for HTCondor > 7.9.2
+- Make shared-port default.
+
 * Wed Dec 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.3-1
 - Implement the condor_ce_run helper utility.
 - Split out client tools subpackage.

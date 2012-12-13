@@ -1,7 +1,7 @@
 
-AC_INIT([condor-ce], [0.5.3], [bbockelm@cse.unl.edu])
+AC_INIT([htcondor-ce], [0.5.4], [bbockelm@cse.unl.edu])
 
-AM_INIT_AUTOMAKE([condor-ce], [0.5.3])
+AM_INIT_AUTOMAKE([htcondor-ce], [0.5.4])
 
 AC_CONFIG_FILES([Makefile])
 

@@ -7,7 +7,7 @@ cceconfigdir = $(sysconfdir)/condor-ce/
 dist_cceconfig_DATA = config/condor_config config/condor_mapfile
 
 cceconfigddir = $(sysconfdir)/condor-ce/config.d
-dist_cceconfigd_DATA = config/01-ce-auth.conf config/01-ce-router.conf config/02-ce-condor.conf config/02-ce-pbs.conf
+dist_cceconfigd_DATA = config/01-ce-auth.conf config/01-ce-router.conf config/02-ce-condor.conf config/02-ce-pbs.conf config/03-ce-shared-port.conf
 
 sysconfigdir = $(sysconfdir)/sysconfig
 dist_sysconfig_DATA = config/condor-ce
