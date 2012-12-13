@@ -1,4 +1,5 @@
 GSI "^\/DC\=org\/DC\=doegrids\/OU\=Services\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
+GSI "^\/DC\=com\/DC\=DigiCert-Grid\/O=Open Science Grid\/OU\=Services\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
 GSI (.*) GSS_ASSIST_GRIDMAP
 GSI (.*) anonymous@gsi
 CLAIMTOBE .* anonymous@claimtobe
