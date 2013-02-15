@@ -336,6 +336,7 @@ def fill_cache(cache_location):
     (fd, filename) = tempfile.mkstemp()
     try:
         for key, val in results.items():
+            key = key.split(".")[0]
             os.write(fd, "%s: %s\n" % (key, job_dict_to_string(val)))
         os.fsync(fd)
         os.close(fd)
@@ -410,13 +411,14 @@ def main():
     if len(sys.argv) != 2:
         print "1Usage: pbs_status.sh pbs/<date>/<jobid>"
         return 1
-    jobid = sys.argv[1].split("/")[-1]
+    jobid = sys.argv[1].split("/")[-1].split(".")[0]
     cache_contents = check_cache(jobid)
     if not cache_contents:
         results = qstat(jobid)
-        if not results:
+        if not results or jobid not in results:
             print "1ERROR: Unable to find job %s" % jobid
-        print "0%s" % job_dict_to_string(results[jobid])
+        else:
+            print "0%s" % job_dict_to_string(results[jobid])
     else:
         print "0%s" % cache_contents
     return 0
