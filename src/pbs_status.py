@@ -35,84 +35,6 @@ cache_timeout = 60
 
 launchtime = time.time()
 
-# This function was written by me for an older project, the OSG-GIP
-def pbsOutputFilter(fp):
-    """
-    PBS can be a pain to work with because it automatically cuts 
-    lines off at 80 chars and continues the line on the next line.  For
-    example::
-
-        Server: red
-        server_state = Active
-        server_host = red.unl.edu
-        scheduling = True
-        total_jobs = 2996
-        state_count = Transit:0 Queued:2568 Held:0 Waiting:0 Running:428 Exiting 
-         :0 Begun:0 
-        acl_roots = t3
-        managers = mfurukaw@red.unl.edu,root@t3
-
-    This function puts the line ":0 Begun:0" with the above line.  It's meant
-    to filter the output, so you should "scrub" PBS output like this::
-
-        fp = runCommand(<pbs command>)
-        for line in pbsOutputFilter(fp):
-           ... parse line ...
-
-    This function uses iterators
-    """
-    class PBSIter:
-        """
-        An iterator for PBS output; this allows us to easily parse over 
-        PBS-style line continuations.
-        """
-
-        def __init__(self, fp):
-            self.fp = fp
-            self.fp_iter = fp.__iter__()
-            self.prevline = None
-            self.done = False
-
-        def next(self):
-            """
-            Return the next full line of output for the iterator.
-            """
-            if self.prevline == None:
-                line = self.fp_iter.next()
-                if line.startswith('\t'):
-                    # Bad! The output shouldn't start with a 
-                    # partial line
-                    raise ValueError("PBS output contained bad data.")
-                self.prevline = line
-                return self.next()
-            if self.done:
-                raise StopIteration()
-            try:
-                line = self.fp_iter.next()
-                if line.startswith('\t'):
-                    self.prevline = self.prevline[:-1] + line[1:-1]
-                    return self.next()
-                else:
-                    old_line = self.prevline
-                    self.prevline = line
-                    return old_line
-            except StopIteration:
-                self.done = True
-                return self.prevline
-
-    class PBSFilter:
-        """
-        An iterable object based upon the PBSIter iterator.
-        """
-        
-        def __init__(self, myiter):
-            self.iter = myiter
-
-        def __iter__(self):
-            return self.iter
-
-    return PBSFilter(PBSIter(fp))
-
 # Something else from a prior life - see gratia-probe-common's GratiaWrapper.py
 def ExclusiveLock(fd, timeout=120):
     """
@@ -250,7 +172,7 @@ def qstat(jobid=""):
     Returns a python dictionary with the job info.
     """
     qstat = get_qstat_location()
-    child_stdout = os.popen("%s -f %s" % (qstat, jobid))
+    child_stdout = os.popen("%s -f -1 %s" % (qstat, jobid))
     result = parse_qstat_fd(child_stdout)
     exit_status = child_stdout.close()
     if exit_status:
@@ -285,7 +207,7 @@ def get_qstat_location():
     _qstat_location_cache = location
     return location
 
-job_id_re = re.compile("\s*Job Id: ([0-9]+[\.\w\-]+)")
+job_id_re = re.compile("\s*Job Id:\s([0-9]+[\.\w\-]*)")
 exec_host_re = re.compile("\s*exec_host = ([\w\-\/.]+)")
 status_re = re.compile("\s*job_state = ([QRECH])")
 exit_status_re = re.compile("\s*exit_status = (-?[0-9]+)")
@@ -298,7 +220,7 @@ def parse_qstat_fd(fd):
     job_info = {}
     cur_job_id = None
     cur_job_info = {}
-    for line in pbsOutputFilter(fd):
+    for line in fd:
         line = line.strip()
         m = job_id_re.match(line)
         if m:
