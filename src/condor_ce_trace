@@ -1,0 +1,236 @@
+#!/usr/bin/python
+
+import os
+import sys
+import time
+import socket
+import optparse
+import tempfile
+
+import classad
+import htcondor
+
+g_debug = False
+
+class CondorRunException(Exception):
+    pass
+
+class CondorUserException(Exception):
+    pass
+
+def runPing(address):
+
+    if not address.startswith("<"):
+        address = "<%s>" % address
+    args = ["condor_ping", "-addr", str(address), "-debug", "60011"]
+
+    r, w = os.pipe()
+    pid = os.fork()
+    if pid == 0:
+        try:
+            os.close(r)
+            os.dup2(w, 1)
+            os.dup2(w, 2)
+            os.execvp("condor_ping", args)
+        finally:
+            os._exit(1)
+    os.close(w)
+
+    output = os.fdopen(r).read()
+    if g_debug:
+        print "*"*5, "condor_ping output", "*"*5
+        print output,
+        print "*"*20
+
+    tmp_pid = -1
+    while tmp_pid != pid:
+        tmp_pid, status = os.waitpid(pid, 0)
+    if os.WIFEXITED(status):
+        exit_code = os.WEXITSTATUS(status)
+        if exit_code:
+            raise CondorRunException("Failed to ping %s; authorization check exited with code %d" % (address, exit_code));
+    elif os.WIFSIGNALED(status):
+        signal = os.WTERMSIG(status)
+        raise CondorRunException("Failed to ping %s; condor_ping " \
+            "terminated with signal %d." % (address, signal))
+    else:
+        raise CondorRunException("Failed to ping %s; condor_ping " \
+            "stopped with unhandled status code %d." % (address, status))
+
+def parseOpts():
+
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--schedd-name",
+        help="Name of the schedd to use.",
+        dest="schedd_name")
+    parser.add_option("-d", "--debug", help="Print debugging info.",
+        dest="debug", default=False, action="store_true")
+    parser.add_option("-n", "--no-clean", help="Do not clean temporary "
+        "files.", dest="clean", default=False, action="store_true")
+
+    opts, args = parser.parse_args()
+    global g_debug
+    g_debug = opts.debug
+
+    return opts, args
+
+
+def checkAuthz(job_info):
+    print "Testing HTCondor-CE collector connectivity."
+    addresses = socket.getaddrinfo(job_info['collector_fqdn'], job_info['collector_port'], 0, socket.SOCK_STREAM)
+    for addrinfo in addresses:
+        addr = "<%s:%d>" % addrinfo[4]
+        runPing("<%s:%d>" % addrinfo[4])
+        print "- Successful ping of collector on %s.\n" % addr
+    coll = htcondor.Collector(job_info['collector_name'])
+    ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
+    job_info['schedd_ad'] = ad
+    addr = ad['MyAddress']
+    print "Testing HTCondor-CE schedd connectivity."
+    runPing(addr)
+    print "- Successful ping of schedd on %s.\n" % addr
+
+
+def generate_run_script(job_info):
+
+    job_info['command'] = 'env'
+    job_info['arguments'] = ''
+
+    if job_info['command'][0] != '/':
+        for dir in os.environ.get("PATH", "").split(":"):
+            test_path = os.path.join(dir, job_info['command'])
+            if os.path.exists(test_path):
+                job_info['command'] = test_path
+                break
+
+    if job_info['arguments']:
+        job_info['arguments'] = '"%s"' % ' '.join(["'%s'" % i for i in \
+            job_info['arguments']])
+    else:
+        job_info['arguments'] = ''
+
+    pid = os.getpid()
+
+    fd, job_info['stdout_file'] = tempfile.mkstemp(dir=".",
+        prefix=".stdout_%d_" % pid)
+    os.close(fd)
+
+    fd, job_info['stderr_file'] = tempfile.mkstemp(dir=".",
+        prefix=".stderr_%d_" % pid)
+    os.close(fd)
+
+    fd, job_info['log_file'] = tempfile.mkstemp(dir=".",
+        prefix=".log_%d_" % pid)
+    os.close(fd)
+
+    fd, job_info['submit_file'] = tempfile.mkstemp(dir=".",
+        prefix=".submit_%d_" % pid)
+
+
+def addJobProxyInfo(job_ad):
+
+    fd = os.popen("voms-proxy-info -file %s -subject" % job_ad['x509userproxy'])
+    output = fd.read().strip()
+    if fd.close():
+        raise CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+    job_ad['x509userproxysubject'] = output
+
+    fd = os.popen("voms-proxy-info -file %s -timeleft" % job_ad['x509userproxy'])
+    output = fd.read().strip()
+    if fd.close():
+        raise CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+    job_ad['x509UserProxyExpiration'] = int(time.time()) + int(output)
+
+    fd = os.popen("voms-proxy-info -file %s -vo" % job_ad['x509userproxy'])
+    output = fd.read().strip()
+    if not fd.close():
+        job_ad['x509UserProxyVOName'] = output
+
+    fd = os.popen("voms-proxy-info -file %s -fqan" % job_ad['x509userproxy'])
+    output_lines = fd.readlines()
+    if not fd.close():
+        output_lines = [i.strip() for i in output_lines]
+        job_ad['x509UserProxyFirstFQAN'] = output_lines[0]
+        job_ad['x509UserProxyFQAN'] = ",".join(output_lines)
+
+    print job_ad
+
+def checkJobSubmit(job_info):
+
+    job_ad = classad.ClassAd()
+    job_ad["Cmd"] = job_info['command']
+    job_ad["Args"] = job_info['arguments']
+    job_ad['Out'] = job_info['stdout_file']
+    job_ad['Err'] = job_info['stderr_file']
+    job_ad['Log'] = job_info['log_file']
+    job_ad['LeaveJobInQueue'] = classad.ExprTree("( StageOutFinish > 0 ) =!= true")
+    proxy = os.environ.setdefault("X509_USER_PROXY", "/tmp/x509up_u%d" % os.geteuid())
+    if not os.path.exists(proxy):
+        raise CondorUserException("Could not find an X509 proxy in %s" % proxy)
+    job_ad['x509userproxy'] = proxy
+    addJobProxyInfo(job_ad)
+
+    schedd = htcondor.Schedd(job_info['schedd_ad'])
+    print "Submitting job to schedd %s" % job_info['schedd_ad']['MyAddress']
+    ad_results = []
+    cluster = schedd.submit(job_ad, 1, True, ad_results)
+    print "- Successful submission; cluster ID %d" % cluster
+
+    print ad_results
+
+    print "Spooling cluster %d files to schedd %s" % (cluster, job_info['schedd_ad']['MyAddress'])
+    schedd.spool(ad_results)
+    print "- Successful spooling"
+
+    attempts = 600
+    for attempt in range(attempts):
+        if g_debug: print "Querying job status (%d/%d)" % (attempt+1, attempts)
+        ad = schedd.query("ClusterID == %d" % cluster, ["JobStatus", "ClusterID", "ProcID"])
+        if len(ad) != 1:
+            raise CondorRunException("Could not find the job in cluster %d" % cluster)
+        status = ad[0]['JobStatus']
+        if g_debug: print "Job status:", status
+        if status in [3,4]: break
+        time.sleep(1)
+
+    if status == 5: # TODO - provide better diagnostics
+        raise CondorRunException("Remote job, %d.0, was held" % cluster)
+    if status == 4:
+        schedd.retrieve("ClusterID == %d" % cluster)
+        schedd.act(htcondor.JobAction.Remove, "ClusterID == %d" % cluster)
+        print open(job_info['stdout_file'], "r").read()
+
+def main():
+    opts, args = parseOpts()
+
+    if len(args) < 1:
+        print "Usage: condor_ce_trace [options] <hostname>"
+        return 1
+
+    job_info = {}
+    collector_hostname = args[0].split(":")[0]
+    collector_hostname = socket.getfqdn(collector_hostname)
+    job_info['collector_fqdn'] = collector_hostname
+    port_info = args[0].split(":")[1:]
+    if port_info:
+        job_info['collector_port'] = int(port_info[0])
+    else:
+        job_info['collector_port'] = 9619
+    collector_hostname = "%s:%d" % (collector_hostname, job_info['collector_port'])
+    job_info['collector_name'] = collector_hostname
+    if opts.schedd_name:
+        job_info['schedd_name'] = opts.schedd_name
+    else:
+        job_info['schedd_name'] = collector_hostname.split(":")[0]
+
+    checkAuthz(job_info)
+    try:
+        generate_run_script(job_info)
+        checkJobSubmit(job_info)
+    finally:
+        if opts.clean:
+            cleanup(job_info)
+
+if __name__ == '__main__':
+    main()
+
