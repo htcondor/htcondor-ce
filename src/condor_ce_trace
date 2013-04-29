@@ -18,6 +18,16 @@ class CondorRunException(Exception):
 class CondorUserException(Exception):
     pass
 
+condorJobStatus = { \
+  0: "Unexpanded",
+  1: "Idle",
+  2: "Running",
+  3: "Removed",
+  4: "Completed",
+  5: "Held",
+  6: "Transferring Output",
+}
+
 def runPing(address):
 
     if not address.startswith("<"):
@@ -59,7 +69,8 @@ def runPing(address):
 
 def parseOpts():
 
-    parser = optparse.OptionParser()
+    usage = "usage: %prog [options] <CE hostname>"
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("-s", "--schedd-name",
         help="Name of the schedd to use.",
         dest="schedd_name")
@@ -139,6 +150,9 @@ def addJobProxyInfo(job_ad):
     output = fd.read().strip()
     if fd.close():
         raise CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+    output = int(output)
+    if output <= 0:
+        print "WARNING: available proxy appears to be expired"
     job_ad['x509UserProxyExpiration'] = int(time.time()) + int(output)
 
     fd = os.popen("voms-proxy-info -file %s -vo" % job_ad['x509userproxy'])
@@ -153,7 +167,8 @@ def addJobProxyInfo(job_ad):
         job_ad['x509UserProxyFirstFQAN'] = output_lines[0]
         job_ad['x509UserProxyFQAN'] = ",".join(output_lines)
 
-    print job_ad
+    if g_debug:
+        print "Job ad, pre-submit:", job_ad
 
 def checkJobSubmit(job_info):
 
@@ -176,20 +191,28 @@ def checkJobSubmit(job_info):
     cluster = schedd.submit(job_ad, 1, True, ad_results)
     print "- Successful submission; cluster ID %d" % cluster
 
-    print ad_results
+    print "Resulting job ad:", ad_results[0]
 
     print "Spooling cluster %d files to schedd %s" % (cluster, job_info['schedd_ad']['MyAddress'])
     schedd.spool(ad_results)
     print "- Successful spooling"
 
     attempts = 600
+    last_status = -1
     for attempt in range(attempts):
         if g_debug: print "Querying job status (%d/%d)" % (attempt+1, attempts)
         ad = schedd.query("ClusterID == %d" % cluster, ["JobStatus", "ClusterID", "ProcID"])
         if len(ad) != 1:
             raise CondorRunException("Could not find the job in cluster %d" % cluster)
         status = ad[0]['JobStatus']
-        if g_debug: print "Job status:", status
+        if g_debug:
+            print "Job status:", condorJobStatus.get(status, status)
+        elif last_status != status:
+            if last_status == -1:
+                print "Job status:", condorJobStatus.get(status, status)
+            else:
+                print "Job transitioned from", condorJobStatus.get(last_status, last_status), "to", condorJobStatus.get(status, status)
+            last_status = status
         if status in [3,4]: break
         time.sleep(1)
 
@@ -198,7 +221,15 @@ def checkJobSubmit(job_info):
     if status == 4:
         schedd.retrieve("ClusterID == %d" % cluster)
         schedd.act(htcondor.JobAction.Remove, "ClusterID == %d" % cluster)
-        print open(job_info['stdout_file'], "r").read()
+        output = open(job_info['stdout_file'], "r").read()
+        if not output:
+            raise CondorRunException("Job produced empty stdout")
+        if g_debug:
+            print "*"*5, "Job output", "*"*5
+            print output,
+            print "*"*20
+        else:
+            print "- Job was successful"
 
 def main():
     opts, args = parseOpts()
