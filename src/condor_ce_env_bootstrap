@@ -1,16 +1,21 @@
 #!/bin/sh
 
 # Configuration for LCMAPS
-export LLGT_LOG_IDENT=Condor-lcmaps
+export LLGT_LOG_IDENT=htondor-ce-llgt
 export LLGT_VOMS_DISABLE_CREDENTIAL_CHECK=1
 export LCMAPS_DB_FILE=/etc/lcmaps.db
 export LCMAPS_POLICY_NAME=authorize_only
 #level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
 #  4: also info, 5: maximum debug
-export LCMAPS_DEBUG_LEVEL=3
+export LCMAPS_DEBUG_LEVEL=2
+# this is needed for the authorize_only policy
+export LLGT_LIFT_PRIVILEGED_PROTECTION=1
 
-# Condor does not want LCMAPS to change user for it
-export LLGT4_NO_CHANGE_USER=1
+# Pieces of HTCondor obey the same environment variables as Globus
+# for port usage.  Mostly Useless due to our use of shared port.
+if [ -e /var/lib/osg/globus-firewall ]; then
+    . /var/lib/osg/globus-firewall
+fi
 
 # Pick up any configuration for condor-ce from /etc/sysconfig.
 # The big thing we are looking for is that Condor can sometimes be installed

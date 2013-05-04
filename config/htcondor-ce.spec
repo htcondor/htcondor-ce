@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.5.4
+Version: 0.5.6
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -164,8 +164,17 @@ fi
 %{_bindir}/condor_ce_reschedule
 %{_bindir}/condor_ce_status
 %{_bindir}/condor_ce_version
+%{_bindir}/condor_ce_trace
 
 %changelog
+* Sat May 04 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.6-1
+- Improve hold reason error message.
+- Enable HTCondor audit log by default. 
+
+* Mon Apr 29 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.5-1
+- Add condor_ce_trace for debugging a CE.
+- Update environment bootstrap to match OSG's globus-gatekeeper.
+
 * Thu Dec 13 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.4-1
 - Add DigiCert-CA-issued mapping in the default condor_mapfile
 - Add requirement for HTCondor > 7.9.2
