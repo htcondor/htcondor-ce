@@ -8,6 +8,8 @@ import socket
 import tempfile
 import optparse
 
+import htcondor
+
 # HTCondor-CE simple run script.
 # Mimics the venerable condor_run
 
@@ -316,8 +318,21 @@ def cleanup(job_info):
             if oe.errno != errno.ENOENT:
                 raise
 
+def configureAuth():
+    try:
+        auth_methods = re.split(",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
+    except KeyError:
+        auth_methods = []
+    if 'GSI' not in auth_methods:
+        auth_methods.append("GSI")
+
+    auth_methods = ",".join(auth_methods)
+    os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
+    htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
+
 def main():
     opts, args = parse_opts()
+    configureAuth()
 
     if len(args) < 2:
         print "Usage: condor_ce_run <hostname> <command> [arg1] [arg2] [...]"
@@ -325,7 +340,11 @@ def main():
 
     collector_hostname = args[0].split(":")[0]
     collector_hostname = socket.getfqdn(collector_hostname)
-    collector_hostname = ":".join([collector_hostname] + args[0].split(":")[1:])
+    port_info = args[0].split(":")[1:]
+    if port_info:
+        collector_hostname = "%s:%s" % (collector_hostname, port_info[0])
+    else:
+        collector_hostname = "%s:9619" % collector_hostname
     job_info = {'collector_name': collector_hostname, 'command': args[1]}
     if opts.schedd_name:
         job_info['schedd_name'] = opts.schedd_name

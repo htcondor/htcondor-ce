@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import re
 import sys
 import time
 import socket
@@ -28,11 +29,23 @@ condorJobStatus = { \
   6: "Transferring Output",
 }
 
+def configureAuth():
+    try:
+        auth_methods = re.split(",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
+    except KeyError:
+        auth_methods = []
+    if 'GSI' not in auth_methods:
+        auth_methods.append("GSI")
+
+    auth_methods = ",".join(auth_methods)
+    os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
+    htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
+
 def runPing(address):
 
     if not address.startswith("<"):
         address = "<%s>" % address
-    args = ["condor_ping", "-addr", str(address), "-debug", "60011"]
+    args = ["condor_ping", "-addr", str(address), "-verbose", "-debug", "60011"]
 
     r, w = os.pipe()
     pid = os.fork()
@@ -254,6 +267,7 @@ def main():
     else:
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
+    configureAuth()
     checkAuthz(job_info)
     try:
         generate_run_script(job_info)
