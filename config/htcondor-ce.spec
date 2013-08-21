@@ -1,7 +1,7 @@
 
 Name: htcondor-ce
 Version: 0.5.7
-Release: 3%{?dist}
+Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
