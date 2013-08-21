@@ -174,6 +174,7 @@ fi
 %{_bindir}/condor_ce_status
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
+%{_bindir}/condor_ce_ping
 
 %changelog
 * Wed Aug 21 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.7-1
