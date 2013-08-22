@@ -19,5 +19,5 @@ ccedata_SCRIPTS = src/condor_ce_router_defaults src/osg-wrapper.sh
 initddir = $(sysconfdir)/rc.d/init.d
 initd_SCRIPTS = src/condor-ce
 
-bin_SCRIPTS = src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping 
+bin_SCRIPTS = src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping
 
