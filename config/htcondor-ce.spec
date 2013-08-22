@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.5.7
+Version: 0.5.8
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -132,6 +132,8 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
+%{_datadir}/condor-ce/osg-wrapper
+
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/log/condor-ce/user
@@ -177,6 +179,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Thu Aug 22 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.8-1
+- Fix runtime environment for local universe jobs.
+
 * Wed Aug 21 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.7-1
 - Addition of condor_ce_ping
 - Fix condor_ce_trace script; it was using condor_ping from the base condor config.

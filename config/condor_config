@@ -69,7 +69,7 @@ VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 
 # Use wrapper script to set environment in local universe jobs
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
-USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper.sh
+USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper
 
 # This file is just the base configuration
 # Several other mandatory tasks remain, and are done in /etc/condor-ce/config.d:
