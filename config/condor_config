@@ -67,6 +67,10 @@ NORDUGRID_GAHP = $(SBIN)/nordugrid_gahp
 UNICORE_GAHP = $(SBIN)/unicore_gahp
 VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 
+# Use wrapper script to set environment in local universe jobs
+DATA_DIR = $(RELEASE_DIR)/share/condor-ce
+USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper.sh
+
 # This file is just the base configuration
 # Several other mandatory tasks remain, and are done in /etc/condor-ce/config.d:
 # - Security configuration: /etc/condor-ce/config.d/01-ce-auth.conf
