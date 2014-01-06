@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.5.8
+Version: 0.5.9
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -12,7 +12,7 @@ Source0: %{name}-%{version}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:  condor >= 7.9.2
+Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 Requires: %{name}-client
@@ -179,6 +179,10 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Mon Jan 06 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.9-1
+- Add support for OSG extended attribute and UID tables.
+- Small config fixes for RHEL6's OpenSSL and the PBS backend.
+
 * Thu Aug 22 2013 Brian Bockelman <bbockelm@cse.unl.edu> - 0.5.8-1
 - Fix runtime environment for local universe jobs.
 
