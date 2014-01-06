@@ -2,6 +2,22 @@
 
 import os
 import re
+import pwd
+
+try:
+    import classad
+except ImportError:
+    classad = None
+
+# This is part of the classad module as of HTCondor 8.1.2
+def quote(value):
+    ad = classad.ClassAd()
+    ad["foo"] = str(value)
+    return ad.lookup("foo").__str__()
+try:
+    quote = classad.quote
+except:
+    pass
 
 job_router_defaults = \
 """
@@ -27,7 +43,8 @@ JOB_ROUTER_DEFAULTS = \\
     \\
     /* Set new requirements */ \\
     /* set_requirements = LastClientContact - time() < 30*60; */ \\
-    set_requirements = True \\
+    set_requirements = True; \\
+    eval_set_AccountingGroup = @accounting_group@ \\
   ]
 """
 
@@ -35,6 +52,58 @@ osg_environment_files = [ \
     "/var/lib/osg/osg-job-environment.conf",
     "/var/lib/osg/osg-local-job-environment.conf"    
 ]
+
+def parse_extattr():
+    if not os.path.exists("/etc/osg/extattr_table.txt"):
+        return []
+    fd = open("/etc/osg/extattr_table.txt")
+    results = []
+    for line in fd:
+        if line.startswith("#"):
+            continue
+        line = line.strip()
+        if not line:
+            continue
+        info = line.split(" ", 1)
+        if len(info) != 2:
+            continue
+        results.append(info)
+    return results
+        
+
+def parse_uids():
+    if not os.path.exists("/etc/osg/uid_table.txt"):
+        return []
+    fd = open("/etc/osg/uid_table.txt")
+    results = []
+    for line in fd:
+        if line.startswith("#"):
+            continue
+        line = line.strip()
+        if not line:
+            continue
+        info = line.split(" ", 1)
+        if len(info) != 2:
+            continue
+        try:
+            uid = int(info[0])
+            results.append( (pwd.getpwuid(uid).pw_name, info[1]) )
+        except ValueError:
+            results.append(info)
+    return results
+
+def set_accounting_group():
+    attr_mappings = parse_extattr()
+    uid_mappings = parse_uids()
+    if (not classad) or (not attr_mappings and not uid_mappings):
+        return "Owner"
+    accounting_group_str = ''
+    for mapping in uid_mappings:
+        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (classad.quote(mapping[0]), classad.quote(mapping[1]))
+    for mapping in attr_mappings:
+        accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxyFirstFQAN), strcat(%s, ".", Owner), ' % (classad.quote(mapping[0]), classad.quote(mapping[1]))
+    accounting_group_str += "Owner " + ")"*(len(attr_mappings)+len(uid_mappings))
+    return accounting_group_str
 
 def condor_env_escape(val):
     """
@@ -99,7 +168,10 @@ def main():
             master_env[key] = val
     # Mangle environment string
     env_string = " ".join(["%s=%s" % (i[0], i[1]) for i in master_env.items()])
-    print job_router_defaults.replace("@osg_environment@", env_string)
+
+    accounting_group_str = set_accounting_group()
+
+    print job_router_defaults.replace("@osg_environment@", env_string).replace("@accounting_group@", accounting_group_str)
 
 if __name__ == "__main__":
     main()
