@@ -11,3 +11,10 @@ aclocal.m4
 autom4te.cache
 .*
 src/.*
+release_dir
+rsl_tester
+libeval_rsl.so
+install_manifest.txt
+cmake_install.cmake
+CMakeFiles
+CMakeCache.txt
