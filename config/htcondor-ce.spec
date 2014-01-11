@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
-Requires: %{name}-client
+Requires: %{name} = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
@@ -90,7 +90,7 @@ Provides:  condor-ce-client = %{version}
 
 %build
 %cmake
-make
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -133,6 +133,8 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
+%{_libdir}/condor/libeval_rsl.so
+
 %{_initrddir}/condor-ce
 
 %config %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
@@ -174,8 +176,11 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
+%{_bindir}/condor_ce_off
+%{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
 %{_bindir}/condor_ce_qedit
+%{_bindir}/condor_ce_restart
 %{_bindir}/condor_ce_rm
 %{_bindir}/condor_ce_run
 %{_bindir}/condor_ce_release
