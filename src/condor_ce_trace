@@ -102,10 +102,18 @@ def parseOpts():
 def checkAuthz(job_info):
     print "Testing HTCondor-CE collector connectivity."
     addresses = socket.getaddrinfo(job_info['collector_fqdn'], job_info['collector_port'], 0, socket.SOCK_STREAM)
+    hadSuccess = False
     for addrinfo in addresses:
-        addr = "<%s:%d>" % addrinfo[4]
-        runPing("<%s:%d>" % addrinfo[4])
-        print "- Successful ping of collector on %s.\n" % addr
+        addr = "<%s:%d>" % addrinfo[4][:2]
+        try:
+            runPing("<%s:%d>" % addrinfo[4][:2])
+            hadSuccess = True
+            print "- Successful ping of collector on %s.\n" % addr
+        except CondorRunException:
+            print "- Failed ping of collector on %s.\n" % addr
+    if not hadSuccess:
+        print "- No collector check was successful!"
+        raise RuntimeError("No collector check was successful!")
     coll = htcondor.Collector(job_info['collector_name'])
     ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
     job_info['schedd_ad'] = ad
