@@ -116,9 +116,15 @@ value_to_expr(globus_rsl_value_t * value, classad::ExprTree*& expr)
     }
     else if (globus_rsl_value_is_variable(value))
     {
-        char * variable_name = globus_rsl_value_variable_get_name(value);
+        char * char_variable_name = globus_rsl_value_variable_get_name(value);
         char * default_value = globus_rsl_value_variable_get_default(value);
-        if (!variable_name) { return false; }
+        if (!char_variable_name) { return false; }
+
+        // Canonical forms of Globus RSL strip out all underscores and makes the string
+        // lowercase.  As ClassAds are case-preserving (and underscores are significant),
+        // we just do the former transform.
+        std::string variable_name(char_variable_name);
+        boost::algorithm::replace_all(variable_name, "_", "");
 
         if (default_value)
         {
