@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.6.0
+Version: 0.6.1
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -64,6 +64,7 @@ Summary: Client-side tools for submission to HTCondor-CE
 BuildRequires: boost-devel
 BuildRequires: globus-rsl-devel
 BuildRequires: condor-classads-devel
+BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
@@ -193,6 +194,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-1
+- Fix issue with older classads library.
+
 * Sat Jan 11 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.0-1
 - Add compatibility layer with GlobusRSL.  This allows GlobusRSL set
   for HTCondor-G for GRAM to be reused by HTCondor-CE.
