@@ -32,6 +32,11 @@ set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Base direct
 set(SYSCONF_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc" CACHE PATH "Base directory for files which go to etc/")
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Base directory for files which go to lib/")
 
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config/01-ce-router.conf.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf"
+)
+
 install(TARGETS eval_rsl LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/condor")
 
 install(PROGRAMS src/condor-ce DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
