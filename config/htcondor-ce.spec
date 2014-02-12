@@ -194,6 +194,11 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Wed Feb 12 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.2-1
+- Fix attribute names to be more compatible with glideinWMS's preferred usage.
+- Wall time, memory, and CPU count are now passed through to PBS correctly.
+- Remove PeriodicRemove inserted by HTCondor-G.
+
 * Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-1
 - Fix issue with older classads library.
 
