@@ -160,7 +160,7 @@ value_to_expr(globus_rsl_value_t * value, classad::ExprTree*& expr)
 static bool
 rsl_to_classad(globus_rsl_t * rsl, classad::ClassAd &ad)
 {
-    if (g_globus_activated)
+    if (!g_globus_activated)
     {
         globus_module_activate(GLOBUS_RSL_MODULE);
         g_globus_activated = true;
