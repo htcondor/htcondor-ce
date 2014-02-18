@@ -12,7 +12,7 @@ except ImportError:
 # This is part of the classad module as of HTCondor 8.1.2
 def quote(value):
     ad = classad.ClassAd()
-    ad["foo"] = str(value)
+    ad["foo"] = str(value).strip()
     return ad.lookup("foo").__str__()
 try:
     quote = classad.quote
