@@ -147,6 +147,10 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
+%{_datadir}/condor-ce/config.d/01-ce-auth.conf
+%{_datadir}/condor-ce/config.d/01-ce-router.conf
+%{_datadir}/condor-ce/config.d/03-ce-shared-port.conf
+
 %{_datadir}/condor-ce/osg-wrapper
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
@@ -163,11 +167,13 @@ fi
 %defattr(-,root,root,-)
 
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
+%{_datadir}/condor-ce/config.d/02-ce-condor.conf
 
 %files pbs
 %defattr(-,root,root,-)
 
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
+%{_datadir}/condor-ce/config.d/02-ce-pbs.conf
 
 %files client
 
@@ -175,6 +181,7 @@ fi
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
 %config %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
+%{_datadir}/condor-ce/config.d/01-common-auth.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 
