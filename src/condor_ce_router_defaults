@@ -3,6 +3,7 @@
 import os
 import re
 import pwd
+import sys
 
 try:
     import classad
@@ -44,8 +45,7 @@ JOB_ROUTER_DEFAULTS = \\
     \\
     /* Set new requirements */ \\
     /* set_requirements = LastClientContact - time() < 30*60; */ \\
-    set_requirements = True; \\
-    set_InputRSL = ifThenElse(GlobusRSL is null, [], eval_rsl(GlobusRSL)); \\
+    set_requirements = True; \\ %s
     /* Note default memory request of 2GB */ \\
     eval_set_RequestMemory = ifThenElse(InputRSL.maxMemory isnt null, InputRSL.maxMemory, ifThenElse(default_maxMemory isnt null, default_maxMemory, 2000)); \\
     eval_set_remote_queue = ifThenElse(InputRSL.queue isnt null, InputRSL.queue, ifThenElse(default_queue isnt null, default_queue, "") ); \\
@@ -58,6 +58,28 @@ JOB_ROUTER_DEFAULTS = \\
     eval_set_AccountingGroup = @accounting_group@ \\
   ]
 """
+
+input_rsl = """
+set_InputRSL = ifThenElse(GlobusRSL is null, [], eval_rsl(GlobusRSL)); \\
+"""
+
+# Long-winded hack to avoid using 'set_InputRSL' in the 8.0.x series due to
+# HTCondor bug #3772.
+version = '8.0.0'
+if classad:
+    version = classad.version()
+m = re.match(r"(\d+)\.(\d+)\.(\d+)", classad.version())
+if m:
+    major, minor, bug = m.groups()
+    major = int(major)
+    minor = int(minor)
+    bug = int(bug)
+    if major > 8 or (major == 8 and minor >= 1):
+        job_router_defaults = job_router_defaults % input_rsl
+    else:
+        job_router_defaults = job_router_defaults % ""
+else:
+    job_router_defaults = job_router_defaults % ""
 
 osg_environment_files = [ \
     "/var/lib/osg/osg-job-environment.conf",
