@@ -18,7 +18,10 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:  condor >= 8.0.0
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
-Requires: %{name} = %{version}-%{release}
+
+# Require the htcondor-ce-client subpackage.  The client provides necessary
+# configuration defaults and scripts for the CE itself.
+Requires: %{name}-client = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
@@ -198,6 +201,9 @@ fi
 - Fix attribute names to be more compatible with glideinWMS's preferred usage.
 - Wall time, memory, and CPU count are now passed through to PBS correctly.
 - Remove PeriodicRemove inserted by HTCondor-G.
+
+* Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-2
+- Rebuild for HCC.
 
 * Fri Jan 31 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.1-1
 - Fix issue with older classads library.
