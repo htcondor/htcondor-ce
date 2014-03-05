@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.6.2
+Version: 0.6.3
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -147,9 +147,9 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
-%{_datadir}/condor-ce/config.d/01-ce-auth.conf
-%{_datadir}/condor-ce/config.d/01-ce-router.conf
-%{_datadir}/condor-ce/config.d/03-ce-shared-port.conf
+%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
+%{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
 
@@ -167,13 +167,13 @@ fi
 %defattr(-,root,root,-)
 
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
-%{_datadir}/condor-ce/config.d/02-ce-condor.conf
+%{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
 
 %files pbs
 %defattr(-,root,root,-)
 
 %config %{_sysconfdir}/condor-ce/config.d/02-ce-pbs.conf
-%{_datadir}/condor-ce/config.d/02-ce-pbs.conf
+%{_datadir}/condor-ce/config.d/02-ce-pbs-defaults.conf
 
 %files client
 
@@ -181,7 +181,7 @@ fi
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
 %config %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
-%{_datadir}/condor-ce/config.d/01-common-auth.conf
+%{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 
