@@ -1,6 +1,6 @@
 
 Name: htcondor-ce
-Version: 0.6.3
+Version: 1.0
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -206,6 +206,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Sun Apr 27 2014 Brian Lin <blin@cs.wisc.edu> - 1.0.0-1
+- Add condor specific config files
+
 * Tue Mar 04 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 0.6.3-1
 - Do not use InputRSL unless we have an appropriate version of HTCondor.
 - Further tighten security defaults
