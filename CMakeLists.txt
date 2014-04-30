@@ -51,6 +51,6 @@ install(PROGRAMS src/condor_ce_config_val src/condor_ce_history src/condor_ce_ho
 install(FILES config/condor_config config/condor_mapfile DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 install(FILES config/01-ce-auth.conf config/01-common-auth.conf config/01-ce-router.conf config/02-ce-condor.conf config/02-ce-pbs.conf config/03-ce-shared-port.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES config/01-ce-auth-defaults.conf config/01-common-auth-defaults.conf config/01-ce-router-defaults.conf config/02-ce-condor-defaults.conf config/02-ce-pbs-defaults.conf config/03-ce-shared-port-defaults.conf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
-install(FILES config/50-condor-ce.conf config/50-condor-ce-defaults.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor/config.d)
+install(FILES config/99-condor-ce.conf config/50-condor-ce-defaults.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor/config.d)
 install(FILES config/condor-ce DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 
