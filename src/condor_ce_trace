@@ -89,6 +89,8 @@ def parseOpts():
         dest="schedd_name")
     parser.add_option("-d", "--debug", help="Print debugging info.",
         dest="debug", default=False, action="store_true")
+    parser.add_option("-a", "--attribute", help="Add attribute to job ad.",
+                      dest="attribute", default=[], action='append')
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
         "files.", dest="clean", default=False, action="store_true")
 
@@ -191,6 +193,18 @@ def addJobProxyInfo(job_ad):
     if g_debug:
         print "Job ad, pre-submit:", job_ad
 
+def setClassadValueType(value):
+    if value.lower() == 'true':
+        return True
+    elif value.lower() == 'false':
+        return False
+    elif re.match('\d+\.\d+$', value):
+        return float(value)
+    elif re.match('\d+$', value):
+        return int(value)
+
+    return value
+
 def checkJobSubmit(job_info):
 
     job_ad = classad.ClassAd()
@@ -200,6 +214,9 @@ def checkJobSubmit(job_info):
     job_ad['Err'] = job_info['stderr_file']
     job_ad['Log'] = job_info['log_file']
     job_ad['LeaveJobInQueue'] = classad.ExprTree("( StageOutFinish > 0 ) =!= true")
+    for attr in job_info['attribute']:
+        key, value = attr.split('=')
+        job_ad[key.strip()] = setClassadValueType(value.strip())
     proxy = os.environ.setdefault("X509_USER_PROXY", "/tmp/x509up_u%d" % os.geteuid())
     if not os.path.exists(proxy):
         raise CondorUserException("Could not find an X509 proxy in %s" % proxy)
@@ -260,6 +277,7 @@ def main():
         return 1
 
     job_info = {}
+    job_info['attribute'] = opts.attribute
     collector_hostname = args[0].split(":")[0]
     collector_hostname = socket.getfqdn(collector_hostname)
     job_info['collector_fqdn'] = collector_hostname
