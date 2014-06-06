@@ -7,6 +7,7 @@ import errno
 import socket
 import tempfile
 import optparse
+import traceback
 
 import htcondor
 
@@ -52,10 +53,8 @@ use_x509userproxy = true
 queue
 """
 
-def fail_with_msg(msg):
-    sys.stderr.write(msg + '\n')
-    sys.stderr.flush()
-    sys.exit(1)
+class CondorRunException(Exception):
+    pass
 
 def parse_opts():
     parser = optparse.OptionParser()
@@ -66,7 +65,9 @@ def parse_opts():
     parser.add_option("-s", "--schedd-name",
         help="Name of the schedd to use.",
         dest="schedd_name")
-    parser.add_option("-d", "--debug", help="Print debugging info.",
+    parser.add_option("-d", "--debug", help="Print debugging info. Set " \
+        "environmental variable 'CONDOR_CE_RUN_DEBUG' to true to print " \
+        "stacktraces",
         dest="debug", default=False, action="store_true")
     parser.add_option("-r", "--remote", help="Submit directly to remote " \
         "schedd, bypassing the local one.", dest="remote", default=False,
@@ -148,7 +149,7 @@ def submit_job(job_info):
             job_info['cluster'] = m.groups()[1]
 
     if job_info['remote'] and ('cluster' not in job_info):
-        fail_with_msg("Could not parse job cluster from " \
+        raise CondorRunException("Could not parse job cluster from " \
             "condor_submit output")
 
     tmp_pid = -1
@@ -157,14 +158,14 @@ def submit_job(job_info):
     if os.WIFEXITED(status):
         exit_code = os.WEXITSTATUS(status)
         if exit_code:
-            fail_with_msg("Failed to submit job; condor_submit " \
+            raise CondorRunException("Failed to submit job; condor_submit " \
                 "exited with code %d." % exit_code)
     elif os.WIFSIGNALED(status):
         signal = os.WTERMSIG(status)
-        fail_with_msg("Failed to submit job; condor_submit " \
+        raise CondorRunException("Failed to submit job; condor_submit " \
             "terminated with signal %d." % signal)
     else:
-        fail_with_msg("Failed to submit job; condor_submit " \
+        raise CondorRunException("Failed to submit job; condor_submit " \
             "stopped with unhandled status code %d." % status)
 
 def wait_for_job(job_info):
@@ -190,14 +191,14 @@ def wait_for_job(job_info):
     if os.WIFEXITED(status):
         exit_code = os.WEXITSTATUS(status)
         if exit_code:
-            fail_with_msg("Failed to wait for job; condor_wait " \
+            raise CondorRunException("Failed to wait for job; condor_wait " \
                 "exited with code %d." % exit_code)
     elif os.WIFSIGNALED(status):
         signal = os.WTERMSIG(status)
-        fail_with_msg("Failed to wait for job; condor_wait " \
+        raise CondorRunException("Failed to wait for job; condor_wait " \
             "terminated with signal %d." % signal)
     else:
-        fail_with_msg("Failed to wait for job; condor_wait " \
+        raise CondorRunException("Failed to wait for job; condor_wait " \
             "stopped with unhandled status code %d." % status)
 
 status_re = re.compile("(\d+)")
@@ -231,18 +232,18 @@ def check_remote_status(job_info):
     if os.WIFEXITED(status):
         exit_code = os.WEXITSTATUS(status)
         if exit_code:
-            fail_with_msg("Failed to check job status; condor_q " \
+            raise CondorRunException("Failed to check job status; condor_q " \
                 "exited with code %d." % exit_code)
     elif os.WIFSIGNALED(status):
         signal = os.WTERMSIG(status)
-        fail_with_msg("Failed to check job status; condor_q " \
+        raise CondorRunException("Failed to check job status; condor_q " \
             "terminated with signal %d." % signal)
     else:
-        fail_with_msg("Failed to check job status; condor_q " \
+        raise CondorRunException("Failed to check job status; condor_q " \
             "stopped with unhandled status code %d." % status)
 
     if job_status == None:
-        fail_with_msg("condor_q did not return a valid job status.")
+        raise CondorRunException("condor_q did not return a valid job status.")
 
     return job_status
 
@@ -272,14 +273,14 @@ def wait_for_job_remote(job_info):
     if os.WIFEXITED(status):
         exit_code = os.WEXITSTATUS(status)
         if exit_code:
-            fail_with_msg("Failed to retrieve job output sandbox; condor_transfer_data " \
+            raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
                 "exited with code %d." % exit_code)
     elif os.WIFSIGNALED(status):
         signal = os.WTERMSIG(status)
-        fail_with_msg("Failed to retrieve job output sandbox; condor_transfer_data " \
+        raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
             "terminated with signal %d." % signal)
     else:
-        fail_with_msg("Failed to retrieve job output sandbox; condor_transfer_data " \
+        raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
             "stopped with unhandled status code %d." % status)
 
 def print_results(job_info):
@@ -372,5 +373,11 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    sys.exit(main())
-
+    try:
+        sys.exit(main())
+    except CondorRunException, e:
+        try:
+            if os.environ['CONDOR_CE_RUN_DEBUG'].lower() == 'true':
+                traceback.print_exc()
+        except KeyError:
+            print e
