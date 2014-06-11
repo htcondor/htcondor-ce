@@ -7,6 +7,7 @@ import errno
 import socket
 import tempfile
 import optparse
+import traceback
 
 import htcondor
 
@@ -64,7 +65,9 @@ def parse_opts():
     parser.add_option("-s", "--schedd-name",
         help="Name of the schedd to use.",
         dest="schedd_name")
-    parser.add_option("-d", "--debug", help="Print debugging info.",
+    parser.add_option("-d", "--debug", help="Print debugging info. Set " \
+        "environmental variable 'CONDOR_CE_RUN_DEBUG' to true to print " \
+        "stacktraces",
         dest="debug", default=False, action="store_true")
     parser.add_option("-r", "--remote", help="Submit directly to remote " \
         "schedd, bypassing the local one.", dest="remote", default=False,
@@ -370,5 +373,11 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    sys.exit(main())
-
+    try:
+        sys.exit(main())
+    except CondorRunException, e:
+        try:
+            if os.environ['CONDOR_CE_RUN_DEBUG'].lower() == 'true':
+                traceback.print_exc()
+        except KeyError:
+            print e
