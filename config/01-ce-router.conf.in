@@ -42,6 +42,9 @@ SYSTEM_PERIODIC_HOLD_REASON = \
      ) \
    )
 
+# Remove jobs that have been on hold for longer than 24 hrs
+SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && CurrentTime - EnteredCurrentStatus > 3600*24)
+
 # This attribute limits the max time of any job to 48 hours.
 ROUTED_JOB_MAX_TIME = 2880
 
