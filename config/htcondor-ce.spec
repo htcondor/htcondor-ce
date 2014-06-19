@@ -1,7 +1,6 @@
-
 Name: htcondor-ce
 Version: 1.1
-Release: 2%{?dist}
+Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -247,7 +246,10 @@ fi
 
 %changelog
 * Tue Jun 17 2014 Brian Lin <blin@cs.wisc.edu> - 1.1-1
+- Allow users to add ClassAd attr in condor_ce_trace
 - Add LSF and SGE job routes
+- Remove jobs that have been held longer than 24 hr
+- Don't set AccountingGroup when missing UID/extattr table
 
 * Sun Apr 27 2014 Brian Lin <blin@cs.wisc.edu> - 1.0-1
 - Add condor specific config files

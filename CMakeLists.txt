@@ -49,8 +49,8 @@ install(PROGRAMS src/condor_ce_env_bootstrap src/condor_ce_router_defaults src/o
 install(PROGRAMS src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping src/condor_ce_off src/condor_ce_on src/condor_ce_restart DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 install(FILES config/condor_config config/condor_mapfile DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
-install(FILES config/01-ce-auth.conf config/01-common-auth.conf config/01-ce-router.conf config/02-ce-condor.conf config/02-ce-pbs.conf config/03-ce-shared-port.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
-install(FILES config/01-ce-auth-defaults.conf config/01-common-auth-defaults.conf config/01-ce-router-defaults.conf config/02-ce-condor-defaults.conf config/02-ce-pbs-defaults.conf config/03-ce-shared-port-defaults.conf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
+install(FILES config/01-ce-auth.conf config/01-common-auth.conf config/01-ce-router.conf config/02-ce-condor.conf config/02-ce-pbs.conf config/02-ce-lsf.conf config/02-ce-sge.conf config/03-ce-shared-port.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
+install(FILES config/01-ce-auth-defaults.conf config/01-common-auth-defaults.conf config/01-ce-router-defaults.conf config/02-ce-condor-defaults.conf config/02-ce-pbs-defaults.conf config/02-ce-lsf-defaults.conf config/02-ce-sge-defaults.conf config/03-ce-shared-port-defaults.conf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES config/99-condor-ce.conf config/50-condor-ce-defaults.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor/config.d)
 install(FILES config/condor-ce DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 
