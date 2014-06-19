@@ -128,8 +128,10 @@ def parse_uids():
 def set_accounting_group():
     attr_mappings = parse_extattr()
     uid_mappings = parse_uids()
-    if (not classad) or (not attr_mappings and not uid_mappings):
+    if not classad: 
         return "Owner"
+    elif not attr_mappings and not uid_mappings:
+        return None
     accounting_group_str = ''
     for mapping in uid_mappings:
         accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (quote(mapping[0]), quote(mapping[1]))
@@ -204,7 +206,12 @@ def main():
 
     accounting_group_str = set_accounting_group()
 
-    print job_router_defaults.replace("@osg_environment@", env_string).replace("@accounting_group@", accounting_group_str)
+    defaults_with_env = job_router_defaults.replace("@osg_environment@", env_string)   
+
+    try:
+        print defaults_with_env.replace("@accounting_group@", accounting_group_str)
+    except TypeError:
+        print defaults_with_env.replace("    eval_set_AccountingGroup = @accounting_group@ \\", '')
 
 if __name__ == "__main__":
     main()
