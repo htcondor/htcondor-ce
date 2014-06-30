@@ -211,7 +211,7 @@ def main():
     try:
         print defaults_with_env.replace("@accounting_group@", accounting_group_str)
     except TypeError:
-        print defaults_with_env.replace("    eval_set_AccountingGroup = @accounting_group@ \\", '')
+        print defaults_with_env.replace("\n    eval_set_AccountingGroup = @accounting_group@ \\", '')
 
 if __name__ == "__main__":
     main()
