@@ -47,7 +47,7 @@ JOB_ROUTER_DEFAULTS = \\
     /* set_requirements = LastClientContact - time() < 30*60; */ \\
     set_requirements = True; \\ %s
     /* Note default memory request of 2GB */ \\
-    /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd if undefined via RSL */
+    /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd if undefined via RSL */ \\
     eval_set_RequestMemory = ifThenElse(InputRSL.maxMemory isnt null, InputRSL.maxMemory, ifThenElse(maxMemory isnt null, maxMemory, ifThenElse(default_maxMemory isnt null, default_maxMemory, 2000))); \\
     eval_set_remote_queue = ifThenElse(InputRSL.queue isnt null, InputRSL.queue, ifThenElse(queue isnt null, queue, ifThenElse(default_queue isnt null, default_queue, ""))); \\
     /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */ \\
@@ -61,9 +61,7 @@ JOB_ROUTER_DEFAULTS = \\
   ]
 """
 
-input_rsl = """
-set_InputRSL = ifThenElse(GlobusRSL is null, [], eval_rsl(GlobusRSL)); \\
-"""
+input_rsl = "\nset_InputRSL = ifThenElse(GlobusRSL is null, [], eval_rsl(GlobusRSL)); \\"
 
 # Long-winded hack to avoid using 'set_InputRSL' in the 8.0.x series due to
 # HTCondor bug #3772.
