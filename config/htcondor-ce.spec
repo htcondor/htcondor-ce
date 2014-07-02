@@ -1,5 +1,5 @@
 Name: htcondor-ce
-Version: 1.1
+Version: 1.2
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -245,6 +245,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Mon Jun 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.2-1
+- Fix bug where condor-ce wouldn't start
+
 * Tue Jun 17 2014 Brian Lin <blin@cs.wisc.edu> - 1.1-1
 - Allow users to add ClassAd attr in condor_ce_trace
 - Add LSF and SGE job routes
