@@ -53,7 +53,7 @@ SYSTEM_PERIODIC_REMOVE_REASON = \
        ifThenElse((JobStatus == 5 && isUndefined(RoutedToJid)), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
          "input files missing." \
        ) \
-     )
+     ) \
    )
 
 # This attribute limits the max time of any job to 48 hours.
