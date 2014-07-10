@@ -54,7 +54,6 @@ JOB_ROUTER_DEFAULTS = \\
     eval_set_RequestCpus = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
     eval_set_remote_SMPGranularity = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
     eval_set_remote_NodeNumber = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
-    eval_set_jobtype = ifThenElse(InputRSL.jobtype isnt null, InputRSL.jobtype, ifThenElse(jobtype isnt null, jobtype, ifThenElse(default_jobtype isnt null, default_jobtype, ""))); \\ 
     /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */ \\
     eval_set_remote_cerequirements = ifThenElse(InputRSL.maxWallTime isnt null, strcat("Walltime == ", string(60*InputRSL.maxWallTime), " && CondorCE == 1"), "CondorCE == 1"); \\
     eval_set_AccountingGroup = @accounting_group@ \\
