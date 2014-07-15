@@ -27,6 +27,7 @@ log = %(log_file)s
 
 ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
+getenv = True
 
 use_x509userproxy = true
 
@@ -44,6 +45,7 @@ log = %(log_file)s
 
 ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
+getenv = True
 
 use_x509userproxy = true
 

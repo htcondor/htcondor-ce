@@ -36,7 +36,7 @@ JOB_ROUTER_DEFAULTS = \\
     delete_PeriodicRemove = true; \\
     delete_CondorCE = true; \\
     set_RoutedJob = true; \\
-    copy_environment = orig_environment; \\
+    copy_environment = "orig_environment"; \\
     set_osg_environment = "@osg_environment@"; \\
     eval_set_environment = \\
         ifThenElse(orig_environment is undefined, osg_environment, \\
