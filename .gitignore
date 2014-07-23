@@ -10,3 +10,6 @@ cmake_install.cmake
 CMakeFiles
 CMakeCache.txt
 config/01-ce-router.conf
+config/01-ce-router-defaults.conf
+libclassad_ce.so
+classad_ce_tester

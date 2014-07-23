@@ -4,6 +4,10 @@
 
 export PATH=/bin:/sbin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+if [ "X$HOME" = "X" ]; then
+  export HOME=~
+fi
+
 # Load OSG-specific env variables
 if [ -f /var/lib/osg/osg-job-environment.conf ]; then
     . /var/lib/osg/osg-job-environment.conf

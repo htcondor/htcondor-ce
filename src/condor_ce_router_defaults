@@ -38,10 +38,10 @@ JOB_ROUTER_DEFAULTS = \\
     set_RoutedJob = true; \\
     copy_environment = "orig_environment"; \\
     set_osg_environment = "@osg_environment@"; \\
-    eval_set_environment = \\
+    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), " ", \\
         ifThenElse(orig_environment is undefined, osg_environment, \\
           strcat(osg_environment, " ", orig_environment) \\
-        ); \\
+        ))); \\
     \\
     /* Set new requirements */ \\
     /* set_requirements = LastClientContact - time() < 30*60; */ \\
