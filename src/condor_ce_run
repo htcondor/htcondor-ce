@@ -17,6 +17,7 @@ import htcondor
 submit_file = """\
 universe = grid
 grid_resource = condor %(schedd_name)s %(collector_name)s
+remove_universe = %(universe)s
 
 executable = %(command)s
 arguments = %(arguments)s
@@ -35,7 +36,7 @@ queue
 """
 
 submit_remote_file = """\
-universe = vanilla
+universe = %(universe)s
 
 executable = %(command)s
 arguments = %(arguments)s
@@ -74,6 +75,8 @@ def parse_opts():
     parser.add_option("-r", "--remote", help="Submit directly to remote " \
         "schedd, bypassing the local one.", dest="remote", default=False,
         action="store_true")
+    parser.add_option("-l", "--local", help="Have the job run in the CE's " \
+        "local universe.", dest="local", default=False, action="store_true")
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
         "files.", dest="clean", default=False, action="store_true")
     parser.disable_interspersed_args()
@@ -362,6 +365,11 @@ def main():
     job_info['remote'] = opts.remote
 
     job_info['arguments'] = args[2:]
+
+    if opts.local:
+        job_info['universe'] = "local"
+    else:
+        job_info['universe'] = "vanilla"
 
     try:
         generate_run_script(job_info)
