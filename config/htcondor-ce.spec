@@ -1,5 +1,5 @@
 Name: htcondor-ce
-Version: 1.2
+Version: 1.4
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -165,18 +165,21 @@ fi
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
 %{_libdir}/condor/libeval_rsl.so
+%{_libdir}/condor/libclassad_ce.so
 
 %{_initrddir}/condor-ce
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
+%{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
 
@@ -245,6 +248,17 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Tue Jul 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.4-1
+- Add default for $HOME in job environment
+- Fix condor_ce_run bug that lost any predefinied environmental variables
+- Limit the number of local and scheduler universe jobs
+- Add option to condor_ce_run to more easily run local jobs
+
+* Fri Jul 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.3-1
+- Fix bug that prevented HTCondor-CE from starting if running HTCondor > 8.0.x
+- Hold then remove jobs that don't match any job router entries
+- Enable special ClassAd attributes set by GlideinWMS Factories
+
 * Mon Jun 30 2014 Brian Lin <blin@cs.wisc.edu> - 1.2-1
 - Fix bug where condor-ce wouldn't start
 
