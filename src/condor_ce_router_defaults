@@ -99,7 +99,7 @@ def parse_extattr():
         info = line.split(" ", 1)
         if len(info) != 2:
             continue
-        results.append(info)
+        results.append( (info[0], str(info[1]).strip()) )
     return results
         
 
@@ -119,9 +119,9 @@ def parse_uids():
             continue
         try:
             uid = int(info[0])
-            results.append( (pwd.getpwuid(uid).pw_name, info[1]) )
+            results.append( (pwd.getpwuid(uid).pw_name, str(info[1]).strip()) )
         except ValueError:
-            results.append(info)
+            results.append( (info[0], str(info[1]).strip()) )
     return results
 
 def set_accounting_group():
