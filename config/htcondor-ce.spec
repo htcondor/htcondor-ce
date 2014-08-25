@@ -228,6 +228,7 @@ fi
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
+%{_datadir}/condor-ce/condor_ce_client_env_bootstrap
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
