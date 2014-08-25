@@ -120,7 +120,7 @@ Provides:  condor-ce-client = %{version}
 %setup -q
 
 %build
-%cmake
+%cmake -DHTCONDORCE_VERSION=%{version}
 make %{?_smp_mflags}
 
 %install

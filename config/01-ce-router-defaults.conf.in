@@ -73,3 +73,7 @@ PER_JOB_HISTORY_DIR = /var/lib/gratia/condorce_data
 # the site JobRouter jobs.
 JOB_ROUTER_NAME = htcondor-ce
 
+# The version of the HTCondor-CE.  Useful for debugging purposes.
+HTCondorCEVersion = "@HTCONDORCE_VERSION@"
+SCHEDD_EXPRS = $(SCHEDD_EXPRS) HTCondorCEVersion
+
