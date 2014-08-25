@@ -1,5 +1,5 @@
 Name: htcondor-ce
-Version: 1.4
+Version: 1.5
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -248,6 +248,11 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.5-1
+- Add workaround to fix client tool segfault with mismatched ClassAd versions
+  between HTCondor CE and Condor (SOFTWARE-1583)
+- Fix condor_ce_trace so it can accept requirements attributes
+
 * Tue Jul 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.4-1
 - Add default for $HOME in job environment
 - Fix condor_ce_run bug that lost any predefinied environmental variables
