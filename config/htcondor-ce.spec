@@ -1,5 +1,5 @@
 Name: htcondor-ce
-Version: 1.5
+Version: 1.6
 Release: 1%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -256,6 +256,10 @@ fi
 %{_bindir}/condor_ce_ping
 
 %changelog
+* Wed Sep 03 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
+- Allow sysadmins to set a custom hostname.
+- Advertise the HTCondor-CE version in the ClassAd.
+
 * Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.5-1
 - Add workaround to fix client tool segfault with mismatched ClassAd versions
   between HTCondor CE and Condor (SOFTWARE-1583)
