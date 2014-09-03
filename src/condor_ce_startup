@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "X$CONDORCE_HOSTNAME" == "X" ]; then
+  exec condor_master "$@"
+fi
+
+exec unshare -u -- /usr/share/condor-ce/condor_ce_startup_internal "$@"
+

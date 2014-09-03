@@ -36,10 +36,19 @@ pidfile=/var/run/condor-ce/$prog.pid
 # Check that networking is up
 [ "${NETWORKING}" = "no" ] && exit 1
 
+# If we are requested to set a special hostname for this instance,
+# make sure the system supports this.
+if [ "X$CONDORCE_HOSTNAME" != "X" ]; then
+  which unshare &> /dev/null
+  if [ $? -ne 0 ]; then
+    echo "\$CONDORCE_HOSTNAME is only functional on systems with /usr/bin/unshare installed."
+    exit 1
+  fi
+fi
 
 start() {
     echo -n $"Starting Condor-CE daemons: "
-    daemon --pidfile $pidfile --check $prog $prog -pidfile $pidfile
+    daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile

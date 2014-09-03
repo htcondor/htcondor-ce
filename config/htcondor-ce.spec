@@ -30,6 +30,11 @@ Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
 
+# On RHEL6 and later, we use this utility to setup a custom hostname.
+%if 0%{?rhel} >= 6
+Requires: /usr/bin/unshare
+%endif
+
 %description
 %{summary}
 
@@ -180,6 +185,8 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
+%{_datadir}/condor-ce/condor_ce_startup
+%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_datadir}/condor-ce/osg-wrapper
 

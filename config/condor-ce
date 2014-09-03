@@ -19,3 +19,7 @@
 # rest of the system.
 # export GSI_AUTHZ_CONF=/etc/condor-ce/gsi-authz.conf
 
+# Example: Have the HTCondor-CE use a different hostname from the rest of
+# the system.
+# export CONDORCE_HOSTNAME=condorce.example.com
+

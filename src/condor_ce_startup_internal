@@ -1,0 +1,5 @@
+#!/bin/sh
+
+hostname $CONDORCE_HOSTNAME
+exec condor_master "$@"
+
