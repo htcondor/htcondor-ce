@@ -33,7 +33,13 @@ CLASSAD_USER_LIBS = @CMAKE_INSTALL_LIBDIR@/condor/libclassad_ce.so, @CMAKE_INSTA
 
 # Only route jobs with a valid, non-expired proxy for either the vanilla or standard universe.
 JOB_ROUTER_SOURCE_JOB_CONSTRAINT = (target.x509userproxysubject =!= UNDEFINED) && (target.x509UserProxyExpiration =!= UNDEFINED) && (time() < target.x509UserProxyExpiration) && (target.JobUniverse =?= 5 || target.JobUniverse =?= 1)
-SYSTEM_PERIODIC_HOLD = (x509userproxysubject =?= UNDEFINED) || (x509UserProxyExpiration =?= UNDEFINED) || (time() > x509UserProxyExpiration) || (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && CurrentTime - EnteredCurrentStatus > 1800) && RoutedToJid is null)
+
+# Put jobs on hold if they meet any of the following requirements
+# 1. Is missing a proxy subject or proxy expiration date.
+# 2. Has an expired proxy
+# 3. It has not been routed by the CE and is not a standard, vanilla, scheduler, or local job.
+# 4. It has not been routed by the CE and has been idle for 30+ min
+SYSTEM_PERIODIC_HOLD = (x509userproxysubject =?= UNDEFINED) || (x509UserProxyExpiration =?= UNDEFINED) || (time() > x509UserProxyExpiration) || (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && CurrentTime - EnteredCurrentStatus > 1800) && RoutedToJid is null && RoutedJob =!= true)
 
 SYSTEM_PERIODIC_HOLD_REASON = \
    strcat("CE job in status ", JobStatus, \
