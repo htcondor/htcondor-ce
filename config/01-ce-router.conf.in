@@ -43,8 +43,9 @@ SYSTEM_PERIODIC_HOLD_REASON = \
      " put on hold by SYSTEM_PERIODIC_HOLD due to ", \
      ifThenElse(isUndefined(x509userproxysubject) || isUndefined(x509UserProxyExpiration),  "missing user proxy.", \
        ifThenElse(time() > x509UserProxyExpiration, "expired user proxy.", \
-         ifThenElse(isUndefined(RoutedToJobId), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
-           "invalid job universe." \
+         ifThenElse(RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12, \
+           "invalid job universe.", \
+           "non-existent route or entry in JOB_ROUTER_ENTRIES." \
          ) \
        ) \
      ) \
