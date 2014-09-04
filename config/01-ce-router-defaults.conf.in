@@ -39,14 +39,14 @@ JOB_ROUTER_SOURCE_JOB_CONSTRAINT = (target.x509userproxysubject =!= UNDEFINED) &
 # 2. Has an expired proxy
 # 3. It has not been routed by the CE and is not a standard, vanilla, scheduler, or local job.
 # 4. It has not been routed by the CE and has been idle for 30+ min
-SYSTEM_PERIODIC_HOLD = (x509userproxysubject =?= UNDEFINED) || (x509UserProxyExpiration =?= UNDEFINED) || (time() > x509UserProxyExpiration) || (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && CurrentTime - EnteredCurrentStatus > 1800) && RoutedToJid is null && RoutedJob =!= true)
+SYSTEM_PERIODIC_HOLD = (x509userproxysubject =?= UNDEFINED) || (x509UserProxyExpiration =?= UNDEFINED) || (time() > x509UserProxyExpiration) || (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && CurrentTime - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
 
 SYSTEM_PERIODIC_HOLD_REASON = \
    strcat("CE job in status ", JobStatus, \
      " put on hold by SYSTEM_PERIODIC_HOLD due to ", \
      ifThenElse(isUndefined(x509userproxysubject) || isUndefined(x509UserProxyExpiration),  "missing user proxy.", \
        ifThenElse(time() > x509UserProxyExpiration, "expired user proxy.", \
-         ifThenElse(isUndefined(RoutedToJid), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
+         ifThenElse(isUndefined(RoutedToJobId), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
            "invalid job universe." \
          ) \
        ) \
@@ -58,8 +58,8 @@ SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && CurrentTime - EnteredCurrentStatus >
 
 SYSTEM_PERIODIC_REMOVE_REASON = \
    strcat("CE job removed by SYSTEM_PERIODIC_REMOVE due to ", \
-     ifThenElse((JobStatus == 5 && CurrentTime - EnteredCurrentStatus > 3600*24), "being in hold state for 24 hours.", \
-       ifThenElse((JobStatus == 5 && isUndefined(RoutedToJid)), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
+     ifThenElse((JobStatus == 5 && CurrentTime - EnteredCurrentStatus > 3600*24), "being in the hold state for 24 hours.", \
+       ifThenElse((JobStatus == 5 && isUndefined(RoutedToJobId)), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
          "input files missing." \
        ) \
      ) \
