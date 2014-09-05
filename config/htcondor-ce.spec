@@ -121,6 +121,17 @@ Provides:  condor-ce-client = %{version}
 %description client
 %{summary}
 
+%package collector
+Group: Applications/System
+Summary: Central HTCondor-CE information services collector
+
+Requires: %{name}-client
+Requires: libxml2-python
+Conflicts: %{name}
+
+%description collector
+%{summary}
+
 %prep
 %setup -q
 
@@ -254,6 +265,17 @@ fi
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
+
+%files collector
+
+%{_bindir}/condor_ce_generator
+%{_initrddir}/condor-ce-collector
+%{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+
+%config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 
 %changelog
 * Wed Sep 03 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
