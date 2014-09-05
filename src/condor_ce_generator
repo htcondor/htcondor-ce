@@ -201,6 +201,20 @@ CONFIG_TEMPLATE = """
 # There will be one entry per enabled service found in MyOSG.  The file is updated
 # atomically; MyOSG outages will not result in partial or incorrect updates.
 
+# To BAN a host, add a line of the form
+# 
+#   DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org
+# 
+# TO A DIFFERENT FILE (which is not automatically overwritten)!  You can have
+# multiple comma-separated hosts in the DENY listing.
+
+# To ADD a custom host, add a line of the form
+# 
+#   ALLOW_ADVERTISE_SCHEDD = $(ALLOW_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org/ce.example.com
+#
+# TO A DIFFERENT FILE (which is not automatically overwritten)!  You can have
+# multiple comma-separated hosts in the ALLOW listing.
+
 %s
 
 # GENERATED AT %s
@@ -232,7 +246,7 @@ def write_config(config_line):
 
 def generate_config(hosts):
     authz = ["%s@daemon.opensciencegrid.org/%s" % (i, i) for i in hosts]
-    return "COLLECTOR.ALLOW_ADVERTISE_SCHEDD = %s" % ", \\\n\t\t".join(authz)
+    return "ALLOW_ADVERTISE_SCHEDD = %s" % ", \\\n\t\t".join(authz)
 
 def parse_config():
     parser = optparse.OptionParser()
