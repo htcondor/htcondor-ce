@@ -22,7 +22,7 @@
 prog=condor_master
 
 lockfile=/var/lock/subsys/condor-ce-collector
-pidfile=/var/run/condor-ce/$prog.pid
+pidfile=/var/run/condor-ce/$prog-collector.pid
 
 # Source function library
 . /etc/init.d/functions
@@ -44,6 +44,15 @@ if [ "X$CONDORCE_HOSTNAME" != "X" ]; then
     echo "\$CONDORCE_HOSTNAME is only functional on systems with /usr/bin/unshare installed."
     exit 1
   fi
+fi
+
+# If this is the first time starting up, try to generate a new
+# config file.  Note the file is installed by the RPM so we don't check
+# for existence first.
+grep -q 'GENERATED AT' /etc/condor-ce/config.d/02-ce-auth-generated.conf &> /dev/null
+if [ $? -ne 0 ]; then
+  echo "No auth configuration present; generating a new one now."
+  condor_ce_generator
 fi
 
 start() {

@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 import fcntl
 import atexit
 import logging
@@ -202,6 +203,7 @@ CONFIG_TEMPLATE = """
 
 %s
 
+# GENERATED AT %s
 """
 
 def write_config(config_line):
@@ -216,7 +218,7 @@ def write_config(config_line):
     except IOError, ie:
         logging.error("Failed to open temporary config file: %s" % str(ie))
         sys.exit(2)
-    fd.write(CONFIG_TEMPLATE % config_line)
+    fd.write(CONFIG_TEMPLATE % (config_line, time.ctime()))
     os.fsync(fd.fileno())
     fd.close()
     try:

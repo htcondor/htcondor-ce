@@ -125,7 +125,7 @@ Provides:  condor-ce-client = %{version}
 Group: Applications/System
 Summary: Central HTCondor-CE information services collector
 
-Requires: %{name}-client
+Requires: %{name}-client = %{version}-%{release}
 Requires: libxml2-python
 Conflicts: %{name}
 
@@ -196,8 +196,6 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
-%{_datadir}/condor-ce/condor_ce_startup
-%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_datadir}/condor-ce/osg-wrapper
 
@@ -247,6 +245,8 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
+%{_datadir}/condor-ce/condor_ce_startup
+%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
