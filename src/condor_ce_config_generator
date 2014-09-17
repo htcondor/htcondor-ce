@@ -186,35 +186,42 @@ def get_pid_age(pid):
 ## End locking code from Gratia.
 #############################################################
 
-CONFIG_TEMPLATE = """
+CONFIG_TEMPLATE = """\
 ###############################################################################
 #
 # HTCondor-CE server *generated* authorization configuration
 #
 ###############################################################################
 
-# This is the AUTO-GENERATED file which will be periodically overwritten.
-#
-# To update this by hand, run:
+# DO NOT EDIT:
+# This file is AUTO-GENERATED and will be periodically overwritten if the
+# condor-ce-collector service is enabled. To force an update, run:
 #
 #  condor_ce_config_generator
 #
-# There will be one entry per enabled service found in MyOSG.  The file is updated
-# atomically; MyOSG outages will not result in partial or incorrect updates.
 
-# To BAN a host, add a line of the form
-# 
+#
+# The following customizations can be made in a SEPARATE file:
+#
+
+# To BAN a host, add a line of the form:
+#
 #   DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org
-# 
-# TO A DIFFERENT FILE (which is not automatically overwritten)!  You can have
-# multiple comma-separated hosts in the DENY listing.
+#
+# You can have multiple comma-separated hosts in the DENY listing.
 
-# To ADD a custom host, add a line of the form
-# 
+# To ADD a custom host, add a line of the form:
+#
 #   ALLOW_ADVERTISE_SCHEDD = $(ALLOW_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org/ce.example.com
 #
-# TO A DIFFERENT FILE (which is not automatically overwritten)!  You can have
-# multiple comma-separated hosts in the ALLOW listing.
+# You can have multiple comma-separated hosts in the ALLOW listing.
+
+# The generated ALLOW_ADVERTISE_SCHEDD should be of the form:
+#
+#   ALLOW_ADVERTISE_SCHEDD = foo.example.com@daemon.opensciencegrid.org/foo.example.com, bar.example.com@daemon.opensciencegrid.org/bar.example.com
+#
+# There will be one entry per enabled service found in MyOSG.  This file is updated
+# atomically; MyOSG outages will not result in partial or incorrect updates.
 
 %s
 
