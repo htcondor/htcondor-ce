@@ -1,0 +1,1 @@
+*/10 * * * * root [[ ! -f /var/lock/subsys/condor-ce-collector ]] || /usr/bin/condor_ce_generator

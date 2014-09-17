@@ -121,6 +121,17 @@ Provides:  condor-ce-client = %{version}
 %description client
 %{summary}
 
+%package collector
+Group: Applications/System
+Summary: Central HTCondor-CE information services collector
+
+Requires: %{name}-client = %{version}-%{release}
+Requires: libxml2-python
+Conflicts: %{name}
+
+%description collector
+%{summary}
+
 %prep
 %setup -q
 
@@ -178,15 +189,12 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
-%{_datadir}/condor-ce/condor_ce_startup
-%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_datadir}/condor-ce/osg-wrapper
 
@@ -233,9 +241,12 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
+%{_datadir}/condor-ce/condor_ce_startup
+%{_datadir}/condor-ce/condor_ce_startup_internal
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
@@ -254,6 +265,17 @@ fi
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
+
+%files collector
+
+%{_bindir}/condor_ce_generator
+%{_initrddir}/condor-ce-collector
+%{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+
+%config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 
 %changelog
 * Wed Sep 03 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
