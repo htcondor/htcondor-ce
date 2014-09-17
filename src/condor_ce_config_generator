@@ -7,6 +7,7 @@ import fcntl
 import atexit
 import logging
 import optparse
+import subprocess
 
 os.environ['CONDOR_CONFIG'] = '/etc/condor-ce/condor_config'
 
@@ -330,13 +331,18 @@ def main():
 
     if not opts.dryrun:
         write_config(config)
+
         if opts.reconfig:
             logger.info("Configuration file written; now reconfiguring daemons.")
+            cmd = ['condor_ce_reconfig']
+
+            proc_outerr_fd = None
             if not opts.verbose:
-                fd = logger.handlers[0].stream.fileno()
-                os.dup2(fd, 1)
-                os.dup2(fd, 2)
-            os.execvp("condor_ce_reconfig", ["condor_ce_reconfig"])
+                proc_outerr_fd = logger.handlers[0].stream.fileno()
+
+            retcode = subprocess.call(cmd, stdout=proc_outerr_fd, stderr=proc_outerr_fd)
+            if retcode != 0:
+                raise subprocess.CalledProcessError(retcode, cmd)
     else:
         logger.info("Dry-run enabled; not actually writing configuration file.")
 
