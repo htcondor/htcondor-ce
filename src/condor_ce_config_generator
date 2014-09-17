@@ -196,7 +196,7 @@ CONFIG_TEMPLATE = """
 #
 # To update this by hand, run:
 #
-#  condor_ce_collector_generate
+#  condor_ce_config_generator
 #
 # There will be one entry per enabled service found in MyOSG.  The file is updated
 # atomically; MyOSG outages will not result in partial or incorrect updates.
@@ -301,7 +301,7 @@ def main():
     opts = parse_config()
     logger = logging.getLogger()
 
-    logger.debug("Taking lock on condor_ce_generator instance")
+    logger.debug("Taking lock on condor_ce_config_generator instance")
     ExclusiveLock()
 
     if 'MYOSG_URL' not in htcondor.param:
