@@ -235,6 +235,8 @@ CONFIG_TEMPLATE = """\
 
 %s
 
+LastCEConfigGenerateTime = %d
+
 # GENERATED AT %s
 """
 
@@ -250,7 +252,8 @@ def write_config(config_line):
     except IOError, ie:
         logging.error("Failed to open temporary config file: %s" % str(ie))
         sys.exit(2)
-    fd.write(CONFIG_TEMPLATE % (config_line, time.ctime()))
+    generate_time = int(time.time())
+    fd.write(CONFIG_TEMPLATE % (config_line, generate_time, time.ctime(generate_time)))
     os.fsync(fd.fileno())
     fd.close()
     try:
