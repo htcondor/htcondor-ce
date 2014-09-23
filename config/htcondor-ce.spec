@@ -136,7 +136,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version}
+%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
 make %{?_smp_mflags}
 
 %install
@@ -268,7 +268,7 @@ fi
 
 %files collector
 
-%{_bindir}/condor_ce_generator
+%{_bindir}/condor_ce_config_generator
 %{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 
