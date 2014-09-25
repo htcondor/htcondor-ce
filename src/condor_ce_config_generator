@@ -237,6 +237,7 @@ CONFIG_TEMPLATE = """\
 
 LastCEConfigGenerateTime = %d
 
+COLLECTOR_ATTRS = $(COLLECTOR_ATTRS), LastCEConfigGenerateTime
 # GENERATED AT %s
 """
 
