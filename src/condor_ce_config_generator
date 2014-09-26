@@ -15,6 +15,18 @@ import libxml2
 import urllib2
 import htcondor
 
+
+# Add htcondor.param.get() to old versions of condor-python that don't have it
+try:
+    htcondor.param.get
+except AttributeError:
+    def _htcondor_param_get(key, default=None):
+        try:
+            return htcondor.param[key]
+        except KeyError:
+            return default
+    htcondor.param.get = _htcondor_param_get
+
 #############################################################
 # NOTE: The following locking code was originally authored by
 # Brian Bockelman as part of the Gratia project.
@@ -44,10 +56,8 @@ def ExclusiveLock(given_lock_location = None, timeout=3600):
 
     if not given_lock_location:
         lock_path = htcondor.param['LOCK']
-        if 'GENERATOR_LOCK' not in htcondor.param:
-            lock_location = os.path.join(lock_path, "GeneratorLock")
-        else:
-            lock_location = htcondor.param['GENERATOR_LOCK']
+        lock_location = htcondor.param.get(
+            'GENERATOR_LOCK', os.path.join(lock_path, "GeneratorLock"))
     else:
         lock_location = given_lock_location
 
@@ -225,6 +235,9 @@ CONFIG_TEMPLATE = """\
 
 %s
 
+LastCEConfigGenerateTime = %d
+
+COLLECTOR_ATTRS = $(COLLECTOR_ATTRS), LastCEConfigGenerateTime
 # GENERATED AT %s
 """
 
@@ -240,7 +253,8 @@ def write_config(config_line):
     except IOError, ie:
         logging.error("Failed to open temporary config file: %s" % str(ie))
         sys.exit(2)
-    fd.write(CONFIG_TEMPLATE % (config_line, time.ctime()))
+    generate_time = int(time.time())
+    fd.write(CONFIG_TEMPLATE % (config_line, generate_time, time.ctime(generate_time)))
     os.fsync(fd.fileno())
     fd.close()
     try:
@@ -274,10 +288,9 @@ def parse_config():
 
     if not opts.logfile:
         log_dir = htcondor.param['LOG']
-        if 'GENERATOR_LOG' in htcondor.param:
-            opts.logfile = htcondor.param['GENERATOR_LOG']
-        else:
-            opts.logfile = os.path.join(log_dir, "GeneratorLog")
+
+        opts.logfile = htcondor.param.get(
+            'GENERATOR_LOG', os.path.join(log_dir, "GeneratorLog"))
 
     level = logging.INFO
     if opts.debug:
@@ -312,11 +325,10 @@ def main():
     logger.debug("Taking lock on condor_ce_config_generator instance")
     ExclusiveLock()
 
-    if 'MYOSG_URL' not in htcondor.param:
+    url = htcondor.param.get('MYOSG_URL', None)
+    if url is None:
         logger.error("MYOSG_URL is missing in HTCondor-CE config.  Unable to proceed.")
         sys.exit(1)
-
-    url = htcondor.param['MYOSG_URL']
 
     logger.info("Downloading MyOSG service list from %s" % url)
     fp = urllib2.urlopen(url)
