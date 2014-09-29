@@ -192,6 +192,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
