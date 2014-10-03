@@ -52,7 +52,7 @@ fi
 grep -q 'GENERATED AT' /etc/condor-ce/config.d/02-ce-auth-generated.conf &> /dev/null
 if [ $? -ne 0 ]; then
   echo "No auth configuration present; generating a new one now."
-  condor_ce_generator
+  condor_ce_config_generator
 fi
 
 start() {
