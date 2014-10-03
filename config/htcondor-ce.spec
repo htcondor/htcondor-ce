@@ -1,6 +1,9 @@
+# Have gitrev be the short hash or branch name if doing a prerelease build
+%define gitrev master
+
 Name: htcondor-ce
 Version: 1.6
-Release: 1%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -10,7 +13,10 @@ URL: http://github.com/bbockelm/condor-ce
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
 #
-Source0: %{name}-%{version}.tar.gz
+# Pre-release build tarballs should be generated with:
+# git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
+#
+Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -106,6 +112,7 @@ BuildRequires: cmake
 Requires: condor
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
+Requires: grid-certificates
 
 # Require the appropriate version of the python library.  This
 # is rather awkward, but better syntax isn't available until RHEL6
@@ -279,14 +286,35 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 
+%attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
+%attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
+%attr(1777,condor,condor) %dir %{_localstatedir}/log/condor-ce/user
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
+%attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
+%attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
 %changelog
-* Wed Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1
-- Allow sysadmins to set a custom hostname.
-- Advertise the HTCondor-CE version in the ClassAd.
+* Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2.osg
+- Add grid-certificates virtual dependency
+- Add CONDOR_VIEW_CLASSAD_TYPES setting (SOFTWARE-1616)
+- Add LastCEConfigGenerateTime to COLLECTOR_ATTRS to include it in the collector classad
+- Add implementation of htcondor.param.git (if missing)
+- Add config last gen time as an attribute (LastCEConfigGenerateTime)
+- collector subpackage also owns dirs under /var/log
+- Rename condor_ce_generator to condor_ce_config_generator and improve config file text
+
+* Wed Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1.osg
 - Add condor_ce_job_router_tool
 
-* Thu Sep 4 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
+* Thu Sep 4 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1.osg
 - Fix idle jobs getting held even if they have a matching route
+
+* Wed Sep 3 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
+- Allow sysadmins to set a custom hostname.
+- Advertise the HTCondor-CE version in the ClassAd.
 
 * Mon Aug 25 2014 Brian Lin <blin@cs.wisc.edu> - 1.5-1
 - Add workaround to fix client tool segfault with mismatched ClassAd versions
