@@ -3,3 +3,4 @@
 # Added to prevent segfaults in client tools with mismatched ClassAd versions between
 # Condor and HTCondor CE(SOFTWARE-1583)
 export _condor_CLASSAD_USER_LIBS=
+export _condor_SEC_CLIENT_AUTHENTICATION_METHODS=GSI,FS
