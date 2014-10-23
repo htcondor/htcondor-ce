@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.6
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -285,6 +285,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+%config(noreplace) %{_sysconfdir}/logrotate.d/GeneratorLog
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -297,6 +298,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Oct 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-3
+- Add log rotation to the condor_ce_config_generator (SOFTWARE-1642)
+
 * Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2.osg
 - Add grid-certificates virtual dependency
 - Add CONDOR_VIEW_CLASSAD_TYPES setting (SOFTWARE-1616)
