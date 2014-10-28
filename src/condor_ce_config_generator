@@ -340,15 +340,16 @@ def main():
     host_list = [str(text_node) for text_node in ctxt.xpathEval("/ResourceSummary/ResourceGroup/Resources/Resource/FQDN/text()")]
     config = generate_config(host_list)
     if host_list:
-        logger.info("CE Hosts:")
+        logger.info("%d CE hosts found" % len(host_list))
+        logger.debug("CE Hosts:")
         for host in host_list:
-            logger.info("- %s" % host)
+            logger.debug("- %s" % host)
     else:
         logger.warning("No hosts returned")
-    logger.info("Final config:")
-    logger.info(config)
 
     if not opts.dryrun:
+        logger.debug("Final config:")
+        logger.debug(config)
         write_config(config)
 
         if opts.reconfig:
@@ -363,6 +364,8 @@ def main():
             if retcode != 0:
                 raise subprocess.CalledProcessError(retcode, cmd)
     else:
+        logger.info("Final config:")
+        logger.info(config)
         logger.info("Dry-run enabled; not actually writing configuration file.")
 
     logger.info("Success!")
