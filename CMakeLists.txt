@@ -66,4 +66,4 @@ install(FILES config/01-ce-collector-defaults.conf config/01-ce-auth-defaults.co
 install(FILES config/99-condor-ce.conf config/50-condor-ce-defaults.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor/config.d)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 install(FILES config/condor-ce-collector-generator.cron DESTINATION ${SYSCONF_INSTALL_DIR}/cron.d)
-install(FILES config/GeneratorLog.logrotate  RENAME GeneratorLog  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
+install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
