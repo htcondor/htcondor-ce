@@ -277,10 +277,11 @@ def parse_config():
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", default=False, help="Print logging statements to stderr")
     parser.add_option("-d", "--debug", dest="debug", action="store_true", default=False, help="Provide additional logging statements.")
     parser.add_option("--dry-run", dest="dryrun", action="store_true", default=False, help="Dry run only; do not update configuration files.")
-    parser.add_option("-r", "--reconfig", dest="reconfig", action="store_true", default=False, help="Force a reconfig to be issued.")
+    parser.add_option("-r", "--reconfig", dest="reconfig", action="store_true", default=None, help="Force a reconfig to be issued.")
+    parser.add_option("--no-reconfig", dest="reconfig", action="store_false", help="Do not reconfig even if GENERATOR_RECONFIG is true.")
     opts, args = parser.parse_args()
 
-    if not opts.reconfig and htcondor.param.get('GENERATOR_RECONFIG', 'true').lower() == 'true':
+    if opts.reconfig is None and htcondor.param.get('GENERATOR_RECONFIG', 'true').lower() == 'true':
         opts.reconfig = True
 
     if opts.lockfile:
