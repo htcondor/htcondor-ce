@@ -45,7 +45,7 @@ def runPing(address):
 
     if not address.startswith("<"):
         address = "<%s>" % address
-    args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-debug", "60011"]
+    args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-debug", "WRITE"]
 
     r, w = os.pipe()
     pid = os.fork()
