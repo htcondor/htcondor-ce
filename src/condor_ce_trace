@@ -297,7 +297,7 @@ def main():
 
     if len(args) < 1:
         print "Usage: condor_ce_trace [options] <hostname>"
-        return 1
+        sys.exit(1)
 
     job_info = {}
     job_info['attribute'] = opts.attribute
@@ -323,10 +323,10 @@ def main():
         checkJobSubmit(job_info)
     except CondorRunException, e:
         print e
-        return 1
+        sys.exit(1)
     except Exception, e:
         print 'Uncaught exception, please contact goc@opensciencegrid.org:\n%s' % e
-        return 1
+        sys.exit(1)
     finally:
         if opts.clean:
             cleanup(job_info)
