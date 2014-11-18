@@ -23,6 +23,11 @@
 # you will need to reconfig Condor-CE
 LOCAL_CONFIG_FILE = /usr/share/condor-ce/condor_ce_router_defaults|
 
+# Set the maximum number of jobs the CE is willing to run.  Note this
+# affects both GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE (for non-HTCondor
+# sites) and JOB_ROUTER_DEFAULTS
+CONDORCE_MAX_JOBS = 10000
+
 # Only route jobs for an up-to-date client
 # NOTE: disabled because HTCondor-G appears to not set this properly
 #JOB_ROUTER_SOURCE_JOB_CONSTRAINT = ((target.LastClientContact =?= UNDEFINED) || (target.LastClientContact - time() < 30*60)) && (target.CondorCE is True)

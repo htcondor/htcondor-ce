@@ -25,7 +25,7 @@ job_router_defaults = \
 JOB_ROUTER_DEFAULTS_GENERATED = \\
   [ \\
     MaxIdleJobs = 2000; \\
-    MaxJobs = 10000; \\
+    MaxJobs = $CONDORCE_MAX_JOBS; \\
     /* by default, accept all jobs */ \\
     Requirements = True; \\
     \\
