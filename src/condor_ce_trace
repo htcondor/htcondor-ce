@@ -97,6 +97,9 @@ def parseOpts():
     opts, args = parser.parse_args()
     global g_debug
     g_debug = opts.debug
+    if g_debug and hasattr(htcondor.param, 'setdefault') and hasattr(htcondor, 'enable_debug'):
+        htcondor.param.setdefault('TOOL_DEBUG', "D_FULLDEBUG")
+        htcondor.enable_debug()
 
     return opts, args
 
