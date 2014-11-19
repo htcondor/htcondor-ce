@@ -1,0 +1,241 @@
+#!/usr/bin/python
+
+COLLECTOR_PORT    = 9619
+DEFAULT_COLLECTOR = "collector.opensciencegrid.org"
+
+
+import os
+import sys
+import optparse
+import itertools
+
+import classad
+import htcondor
+
+g_debug = False
+
+class Subcluster(object):
+    """Contains information about a subcluster in a ResourceCatalog
+    Members:
+        ce_ad:         The classad the ResourceCatalog was found in.
+        catalog_entry: The classad in OSG_ResourceCatalog that corresponds
+                       to this subcluster.
+        subcluster_ad: A classad containing the data from ce_ad and
+                       catalog_entry that is useful for routing and
+                       information.
+
+    """
+
+    def __init__(self, ce_ad, catalog_entry):
+        self.ce_ad         = ce_ad
+        self.catalog_entry = catalog_entry
+
+        self.subcluster_ad = classad.ClassAd()
+
+        for cekey in ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_BatchSystems']:
+            self.subcluster_ad[cekey] = ce_ad[cekey]
+
+        for catkey in ['Name', 'CPUs', 'Memory', 'Requirements']:
+            self.subcluster_ad[catkey] = catalog_entry[catkey]
+
+        for opt_catkey in ['AllowedVOs', 'MaxWallTime']:
+            if opt_catkey in catalog_entry:
+                self.subcluster_ad[opt_catkey] = catalog_entry[opt_catkey]
+
+        self.subcluster_ad['grid_resource'] = ce_ad['grid_resource'].eval()
+        # dict needed to work around a bug where subclassads are added as lists
+        self.subcluster_ad['Transform']     = dict(catalog_entry['Transform'])
+
+    def __str__(self):
+        return str(self.subcluster_ad)
+
+
+def fetchCEAds(collector_addr):
+    """Query a condor collector for ads containing the CE info
+    attributes we want to examine
+
+    """
+    required_attrs = ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_ResourceCatalog', 'OSG_BatchSystems', 'grid_resource']
+    constraint     = '! (%s)' % ' || '.join(["isUndefined("+x+")" for x in required_attrs])
+    collector      = htcondor.Collector(collector_addr)
+    ads            = collector.query(htcondor.AdTypes.Any, constraint)
+    return ads
+
+
+def getQueryAd(cpus, memory, vo=None):
+    """Get a new classad that can be matched against the Requirements
+    expressions in a ResourceCatalog
+
+    """
+    query_ad = classad.ClassAd()
+
+    query_ad['RequestCPUs']   = int(cpus)
+    query_ad['RequestMemory'] = int(memory)
+    if vo:
+        query_ad['VO'] = vo
+
+    return query_ad
+
+
+def getSubclustersIter(ce_ads):
+    """Get an iterator over all Subcluster objects that can be created
+    from an iterable of CE ads
+
+    """
+    for ce_ad in ce_ads:
+        for catalog_entry in ce_ad['OSG_ResourceCatalog']:
+            yield Subcluster(ce_ad, catalog_entry)
+
+
+def matchQueryAd(query_ad, catalog_entry):
+    """True if `query_ad` matches the Requirements expression in
+    `catalog_entry`
+
+    """
+    return query_ad.matches(catalog_entry)
+
+
+def matchWallTime(walltime, catalog_entry):
+    """True if `walltime` <= MaxWallTime in `catalog_entry`, or if
+    MaxWallTime is undefined or 0
+
+    """
+    max_wall_time = catalog_entry.get('MaxWallTime', 0)
+    if not max_wall_time:
+        return True
+    else:
+        return (int(max_wall_time) >= walltime)
+
+
+def matchAllowedVOs(vo, catalog_entry):
+    """True if `vo` is in the AllowedVOs list in `catalog_entry`, or
+    if AllowedVOs is undefined or empty
+
+    """
+    allowed_vos = catalog_entry.get('AllowedVOs', None)
+    if not allowed_vos:
+        return True
+    else:
+        return vo in list(allowed_vos)
+
+
+def formatSubclustersTable(subclusters, width):
+    """Create a table of subcluster information obtained from `subclusters`,
+    formatted in a text block `width` characters wide. Returns the table
+    as a string
+
+    """
+    if width < 50:
+        width = 50
+    cpus_width = 4
+    memory_width = 8
+    max_wall_time_width = 12
+
+    remaining_width = width - cpus_width - memory_width - max_wall_time_width
+    name_width = remaining_width * 2 // 5
+    allowed_vos_width = remaining_width - name_width
+
+    format_str = ("%%-%(name_width)d.%(name_width)ds "
+                  "%%%(cpus_width)ds "
+                  "%%%(memory_width)ds "
+                  "%%%(max_wall_time_width)ds "
+                  "%%-.%(allowed_vos_width)ds" % locals())
+    table = format_str % ("Name",
+                          "CPUs",
+                          "Memory",
+                          "MaxWallTime",
+                          "AllowedVOs")
+    table += "\n"
+    for subcluster in subclusters:
+        catalog_entry = subcluster.catalog_entry
+        table += "\n" + format_str % (catalog_entry['Name'],
+                                      catalog_entry['CPUs'],
+                                      catalog_entry['Memory'],
+                                      catalog_entry.get('MaxWallTime', ''),
+                                      ", ".join(list(catalog_entry.get('AllowedVOs', []))))
+
+    return table
+
+
+def parseOpts(argv):
+    """Parse command-line options and arguments.
+    Returns the options and the address of the collector to contact
+
+    """
+    usage = "%prog [options] [<collector hostname>[:port]]"
+    parser = optparse.OptionParser(usage=usage)
+    parser.add_option("--cpus", default=1, type='int',
+                      help="CPUs requested")
+    parser.add_option("--memory", default=1, type='int',
+                      help="Memory requested (in megabytes)")
+    parser.add_option("--walltime", default=0, type='int',
+                      help="Walltime requested (in minutes)")
+    parser.add_option("--vo", default=None,
+                      help="VO membership")
+    parser.add_option("--query", default=False, action='store_true',
+                      help="Match resources against a query ad")
+    parser.add_option("--width", default=os.environ.get('COLUMNS', 80), type='int',
+                      help="Output width for table")
+    parser.add_option("-v", "--verbose", default=False, action='store_true',
+                      help="Show matching classads instead of a table")
+    #parser.add_option("-d", "--debug", default=False, action='store_true',
+    #                  help="Show debug output")
+
+    opts, args = parser.parse_args(argv[1:])
+
+    #global g_debug
+    #g_debug = opts.debug
+
+    if len(args) > 0:
+        collector = args[0]
+    else:
+        collector = DEFAULT_COLLECTOR
+    if ':' not in collector:
+        collector += ":" + str(COLLECTOR_PORT)
+
+    return opts, collector
+
+
+def main(argv):
+    """Main function.
+
+    Get a list of Subcluster objects filled with data from querying a
+    collector; pass the list through a series of filters and either
+    display the remaining subcluster ads in full, or create a table
+    from the subcluster ads and display that.
+
+    """
+    opts, collector_addr = parseOpts(argv)
+    query_ad = getQueryAd(cpus=opts.cpus, memory=opts.memory, vo=opts.vo)
+
+    predCPUs     = lambda sc: opts.cpus <= sc.catalog_entry['CPUs']
+    predMemory   = lambda sc: opts.memory <= sc.catalog_entry['Memory']
+    predQueryAd  = lambda sc: matchQueryAd(query_ad, sc.catalog_entry)
+    predVO       = lambda sc: matchAllowedVOs(opts.vo, sc.catalog_entry)
+    predWallTime = lambda sc: matchWallTime(opts.walltime, sc.catalog_entry)
+
+    predicates = [predCPUs, predMemory]
+    if opts.query:
+        predicates.append(predQueryAd)
+    if opts.vo:
+        predicates.append(predVO)
+    if opts.walltime > 0:
+        predicates.append(predWallTime)
+
+
+    ce_ads = fetchCEAds(collector_addr)
+    subclusters = getSubclustersIter(ce_ads)
+
+    for pred in predicates:
+        subclusters = itertools.ifilter(pred, subclusters)
+
+    if opts.verbose:
+        for sc in subclusters:
+            print sc
+    else:
+        print formatSubclustersTable(subclusters, opts.width)
+
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
