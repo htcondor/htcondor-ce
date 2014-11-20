@@ -229,13 +229,13 @@ def checkJobSubmit(job_info):
     try:
         schedd = htcondor.Schedd(job_info['schedd_ad'])
     except RuntimeError, e:
-        raise CondorRunException("Failed to contact schedd at %s. Error was:\n%s" % (job_info['schedd_ad']['Machine'], e))
+        raise CondorRunException("Failed to contact schedd at %s due to the following error:\n%s" % (job_info['schedd_ad']['Machine'], e))
     print "Submitting job to schedd %s" % job_info['schedd_ad']['MyAddress']
     ad_results = []
     try:
         cluster = schedd.submit(job_ad, 1, True, ad_results)
     except RuntimeError, e:
-        raise CondorRunException("- Failed to submit job to %s. Error was:\n%s" % (job_info['schedd_ad']['Machine'], e))
+        raise CondorRunException("- Failed to submit job to %s due to the following error:\n%s" % (job_info['schedd_ad']['Machine'], e))
 
     print "- Successful submission; cluster ID %d" % cluster
 
@@ -245,7 +245,7 @@ def checkJobSubmit(job_info):
     try:
         schedd.spool(ad_results)
     except RuntimeError, e:
-        raise CondorRunException("- Failed to spool files to %s. Error was:\n%s" % (job_info['schedd_ad']['Machine'], e))
+        raise CondorRunException("- Failed to spool files to %s due to the following error:\n%s" % (job_info['schedd_ad']['Machine'], e))
 
     print "- Successful spooling"
 
@@ -256,7 +256,7 @@ def checkJobSubmit(job_info):
         try:
             ad = schedd.query("ClusterID == %d" % cluster, ["JobStatus", "ClusterID", "ProcID"])
         except RuntimeError, e:
-            raise CondorRunException("- Failed to query job status. Error was:\n%s" %  e)
+            raise CondorRunException("- Failed to query job status due to the following error:\n%s" %  e)
         if len(ad) != 1:
             raise CondorRunException("Could not find the job in cluster %d" % cluster)
         status = ad[0]['JobStatus']
@@ -277,11 +277,11 @@ def checkJobSubmit(job_info):
         try:
             schedd.retrieve("ClusterID == %d" % cluster)
         except RuntimeError, e:
-            raise CondorRunException("Failed to retrieve output from %s. Error was:\n%s" % (job_info['schedd_ad']['Machine'], e))
+            raise CondorRunException("Failed to retrieve output from %s due to the following error:\n%s" % (job_info['schedd_ad']['Machine'], e))
         try:
             schedd.act(htcondor.JobAction.Remove, "ClusterID == %d" % cluster)
         except RuntimeError, e:
-            raise CondorRunException("Failed to cleanup job on %s. Error was:\n%s" % (job_info['schedd_ad']['Machine'], e))
+            raise CondorRunException("Failed to cleanup job on %s due to the following error:\n%s" % (job_info['schedd_ad']['Machine'], e))
         output = open(job_info['stdout_file'], "r").read()
         if not output:
             raise CondorRunException("Job produced empty stdout")
@@ -322,7 +322,7 @@ def main():
         generate_run_script(job_info)
         checkJobSubmit(job_info)
     except CondorRunException, e:
-        print e
+        print "%s %s" % (time.strftime('%F %T'), e)
         sys.exit(1)
     except Exception, e:
         print 'Uncaught exception, please contact goc@opensciencegrid.org:\n%s' % e
