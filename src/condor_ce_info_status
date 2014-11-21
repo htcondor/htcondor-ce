@@ -44,17 +44,14 @@ class Resource(object):
 
         for cekey in ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_BatchSystems']:
             self.resource_ad[cekey] = ce_ad[cekey]
-
-        for catkey in ['Name', 'CPUs', 'Memory', 'Requirements']:
-            self.resource_ad[catkey] = catalog_entry[catkey]
-
-        for opt_catkey in ['AllowedVOs', 'MaxWallTime']:
-            if opt_catkey in catalog_entry:
-                self.resource_ad[opt_catkey] = catalog_entry[opt_catkey]
-
         self.resource_ad['grid_resource'] = ce_ad['grid_resource'].eval()
-        # dict needed to work around a bug where subclassads are added as lists
-        self.resource_ad['Transform']     = dict(catalog_entry['Transform'])
+
+        for catkey, catval in catalog_entry.items():
+            if isinstance(catval, classad.ClassAd):
+                # dict needed to work around a bug where subclassads are added as lists
+                self.resource_ad[catkey] = dict(catval)
+            else:
+                self.resource_ad[catkey] = catval
 
     def __str__(self):
         return str(self.resource_ad)
