@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
-COLLECTOR_PORT    = 9619
-DEFAULT_COLLECTOR = "collector.opensciencegrid.org"
-
+FALLBACK_COLLECTOR = 'collector.opensciencegrid.org'
+FALLBACK_COLLECTOR_PORT = 9619
 
 import os
 import sys
@@ -11,6 +10,17 @@ import itertools
 
 import classad
 import htcondor
+
+# Add htcondor.param.get() to old versions of condor-python that don't have it
+try:
+    htcondor.param.get
+except AttributeError:
+    def _htcondor_param_get(key, default=None):
+        try:
+            return htcondor.param[key]
+        except KeyError:
+            return default
+    htcondor.param.get = _htcondor_param_get
 
 g_debug = False
 
@@ -55,6 +65,8 @@ def fetchCEAds(collector_addr):
     attributes we want to examine
 
     """
+    if g_debug:
+        print >>sys.stderr, 'Fetching ads from collector at', collector_addr
     required_attrs = ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_ResourceCatalog', 'OSG_BatchSystems', 'grid_resource']
     constraint     = '! (%s)' % ' || '.join(["isUndefined("+x+")" for x in required_attrs])
     collector      = htcondor.Collector(collector_addr)
@@ -187,15 +199,16 @@ def parseOpts(argv):
 
     if opts.debug:
         htcondor.enable_debug()
-    #global g_debug
-    #g_debug = opts.debug
+    global g_debug
+    g_debug = opts.debug
 
     if opts.pool:
         collector = opts.pool
     else:
-        collector = DEFAULT_COLLECTOR
+        collector = htcondor.param.get('CONDOR_CE_COLLECTOR_HOST', FALLBACK_COLLECTOR)
     if ':' not in collector:
-        collector += ":" + str(COLLECTOR_PORT)
+        collector_port = htcondor.param.get('COLLECTOR_PORT', FALLBACK_COLLECTOR_PORT)
+        collector += ":" + str(collector_port)
 
     return opts, collector
 
