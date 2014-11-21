@@ -172,7 +172,46 @@ def parseOpts(argv):
 
     """
     usage = "%prog [options] [<collector hostname>[:port]]"
-    parser = optparse.OptionParser(usage=usage)
+    epilog = '''
+
+Here are some example queries.
+To list resources that provide at least 1 GB of memory and are accessible
+by the 'osg' VO:
+
+    %(prog)s  --memory 1024  --vo osg
+
+which results in:
+
+    Name                   CPUs   Memory  MaxWallTime AllowedVOs
+
+    matyasfermicloud085       1     1877         1440 fermi, osg
+
+To list resources that have a MaxWallTime of at least 1 day (1440 minutes):
+
+    %(prog)s  --walltime 1440
+
+To print a full classad containing resource attributes and some attributes
+from the CE containing the resource:
+
+    %(prog)s  --walltime 1440  --verbose
+
+which results in:
+
+        [
+            OSG_BatchSystems = "Condor";
+            Name = "matyasfermicloud085";
+            MaxWallTime = 1440;
+            CPUs = 1;
+            Memory = 1877;
+            ...
+        ]
+
+''' % {'prog': os.path.basename(argv[0])}
+
+    # Don't reformat the epilog string (https://stackoverflow.com/questions/1857346)
+    optparse.OptionParser.format_epilog = lambda self, formatter: self.epilog
+
+    parser = optparse.OptionParser(usage=usage, epilog=epilog)
     parser.add_option("--cpus", default=1, type='int',
                       help="CPUs requested")
     parser.add_option("--memory", default=1, type='int',
@@ -219,6 +258,7 @@ def main(argv):
     from the resource ads and display that.
 
     """
+
     opts, collector_addr = parseOpts(argv)
     query_ad = getQueryAd(cpus=opts.cpus, memory=opts.memory, vo=opts.vo)
 
