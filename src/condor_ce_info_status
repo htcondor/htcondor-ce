@@ -176,18 +176,22 @@ def parseOpts(argv):
                       help="Match resources against a query ad")
     parser.add_option("--width", default=os.environ.get('COLUMNS', 80), type='int',
                       help="Output width for table")
-    parser.add_option("-v", "--verbose", default=False, action='store_true',
+    parser.add_option("--pool", default=None, metavar='ADDRESS',
+                      help="Collector to get information from")
+    parser.add_option("-v", "--verbose", "-l", "--long", dest='verbose', default=False, action='store_true',
                       help="Show matching classads instead of a table")
-    #parser.add_option("-d", "--debug", default=False, action='store_true',
-    #                  help="Show debug output")
+    parser.add_option("-d", "--debug", default=False, action='store_true',
+                      help="Show debug output")
 
-    opts, args = parser.parse_args(argv[1:])
+    opts = parser.parse_args(argv[1:])[0]
 
+    if opts.debug:
+        htcondor.enable_debug()
     #global g_debug
     #g_debug = opts.debug
 
-    if len(args) > 0:
-        collector = args[0]
+    if opts.pool:
+        collector = opts.pool
     else:
         collector = DEFAULT_COLLECTOR
     if ':' not in collector:
