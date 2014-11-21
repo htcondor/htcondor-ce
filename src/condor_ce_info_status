@@ -14,13 +14,13 @@ import htcondor
 
 g_debug = False
 
-class Subcluster(object):
-    """Contains information about a subcluster in a ResourceCatalog
+class Resource(object):
+    """Contains information about a resource in a ResourceCatalog
     Members:
         ce_ad:         The classad the ResourceCatalog was found in.
         catalog_entry: The classad in OSG_ResourceCatalog that corresponds
-                       to this subcluster.
-        subcluster_ad: A classad containing the data from ce_ad and
+                       to this resource.
+        resource_ad:   A classad containing the data from ce_ad and
                        catalog_entry that is useful for routing and
                        information.
 
@@ -30,24 +30,24 @@ class Subcluster(object):
         self.ce_ad         = ce_ad
         self.catalog_entry = catalog_entry
 
-        self.subcluster_ad = classad.ClassAd()
+        self.resource_ad = classad.ClassAd()
 
         for cekey in ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_BatchSystems']:
-            self.subcluster_ad[cekey] = ce_ad[cekey]
+            self.resource_ad[cekey] = ce_ad[cekey]
 
         for catkey in ['Name', 'CPUs', 'Memory', 'Requirements']:
-            self.subcluster_ad[catkey] = catalog_entry[catkey]
+            self.resource_ad[catkey] = catalog_entry[catkey]
 
         for opt_catkey in ['AllowedVOs', 'MaxWallTime']:
             if opt_catkey in catalog_entry:
-                self.subcluster_ad[opt_catkey] = catalog_entry[opt_catkey]
+                self.resource_ad[opt_catkey] = catalog_entry[opt_catkey]
 
-        self.subcluster_ad['grid_resource'] = ce_ad['grid_resource'].eval()
+        self.resource_ad['grid_resource'] = ce_ad['grid_resource'].eval()
         # dict needed to work around a bug where subclassads are added as lists
-        self.subcluster_ad['Transform']     = dict(catalog_entry['Transform'])
+        self.resource_ad['Transform']     = dict(catalog_entry['Transform'])
 
     def __str__(self):
-        return str(self.subcluster_ad)
+        return str(self.resource_ad)
 
 
 def fetchCEAds(collector_addr):
@@ -77,14 +77,14 @@ def getQueryAd(cpus, memory, vo=None):
     return query_ad
 
 
-def getSubclustersIter(ce_ads):
-    """Get an iterator over all Subcluster objects that can be created
+def getResourcesIter(ce_ads):
+    """Get an iterator over all Resource objects that can be created
     from an iterable of CE ads
 
     """
     for ce_ad in ce_ads:
         for catalog_entry in ce_ad['OSG_ResourceCatalog']:
-            yield Subcluster(ce_ad, catalog_entry)
+            yield Resource(ce_ad, catalog_entry)
 
 
 def matchQueryAd(query_ad, catalog_entry):
@@ -119,8 +119,8 @@ def matchAllowedVOs(vo, catalog_entry):
         return vo in list(allowed_vos)
 
 
-def formatSubclustersTable(subclusters, width):
-    """Create a table of subcluster information obtained from `subclusters`,
+def formatResourcesTable(resources, width):
+    """Create a table of resource information obtained from `resources`,
     formatted in a text block `width` characters wide. Returns the table
     as a string
 
@@ -146,8 +146,8 @@ def formatSubclustersTable(subclusters, width):
                           "MaxWallTime",
                           "AllowedVOs")
     table += "\n"
-    for subcluster in subclusters:
-        catalog_entry = subcluster.catalog_entry
+    for resource in resources:
+        catalog_entry = resource.catalog_entry
         table += "\n" + format_str % (catalog_entry['Name'],
                                       catalog_entry['CPUs'],
                                       catalog_entry['Memory'],
@@ -203,20 +203,20 @@ def parseOpts(argv):
 def main(argv):
     """Main function.
 
-    Get a list of Subcluster objects filled with data from querying a
+    Get a list of Resource objects filled with data from querying a
     collector; pass the list through a series of filters and either
-    display the remaining subcluster ads in full, or create a table
-    from the subcluster ads and display that.
+    display the remaining resource ads in full, or create a table
+    from the resource ads and display that.
 
     """
     opts, collector_addr = parseOpts(argv)
     query_ad = getQueryAd(cpus=opts.cpus, memory=opts.memory, vo=opts.vo)
 
-    predCPUs     = lambda sc: opts.cpus <= sc.catalog_entry['CPUs']
-    predMemory   = lambda sc: opts.memory <= sc.catalog_entry['Memory']
-    predQueryAd  = lambda sc: matchQueryAd(query_ad, sc.catalog_entry)
-    predVO       = lambda sc: matchAllowedVOs(opts.vo, sc.catalog_entry)
-    predWallTime = lambda sc: matchWallTime(opts.walltime, sc.catalog_entry)
+    predCPUs     = lambda resad: opts.cpus <= resad.catalog_entry['CPUs']
+    predMemory   = lambda resad: opts.memory <= resad.catalog_entry['Memory']
+    predQueryAd  = lambda resad: matchQueryAd(query_ad, resad.catalog_entry)
+    predVO       = lambda resad: matchAllowedVOs(opts.vo, resad.catalog_entry)
+    predWallTime = lambda resad: matchWallTime(opts.walltime, resad.catalog_entry)
 
     predicates = [predCPUs, predMemory]
     if opts.query:
@@ -228,16 +228,16 @@ def main(argv):
 
 
     ce_ads = fetchCEAds(collector_addr)
-    subclusters = getSubclustersIter(ce_ads)
+    resources = getResourcesIter(ce_ads)
 
     for pred in predicates:
-        subclusters = itertools.ifilter(pred, subclusters)
+        resources = itertools.ifilter(pred, resources)
 
     if opts.verbose:
-        for sc in subclusters:
-            print sc
+        for res in resources:
+            print res
     else:
-        print formatSubclustersTable(subclusters, opts.width)
+        print formatResourcesTable(resources, opts.width)
 
 
 
