@@ -256,6 +256,43 @@ which results in:
     return opts, collector
 
 
+def filterResources(constraints, resources):
+    """Filter a list of Resources in `resources` based on a set of
+    constraints on attributes given in the dict `constraints`.
+
+    The recognized keys in `constraints` are:
+        'cpus'     : minimum CPUs of resource
+        'memory'   : minimum Memory of resource
+        'vo'       : VO which must be in AllowedVOs of resource (if
+                     AllowedVOs is present)
+        'walltime' : minimum MaxWallTime of resource (if MaxWallTime
+                     is present)
+
+    """
+    predicates = []
+    for attr in constraints:
+        if attr == 'cpus':
+            predicates.append(
+                lambda res: constraints['cpus'] <= res.resource_ad['CPUs'])
+        elif attr == 'memory':
+            predicates.append(
+                lambda res: constraints['memory'] <= res.resource_ad['Memory'])
+        elif attr == 'vo':
+            predicates.append(
+                lambda res: matchAllowedVOs(constraints['vo'], res.resource_ad))
+        elif attr == 'walltime':
+            predicates.append(
+                lambda res: matchWallTime(constraints['walltime'], res.resource_ad))
+        else:
+            if g_debug:
+                print >>sys.stderr, "Skipping constraint on unknown attribute %s" % attr
+
+    for pred in predicates:
+        resources = itertools.ifilter(pred, resources)
+
+    return resources
+
+
 def main(argv):
     """Main function.
 
@@ -269,26 +306,25 @@ def main(argv):
     opts, collector_addr = parseOpts(argv)
     query_ad = getQueryAd(cpus=opts.cpus, memory=opts.memory, vo=opts.vo)
 
-    predCPUs     = lambda resad: opts.cpus <= resad.catalog_entry['CPUs']
-    predMemory   = lambda resad: opts.memory <= resad.catalog_entry['Memory']
-    predQueryAd  = lambda resad: matchQueryAd(query_ad, resad.catalog_entry)
-    predVO       = lambda resad: matchAllowedVOs(opts.vo, resad.catalog_entry)
-    predWallTime = lambda resad: matchWallTime(opts.walltime, resad.catalog_entry)
-
-    predicates = [predCPUs, predMemory]
-    if opts.query:
-        predicates.append(predQueryAd)
+    constraints = {}
+    if opts.cpus:
+        constraints['cpus'] = opts.cpus
+    if opts.memory:
+        constraints['memory'] = opts.memory
     if opts.vo:
-        predicates.append(predVO)
-    if opts.walltime > 0:
-        predicates.append(predWallTime)
-
+        constraints['vo'] = opts.vo
+    if opts.walltime:
+        constraints['walltime'] = opts.walltime
 
     ce_ads = fetchCEAds(collector_addr)
     resources = getResourcesIter(ce_ads)
 
-    for pred in predicates:
-        resources = itertools.ifilter(pred, resources)
+    resources = filterResources(constraints, resources)
+
+    if opts.query:
+        resources = itertools.ifilter(
+            lambda resad: matchQueryAd(query_ad, resad.catalog_entry),
+            resources)
 
     if opts.verbose:
         for res in resources:
