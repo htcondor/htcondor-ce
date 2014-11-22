@@ -24,37 +24,31 @@ except AttributeError:
 
 g_debug = False
 
-class Resource(object):
+class ResourceAd(classad.ClassAd):
     """Contains information about a resource in a ResourceCatalog
     Members:
         ce_ad:         The classad the ResourceCatalog was found in.
         catalog_entry: The classad in OSG_ResourceCatalog that corresponds
                        to this resource.
-        resource_ad:   A classad containing the data from ce_ad and
-                       catalog_entry that is useful for routing and
-                       information.
 
     """
 
     def __init__(self, ce_ad, catalog_entry):
+        super(self.__class__, self).__init__()
+
         self.ce_ad         = ce_ad
         self.catalog_entry = catalog_entry
 
-        self.resource_ad = classad.ClassAd()
-
         for cekey in ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_BatchSystems']:
-            self.resource_ad[cekey] = ce_ad[cekey]
-        self.resource_ad['grid_resource'] = ce_ad['grid_resource'].eval()
+            self[cekey] = ce_ad[cekey]
+        self['grid_resource'] = ce_ad['grid_resource'].eval()
 
         for catkey, catval in catalog_entry.items():
             if isinstance(catval, classad.ClassAd):
                 # dict needed to work around a bug where subclassads are added as lists
-                self.resource_ad[catkey] = dict(catval)
+                self[catkey] = dict(catval)
             else:
-                self.resource_ad[catkey] = catval
-
-    def __str__(self):
-        return str(self.resource_ad)
+                self[catkey] = catval
 
 
 def fetchCEAds(collector_addr):
@@ -71,41 +65,41 @@ def fetchCEAds(collector_addr):
     return ads
 
 
-def getResourcesIter(ce_ads):
-    """Get an iterator over all Resource objects that can be created
+def getResourceAdsIter(ce_ads):
+    """Get an iterator over all ResourceAd objects that can be created
     from an iterable of CE ads
 
     """
     for ce_ad in ce_ads:
         for catalog_entry in ce_ad['OSG_ResourceCatalog']:
-            yield Resource(ce_ad, catalog_entry)
+            yield ResourceAd(ce_ad, catalog_entry)
 
 
-def matchWallTime(walltime, catalog_entry):
-    """True if `walltime` <= MaxWallTime in `catalog_entry`, or if
+def matchWallTime(walltime, resource_ad):
+    """True if `walltime` <= MaxWallTime in `resource_ad`, or if
     MaxWallTime is undefined or 0
 
     """
-    max_wall_time = catalog_entry.get('MaxWallTime', 0)
+    max_wall_time = resource_ad.get('MaxWallTime', 0)
     if not max_wall_time:
         return True
     else:
         return (int(max_wall_time) >= walltime)
 
 
-def matchAllowedVOs(vo, catalog_entry):
-    """True if `vo` is in the AllowedVOs list in `catalog_entry`, or
+def matchAllowedVOs(vo, resource_ad):
+    """True if `vo` is in the AllowedVOs list in `resource_ad`, or
     if AllowedVOs is undefined or empty
 
     """
-    allowed_vos = catalog_entry.get('AllowedVOs', None)
+    allowed_vos = resource_ad.get('AllowedVOs', None)
     if not allowed_vos:
         return True
     else:
         return vo in list(allowed_vos)
 
 
-def formatResourcesTable(resources, width):
+def formatResourceAdsTable(resources, width):
     """Create a table of resource information obtained from `resources`,
     formatted in a text block `width` characters wide. Returns the table
     as a string
@@ -231,8 +225,8 @@ which results in:
     return opts, collector
 
 
-def filterResources(constraints, resources):
-    """Filter a list of Resources in `resources` based on a set of
+def filterResourceAds(constraints, resources):
+    """Filter a list of ResourceAds in `resources` based on a set of
     constraints on attributes given in the dict `constraints`.
 
     The recognized keys in `constraints` are:
@@ -248,16 +242,16 @@ def filterResources(constraints, resources):
     for attr in constraints:
         if attr == 'cpus':
             predicates.append(
-                lambda res: constraints['cpus'] <= res.resource_ad['CPUs'])
+                lambda res: constraints['cpus'] <= res['CPUs'])
         elif attr == 'memory':
             predicates.append(
-                lambda res: constraints['memory'] <= res.resource_ad['Memory'])
+                lambda res: constraints['memory'] <= res['Memory'])
         elif attr == 'vo':
             predicates.append(
-                lambda res: matchAllowedVOs(constraints['vo'], res.resource_ad))
+                lambda res: matchAllowedVOs(constraints['vo'], res))
         elif attr == 'walltime':
             predicates.append(
-                lambda res: matchWallTime(constraints['walltime'], res.resource_ad))
+                lambda res: matchWallTime(constraints['walltime'], res))
         else:
             if g_debug:
                 print >>sys.stderr, "Skipping constraint on unknown attribute %s" % attr
@@ -271,7 +265,7 @@ def filterResources(constraints, resources):
 def main(argv):
     """Main function.
 
-    Get a list of Resource objects filled with data from querying a
+    Get a list of ResourceAd objects filled with data from querying a
     collector; pass the list through a series of filters and either
     display the remaining resource ads in full, or create a table
     from the resource ads and display that.
@@ -281,25 +275,20 @@ def main(argv):
     opts, collector_addr = parseOpts(argv)
 
     constraints = {}
-    if opts.cpus:
-        constraints['cpus'] = opts.cpus
-    if opts.memory:
-        constraints['memory'] = opts.memory
-    if opts.vo:
-        constraints['vo'] = opts.vo
-    if opts.walltime:
-        constraints['walltime'] = opts.walltime
+    for key in ['cpus', 'memory', 'vo', 'walltime']:
+        try:
+            constraints[key] = getattr(opts, key)
+        except AttributeError:
+            pass
 
     ce_ads = fetchCEAds(collector_addr)
-    resources = getResourcesIter(ce_ads)
-
-    resources = filterResources(constraints, resources)
+    resources = filterResourceAds(constraints, getResourceAdsIter(ce_ads))
 
     if opts.verbose:
         for res in resources:
             print res
     else:
-        print formatResourcesTable(resources, opts.width)
+        print formatResourceAdsTable(resources, opts.width)
 
 
 
