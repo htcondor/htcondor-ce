@@ -71,21 +71,6 @@ def fetchCEAds(collector_addr):
     return ads
 
 
-def getQueryAd(cpus, memory, vo=None):
-    """Get a new classad that can be matched against the Requirements
-    expressions in a ResourceCatalog
-
-    """
-    query_ad = classad.ClassAd()
-
-    query_ad['RequestCPUs']   = int(cpus)
-    query_ad['RequestMemory'] = int(memory)
-    if vo:
-        query_ad['VO'] = vo
-
-    return query_ad
-
-
 def getResourcesIter(ce_ads):
     """Get an iterator over all Resource objects that can be created
     from an iterable of CE ads
@@ -94,14 +79,6 @@ def getResourcesIter(ce_ads):
     for ce_ad in ce_ads:
         for catalog_entry in ce_ad['OSG_ResourceCatalog']:
             yield Resource(ce_ad, catalog_entry)
-
-
-def matchQueryAd(query_ad, catalog_entry):
-    """True if `query_ad` matches the Requirements expression in
-    `catalog_entry`
-
-    """
-    return query_ad.matches(catalog_entry)
 
 
 def matchWallTime(walltime, catalog_entry):
@@ -227,8 +204,6 @@ which results in:
                       help="Walltime requested (in minutes)")
     parser.add_option("--vo", default=None,
                       help="VO membership")
-    parser.add_option("--query", default=False, action='store_true',
-                      help="Match resources against a query ad")
     parser.add_option("--width", default=os.environ.get('COLUMNS', 80), type='int',
                       help="Output width for table")
     parser.add_option("--pool", default=None, metavar='ADDRESS',
@@ -304,7 +279,6 @@ def main(argv):
     """
 
     opts, collector_addr = parseOpts(argv)
-    query_ad = getQueryAd(cpus=opts.cpus, memory=opts.memory, vo=opts.vo)
 
     constraints = {}
     if opts.cpus:
@@ -320,11 +294,6 @@ def main(argv):
     resources = getResourcesIter(ce_ads)
 
     resources = filterResources(constraints, resources)
-
-    if opts.query:
-        resources = itertools.ifilter(
-            lambda resad: matchQueryAd(query_ad, resad.catalog_entry),
-            resources)
 
     if opts.verbose:
         for res in resources:
