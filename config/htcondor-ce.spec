@@ -1,9 +1,9 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-%define gitrev master
+#define gitrev osg
 
 Name: htcondor-ce
-Version: 1.6
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.8
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -162,6 +162,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -285,7 +287,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
-%config(noreplace) %{_sysconfdir}/logrotate.d/GeneratorLog
+%config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -298,10 +300,23 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Thu Oct 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-3
-- Add log rotation to the condor_ce_config_generator (SOFTWARE-1642)
+* Tue Oct 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7-1
+- Rename logrotate file for GeneratorLog (SOFTWARE-1642)
+- Set cronjob frequency back to original (SOFTWARE-1643)
+- Decrease logging verbosity at default level (SOFTWARE-1650)
 
-* Mon Sep 29 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2.osg
+* Mon Oct 27 2014 Matyas Selmeci <matyas@cs.wisc.edu> 1.6.1-1
+- Rebuild with condor-8.2
+
+* Thu Oct 23 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-4
+- Add logrotate file for GeneratorLog (made by condor_ce_config_generator) (SOFTWARE-1642)
+- Fix failure with condor_ce_config_generator calling condor_ce_reconfig in cron (SOFTWARE-1643)
+- Decrease condor_ce_config_generator cronjob frequency (SOFTWARE-1643)
+
+* Fri Oct 03 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-3
+- Fix condor_ce_generator rename issue in collector cron job and init script (SOFTWARE-1621)
+
+* Tue Sep 30 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.6-2
 - Add grid-certificates virtual dependency
 - Add CONDOR_VIEW_CLASSAD_TYPES setting (SOFTWARE-1616)
 - Add LastCEConfigGenerateTime to COLLECTOR_ATTRS to include it in the collector classad
@@ -310,13 +325,15 @@ fi
 - collector subpackage also owns dirs under /var/log
 - Rename condor_ce_generator to condor_ce_config_generator and improve config file text
 
-* Wed Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1.osg
+* Mon Sep 29 2014 Brian Lin <blin@cs.wisc.edu> - 1.6-1
+- Allow sysadmins to set a custom hostname.
+- Advertise the HTCondor-CE version in the ClassAd.
 - Add condor_ce_job_router_tool
 
-* Thu Sep 4 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1.osg
+* Thu Sep 04 2014 Brian Lin <blin@cs.wisc.edu> - 1.5.1-1
 - Fix idle jobs getting held even if they have a matching route
 
-* Wed Sep 3 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
+* Wed Sep 03 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.6-1
 - Allow sysadmins to set a custom hostname.
 - Advertise the HTCondor-CE version in the ClassAd.
 
