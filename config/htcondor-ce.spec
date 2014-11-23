@@ -300,6 +300,16 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Sun Nov 23 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8-1
+- Initial v1.8 release.
+- On newer HTCondor versions, have the collector and shared_port
+  use the same TCP port (SOFTWARE-1696).
+- Add tools for querying the central collector and parsing the
+  results (akin to condor_status for OSG). (SOFTWARE-1669, 1692, 1688)
+- Improve usability and usefulness of condor_ce_trace (SOFTWARE-1678, 1679)
+- Update the central collector with TCP instead of UDP (SOFTWARE-1676)
+- Set GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE by default.
+
 * Tue Oct 28 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.7-1
 - Rename logrotate file for GeneratorLog (SOFTWARE-1642)
 - Set cronjob frequency back to original (SOFTWARE-1643)
