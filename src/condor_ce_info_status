@@ -1,0 +1,295 @@
+#!/usr/bin/python
+
+FALLBACK_COLLECTOR = 'collector.opensciencegrid.org'
+FALLBACK_COLLECTOR_PORT = 9619
+
+import os
+import sys
+import optparse
+import itertools
+
+import classad
+import htcondor
+
+# Add htcondor.param.get() to old versions of condor-python that don't have it
+try:
+    htcondor.param.get
+except AttributeError:
+    def _htcondor_param_get(key, default=None):
+        try:
+            return htcondor.param[key]
+        except KeyError:
+            return default
+    htcondor.param.get = _htcondor_param_get
+
+g_debug = False
+
+class Resource(object):
+    """Contains information about a resource in a ResourceCatalog
+    Members:
+        ce_ad:         The classad the ResourceCatalog was found in.
+        catalog_entry: The classad in OSG_ResourceCatalog that corresponds
+                       to this resource.
+        resource_ad:   A classad containing the data from ce_ad and
+                       catalog_entry that is useful for routing and
+                       information.
+
+    """
+
+    def __init__(self, ce_ad, catalog_entry):
+        self.ce_ad         = ce_ad
+        self.catalog_entry = catalog_entry
+
+        self.resource_ad = classad.ClassAd()
+
+        for cekey in ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_BatchSystems']:
+            self.resource_ad[cekey] = ce_ad[cekey]
+        self.resource_ad['grid_resource'] = ce_ad['grid_resource'].eval()
+
+        for catkey, catval in catalog_entry.items():
+            if isinstance(catval, classad.ClassAd):
+                # dict needed to work around a bug where subclassads are added as lists
+                self.resource_ad[catkey] = dict(catval)
+            else:
+                self.resource_ad[catkey] = catval
+
+    def __str__(self):
+        return str(self.resource_ad)
+
+
+def fetchCEAds(collector_addr):
+    """Query a condor collector for ads containing the CE info
+    attributes we want to examine
+
+    """
+    if g_debug:
+        print >>sys.stderr, 'Fetching ads from collector at', collector_addr
+    required_attrs = ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_ResourceCatalog', 'OSG_BatchSystems', 'grid_resource']
+    constraint     = '! (%s)' % ' || '.join(["isUndefined("+x+")" for x in required_attrs])
+    collector      = htcondor.Collector(collector_addr)
+    ads            = collector.query(htcondor.AdTypes.Any, constraint)
+    return ads
+
+
+def getQueryAd(cpus, memory, vo=None):
+    """Get a new classad that can be matched against the Requirements
+    expressions in a ResourceCatalog
+
+    """
+    query_ad = classad.ClassAd()
+
+    query_ad['RequestCPUs']   = int(cpus)
+    query_ad['RequestMemory'] = int(memory)
+    if vo:
+        query_ad['VO'] = vo
+
+    return query_ad
+
+
+def getResourcesIter(ce_ads):
+    """Get an iterator over all Resource objects that can be created
+    from an iterable of CE ads
+
+    """
+    for ce_ad in ce_ads:
+        for catalog_entry in ce_ad['OSG_ResourceCatalog']:
+            yield Resource(ce_ad, catalog_entry)
+
+
+def matchQueryAd(query_ad, catalog_entry):
+    """True if `query_ad` matches the Requirements expression in
+    `catalog_entry`
+
+    """
+    return query_ad.matches(catalog_entry)
+
+
+def matchWallTime(walltime, catalog_entry):
+    """True if `walltime` <= MaxWallTime in `catalog_entry`, or if
+    MaxWallTime is undefined or 0
+
+    """
+    max_wall_time = catalog_entry.get('MaxWallTime', 0)
+    if not max_wall_time:
+        return True
+    else:
+        return (int(max_wall_time) >= walltime)
+
+
+def matchAllowedVOs(vo, catalog_entry):
+    """True if `vo` is in the AllowedVOs list in `catalog_entry`, or
+    if AllowedVOs is undefined or empty
+
+    """
+    allowed_vos = catalog_entry.get('AllowedVOs', None)
+    if not allowed_vos:
+        return True
+    else:
+        return vo in list(allowed_vos)
+
+
+def formatResourcesTable(resources, width):
+    """Create a table of resource information obtained from `resources`,
+    formatted in a text block `width` characters wide. Returns the table
+    as a string
+
+    """
+    if width < 50:
+        width = 50
+    cpus_width = 4
+    memory_width = 8
+    max_wall_time_width = 12
+
+    remaining_width = width - cpus_width - memory_width - max_wall_time_width
+    name_width = remaining_width * 2 // 5
+    allowed_vos_width = remaining_width - name_width
+
+    format_str = ("%%-%(name_width)d.%(name_width)ds "
+                  "%%%(cpus_width)ds "
+                  "%%%(memory_width)ds "
+                  "%%%(max_wall_time_width)ds "
+                  "%%-.%(allowed_vos_width)ds" % locals())
+    table = format_str % ("Name",
+                          "CPUs",
+                          "Memory",
+                          "MaxWallTime",
+                          "AllowedVOs")
+    table += "\n"
+    for resource in resources:
+        catalog_entry = resource.catalog_entry
+        table += "\n" + format_str % (catalog_entry['Name'],
+                                      catalog_entry['CPUs'],
+                                      catalog_entry['Memory'],
+                                      catalog_entry.get('MaxWallTime', ''),
+                                      ", ".join(list(catalog_entry.get('AllowedVOs', []))))
+
+    return table
+
+
+def parseOpts(argv):
+    """Parse command-line options and arguments.
+    Returns the options and the address of the collector to contact
+
+    """
+    usage = "%prog [options] [<collector hostname>[:port]]"
+    epilog = '''
+
+Here are some example queries.
+To list resources that provide at least 1 GB of memory and are accessible
+by the 'osg' VO:
+
+    %(prog)s  --memory 1024  --vo osg
+
+which results in:
+
+    Name                   CPUs   Memory  MaxWallTime AllowedVOs
+
+    matyasfermicloud085       1     1877         1440 fermi, osg
+
+To list resources that have a MaxWallTime of at least 1 day (1440 minutes):
+
+    %(prog)s  --walltime 1440
+
+To print a full classad containing resource attributes and some attributes
+from the CE containing the resource:
+
+    %(prog)s  --walltime 1440  --verbose
+
+which results in:
+
+        [
+            OSG_BatchSystems = "Condor";
+            Name = "matyasfermicloud085";
+            MaxWallTime = 1440;
+            CPUs = 1;
+            Memory = 1877;
+            ...
+        ]
+
+''' % {'prog': os.path.basename(argv[0])}
+
+    # Don't reformat the epilog string (https://stackoverflow.com/questions/1857346)
+    optparse.OptionParser.format_epilog = lambda self, formatter: self.epilog
+
+    parser = optparse.OptionParser(usage=usage, epilog=epilog)
+    parser.add_option("--cpus", default=1, type='int',
+                      help="CPUs requested")
+    parser.add_option("--memory", default=1, type='int',
+                      help="Memory requested (in megabytes)")
+    parser.add_option("--walltime", default=0, type='int',
+                      help="Walltime requested (in minutes)")
+    parser.add_option("--vo", default=None,
+                      help="VO membership")
+    parser.add_option("--query", default=False, action='store_true',
+                      help="Match resources against a query ad")
+    parser.add_option("--width", default=os.environ.get('COLUMNS', 80), type='int',
+                      help="Output width for table")
+    parser.add_option("--pool", default=None, metavar='ADDRESS',
+                      help="Collector to get information from")
+    parser.add_option("-v", "--verbose", "-l", "--long", dest='verbose', default=False, action='store_true',
+                      help="Show matching classads instead of a table")
+    parser.add_option("-d", "--debug", default=False, action='store_true',
+                      help="Show debug output")
+
+    opts = parser.parse_args(argv[1:])[0]
+
+    if opts.debug:
+        htcondor.enable_debug()
+    global g_debug
+    g_debug = opts.debug
+
+    if opts.pool:
+        collector = opts.pool
+    else:
+        collector = htcondor.param.get('CONDOR_CE_COLLECTOR_HOST', FALLBACK_COLLECTOR)
+    if ':' not in collector:
+        collector_port = htcondor.param.get('COLLECTOR_PORT', FALLBACK_COLLECTOR_PORT)
+        collector += ":" + str(collector_port)
+
+    return opts, collector
+
+
+def main(argv):
+    """Main function.
+
+    Get a list of Resource objects filled with data from querying a
+    collector; pass the list through a series of filters and either
+    display the remaining resource ads in full, or create a table
+    from the resource ads and display that.
+
+    """
+
+    opts, collector_addr = parseOpts(argv)
+    query_ad = getQueryAd(cpus=opts.cpus, memory=opts.memory, vo=opts.vo)
+
+    predCPUs     = lambda resad: opts.cpus <= resad.catalog_entry['CPUs']
+    predMemory   = lambda resad: opts.memory <= resad.catalog_entry['Memory']
+    predQueryAd  = lambda resad: matchQueryAd(query_ad, resad.catalog_entry)
+    predVO       = lambda resad: matchAllowedVOs(opts.vo, resad.catalog_entry)
+    predWallTime = lambda resad: matchWallTime(opts.walltime, resad.catalog_entry)
+
+    predicates = [predCPUs, predMemory]
+    if opts.query:
+        predicates.append(predQueryAd)
+    if opts.vo:
+        predicates.append(predVO)
+    if opts.walltime > 0:
+        predicates.append(predWallTime)
+
+
+    ce_ads = fetchCEAds(collector_addr)
+    resources = getResourcesIter(ce_ads)
+
+    for pred in predicates:
+        resources = itertools.ifilter(pred, resources)
+
+    if opts.verbose:
+        for res in resources:
+            print res
+    else:
+        print formatResourcesTable(resources, opts.width)
+
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
