@@ -319,14 +319,15 @@ def main():
     configureAuth()
     checkAuthz(job_info)
     try:
-        generate_run_script(job_info)
-        checkJobSubmit(job_info)
-    except CondorRunException, e:
-        print "%s %s" % (time.strftime('%F %T'), e)
-        sys.exit(1)
-    except Exception, e:
-        print 'Uncaught exception, please contact goc@opensciencegrid.org:\n%s' % e
-        sys.exit(1)
+        try:
+            generate_run_script(job_info)
+            checkJobSubmit(job_info)
+        except CondorRunException, e:
+            print "%s %s" % (time.strftime('%F %T'), e)
+            sys.exit(1)
+        except Exception, e:
+            print 'Uncaught exception, please contact goc@opensciencegrid.org:\n%s' % e
+            sys.exit(1)
     finally:
         if opts.clean:
             cleanup(job_info)
