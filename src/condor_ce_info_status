@@ -208,10 +208,17 @@ which results in:
 
 ''' % {'prog': os.path.basename(argv[0])}
 
-    # Don't reformat the epilog string (https://stackoverflow.com/questions/1857346)
-    optparse.OptionParser.format_epilog = lambda self, formatter: self.epilog
+    try:
+        parser = optparse.OptionParser(usage=usage, epilog=epilog)
+        # Don't reformat the epilog string (https://stackoverflow.com/questions/1857346)
+        optparse.OptionParser.format_epilog = lambda self, formatter: self.epilog
+    except TypeError:
+        # Python 2.4 does not have epilog so append epilog onto usage
+        usage += "\n" + epilog
+        parser = optparse.OptionParser(usage=usage)
+        # Don't reformat the usage string (https://stackoverflow.com/questions/1857346)
+        optparse.OptionParser.format_usage = lambda self, formatter: self.usage
 
-    parser = optparse.OptionParser(usage=usage, epilog=epilog)
     parser.add_option("--cpus", default=1, type='int',
                       help="CPUs requested")
     parser.add_option("--memory", default=1, type='int',
