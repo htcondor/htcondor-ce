@@ -363,7 +363,11 @@ def main():
 
             retcode = subprocess.call(cmd, stdout=proc_outerr_fd, stderr=proc_outerr_fd)
             if retcode != 0:
-                raise subprocess.CalledProcessError(retcode, cmd)
+                logger.warning("condor_ce_reconfig failed.  This may be"
+                               " because the condor-ce daemons aren't"
+                               " running.  Rerun with --no-reconfig"
+                               " to supress this message.")
+                sys.exit(1)
     else:
         logger.info("Final config:")
         logger.info(config)
