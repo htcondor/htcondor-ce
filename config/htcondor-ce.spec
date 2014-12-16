@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.8
+Version: 1.9
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -283,9 +283,11 @@ fi
 %{_bindir}/condor_ce_config_generator
 %{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
@@ -301,6 +303,21 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Dec 16 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.9-1
+- Add auth file to the collector RPM.
+
+* Thu Dec 04 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-5
+- Add a user-friendly error message when condor_ce_reconfig fails in condor_ce_config_generator (SOFTWARE-1705)
+
+* Mon Dec 01 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-4
+- Fix help message code so it is Python 2.4 compatible
+
+* Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.8-3
+- Nest try/except/finally for python 2.4 compatability
+
+* Mon Nov 24 2014 Brian Lin <blin@cs.wisc.edu> - 1.8-2
+- Fix configuration issue preventing htcondor-ce startup
+
 * Sun Nov 23 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.8-1
 - Initial v1.8 release.
 - On newer HTCondor versions, have the collector and shared_port
