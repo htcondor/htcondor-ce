@@ -7,6 +7,7 @@ import time
 import socket
 import optparse
 import tempfile
+from subprocess import Popen, PIPE, STDOUT
 
 import classad
 import htcondor
@@ -41,44 +42,42 @@ def configureAuth():
     os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
     htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
 
-def runPing(address):
+def runPing(address, daemon='SCHEDD'):
 
     if not address.startswith("<"):
         address = "<%s>" % address
-    args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-debug", "WRITE"]
+    if daemon == "SCHEDD":
+        args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-type", daemon, "-debug", "WRITE"]
+    else:
+        args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-type", daemon, "-debug", "READ"]
 
-    r, w = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        try:
-            os.close(r)
-            os.dup2(w, 1)
-            os.dup2(w, 2)
-            os.execvp("condor_ping", args)
-        finally:
-            os._exit(1)
-    os.close(w)
+    try:
+        p = Popen(args, stdout=PIPE, stderr=STDOUT)
+        (stdout, stderr) = p.communicate()
+    except RuntimeError, e:
+        raise CondorRunException('Failed to ping %s due to the following error:\n%s' % (address, e))
 
-    output = os.fdopen(r).read()
     if g_debug:
         print "*"*5, "condor_ping output", "*"*5
-        print output,
+        print stdout,
         print "*"*20
 
-    tmp_pid = -1
-    while tmp_pid != pid:
-        tmp_pid, status = os.waitpid(pid, 0)
-    if os.WIFEXITED(status):
-        exit_code = os.WEXITSTATUS(status)
-        if exit_code:
-            raise CondorRunException("Failed to ping %s; authorization check exited with code %d" % (address, exit_code));
-    elif os.WIFSIGNALED(status):
-        signal = os.WTERMSIG(status)
-        raise CondorRunException("Failed to ping %s; condor_ping " \
-            "terminated with signal %d." % (address, signal))
-    else:
-        raise CondorRunException("Failed to ping %s; condor_ping " \
-            "stopped with unhandled status code %d." % (address, status))
+    if p.returncode < 0:
+        raise CondorRunException("Failed to ping %s; condor_ping terminated with signal %d." \
+                                 % (address, -p.returncode))
+    elif p.returncode > 0:
+        if re.search('Failed to connect', stdout):
+            raise CondorRunException("Failed to ping %s: Please contact the site's system adminstrator to ensure " \
+                                     "that the CE you're trying to contact is functional." % address)
+        else:
+            raise CondorRunException("Failed to ping %s; authorization check exited with code %d. Re-run the command" \
+                                     "with '-d' for more verbose output."% (address, p.returncode));
+
+    unauthorized_user = re.search('Remote Mapping:\s*(.*)\nAuthorized:\s*FALSE', stdout, re.MULTILINE)
+    if unauthorized_user:
+        raise CondorUserException("User %s does not have permissions for %s. Please contact the CE's system " \
+                                  "administrator to ensure that your user is mapped properly in the site's " \
+                                  "authentication system." %(unauthorized_user.group(1), address))
 
 def parseOpts():
 
@@ -111,21 +110,27 @@ def checkAuthz(job_info):
     for addrinfo in addresses:
         addr = "<%s:%d>" % addrinfo[4][:2]
         try:
-            runPing("<%s:%d>" % addrinfo[4][:2])
+            runPing("<%s:%d>" % addrinfo[4][:2], daemon="COLLECTOR")
             hadSuccess = True
             print "- Successful ping of collector on %s.\n" % addr
-        except CondorRunException:
+        except Exception, e:
             print "- Failed ping of collector on %s.\n" % addr
+            raise e
+
     if not hadSuccess:
-        print "- No collector check was successful!"
-        raise RuntimeError("No collector check was successful!")
+        raise CondorRunException("No collector check was successful! Please contact the site's system adminstrator to " \
+                           "ensure that the CE you're trying to contact is functional.") 
     coll = htcondor.Collector(job_info['collector_name'])
     ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
     job_info['schedd_ad'] = ad
     addr = ad['MyAddress']
     print "Testing HTCondor-CE schedd connectivity."
-    runPing(addr)
-    print "- Successful ping of schedd on %s.\n" % addr
+    try:
+        runPing(addr)
+        print "- Successful ping of schedd on %s.\n" % addr
+    except Exception, e:
+        print "- Failed ping of schedd on %s.\n" % addr
+        raise e
 
 
 def generate_run_script(job_info):
@@ -317,16 +322,32 @@ def main():
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
     configureAuth()
-    checkAuthz(job_info)
+    try:
+        checkAuthz(job_info)
+    except (CondorRunException, CondorUserException), e:
+        print "*"*80
+        print "%s %s" % (time.strftime('%F %T'), e)
+        print "*"*80
+        sys.exit(1)
+    except Exception, e:
+        print "*"*80
+        print 'Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e)
+        print "*"*80
+        sys.exit(1)
+
     try:
         try:
             generate_run_script(job_info)
             checkJobSubmit(job_info)
-        except CondorRunException, e:
+        except (CondorRunException, CondorUserException), e:
+            print "*"*80
             print "%s %s" % (time.strftime('%F %T'), e)
+            print "*"*80
             sys.exit(1)
         except Exception, e:
-            print 'Uncaught exception, please contact goc@opensciencegrid.org:\n%s' % e
+            print "*"*80
+            print 'Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e)
+            print "*"*80
             sys.exit(1)
     finally:
         if opts.clean:
