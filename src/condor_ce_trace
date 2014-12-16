@@ -42,11 +42,14 @@ def configureAuth():
     os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
     htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
 
-def runPing(address):
+def runPing(address, daemon='SCHEDD'):
 
     if not address.startswith("<"):
         address = "<%s>" % address
-    args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-debug", "WRITE"]
+    if daemon == "SCHEDD":
+        args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-type", daemon, "-debug", "WRITE"]
+    else:
+        args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-type", daemon, "-debug", "READ"]
 
     try:
         p = Popen(args, stdout=PIPE, stderr=STDOUT)
@@ -107,7 +110,7 @@ def checkAuthz(job_info):
     for addrinfo in addresses:
         addr = "<%s:%d>" % addrinfo[4][:2]
         try:
-            runPing("<%s:%d>" % addrinfo[4][:2])
+            runPing("<%s:%d>" % addrinfo[4][:2], daemon="COLLECTOR")
             hadSuccess = True
             print "- Successful ping of collector on %s.\n" % addr
         except Exception, e:
