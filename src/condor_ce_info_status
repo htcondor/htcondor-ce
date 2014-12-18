@@ -8,6 +8,8 @@ import sys
 import optparse
 import itertools
 
+os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
+
 import classad
 import htcondor
 

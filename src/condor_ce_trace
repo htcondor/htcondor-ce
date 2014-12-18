@@ -9,6 +9,8 @@ import optparse
 import tempfile
 from subprocess import Popen, PIPE, STDOUT
 
+os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
+
 import classad
 import htcondor
 
