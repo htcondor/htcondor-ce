@@ -1,0 +1,10 @@
+
+SELECT
+  Name AS Name WIDTH -18
+  OSG_Resource AS Resource WIDTH -18
+  OSG_BatchSystems AS Batch WIDTH -8
+  HTCondorCEVersion AS CEVer WIDTH -5
+  split(condorversion)[1] AS CondorVer
+  DaemonStartTime AS Uptime PRINTAS ACTIVITY_TIME
+  grid_resource AS Resource
+SUMMARY NONE
