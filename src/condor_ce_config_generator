@@ -222,13 +222,13 @@ CONFIG_TEMPLATE = """\
 
 # To ADD a custom host, add a line of the form:
 #
-#   ALLOW_ADVERTISE_SCHEDD = $(ALLOW_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org/ce.example.com
+#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org/ce.example.com
 #
 # You can have multiple comma-separated hosts in the ALLOW listing.
 
 # The generated ALLOW_ADVERTISE_SCHEDD should be of the form:
 #
-#   ALLOW_ADVERTISE_SCHEDD = foo.example.com@daemon.opensciencegrid.org/foo.example.com, bar.example.com@daemon.opensciencegrid.org/bar.example.com
+#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = foo.example.com@daemon.opensciencegrid.org/foo.example.com, bar.example.com@daemon.opensciencegrid.org/bar.example.com
 #
 # There will be one entry per enabled service found in MyOSG.  This file is updated
 # atomically; MyOSG outages will not result in partial or incorrect updates.
@@ -268,7 +268,7 @@ def write_config(config_line):
 
 def generate_config(hosts):
     authz = ["%s@daemon.opensciencegrid.org/%s" % (i, i) for i in hosts]
-    return "ALLOW_ADVERTISE_SCHEDD = $(ALLOW_ADVERTISE_SCHEDD), %s" % ", \\\n\t\t".join(authz)
+    return "COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), %s" % ", \\\n\t\t".join(authz)
 
 def parse_config():
     parser = optparse.OptionParser()
