@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.9
+Version: 1.10
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -305,8 +305,13 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Tue Dec 16 2014 Brian Bockelman <bbockelm@cse.unl.edu> - 1.9-1
+* Mon Jan 05 2014 Brian Lin <blin@cs.wisc.edu> - 1.10-1
+- Fix HTCondor jobs routing incorrectly in 8.3.x
+
+* Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
 - Add auth file to the collector RPM.
+- Updates and fixes to condor_ce_info_status and condor_ce_trace
+- Fixes to default security settings
 
 * Thu Dec 04 2014 Mátyás Selmeci <matyas@cs.wisc.edu> 1.8-5
 - Add a user-friendly error message when condor_ce_reconfig fails in condor_ce_config_generator (SOFTWARE-1705)
