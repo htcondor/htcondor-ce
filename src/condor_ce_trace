@@ -117,7 +117,7 @@ def parseOpts():
     parser.add_option("-a", "--attribute", help="Add attribute to job ad.",
                       dest="attribute", default=[], action='append')
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
-        "files.", dest="clean", default=False, action="store_true")
+        "files.", dest="clean", default=True, action="store_false")
 
     opts, args = parser.parse_args()
     global g_debug
@@ -328,6 +328,12 @@ def checkJobSubmit(job_info):
             print "*"*20
         else:
             print "- Job was successful"
+
+def cleanup(job_info):
+    files = ['stdout_file', 'stderr_file', 'log_file', 'submit_file']
+
+    for filename in files:
+        os.remove(job_info[filename])
 
 def main():
     opts, args = parseOpts()
