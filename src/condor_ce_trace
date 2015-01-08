@@ -32,6 +32,18 @@ condorJobStatus = { \
   6: "Transferring Output",
 }
 
+def verify_matching_condor_versions():
+    lib_ver = htcondor.version()
+    try:
+        args = ('condor_version',)
+        p = Popen(args, stdout=PIPE, stderr=STDOUT)
+        (stdout, stderr) = p.communicate()
+    except RuntimeError, e:
+        raise CondorRunException('Could not find version information using condor_version')
+    tool_ver = stdout.split('\n')[0]
+    if lib_ver != tool_ver:
+        raise RuntimeError('Found multiple, mismatched versions of HTCondor installed. Please ensure that you only have one version of HTCondor installed.')
+
 def configureAuth():
     try:
         auth_methods = re.split(",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
@@ -304,6 +316,19 @@ def main():
 
     if len(args) < 1:
         print "Usage: condor_ce_trace [options] <hostname>"
+        sys.exit(1)
+
+    try:
+        verify_matching_condor_versions()
+    except RuntimeError, e:
+        print "*"*80
+        print e
+        print "*"*80
+        sys.exit(1)
+    except Exception, e:
+        print "*"*80
+        print 'Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e)
+        print "*"*80
         sys.exit(1)
 
     job_info = {}
