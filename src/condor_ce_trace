@@ -6,6 +6,7 @@ import sys
 import time
 import socket
 import optparse
+import textwrap
 import tempfile
 from subprocess import Popen, PIPE, STDOUT
 
@@ -31,6 +32,15 @@ condorJobStatus = { \
   5: "Held",
   6: "Transferring Output",
 }
+
+def print_formatted_error(error_msg):
+    print "*"*80
+    for line in textwrap.wrap(error_msg, 80):
+        print line
+    print "*"*80
+
+def print_uncaught_exception(e):
+    print_formatted_error('Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e))
 
 def verify_matching_condor_versions():
     lib_ver = htcondor.version()
@@ -321,14 +331,10 @@ def main():
     try:
         verify_matching_condor_versions()
     except RuntimeError, e:
-        print "*"*80
-        print e
-        print "*"*80
+        print_formatted_error(e)
         sys.exit(1)
     except Exception, e:
-        print "*"*80
-        print 'Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e)
-        print "*"*80
+        print_uncaught_exception(e)
         sys.exit(1)
 
     job_info = {}
@@ -352,14 +358,10 @@ def main():
     try:
         checkAuthz(job_info)
     except (CondorRunException, CondorUserException), e:
-        print "*"*80
-        print "%s %s" % (time.strftime('%F %T'), e)
-        print "*"*80
+        print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
         sys.exit(1)
     except Exception, e:
-        print "*"*80
-        print 'Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e)
-        print "*"*80
+        print_uncaught_exception(e)
         sys.exit(1)
 
     try:
@@ -367,14 +369,10 @@ def main():
             generate_run_script(job_info)
             checkJobSubmit(job_info)
         except (CondorRunException, CondorUserException), e:
-            print "*"*80
-            print "%s %s" % (time.strftime('%F %T'), e)
-            print "*"*80
+            print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
             sys.exit(1)
         except Exception, e:
-            print "*"*80
-            print 'Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' % (e.__class__.__name__,e)
-            print "*"*80
+            print_uncaught_exception(e)
             sys.exit(1)
     finally:
         if opts.clean:
