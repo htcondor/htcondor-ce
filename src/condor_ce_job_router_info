@@ -1,0 +1,19 @@
+#!/bin/sh
+
+. /usr/share/condor-ce/condor_ce_env_bootstrap
+. /usr/share/condor-ce/condor_ce_client_env_bootstrap
+export GSI_AUTHZ_CONF=/dev/null
+which condor_job_router_info &> /dev/null
+if [[ $? -eq 0 ]]; then
+    exec condor_job_router_info "$@"
+else
+    which condor_job_router_tool &> /dev/null
+    if [[ $? -eq 0 ]]; then
+        exec condor_job_router_tool "$@"
+    else
+        echo 'Could not find Job Router diagnostic tool. Please verify your HTCondor installation.'
+        exit 1
+    fi
+fi 
+
+

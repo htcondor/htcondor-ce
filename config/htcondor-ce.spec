@@ -263,7 +263,7 @@ fi
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
 %{_bindir}/condor_ce_info_status
-%{_bindir}/condor_ce_job_router_tool
+%{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
 %{_bindir}/condor_ce_q
