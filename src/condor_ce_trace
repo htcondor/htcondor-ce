@@ -147,7 +147,13 @@ def checkAuthz(job_info):
         raise CondorRunException("No collector check was successful! Please contact the site's system adminstrator to " \
                            "ensure that the CE you're trying to contact is functional.")
     coll = htcondor.Collector(job_info['collector_name'])
-    ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
+
+    try:
+        ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
+    except ValueError:
+        raise CondorRunException("Could not find CE's schedd. Please contact the site's system administrator to " \
+                                 "ensure that CE you're trying to contact is functional.")
+
     job_info['schedd_ad'] = ad
     addr = ad['MyAddress']
     print "Testing HTCondor-CE schedd connectivity."
