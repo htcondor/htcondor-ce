@@ -7,5 +7,13 @@ which condor_job_router_info &> /dev/null
 if [[ $? -eq 0 ]]; then
     exec condor_job_router_info "$@"
 else
-    exec condor_job_router_tool "$@"
-fi
+    which condor_job_router_tool &> /dev/null
+    if [[ $? -eq 0 ]]; then
+        exec condor_job_router_tool "$@"
+    else
+        echo 'Could not find Job Router diagnostic tool. Please verify your HTCondor installation.'
+        exit 1
+    fi
+fi 
+
+
