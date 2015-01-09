@@ -96,8 +96,10 @@ def runPing(address, daemon='SCHEDD'):
             raise CondorRunException("Failed to ping %s: Please contact the site's system adminstrator to ensure " \
                                      "that the CE you're trying to contact is functional." % address)
         else:
-            raise CondorRunException("Failed to ping %s; authorization check exited with code %d. Re-run the command" \
-                                     "with '-d' for more verbose output." % (address, p.returncode))
+            message = "Failed to ping %s; authorization check exited with code %d." % (address, p.returncode)
+            if not g_debug:
+                message = message + " Re-run the command with '-d' for more verbose output." 
+            raise CondorRunException(message)
 
     unauthorized_user = re.search(r'Remote Mapping:\s*(.*)\nAuthorized:\s*FALSE', stdout, re.MULTILINE)
     if unauthorized_user:
