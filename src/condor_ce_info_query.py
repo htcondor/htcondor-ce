@@ -25,7 +25,7 @@ class ResourceAd(classad.ClassAd):
     """
 
     def __init__(self, ce_ad, catalog_entry):
-        super(self.__class__, self).__init__()
+        classad.ClassAd.__init__(self, '[]')
 
         self.ce_ad         = ce_ad
         self.catalog_entry = catalog_entry
