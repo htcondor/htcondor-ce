@@ -3,6 +3,9 @@ import itertools
 import classad
 import htcondor
 
+import logging
+_logger = logging.getLogger(__name__)
+
 # Add htcondor.param.get() to old versions of condor-python that don't have it
 try:
     htcondor.param.get
@@ -40,6 +43,39 @@ class ResourceAd(classad.ClassAd):
                 self[catkey] = dict(catval)
             else:
                 self[catkey] = catval
+
+
+def getSubmitFileAdditions(resource_ad):
+    """Returns additions to a submit file (as list of strings) to make the
+    submitted job match the given resource
+
+    """
+    global _logger
+
+    lines = []
+    if 'grid_resource' in resource_ad:
+        lines.append('+GridResource = %s' % classad.quote(resource_ad['grid_resource']))
+    if 'Transform' in resource_ad:
+        transform_ad = resource_ad['Transform']
+        set_lines = []
+        copy_lines = []
+        eval_set_lines = []
+        for key, value in transform_ad.iteritems():
+            if key.startswith('set_'):
+                set_lines.append('+%s = %s' % (key.replace('set_', '', 1), value))
+            elif key.startswith('copy_'):
+                if value in resource_ad:
+                    copy_lines.append('+%s = %s' % (key.replace('copy_', '', 1), resource_ad[value]))
+                else:
+                    _logger.warning("Ignoring '%s': '%s' missing from Resource Ad" % (key, value))
+            elif key.startswith('eval_set_'):
+                eval_set_lines.append('+%s = %s' % (key.replace('eval_set_', '', 1), resource_ad.eval(value)))
+            elif key.startswith('delete_'):
+                _logger.warning("Ignoring '%s': 'delete' transforms not supported", key)
+            else:
+                _logger.warning("Ignoring '%s': unknown transform type", key)
+        lines += copy_lines + set_lines + eval_set_lines
+    return lines
 
 
 def fetchCEAds(collector_addr):
@@ -95,6 +131,7 @@ def filterResourceAds(constraints, resources):
     The recognized keys in `constraints` are:
         'cpus'     : minimum CPUs of resource
         'memory'   : minimum Memory of resource
+        'name'     : Name of resource
         'vo'       : VO which must be in AllowedVOs of resource (if
                      AllowedVOs is present)
         'walltime' : minimum MaxWallTime of resource (if MaxWallTime
@@ -113,6 +150,9 @@ def filterResourceAds(constraints, resources):
         elif attr == 'memory':
             predicates.append(
                 lambda res: constraints['memory'] <= res['Memory'])
+        elif attr == 'name':
+            predicates.append(
+                lambda res: constraints['name'] == res['Name'])
         elif attr == 'vo':
             predicates.append(
                 lambda res: matchAllowedVOs(constraints['vo'], res))
