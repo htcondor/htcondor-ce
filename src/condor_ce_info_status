@@ -144,7 +144,7 @@ def parseOpts(argv):
     Returns the options and the address of the collector to contact
 
     """
-    usage = "%prog [options] [<collector hostname>[:port]]"
+    usage = "%prog [options] [--pool=<collector addr>[:<port>]]"
     epilog = '''
 
 Here are some example queries.
