@@ -393,9 +393,13 @@ if __name__ == '__main__':
         main()
     except Exception, e:
         pid = os.getpid()
-        fd, stack_file = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % pid)
-        f = open(stack_file, 'w')
-        f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        try:
+            fd, stack_file = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % pid)
+            f = os.fdopen(fd, 'w')
+            f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        except OSError, e:
+            print_formatted_error("Unable to write stackfile due to the following error:\n%s" % e)
+            sys.exit(1)
         traceback.print_exc(file=f)
         os.close(fd)
         print_formatted_error('Uncaught exception, please send %s to ' \
