@@ -149,7 +149,7 @@ def checkAuthz(job_info):
 
     try:
         ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
-    except ValueError:
+    except (ValueError, IOError):
         raise CondorRunException("Could not find CE's schedd. Please contact the site's system administrator to " \
                                  "ensure that CE you're trying to contact is functional.")
 
