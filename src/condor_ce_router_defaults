@@ -38,7 +38,8 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     set_RoutedJob = true; \\
     copy_environment = "orig_environment"; \\
     set_osg_environment = "@osg_environment@"; \\
-    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), " ", \\
+    set_CondorCECollectorHost = ifThenElse(regexp(":", "$(COLLECTOR_HOST)"), "$(COLLECTOR_HOST)", strcat("$(COLLECTOR_HOST)", ":", $(COLLECTOR_PORT))); \\
+    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), " CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, " ", \\
         ifThenElse(orig_environment is undefined, osg_environment, \\
           strcat(osg_environment, " ", orig_environment) \\
         ))); \\
@@ -57,8 +58,17 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */ \\
     eval_set_remote_cerequirements = ifThenElse(InputRSL.maxWallTime isnt null, strcat("Walltime == ", string(60*InputRSL.maxWallTime), " && CondorCE == 1"), \\
         ifThenElse(maxWallTime isnt null, strcat("Walltime == ", string(60*maxWallTime), " && CondorCE == 1"), \\
-	  ifThenElse(default_maxWallTime isnt null, strcat("Walltime == ", string(60*default_maxWallTime), " && CondorCE == 1"), \\
+          ifThenElse(default_maxWallTime isnt null, strcat("Walltime == ", string(60*default_maxWallTime), " && CondorCE == 1"), \\
             "CondorCE == 1"))); \\
+    copy_OnExitHold = "orig_OnExitHold"; \\
+    eval_set_OnExitHold = ifThenElse(orig_OnExitHold isnt null, orig_OnExitHold, false) || ifThenElse(minWalltime isnt null && RemoteWallClockTime isnt null, RemoteWallClockTime < 60*minWallTime, false); \\
+    copy_OnExitHoldReason = "orig_OnExitHoldReason"; \\
+    eval_set_OnExitHoldReason = ifThenElse((orig_OnExitHold isnt null) && orig_OnExitHold, \\
+        ifThenElse(orig_OnExitHoldReason isnt null, orig_OnExitHoldReason, strcat("The on_exit_hold expression (", unparse(orig_OnExitHold), ") evaluated to TRUE.")), \\
+        ifThenElse(minWalltime isnt null && RemoteWallClockTime isnt null && (RemoteWallClockTime < 60*minWallTime), strcat("The job's wall clock time, ", int(RemoteWallClockTime/60), "min, is less than the minimum specified by the job (", minWalltime, ")"), "Job held for unknown reason.")); \\
+    copy_OnExitHoldSubCode = "orig_OnExitHoldSubCode"; \\
+    eval_set_OnExitHoldSubCode = ifThenElse((orig_OnExitHold isnt null) && orig_OnExitHold, \\
+        ifThenElse(orig_OnExitHoldSubCode isnt null, orig_OnExitHoldSubCode, 1), 42); \\
     eval_set_AccountingGroup = @accounting_group@ \\
   ]
 """
@@ -70,7 +80,7 @@ input_rsl = "\nset_InputRSL = ifThenElse(GlobusRSL is null, [], eval_rsl(GlobusR
 version = '8.0.0'
 if classad:
     version = classad.version()
-m = re.match(r"(\d+)\.(\d+)\.(\d+)", classad.version())
+m = re.match(r"(\d+)\.(\d+)\.(\d+)", version)
 if m:
     major, minor, bug = m.groups()
     major = int(major)
@@ -87,6 +97,7 @@ osg_environment_files = [ \
     "/var/lib/osg/osg-job-environment.conf",
     "/var/lib/osg/osg-local-job-environment.conf"    
 ]
+
 
 def parse_extattr():
     if not os.path.exists("/etc/osg/extattr_table.txt"):
@@ -208,7 +219,7 @@ def main():
 
     accounting_group_str = set_accounting_group()
 
-    defaults_with_env = job_router_defaults.replace("@osg_environment@", env_string)   
+    defaults_with_env = job_router_defaults.replace("@osg_environment@", env_string)
 
     try:
         print defaults_with_env.replace("@accounting_group@", accounting_group_str)
