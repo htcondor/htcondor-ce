@@ -41,6 +41,11 @@ Requires(preun): initscripts
 Requires: /usr/bin/unshare
 %endif
 
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 %description
 %{summary}
 
@@ -143,7 +148,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir}
+%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
 make %{?_smp_mflags}
 
 %install
@@ -279,6 +284,8 @@ fi
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
+
+%{python_sitelib}/condor_ce_info_query.py*
 
 %files collector
 
