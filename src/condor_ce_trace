@@ -40,6 +40,9 @@ def print_formatted_error(error_msg):
         print line
     print "*"*80
 
+def print_timestamped_exception(exception):
+    print_formatted_error("%s %s" % (time.strftime('%F %T'), exception))
+
 def verify_matching_condor_versions():
     lib_ver = htcondor.version()
     try:
@@ -47,7 +50,8 @@ def verify_matching_condor_versions():
         p = Popen(args, stdout=PIPE, stderr=STDOUT)
         (stdout, _) = p.communicate()
     except RuntimeError:
-        raise CondorRunException('Could not find version information using condor_version')
+        raise CondorRunException('Could not find version information using condor_version. ' \
+                                 'Ensure that condor_version is in your PATH')
     tool_ver = stdout.split('\n')[0]
     if lib_ver != tool_ver:
         raise RuntimeError('Found multiple, mismatched versions of HTCondor installed. ' \
@@ -349,8 +353,8 @@ def main():
 
     try:
         verify_matching_condor_versions()
-    except RuntimeError, e:
-        print_formatted_error(e)
+    except (CondorRunException, RuntimeError), e:
+        print_timestamped_exception(e)
         sys.exit(1)
 
     job_info = {}
@@ -374,7 +378,7 @@ def main():
     try:
         checkAuthz(job_info)
     except (CondorRunException, CondorUserException), e:
-        print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
+        print_timestamped_exception(e)
         sys.exit(1)
 
     try:
@@ -382,7 +386,7 @@ def main():
             generate_run_script(job_info)
             checkJobSubmit(job_info)
         except (CondorRunException, CondorUserException), e:
-            print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
+            print_timestamped_exception(e)
             sys.exit(1)
     finally:
         if opts.clean:
