@@ -8,6 +8,7 @@ import socket
 import optparse
 import textwrap
 import tempfile
+import traceback
 from subprocess import Popen, PIPE, STDOUT
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
@@ -38,10 +39,6 @@ def print_formatted_error(error_msg):
     for line in textwrap.wrap(error_msg, 80):
         print line
     print "*"*80
-
-def print_uncaught_exception(e):
-    print_formatted_error('Uncaught exception, please contact goc@opensciencegrid.org.\n%s: %s' \
-                          % (e.__class__.__name__, e))
 
 def verify_matching_condor_versions():
     lib_ver = htcondor.version()
@@ -96,8 +93,10 @@ def runPing(address, daemon='SCHEDD'):
             raise CondorRunException("Failed to ping %s: Please contact the site's system adminstrator to ensure " \
                                      "that the CE you're trying to contact is functional." % address)
         else:
-            raise CondorRunException("Failed to ping %s; authorization check exited with code %d. Re-run the command" \
-                                     "with '-d' for more verbose output." % (address, p.returncode))
+            message = "Failed to ping %s; authorization check exited with code %d." % (address, p.returncode)
+            if not g_debug:
+                message = message + " Re-run the command with '-d' for more verbose output." 
+            raise CondorRunException(message)
 
     unauthorized_user = re.search(r'Remote Mapping:\s*(.*)\nAuthorized:\s*FALSE', stdout, re.MULTILINE)
     if unauthorized_user:
@@ -147,7 +146,13 @@ def checkAuthz(job_info):
         raise CondorRunException("No collector check was successful! Please contact the site's system adminstrator to " \
                            "ensure that the CE you're trying to contact is functional.")
     coll = htcondor.Collector(job_info['collector_name'])
-    ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
+
+    try:
+        ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
+    except (ValueError, IOError):
+        raise CondorRunException("Could not find CE's schedd. Please contact the site's system administrator to " \
+                                 "ensure that CE you're trying to contact is functional.")
+
     job_info['schedd_ad'] = ad
     addr = ad['MyAddress']
     print "Testing HTCondor-CE schedd connectivity."
@@ -347,9 +352,6 @@ def main():
     except RuntimeError, e:
         print_formatted_error(e)
         sys.exit(1)
-    except Exception, e:
-        print_uncaught_exception(e)
-        sys.exit(1)
 
     job_info = {}
     job_info['attribute'] = opts.attribute
@@ -374,9 +376,6 @@ def main():
     except (CondorRunException, CondorUserException), e:
         print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
         sys.exit(1)
-    except Exception, e:
-        print_uncaught_exception(e)
-        sys.exit(1)
 
     try:
         try:
@@ -385,13 +384,25 @@ def main():
         except (CondorRunException, CondorUserException), e:
             print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
             sys.exit(1)
-        except Exception, e:
-            print_uncaught_exception(e)
-            sys.exit(1)
     finally:
         if opts.clean:
             cleanup(job_info)
 
 if __name__ == '__main__':
-    main()
-
+    try:
+        main()
+    except Exception, e:
+        pid = os.getpid()
+        try:
+            fd, stack_file = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % pid)
+            f = os.fdopen(fd, 'w')
+            f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        except OSError, e:
+            print_formatted_error("Unable to write stackfile due to the following error:\n%s" % e)
+            sys.exit(1)
+        traceback.print_exc(file=f)
+        os.close(fd)
+        print_formatted_error('Uncaught exception, please send %s to ' \
+                              'goc@opensciencegrid.org with a description of the issue.'
+                              % stack_file)
+        sys.exit(1)
