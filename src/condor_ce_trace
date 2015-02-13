@@ -395,18 +395,19 @@ def main():
 if __name__ == '__main__':
     try:
         main()
+    except SystemExit:
+        pass
     except Exception, e:
         pid = os.getpid()
         try:
             fd, stack_file = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % pid)
             f = os.fdopen(fd, 'w')
             f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
+            traceback.print_exc(file=f)
+            f.close()
+            print_formatted_error('Uncaught exception, please send %s to ' \
+                                  'goc@opensciencegrid.org with a description of the issue.'
+                                  % stack_file)
         except OSError, e:
             print_formatted_error("Unable to write stackfile due to the following error:\n%s" % e)
-            sys.exit(1)
-        traceback.print_exc(file=f)
-        os.close(fd)
-        print_formatted_error('Uncaught exception, please send %s to ' \
-                              'goc@opensciencegrid.org with a description of the issue.'
-                              % stack_file)
         sys.exit(1)
