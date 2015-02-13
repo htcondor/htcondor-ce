@@ -381,7 +381,7 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (CondorUserException, CondorUserException, RuntimeError), e:
+    except (CondorRunException, CondorUserException, RuntimeError), e:
         print_timestamped_exception(e)
         sys.exit(1)
     except Exception, e:
