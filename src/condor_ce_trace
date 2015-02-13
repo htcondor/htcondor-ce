@@ -348,14 +348,9 @@ def main():
     opts, args = parseOpts()
 
     if len(args) < 1:
-        print "Usage: condor_ce_trace [options] <hostname>"
-        sys.exit(1)
+        raise RuntimeError("Usage: condor_ce_trace [options] <hostname>")
 
-    try:
-        verify_matching_condor_versions()
-    except (CondorRunException, RuntimeError), e:
-        print_timestamped_exception(e)
-        sys.exit(1)
+    verify_matching_condor_versions()
 
     job_info = {}
     job_info['attribute'] = opts.attribute
@@ -375,19 +370,10 @@ def main():
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
     configureAuth()
+    checkAuthz(job_info)
     try:
-        checkAuthz(job_info)
-    except (CondorRunException, CondorUserException), e:
-        print_timestamped_exception(e)
-        sys.exit(1)
-
-    try:
-        try:
-            generate_run_script(job_info)
-            checkJobSubmit(job_info)
-        except (CondorRunException, CondorUserException), e:
-            print_timestamped_exception(e)
-            sys.exit(1)
+        generate_run_script(job_info)
+        checkJobSubmit(job_info)
     finally:
         if opts.clean:
             cleanup(job_info)
@@ -395,8 +381,9 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except SystemExit:
-        pass
+    except (CondorUserException, CondorUserException, RuntimeError), e:
+        print_timestamped_exception(e)
+        sys.exit(1)
     except Exception, e:
         pid = os.getpid()
         try:
