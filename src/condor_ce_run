@@ -81,14 +81,17 @@ def parse_opts():
         "local universe.", dest="local", default=False, action="store_true")
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
         "files.", dest="clean", default=False, action="store_true")
+    parser.add_option("--dry-run", help="Verify arguments and options " \
+        "without submitting a job to the specified CE.", dest="dry_run",
+        default=False, action="store_true")
+
     parser.disable_interspersed_args()
 
     opts, args = parser.parse_args()
 
     return opts, args
 
-def generate_run_script(job_info):
-
+def generate_submit_file(job_info):
     if job_info['command'][0] != '/':
         for dir in os.environ.get("PATH", "").split(":"):
             test_path = os.path.join(dir, job_info['command'])
@@ -102,30 +105,10 @@ def generate_run_script(job_info):
     else:
         job_info['arguments'] = ''
 
-    pid = os.getpid()
-
-    fd, job_info['stdout_file'] = tempfile.mkstemp(dir=".",
-        prefix=".stdout_%d_" % pid)
-    os.close(fd)
-
-    fd, job_info['stderr_file'] = tempfile.mkstemp(dir=".",
-        prefix=".stderr_%d_" % pid)
-    os.close(fd)
-
-    fd, job_info['log_file'] = tempfile.mkstemp(dir=".",
-        prefix=".log_%d_" % pid)
-    os.close(fd)
-
-    fd, job_info['submit_file'] = tempfile.mkstemp(dir=".",
-        prefix=".submit_%d_" % pid)
-
-    try:
-        if job_info['remote']:
-            os.write(fd, submit_remote_file % job_info)
-        else:
-            os.write(fd, submit_file % job_info)
-    finally:
-        os.close(fd)
+    if job_info['remote']:
+        return submit_remote_file % job_info
+    else:
+        return submit_file % job_info
 
 # Example output: 1 job(s) submitted to cluster 14.
 cluster_re = re.compile("(\d+) job\(s\) submitted to cluster (\d+)\.")
@@ -373,13 +356,28 @@ def main():
     else:
         job_info['universe'] = "vanilla"
 
+    job_files = ['stdout',
+                 'stderr',
+                 'log']
+    pid = os.getpid()
+    for filetype in job_files:
+        fd, job_info[filetype + '_file'] = tempfile.mkstemp(dir=".", prefix=".%s_%d_" % (filetype, pid))
+        os.close(fd)
+    submit_fd, job_info['submit_file'] = tempfile.mkstemp(dir=".", prefix=".submit_%d_" % pid)
+
+    run_script = generate_submit_file(job_info)
     try:
-        generate_run_script(job_info)
-        submit_job(job_info)
-        wait_for_job(job_info)
-        print_results(job_info)
+        if opts.dry_run:
+            print "Without the --dry-run option, condor_ce_run would submit the following file to %s:\n\n%s" \
+                % (job_info["schedd_name"], run_script)
+        else:
+            os.write(submit_fd, run_script)
+            os.close(submit_fd)
+            submit_job(job_info)
+            wait_for_job(job_info)
+            print_results(job_info)
     finally:
-        if opts.clean:
+        if opts.clean or opts.dry_run:
             cleanup(job_info)
 
     return 0
