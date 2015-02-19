@@ -40,6 +40,9 @@ def print_formatted_error(error_msg):
         print line
     print "*"*80
 
+def print_timestamped_exception(exception):
+    print_formatted_error("%s %s" % (time.strftime('%F %T'), exception))
+
 def verify_matching_condor_versions():
     lib_ver = htcondor.version()
     try:
@@ -47,7 +50,8 @@ def verify_matching_condor_versions():
         p = Popen(args, stdout=PIPE, stderr=STDOUT)
         (stdout, _) = p.communicate()
     except RuntimeError:
-        raise CondorRunException('Could not find version information using condor_version')
+        raise CondorRunException('Could not find version information using condor_version. ' \
+                                 'Ensure that condor_version is in your PATH')
     tool_ver = stdout.split('\n')[0]
     if lib_ver != tool_ver:
         raise RuntimeError('Found multiple, mismatched versions of HTCondor installed. ' \
@@ -344,14 +348,9 @@ def main():
     opts, args = parseOpts()
 
     if len(args) < 1:
-        print "Usage: condor_ce_trace [options] <hostname>"
-        sys.exit(1)
+        raise RuntimeError("Usage: condor_ce_trace [options] <hostname>")
 
-    try:
-        verify_matching_condor_versions()
-    except RuntimeError, e:
-        print_formatted_error(e)
-        sys.exit(1)
+    verify_matching_condor_versions()
 
     job_info = {}
     job_info['attribute'] = opts.attribute
@@ -371,19 +370,10 @@ def main():
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
     configureAuth()
+    checkAuthz(job_info)
     try:
-        checkAuthz(job_info)
-    except (CondorRunException, CondorUserException), e:
-        print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
-        sys.exit(1)
-
-    try:
-        try:
-            generate_run_script(job_info)
-            checkJobSubmit(job_info)
-        except (CondorRunException, CondorUserException), e:
-            print_formatted_error("%s %s" % (time.strftime('%F %T'), e))
-            sys.exit(1)
+        generate_run_script(job_info)
+        checkJobSubmit(job_info)
     finally:
         if opts.clean:
             cleanup(job_info)
@@ -391,18 +381,20 @@ def main():
 if __name__ == '__main__':
     try:
         main()
+    except (CondorRunException, CondorUserException, RuntimeError), e:
+        print_timestamped_exception(e)
+        sys.exit(1)
     except Exception, e:
         pid = os.getpid()
         try:
             fd, stack_file = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % pid)
             f = os.fdopen(fd, 'w')
             f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
+            traceback.print_exc(file=f)
+            f.close()
+            print_formatted_error('Uncaught exception, please send %s to ' \
+                                  'goc@opensciencegrid.org with a description of the issue.'
+                                  % stack_file)
         except OSError, e:
             print_formatted_error("Unable to write stackfile due to the following error:\n%s" % e)
-            sys.exit(1)
-        traceback.print_exc(file=f)
-        os.close(fd)
-        print_formatted_error('Uncaught exception, please send %s to ' \
-                              'goc@opensciencegrid.org with a description of the issue.'
-                              % stack_file)
         sys.exit(1)
