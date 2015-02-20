@@ -6,25 +6,18 @@ import sys
 import time
 import socket
 import optparse
-import textwrap
 import tempfile
 import traceback
-from subprocess import Popen, PIPE, STDOUT
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
 import classad
 import htcondor
+import condor_ce_tools as ce
 
-g_debug = False
+G_DEBUG = False
 
-class CondorRunException(Exception):
-    pass
-
-class CondorUserException(Exception):
-    pass
-
-condorJobStatus = { \
+CONDOR_JOB_STATUS = { \
   0: "Unexpanded",
   1: "Idle",
   2: "Running",
@@ -34,30 +27,19 @@ condorJobStatus = { \
   6: "Transferring Output",
 }
 
-def print_formatted_error(error_msg):
-    print "*"*80
-    for line in textwrap.wrap(error_msg, 80):
-        print line
-    print "*"*80
-
-def print_timestamped_exception(exception):
-    print_formatted_error("%s %s" % (time.strftime('%F %T'), exception))
-
 def verify_matching_condor_versions():
     lib_ver = htcondor.version()
     try:
-        args = ('condor_version',)
-        p = Popen(args, stdout=PIPE, stderr=STDOUT)
-        (stdout, _) = p.communicate()
+        _, stdout, _ = ce.run_command('condor_version')
     except RuntimeError:
-        raise CondorRunException('Could not find version information using condor_version. ' \
-                                 'Ensure that condor_version is in your PATH')
+        raise ce.CondorRunException('Could not find version information using condor_version. ' \
+                                    'Ensure that condor_version is in your PATH')
     tool_ver = stdout.split('\n')[0]
     if lib_ver != tool_ver:
         raise RuntimeError('Found multiple, mismatched versions of HTCondor installed. ' \
                            'Please ensure that you only have one version of HTCondor installed.')
 
-def configureAuth():
+def configure_auth():
     try:
         auth_methods = re.split(r",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
     except KeyError:
@@ -69,7 +51,7 @@ def configureAuth():
     os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
     htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
 
-def runPing(address, daemon='SCHEDD'):
+def run_ping(address, daemon='SCHEDD'):
 
     if not address.startswith("<"):
         address = "<%s>" % address
@@ -79,36 +61,36 @@ def runPing(address, daemon='SCHEDD'):
         args = ["condor_ce_ping", "-addr", str(address), "-verbose", "-type", daemon, "-debug", "READ"]
 
     try:
-        p = Popen(args, stdout=PIPE, stderr=STDOUT)
-        (stdout, _) = p.communicate()
+        rc, stdout, _ = ce.run_command(args)
     except RuntimeError, e:
-        raise CondorRunException('Failed to ping %s due to the following error:\n%s' % (address, e))
+        raise ce.CondorRunException('Failed to ping %s due to the following error:\n%s' % (address, e))
 
-    if g_debug:
+    if G_DEBUG:
         print "*"*5, "condor_ping output", "*"*5
         print stdout,
         print "*"*20
 
-    if p.returncode < 0:
-        raise CondorRunException("Failed to ping %s; condor_ping terminated with signal %d." \
-                                 % (address, -p.returncode))
-    elif p.returncode > 0:
+    if rc < 0:
+        raise ce.CondorRunException("Failed to ping %s; condor_ping terminated with signal %d." \
+                                    % (address, -rc))
+    elif rc > 0:
         if re.search('Failed to connect', stdout):
-            raise CondorRunException("Failed to ping %s: Please contact the site's system adminstrator to ensure " \
-                                     "that the CE you're trying to contact is functional." % address)
+            raise ce.CondorRunException("Failed to ping %s: Please contact the site's system adminstrator to " \
+                                        "ensure that the CE you're trying to contact is functional." % address)
         else:
-            message = "Failed to ping %s; authorization check exited with code %d." % (address, p.returncode)
-            if not g_debug:
-                message = message + " Re-run the command with '-d' for more verbose output." 
-            raise CondorRunException(message)
+            message = "Failed to ping %s; authorization check exited with code %d." % (address, rc)
+            if not G_DEBUG:
+                message = message + " Re-run the command with '-d' for more verbose output."
+            raise ce.CondorRunException(message)
 
     unauthorized_user = re.search(r'Remote Mapping:\s*(.*)\nAuthorized:\s*FALSE', stdout, re.MULTILINE)
     if unauthorized_user:
-        raise CondorUserException("User %s does not have permissions for %s. Please contact the CE's system " \
-                                  "administrator to ensure that your user is mapped properly in the site's " \
-                                  "authentication system." %(unauthorized_user.group(1), address))
+        raise ce.CondorUserException("User %s does not have permissions for %s. Please contact the CE's " \
+                                     "system administrator to ensure that your user is mapped properly " \
+                                     "in the site's authentication system."
+                                     % (unauthorized_user.group(1), address))
 
-def parseOpts():
+def parse_opts():
 
     usage = "usage: %prog [options] <CE hostname>"
     parser = optparse.OptionParser(usage=usage)
@@ -123,45 +105,45 @@ def parseOpts():
         "files.", dest="clean", default=True, action="store_false")
 
     opts, args = parser.parse_args()
-    global g_debug
-    g_debug = opts.debug
-    if g_debug and hasattr(htcondor.param, 'setdefault') and hasattr(htcondor, 'enable_debug'):
+    global G_DEBUG
+    G_DEBUG = opts.debug
+    if G_DEBUG and hasattr(htcondor.param, 'setdefault') and hasattr(htcondor, 'enable_debug'):
         htcondor.param.setdefault('TOOL_DEBUG', "D_FULLDEBUG")
         htcondor.enable_debug()
 
     return opts, args
 
 
-def checkAuthz(job_info):
+def check_authz(job_info):
     print "Testing HTCondor-CE collector connectivity."
     addresses = socket.getaddrinfo(job_info['collector_fqdn'], job_info['collector_port'], 0, socket.SOCK_STREAM)
-    hadSuccess = False
+    had_success = False
     for addrinfo in addresses:
         addr = "<%s:%d>" % addrinfo[4][:2]
         try:
-            runPing("<%s:%d>" % addrinfo[4][:2], daemon="COLLECTOR")
-            hadSuccess = True
+            run_ping("<%s:%d>" % addrinfo[4][:2], daemon="COLLECTOR")
+            had_success = True
             print "- Successful ping of collector on %s.\n" % addr
         except Exception, e:
             print "- Failed ping of collector on %s.\n" % addr
             raise e
 
     if not hadSuccess:
-        raise CondorRunException("No collector check was successful! Please contact the site's system adminstrator to " \
-                           "ensure that the CE you're trying to contact is functional.")
+        raise ce.CondorRunException("No collector check was successful! Please contact the site's system " \
+                                           "adminstrator to ensure that the CE you're trying to contact is functional.")
     coll = htcondor.Collector(job_info['collector_name'])
 
     try:
         ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
     except (ValueError, IOError):
-        raise CondorRunException("Could not find CE's schedd. Please contact the site's system administrator to " \
-                                 "ensure that CE you're trying to contact is functional.")
+        raise ce.CondorRunException("Could not find CE's schedd. Please contact the site's system administrator "
+                                    "to ensure that CE you're trying to contact is functional.")
 
     job_info['schedd_ad'] = ad
     addr = ad['MyAddress']
     print "Testing HTCondor-CE schedd connectivity."
     try:
-        runPing(addr)
+        run_ping(addr)
         print "- Successful ping of schedd on %s.\n" % addr
     except Exception, e:
         print "- Failed ping of schedd on %s.\n" % addr
@@ -174,8 +156,8 @@ def generate_run_script(job_info):
     job_info['arguments'] = ''
 
     if job_info['command'][0] != '/':
-        for dir in os.environ.get("PATH", "").split(":"):
-            test_path = os.path.join(dir, job_info['command'])
+        for pathdir in os.environ.get("PATH", "").split(":"):
+            test_path = os.path.join(pathdir, job_info['command'])
             if os.path.exists(test_path):
                 job_info['command'] = test_path
                 break
@@ -186,36 +168,20 @@ def generate_run_script(job_info):
     else:
         job_info['arguments'] = ''
 
-    pid = os.getpid()
+    ce.generate_job_files(job_info)
 
-    fd, job_info['stdout_file'] = tempfile.mkstemp(dir=".",
-        prefix=".stdout_%d_" % pid)
-    os.close(fd)
-
-    fd, job_info['stderr_file'] = tempfile.mkstemp(dir=".",
-        prefix=".stderr_%d_" % pid)
-    os.close(fd)
-
-    fd, job_info['log_file'] = tempfile.mkstemp(dir=".",
-        prefix=".log_%d_" % pid)
-    os.close(fd)
-
-    fd, job_info['submit_file'] = tempfile.mkstemp(dir=".",
-        prefix=".submit_%d_" % pid)
-
-
-def addJobProxyInfo(job_ad):
+def add_job_proxy_info(job_ad):
 
     fd = os.popen("voms-proxy-info -file %s -subject" % job_ad['x509userproxy'])
     output = fd.read().strip()
     if fd.close():
-        raise CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+        raise ce.CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
     job_ad['x509userproxysubject'] = output
 
     fd = os.popen("voms-proxy-info -file %s -timeleft" % job_ad['x509userproxy'])
     output = fd.read().strip()
     if fd.close():
-        raise CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+        raise ce.CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
     output = int(output)
     if output <= 0:
         print "WARNING: available proxy appears to be expired"
@@ -233,10 +199,10 @@ def addJobProxyInfo(job_ad):
         job_ad['x509UserProxyFirstFQAN'] = output_lines[0]
         job_ad['x509UserProxyFQAN'] = ",".join(output_lines)
 
-    if g_debug:
+    if G_DEBUG:
         print "Job ad, pre-submit:", job_ad
 
-def setClassadValueType(value):
+def set_classad_value_type(value):
     if value.lower() == 'true':
         return True
     elif value.lower() == 'false':
@@ -248,7 +214,7 @@ def setClassadValueType(value):
 
     return value
 
-def checkJobSubmit(job_info):
+def check_job_submit(job_info):
 
     job_ad = classad.ClassAd()
     job_ad["Cmd"] = job_info['command']
@@ -259,25 +225,25 @@ def checkJobSubmit(job_info):
     job_ad['LeaveJobInQueue'] = classad.ExprTree("( StageOutFinish > 0 ) =!= true")
     for attr in job_info['attribute']:
         key, value = attr.split('=', 1)
-        job_ad[key.strip()] = setClassadValueType(value.strip())
+        job_ad[key.strip()] = set_classad_value_type(value.strip())
     proxy = os.environ.setdefault("X509_USER_PROXY", "/tmp/x509up_u%d" % os.geteuid())
     if not os.path.exists(proxy):
-        raise CondorUserException("Could not find an X509 proxy in %s" % proxy)
+        raise ce.CondorUserException("Could not find an X509 proxy in %s" % proxy)
     job_ad['x509userproxy'] = proxy
-    addJobProxyInfo(job_ad)
+    add_job_proxy_info(job_ad)
 
     try:
         schedd = htcondor.Schedd(job_info['schedd_ad'])
     except RuntimeError, e:
-        raise CondorRunException("Failed to contact schedd at %s due to the following error:\n%s" \
-                                 % (job_info['schedd_ad']['Machine'], e))
+        raise ce.CondorRunException("Failed to contact schedd at %s due to the following error:\n%s" \
+                                    % (job_info['schedd_ad']['Machine'], e))
     print "Submitting job to schedd %s" % job_info['schedd_ad']['MyAddress']
     ad_results = []
     try:
         cluster = schedd.submit(job_ad, 1, True, ad_results)
     except RuntimeError, e:
-        raise CondorRunException("- Failed to submit job to %s due to the following error:\n%s" \
-                                 % (job_info['schedd_ad']['Machine'], e))
+        raise ce.CondorRunException("- Failed to submit job to %s due to the following error:\n%s" \
+                                    % (job_info['schedd_ad']['Machine'], e))
 
     print "- Successful submission; cluster ID %d" % cluster
 
@@ -287,7 +253,7 @@ def checkJobSubmit(job_info):
     try:
         schedd.spool(ad_results)
     except RuntimeError, e:
-        raise CondorRunException("- Failed to spool files to %s due to the following error:\n%s" \
+        raise ce.CondorRunException("- Failed to spool files to %s due to the following error:\n%s" \
                                  % (job_info['schedd_ad']['Machine'], e))
 
     print "- Successful spooling"
@@ -295,57 +261,53 @@ def checkJobSubmit(job_info):
     attempts = 600
     last_status = -1
     for attempt in range(attempts):
-        if g_debug: print "Querying job status (%d/%d)" % (attempt+1, attempts)
+        if G_DEBUG:
+            print "Querying job status (%d/%d)" % (attempt+1, attempts)
         try:
             ad = schedd.query("ClusterID == %d" % cluster, ["JobStatus", "ClusterID", "ProcID"])
         except RuntimeError, e:
-            raise CondorRunException("- Failed to query job status due to the following error:\n%s" %  e)
+            raise ce.CondorRunException("- Failed to query job status due to the following error:\n%s" %  e)
         if len(ad) != 1:
-            raise CondorRunException("Could not find the job in cluster %d" % cluster)
+            raise ce.CondorRunException("Could not find the job in cluster %d" % cluster)
         status = ad[0]['JobStatus']
-        if g_debug:
-            print "Job status:", condorJobStatus.get(status, status)
+        if G_DEBUG:
+            print "Job status:", CONDOR_JOB_STATUS.get(status, status)
         elif last_status != status:
             if last_status == -1:
-                print "Job status:", condorJobStatus.get(status, status)
+                print "Job status:", CONDOR_JOB_STATUS.get(status, status)
             else:
-                print "Job transitioned from", condorJobStatus.get(last_status, last_status), \
-                    "to", condorJobStatus.get(status, status)
+                print "Job transitioned from", CONDOR_JOB_STATUS.get(last_status, last_status), \
+                    "to", CONDOR_JOB_STATUS.get(status, status)
             last_status = status
-        if status in [3, 4]: break
+        if status in [3, 4]:
+            break
         time.sleep(1)
 
     if status == 5: # TODO - provide better diagnostics
-        raise CondorRunException("Remote job, %d.0, was held" % cluster)
+        raise ce.CondorRunException("Remote job, %d.0, was held" % cluster)
     if status == 4:
         try:
             schedd.retrieve("ClusterID == %d" % cluster)
         except RuntimeError, e:
-            raise CondorRunException("Failed to retrieve output from %s due to the following error:\n%s" \
-                                     % (job_info['schedd_ad']['Machine'], e))
+            raise ce.CondorRunException("Failed to retrieve output from %s due to the following error:\n%s" \
+                                        % (job_info['schedd_ad']['Machine'], e))
         try:
             schedd.act(htcondor.JobAction.Remove, "ClusterID == %d" % cluster)
         except RuntimeError, e:
-            raise CondorRunException("Failed to cleanup job on %s due to the following error:\n%s" \
+            raise ce.CondorRunException("Failed to cleanup job on %s due to the following error:\n%s" \
                                      % (job_info['schedd_ad']['Machine'], e))
         output = open(job_info['stdout_file'], "r").read()
         if not output:
-            raise CondorRunException("Job produced empty stdout")
-        if g_debug:
+            raise ce.CondorRunException("Job produced empty stdout")
+        if G_DEBUG:
             print "*"*5, "Job output", "*"*5
             print output,
             print "*"*20
         else:
             print "- Job was successful"
 
-def cleanup(job_info):
-    files = ['stdout_file', 'stderr_file', 'log_file', 'submit_file']
-
-    for filename in files:
-        os.remove(job_info[filename])
-
 def main():
-    opts, args = parseOpts()
+    opts, args = parse_opts()
 
     if len(args) < 1:
         raise RuntimeError("Usage: condor_ce_trace [options] <hostname>")
@@ -369,20 +331,20 @@ def main():
     else:
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
-    configureAuth()
-    checkAuthz(job_info)
+    configure_auth()
+    check_authz(job_info)
     try:
         generate_run_script(job_info)
-        checkJobSubmit(job_info)
+        check_job_submit(job_info)
     finally:
         if opts.clean:
-            cleanup(job_info)
+            ce.cleanup_job_files(job_info)
 
 if __name__ == '__main__':
     try:
         main()
-    except (CondorRunException, CondorUserException, RuntimeError), e:
-        print_timestamped_exception(e)
+    except (ce.CondorRunException, ce.CondorUserException, RuntimeError), e:
+        ce.print_timestamped_msg(e)
         sys.exit(1)
     except Exception, e:
         pid = os.getpid()
@@ -392,9 +354,8 @@ if __name__ == '__main__':
             f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
             traceback.print_exc(file=f)
             f.close()
-            print_formatted_error('Uncaught exception, please send %s to ' \
-                                  'goc@opensciencegrid.org with a description of the issue.'
-                                  % stack_file)
+            ce.print_formatted_msg('Uncaught exception, please send %s to goc@opensciencegrid.org with a description ' \
+                                   'of the issue.' % stack_file)
         except OSError, e:
-            print_formatted_error("Unable to write stackfile due to the following error:\n%s" % e)
+            ce.print_formatted_msg("Unable to write stackfile due to the following error:\n%s" % e)
         sys.exit(1)

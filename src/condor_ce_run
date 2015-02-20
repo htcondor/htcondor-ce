@@ -2,21 +2,21 @@
 import os
 import re
 import sys
-import time
-import errno
-import socket
 import tempfile
+import time
+import socket
 import optparse
 import traceback
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
 import htcondor
+import condor_ce_tools as ce
 
 # HTCondor-CE simple run script.
 # Mimics the venerable condor_run
 
-submit_file = """\
+SUBMIT_FILE = """\
 universe = grid
 grid_resource = condor %(schedd_name)s %(collector_name)s
 remove_universe = %(universe)s
@@ -37,7 +37,7 @@ use_x509userproxy = true
 queue
 """
 
-submit_remote_file = """\
+SUBMIT_REMOTE_FILE = """\
 universe = %(universe)s
 
 executable = %(command)s
@@ -57,9 +57,6 @@ use_x509userproxy = true
 
 queue
 """
-
-class CondorRunException(Exception):
-    pass
 
 def parse_opts():
     parser = optparse.OptionParser()
@@ -91,10 +88,10 @@ def parse_opts():
 
     return opts, args
 
-def generate_submit_file(job_info):
+def generate_submit_contents(job_info):
     if job_info['command'][0] != '/':
-        for dir in os.environ.get("PATH", "").split(":"):
-            test_path = os.path.join(dir, job_info['command'])
+        for pathdir in os.environ.get("PATH", "").split(":"):
+            test_path = os.path.join(pathdir, job_info['command'])
             if os.path.exists(test_path):
                 job_info['command'] = test_path
                 break
@@ -106,12 +103,10 @@ def generate_submit_file(job_info):
         job_info['arguments'] = ''
 
     if job_info['remote']:
-        return submit_remote_file % job_info
+        return SUBMIT_REMOTE_FILE % job_info
     else:
-        return submit_file % job_info
+        return SUBMIT_FILE % job_info
 
-# Example output: 1 job(s) submitted to cluster 14.
-cluster_re = re.compile("(\d+) job\(s\) submitted to cluster (\d+)\.")
 def submit_job(job_info):
     # TODO: Here and in wait_job below, make sure we can tell the difference
     # between condor_submit failure and failure to exec.
@@ -122,41 +117,24 @@ def submit_job(job_info):
     if job_info['remote']:
         args += ['-remote', job_info['schedd_name'], '-pool', job_info['collector_name']]
 
-    r, w = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        try:
-            os.close(r)
-            os.dup2(w, 1)
-            os.execvp("condor_submit", args)
-        finally:
-            os._exit(1)
-    os.close(w)
-
-    for line in os.fdopen(r).readlines():
-        m = cluster_re.match(line)
-        if m:
-            job_info['cluster'] = m.groups()[1]
+    rc, stdout, _ = ce.run_command(args)
+    # Example output: 1 job(s) submitted to cluster 14.
+    cluster_re = re.compile(r'(\d+) job\(s\) submitted to cluster (\d+)\.')
+    try:
+        job_info['cluster'] = cluster_re.search(stdout).group(2)
+    except AttributeError:
+        pass
 
     if job_info['remote'] and ('cluster' not in job_info):
-        raise CondorRunException("Could not parse job cluster from " \
-            "condor_submit output")
+        raise ce.CondorRunException("Could not parse job cluster from " \
+                                    "condor_submit output")
 
-    tmp_pid = -1
-    while tmp_pid != pid:
-        tmp_pid, status = os.waitpid(pid, 0)
-    if os.WIFEXITED(status):
-        exit_code = os.WEXITSTATUS(status)
-        if exit_code:
-            raise CondorRunException("Failed to submit job; condor_submit " \
-                "exited with code %d." % exit_code)
-    elif os.WIFSIGNALED(status):
-        signal = os.WTERMSIG(status)
-        raise CondorRunException("Failed to submit job; condor_submit " \
-            "terminated with signal %d." % signal)
-    else:
-        raise CondorRunException("Failed to submit job; condor_submit " \
-            "stopped with unhandled status code %d." % status)
+    if rc < 0:
+        raise ce.CondorRunException("Failed to submit job; condor_submit " \
+                                    "terminated with signal %d." % -rc)
+    elif rc > 0:
+        raise ce.CondorRunException("Failed to submit job; condor_submit " \
+                                    "exited with code %d." % rc)
 
 def wait_for_job(job_info):
     if job_info['remote']:
@@ -166,32 +144,14 @@ def wait_for_job(job_info):
     if job_info['debug']:
         args.append("-debug")
 
-    pid = os.fork()
-    if pid == 0:
-        try:
-           fd = os.open(os.devnull, os.O_WRONLY)
-           os.dup2(fd, 1)
-           os.execvp("condor_wait", args)
-        finally:
-           os._exit(1)
+    rc, _, _ = ce.run_command(args)
+    if rc < 0:
+        raise ce.CondorRunException("Failed to wait for job; condor_wait " \
+                                    "terminated with signal %d." % -rc)
+    elif rc > 0:
+        raise ce.CondorRunException("Failed to wait for job; condor_wait " \
+                                    "exited with code %d." % rc)
 
-    tmp_pid = -1
-    while tmp_pid != pid:
-        tmp_pid, status = os.waitpid(pid, 0)
-    if os.WIFEXITED(status):
-        exit_code = os.WEXITSTATUS(status)
-        if exit_code:
-            raise CondorRunException("Failed to wait for job; condor_wait " \
-                "exited with code %d." % exit_code)
-    elif os.WIFSIGNALED(status):
-        signal = os.WTERMSIG(status)
-        raise CondorRunException("Failed to wait for job; condor_wait " \
-            "terminated with signal %d." % signal)
-    else:
-        raise CondorRunException("Failed to wait for job; condor_wait " \
-            "stopped with unhandled status code %d." % status)
-
-status_re = re.compile("(\d+)")
 def check_remote_status(job_info):
     args = ['condor_q', '-format', '%d\n', 'JobStatus', '-pool',
         job_info['collector_name'], '-name', job_info['schedd_name'],
@@ -199,41 +159,24 @@ def check_remote_status(job_info):
     if job_info['debug']:
         args.append('-debug')
 
-    r, w = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        try:
-            os.close(r)
-            os.dup2(w, 1)
-            os.execvp("condor_q", args)
-        finally:
-            os._exit(1)
-    os.close(w)
-
+    rc, stdout, _ = ce.run_command(args)
     job_status = None
-    for line in os.fdopen(r).readlines():
-        m = status_re.match(line)
-        if m:
-            job_status = int(m.groups()[0])
+    status_re = re.compile(r"(\d+)")
+    for line in stdout:
+        try:
+            job_status = int(status_re.match(line).group(1))
+        except AttributeError:
+            pass
 
-    tmp_pid = -1
-    while tmp_pid != pid:
-        tmp_pid, status = os.waitpid(pid, 0)
-    if os.WIFEXITED(status):
-        exit_code = os.WEXITSTATUS(status)
-        if exit_code:
-            raise CondorRunException("Failed to check job status; condor_q " \
-                "exited with code %d." % exit_code)
-    elif os.WIFSIGNALED(status):
-        signal = os.WTERMSIG(status)
-        raise CondorRunException("Failed to check job status; condor_q " \
-            "terminated with signal %d." % signal)
-    else:
-        raise CondorRunException("Failed to check job status; condor_q " \
-            "stopped with unhandled status code %d." % status)
+    if rc < 0:
+        raise ce.CondorRunException("Failed to check job status; condor_q " \
+                                    "terminated with signal %d." % -rc)
+    elif rc > 0:
+        raise ce.CondorRunException("Failed to check job status; condor_q " \
+                                    "exited with code %d." % rc)
 
     if job_status == None:
-        raise CondorRunException("condor_q did not return a valid job status.")
+        raise ce.CondorRunException("condor_q did not return a valid job status.")
 
     return job_status
 
@@ -246,74 +189,24 @@ def wait_for_job_remote(job_info):
     if job_info['debug']:
         args.append('-debug')
 
-    r, w = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        try:
-            os.close(r)
-            os.dup2(w, 1)
-            os.execvp("condor_transfer_data", args)
-        finally:
-            os._exit(1)
-    os.close(w)
-
-    tmp_pid = -1
-    while tmp_pid != pid:
-        tmp_pid, status = os.waitpid(pid, 0)
-    if os.WIFEXITED(status):
-        exit_code = os.WEXITSTATUS(status)
-        if exit_code:
-            raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
-                "exited with code %d." % exit_code)
-    elif os.WIFSIGNALED(status):
-        signal = os.WTERMSIG(status)
-        raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
-            "terminated with signal %d." % signal)
-    else:
-        raise CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
-            "stopped with unhandled status code %d." % status)
+    rc, _, _ = ce.run_command(args)
+    if rc < 0:
+        raise ce.CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
+                                    "terminated with signal %d." % -rc)
+    elif rc > 0:
+        raise ce.CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
+                                    "exited with code %d." % rc)
 
 def print_results(job_info):
-
     for line in open(job_info["stdout_file"], "r").readlines():
         print line,
 
     for line in open(job_info["stderr_file"], "r").readlines():
         print line,
 
-def cleanup(job_info):
-
-    if 'log_file' in job_info:
-        try:
-            os.unlink(job_info['log_file'])
-        except OSError, oe:
-            if oe.errno != errno.ENOENT:
-                raise
-
-    if 'stdout_file' in job_info:
-        try:
-            os.unlink(job_info['stdout_file'])
-        except OSError, oe:
-            if oe.errno != errno.ENOENT:
-                raise
-
-    if 'stderr_file' in job_info:
-        try:
-            os.unlink(job_info['stderr_file'])
-        except OSError, oe:
-            if oe.errno != errno.ENOENT:
-                raise
-
-    if 'submit_file' in job_info:
-        try:
-            os.unlink(job_info['submit_file'])
-        except OSError, oe:
-            if oe.errno != errno.ENOENT:
-                raise
-
 def configureAuth():
     try:
-        auth_methods = re.split(",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
+        auth_methods = re.split(r",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
     except KeyError:
         auth_methods = []
     if 'GSI' not in auth_methods:
@@ -356,21 +249,16 @@ def main():
     else:
         job_info['universe'] = "vanilla"
 
-    job_files = ['stdout',
-                 'stderr',
-                 'log']
-    pid = os.getpid()
-    for filetype in job_files:
-        fd, job_info[filetype + '_file'] = tempfile.mkstemp(dir=".", prefix=".%s_%d_" % (filetype, pid))
-        os.close(fd)
-    submit_fd, job_info['submit_file'] = tempfile.mkstemp(dir=".", prefix=".submit_%d_" % pid)
-
-    run_script = generate_submit_file(job_info)
+    job_info = ce.generate_job_files(job_info)
+    run_script = generate_submit_contents(job_info)
     try:
         if opts.dry_run:
-            print "Without the --dry-run option, condor_ce_run would submit the following file to %s:\n\n%s" \
-                % (job_info["schedd_name"], run_script)
+            ce.print_formatted_msg("Without the --dry-run option, condor_ce_run would submit the following " \
+                                   "file to %s." % job_info["schedd_name"])
+            print "\n%s" % run_script # don't wrap the submit file
         else:
+            pid = os.getpid()
+            submit_fd, job_info['submit_file'] = tempfile.mkstemp(dir=".", prefix=".submit_%d_" % pid)
             os.write(submit_fd, run_script)
             os.close(submit_fd)
             submit_job(job_info)
@@ -378,16 +266,16 @@ def main():
             print_results(job_info)
     finally:
         if opts.clean or opts.dry_run:
-            cleanup(job_info)
+            ce.cleanup_job_files(job_info)
 
     return 0
 
 if __name__ == '__main__':
     try:
         sys.exit(main())
-    except CondorRunException, e:
+    except ce.CondorRunException, e:
         try:
             if os.environ['CONDOR_CE_RUN_DEBUG'].lower() == 'true':
                 traceback.print_exc()
         except KeyError:
-            print e
+            ce.print_timestamped_msg(e)
