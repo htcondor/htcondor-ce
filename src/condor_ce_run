@@ -80,7 +80,7 @@ def parse_opts():
     parser.add_option("-l", "--local", help="Have the job run in the CE's " \
         "local universe.", dest="local", default=False, action="store_true")
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
-        "files.", dest="clean", default=False, action="store_true")
+        "files.", dest="clean", default=True, action="store_false")
     parser.add_option("--dry-run", help="Verify arguments and options " \
         "without submitting a job to the specified CE.", dest="dry_run",
         default=False, action="store_true")
