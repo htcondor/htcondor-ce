@@ -312,7 +312,19 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Mon Jan 05 2014 Brian Lin <blin@cs.wisc.edu> - 1.10-1
+* Mon Feb 23 2015 Brian Lin <blin@cs.wisc.edu> - 1.10-1
+- Add dry-run option to condor_ce_run (SOFTWARE-1787)
+- Add minWalltime attribute
+- Allow the collector to accept startd ads from worker nodes
+- Advertise the collector's address in the job environment
+- Fix --vo broken if missing in condor_ce_info_status (SOFTWARE-1782)
+- Fix cleanup bug in condor_ce_run
+
+* Mon Jan 26 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-3
+- Improvements to error handling and environment verification of condor_ce_trace
+- Change the name of the job router diagnostic tool to condor_ce_job_router_info
+
+* Tue Jan 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.9-2
 - Fix HTCondor jobs routing incorrectly in 8.3.x
 
 * Fri Dec 18 2014 Brian Lin <blin@cs.wisc.edu> - 1.9-1
