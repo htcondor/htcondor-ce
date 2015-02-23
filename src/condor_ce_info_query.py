@@ -102,7 +102,11 @@ def filterResourceAds(constraints, resources):
 
     """
     predicates = []
-    for attr in constraints:
+    for attr, value in constraints.iteritems():
+        if value is None:
+            continue
+        # NB: Do not use 'attr' or 'value' inside the lambdas because that
+        # would be 'closing over the loop variable'
         if attr == 'cpus':
             predicates.append(
                 lambda res: constraints['cpus'] <= res['CPUs'])
