@@ -5,7 +5,7 @@ import os
 import tempfile
 import textwrap
 import time
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE
 
 # Excluding submit file so the respective scripts
 # can generate it as they see fit
@@ -27,7 +27,7 @@ def print_timestamped_msg(msg):
     print_formatted_msg("%s %s" % (time.strftime('%F %T'), msg))
 
 def run_command(command):
-    p = Popen(command, stdout=PIPE, stderr=STDOUT)
+    p = Popen(command, stdout=PIPE, stderr=PIPE)
     stdout, stderr = p.communicate()
     return p.returncode, stdout, stderr
 
