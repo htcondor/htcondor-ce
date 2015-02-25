@@ -128,7 +128,7 @@ def check_authz(job_info):
             print "- Failed ping of collector on %s.\n" % addr
             raise e
 
-    if not hadSuccess:
+    if not had_success:
         raise ce.CondorRunException("No collector check was successful! Please contact the site's system " \
                                            "adminstrator to ensure that the CE you're trying to contact is functional.")
     coll = htcondor.Collector(job_info['collector_name'])
