@@ -9,6 +9,7 @@ import optparse
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
+import classad
 import htcondor
 
 import condor_ce_info_query
@@ -105,6 +106,8 @@ which results in:
         # Don't reformat the usage string (https://stackoverflow.com/questions/1857346)
         optparse.OptionParser.format_usage = lambda self, formatter: self.usage
 
+    parser.add_option("--constrain", default=None,
+                      help="Show only results matching a ClassAd expression")
     parser.add_option("--cpus", default=1, type='int',
                       help="CPUs requested")
     parser.add_option("--memory", default=1, type='int',
@@ -133,6 +136,13 @@ which results in:
     global g_debug
     g_debug = opts.debug
 
+    if opts.constrain:
+        try:
+            # catch this one early
+            classad.ExprTree(opts.constrain)
+        except SyntaxError:
+            parser.error("Invalid classad expression: %s" % opts.constrain)
+
     if opts.pool:
         collector = opts.pool
     else:
@@ -157,7 +167,7 @@ def main(argv):
     opts, collector_addr = parseOpts(argv)
 
     constraints = {}
-    for key in ['cpus', 'memory', 'name', 'vo', 'walltime']:
+    for key in ['constrain', 'cpus', 'memory', 'name', 'vo', 'walltime']:
         try:
             constraints[key] = getattr(opts, key)
         except AttributeError:

@@ -124,11 +124,23 @@ def matchAllowedVOs(vo, resource_ad):
         return vo in list(allowed_vos)
 
 
+def evalExpressionStr(expression_str, context):
+    """Evaluate a classad expression (in a string) in the given context (a
+    ClassAd).
+
+    Can raise:
+    - SyntaxError (if expression_str is unparseable)
+
+    """
+    return context.flatten(classad.ExprTree(expression_str))
+
+
 def filterResourceAds(constraints, resources):
     """Filter a list of ResourceAds in `resources` based on a set of
     constraints on attributes given in the dict `constraints`.
 
     The recognized keys in `constraints` are:
+        'constrain' : arbitrary ClassAd expression
         'cpus'     : minimum CPUs of resource
         'memory'   : minimum Memory of resource
         'name'     : Name of resource
@@ -147,6 +159,9 @@ def filterResourceAds(constraints, resources):
         if attr == 'cpus':
             predicates.append(
                 lambda res: constraints['cpus'] <= res['CPUs'])
+        elif attr == 'constrain':
+            predicates.append(
+                lambda res: bool(evalExpressionStr(constraints['constrain'], res)))
         elif attr == 'memory':
             predicates.append(
                 lambda res: constraints['memory'] <= res['Memory'])
