@@ -286,6 +286,7 @@ fi
 %{_bindir}/condor_ce_ping
 
 %{python_sitelib}/condor_ce_info_query.py*
+%{python_sitelib}/condor_ce_tools.py*
 
 %files collector
 
