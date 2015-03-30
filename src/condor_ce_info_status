@@ -175,6 +175,8 @@ def main(argv):
             print >> sys.stderr, "No resources match"
             return 1
         else:
+            if len(resources) > 1:
+                print >> sys.stderr, "%d resources match; only printing first" % len(resources)
             sorted_resources = sorted(resources, key=lambda x: x['Name'])
             res = sorted_resources[0]
             print "# Submit file for resource " + res['Name']
