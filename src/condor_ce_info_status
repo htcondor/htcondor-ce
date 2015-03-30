@@ -6,11 +6,9 @@ FALLBACK_COLLECTOR_PORT = 9619
 import os
 import sys
 import optparse
-import itertools
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
-import classad
 import htcondor
 
 import condor_ce_info_query
@@ -111,6 +109,8 @@ which results in:
                       help="CPUs requested")
     parser.add_option("--memory", default=1, type='int',
                       help="Memory requested (in megabytes)")
+    parser.add_option("--name", default=None,
+                      help="Name of the resource")
     parser.add_option("--walltime", default=0, type='int',
                       help="Walltime requested (in minutes)")
     parser.add_option("--vo", default=None,
@@ -119,6 +119,8 @@ which results in:
                       help="Output width for table")
     parser.add_option("--pool", default=None, metavar='ADDRESS',
                       help="Collector to get information from")
+    parser.add_option("--submitfile", default=False, dest='submitfile', action='store_true',
+                      help="Show entries as lines to be added to a submit file")
     parser.add_option("-v", "--verbose", "-l", "--long", dest='verbose', default=False, action='store_true',
                       help="Show matching classads instead of a table")
     parser.add_option("-d", "--debug", default=False, action='store_true',
@@ -155,7 +157,7 @@ def main(argv):
     opts, collector_addr = parseOpts(argv)
 
     constraints = {}
-    for key in ['cpus', 'memory', 'vo', 'walltime']:
+    for key in ['cpus', 'memory', 'name', 'vo', 'walltime']:
         try:
             constraints[key] = getattr(opts, key)
         except AttributeError:
@@ -167,6 +169,18 @@ def main(argv):
     if opts.verbose:
         for res in resources:
             print res
+    elif opts.submitfile:
+        resources = [x for x in resources if x.get('Name')]
+        if not resources:
+            print >> sys.stderr, "No resources match"
+            return 1
+        else:
+            if len(resources) > 1:
+                print >> sys.stderr, "%d resources match; only printing first" % len(resources)
+            sorted_resources = sorted(resources, key=lambda x: x['Name'])
+            res = sorted_resources[0]
+            print "# Submit file for resource " + res['Name']
+            print "\n".join(condor_ce_info_query.getSubmitFileAdditions(res)) + "\n"
     else:
         print formatResourceAdsTable(resources, opts.width)
 
