@@ -33,6 +33,7 @@ WhenToTransferOutput = ON_EXIT
 getenv = True
 
 use_x509userproxy = true
+%(extra_attr)s
 
 queue
 """
@@ -54,6 +55,7 @@ use_x509userproxy = true
 
 +Owner = undefined
 +LeaveJobInQueue = ( StageOutFinish > 0 ) =!= true
+%(extra_attr)s
 
 queue
 """
@@ -241,13 +243,22 @@ def main():
     os.environ.setdefault("TOOL_DEBUG", "D_FULLDEBUG")
 
     job_info['remote'] = opts.remote
-
     job_info['arguments'] = args[2:]
 
     if opts.local:
         job_info['universe'] = "local"
     else:
         job_info['universe'] = "vanilla"
+
+    try:
+        attr_file = open(opts.extra_attrs_file, 'r')
+        job_info['extra_attr'] = attr_file.read()
+        attr_file.close()
+    except AttributeError:
+        pass
+    except IOError, e:
+        ce.print_formatted_msg("Could not open extra attributes file. %s" % e)
+        sys.exit(1)
 
     job_info = ce.generate_job_files(job_info)
     run_script = generate_submit_contents(job_info)
