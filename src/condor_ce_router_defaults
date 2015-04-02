@@ -180,6 +180,7 @@ def condor_env_escape(val):
 
 export_line_re = re.compile("^export\s+([a-zA-Z_]\w*)")
 variable_line_re = re.compile("([a-zA-Z_]\w*)=(.+)")
+shell_var_re = re.compile("\"?\$(\w*)\"?")
 def read_osg_environment_file(filename):
     """
     Parse the OSG environment file.
@@ -200,7 +201,14 @@ def read_osg_environment_file(filename):
             export_lines.append(m.group(1))
         m = variable_line_re.match(line)
         if m:
-            env[m.group(1)] = condor_env_escape(m.group(2))
+            (job_var, value) = m.groups()
+            shell_var = shell_var_re.match(value)
+            if shell_var:
+                ce_var = os.getenv(shell_var.group(1))
+                if ce_var:
+                    env[job_var] = condor_env_escape(ce_var)
+            else:
+                env[job_var] = condor_env_escape(value)
     return dict([(i[0], i[1]) for i in env.items() if i[0] in export_lines])
 
 def main():
