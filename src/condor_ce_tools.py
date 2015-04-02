@@ -19,7 +19,8 @@ class CondorUserException(Exception):
 
 def print_formatted_msg(msg):
     print "*"*80
-    for line in textwrap.wrap(msg, 80):
+    wrapper = textwrap.TextWrapper(width=80, replace_whitespace=False)
+    for line in wrapper.wrap(msg):
         print line
     print "*"*80
 
