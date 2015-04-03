@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.10
+Version: 1.11
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -286,6 +286,7 @@ fi
 %{_bindir}/condor_ce_ping
 
 %{python_sitelib}/condor_ce_info_query.py*
+%{python_sitelib}/condor_ce_tools.py*
 
 %files collector
 
@@ -312,6 +313,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.11-1
+- Add code for generating submit file additions (SOFTWARE-1760)
+- Bug fix for matching pilot DN's
+
 * Mon Feb 23 2015 Brian Lin <blin@cs.wisc.edu> - 1.10-1
 - Add dry-run option to condor_ce_run (SOFTWARE-1787)
 - Add minWalltime attribute
