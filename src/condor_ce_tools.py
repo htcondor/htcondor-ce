@@ -32,8 +32,9 @@ def run_command(command):
     stdout, stderr = p.communicate()
     return p.returncode, stdout, stderr
 
-def generate_job_files(job_info):
+def generate_job_files():
     pid = os.getpid()
+    job_info = {}
     for filetype in JOB_FILES:
         fd, job_info[filetype + '_file'] = tempfile.mkstemp(dir=".", prefix=".%s_%d_" % (filetype, pid))
         os.close(fd)

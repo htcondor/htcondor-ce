@@ -168,7 +168,7 @@ def generate_run_script(job_info):
     else:
         job_info['arguments'] = ''
 
-    ce.generate_job_files(job_info)
+    job_info.update(ce.generate_job_files())
 
 def add_job_proxy_info(job_ad):
 
