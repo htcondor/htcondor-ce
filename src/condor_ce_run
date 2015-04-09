@@ -255,6 +255,7 @@ def main():
         job_info['extra_attr'] = attr_file.read()
         attr_file.close()
     except AttributeError:
+        # No attribute file was specified
         pass
     except IOError, e:
         ce.print_formatted_msg("Could not open extra attributes file. %s" % e)
