@@ -50,7 +50,7 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     /* Note default memory request of 2GB */ \\
     /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd if undefined via RSL */ \\
     eval_set_RequestMemory = ifThenElse(InputRSL.maxMemory isnt null, InputRSL.maxMemory, ifThenElse(maxMemory isnt null, maxMemory, ifThenElse(default_maxMemory isnt null, default_maxMemory, 2000))); \\
-    eval_set_remote_queue = ifThenElse(InputRSL.queue isnt null, InputRSL.queue, ifThenElse(queue isnt null, queue, ifThenElse(default_queue isnt null, default_queue, ""))); \\
+    eval_set_remote_queue = ifThenElse(InputRSL.queue isnt null, InputRSL.queue, ifThenElse(batch_queue isnt null, batch_queue, ifThenElse(queue isnt null, queue, ifThenElse(default_queue isnt null, default_queue, "")))); \\
     /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */ \\
     eval_set_RequestCpus = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
     eval_set_remote_SMPGranularity = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
