@@ -254,15 +254,17 @@ def main():
         attr_file = open(opts.extra_attrs_file, 'r')
         job_info['extra_attr'] = attr_file.read()
         attr_file.close()
-    except AttributeError:
-        # No attribute file was specified
+    except TypeError:
+        # No attribute file was specified but the extra_attr key is expected by the submit files
+        job_info['extra_attr'] = ''
         pass
     except IOError, e:
         ce.print_formatted_msg("Could not open extra attributes file. %s" % e)
         sys.exit(1)
 
-    job_info = ce.generate_job_files(job_info)
+    job_info.update(ce.generate_job_files())
     run_script = generate_submit_contents(job_info)
+
     try:
         if opts.dry_run:
             ce.print_formatted_msg("Without the --dry-run option, condor_ce_run would submit the following " \
