@@ -17,14 +17,13 @@ import condor_ce_tools as ce
 
 G_DEBUG = False
 
-CONDOR_JOB_STATUS = { \
-  0: "Unexpanded",
-  1: "Idle",
-  2: "Running",
-  3: "Removed",
-  4: "Completed",
-  5: "Held",
-  6: "Transferring Output",
+CONDOR_JOB_STATUS = {0: "Unexpanded",
+                     1: "Idle",
+                     2: "Running",
+                     3: "Removed",
+                     4: "Completed",
+                     5: "Held",
+                     6: "Transferring Output",
 }
 
 def verify_matching_condor_versions():
@@ -95,14 +94,14 @@ def parse_opts():
     usage = "usage: %prog [options] <CE hostname>"
     parser = optparse.OptionParser(usage=usage)
     parser.add_option("-s", "--schedd-name",
-        help="Name of the schedd to use.",
-        dest="schedd_name")
+                      help="Name of the schedd to use.",
+                      dest="schedd_name")
     parser.add_option("-d", "--debug", help="Print debugging info.",
-        dest="debug", default=False, action="store_true")
+                      dest="debug", default=False, action="store_true")
     parser.add_option("-a", "--attribute", help="Add attribute to job ad.",
                       dest="attribute", default=[], action='append')
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
-        "files.", dest="clean", default=True, action="store_false")
+                      "files.", dest="clean", default=True, action="store_false")
 
     opts, args = parser.parse_args()
     global G_DEBUG
@@ -116,7 +115,12 @@ def parse_opts():
 
 def check_authz(job_info):
     print "Testing HTCondor-CE collector connectivity."
-    addresses = socket.getaddrinfo(job_info['collector_fqdn'], job_info['collector_port'], 0, socket.SOCK_STREAM)
+    try:
+        addresses = socket.getaddrinfo(job_info['collector_fqdn'], job_info['collector_port'], 0, socket.SOCK_STREAM)
+    except socket.gaierror:
+        raise RuntimeError("Failed to retrieve socket information for %s:%s. Verify the specified hostname and " \
+                           "network connectivity to the CE." %  (job_info['collector_fqdn'],
+                                                                 job_info['collector_port']))
     had_success = False
     for addrinfo in addresses:
         addr = "<%s:%d>" % addrinfo[4][:2]
@@ -130,7 +134,7 @@ def check_authz(job_info):
 
     if not had_success:
         raise ce.CondorRunException("No collector check was successful! Please contact the site's system " \
-                                           "adminstrator to ensure that the CE you're trying to contact is functional.")
+                                    "adminstrator to ensure that the CE you're trying to contact is functional.")
     coll = htcondor.Collector(job_info['collector_name'])
 
     try:
