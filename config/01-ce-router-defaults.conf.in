@@ -30,7 +30,7 @@ LOCAL_CONFIG_FILE = /usr/share/condor-ce/condor_ce_router_defaults|
 # affects both GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE (for non-HTCondor
 # sites) and JOB_ROUTER_DEFAULTS
 CONDORCE_MAX_JOBS = 10000
-GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE = $CONDORCE_MAX_JOBS
+GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE = $(CONDORCE_MAX_JOBS)
 
 # Only route jobs for an up-to-date client
 # NOTE: disabled because HTCondor-G appears to not set this properly
