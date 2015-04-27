@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.11
+Version: 1.12
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -313,6 +313,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.12-1
+- Add ability to constrain via arbitrary ClassAd expression in condor_ce_info_status (SOFTWARE-1842)
+- condor_ce_run now accepts extra attributes via file (SOFTWARE-1641)
+- Support for dynamic assignment of OSG env variables (SOFTWARE-1862)
+- Catch socket exceptions in condor_ce_trace (SOFTWARE-1821)
+- Add support for CILogon certificates
+- Fix gridmanager job limit configuration
+
 * Mon Mar 30 2015 Brian Lin <blin@cs.wisc.edu> - 1.11-1
 - Add code for generating submit file additions (SOFTWARE-1760)
 - Bug fix for matching pilot DN's
