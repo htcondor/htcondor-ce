@@ -49,12 +49,13 @@ fi
 start() {
     echo -n $"Starting Condor-CE daemons: "
 
-    # Check validity of job router knobs
-    python -c "import htcondor; import classad; classad.ExprTree(htcondor.param['JOB_ROUTER_DEFAULTS'])" &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "Could not read JOB_ROUTER_DEFAULTS in the HTCondor CE configuration. Please verify syntax correctness."
-        exit 6
-    fi
+    for ATTR in 'JOB_ROUTER_DEFAULTS' 'JOB_ROUTER_ENTRIES'; do
+        python -c "import htcondor; import classad; classad.parseAds(htcondor.param[\"$ATTR\"]).next()" &> /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Could not read $ATTR in the HTCondor CE configuration. Please verify syntax correctness."
+            exit 6
+        fi
+    done
 
     daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
     RETVAL=$?
