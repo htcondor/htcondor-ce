@@ -49,6 +49,14 @@ fi
 start() {
     echo -n $"Starting Condor-CE daemons: "
 
+    # Verify python binding functionality
+    python -c "import htcondor; import classad" &> /dev/null
+    if [ $? -ne 0 ]; then
+        echo "Could not load HTCondor python bindings. Please verify that condor-python is installed"
+        exit 1
+    fi
+
+    # Verify configuration required for the JobRouter
     for ATTR in 'JOB_ROUTER_DEFAULTS' 'JOB_ROUTER_ENTRIES'; do
         python -c "import htcondor; import classad; classad.parseAds(htcondor.param[\"$ATTR\"]).next()" &> /dev/null
         if [ $? -ne 0 ]; then
