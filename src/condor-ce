@@ -68,7 +68,7 @@ stop() {
     killproc -p $pidfile $prog -QUIT
     RETVAL=$?
     echo
-    wait_pid $pidfile 15
+    wait_pid $pidfile 30
     if [ $? -ne 0 ]; then
 	# If this happens during a restart the start is likely to see
 	# condor still running and just return 0, which means when
