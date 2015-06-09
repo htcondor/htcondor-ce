@@ -19,7 +19,7 @@ import condor_ce_tools as ce
 SUBMIT_FILE = """\
 universe = grid
 grid_resource = condor %(schedd_name)s %(collector_name)s
-remove_universe = %(universe)s
+remote_universe = %(universe)s
 
 executable = %(command)s
 arguments = %(arguments)s
@@ -119,7 +119,7 @@ def submit_job(job_info):
     if job_info['remote']:
         args += ['-remote', job_info['schedd_name'], '-pool', job_info['collector_name']]
 
-    rc, stdout, _ = ce.run_command(args)
+    rc, stdout, stderr = ce.run_command(args)
     # Example output: 1 job(s) submitted to cluster 14.
     cluster_re = re.compile(r'(\d+) job\(s\) submitted to cluster (\d+)\.')
     try:
@@ -136,7 +136,7 @@ def submit_job(job_info):
                                     "terminated with signal %d." % -rc)
     elif rc > 0:
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
-                                    "exited with code %d." % rc)
+                                    "exited with code %d. STDOUT: %s\n STDERR: %s" % (rc, stdout, stderr))
 
 def wait_for_job(job_info):
     if job_info['remote']:
