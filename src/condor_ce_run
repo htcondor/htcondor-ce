@@ -8,8 +8,6 @@ import socket
 import optparse
 import traceback
 
-os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
-
 import htcondor
 import condor_ce_tools as ce
 
@@ -220,6 +218,8 @@ def configureAuth():
 
 def main():
     opts, args = parse_opts()
+    if opts.remote:
+        os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
     configureAuth()
 
     if len(args) < 2:
