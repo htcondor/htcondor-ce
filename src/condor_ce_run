@@ -131,10 +131,10 @@ def submit_job(job_info):
 
     if rc < 0:
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
-                                    "terminated with signal %d." % -rc)
+                                    "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
     elif rc > 0:
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
-                                    "exited with code %d. STDOUT: %s\n STDERR: %s" % (rc, stdout, stderr))
+                                    "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (rc, stdout, stderr))
 
 def wait_for_job(job_info):
     if job_info['remote']:
