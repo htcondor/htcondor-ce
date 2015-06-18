@@ -46,6 +46,14 @@ if [ "X$CONDORCE_HOSTNAME" != "X" ]; then
   fi
 fi
 
+config_failure() {
+    MSG="$1"
+    echo
+    echo -e $MSG
+    echo_failure
+    RETVAL=6
+}
+
 start() {
     echo -n $"Starting Condor-CE daemons: "
 
@@ -54,22 +62,20 @@ start() {
     if [ $? -eq 0 ]; then
         CONFIG_KNOB='QUEUE_SUPER_USER_MAY_IMPERSONATE'
         CONFIG_VAL=`CONDOR_CONFIG=/etc/condor/condor_config condor_config_val $CONFIG_KNOB`
-        if [ "$CONFIG_VAL" != '.*' ]; then
-            echo "HTCondor batch system is improperly configured for use with HTCondor CE."
-            echo "Please verify that '$CONFIG_KNOB=.*' in your HTCondor configuration."
-            exit 6
-        fi
+        [ "$CONFIG_VAL" != '.*' ] && config_failure "HTCondor batch system is improperly configured for use with HTCondor CE.\n\
+Please verify that '$CONFIG_KNOB=.*' is set in your\nHTCondor configuration."
     fi
 
     # Check validity of job router knobs
     python -c "import htcondor; import classad; classad.ExprTree(htcondor.param['JOB_ROUTER_DEFAULTS'])" &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "Could not read JOB_ROUTER_DEFAULTS in the HTCondor CE configuration. Please verify syntax correctness."
-        exit 6
+    [ $? -ne 0 ] && config_failure "Could not read JOB_ROUTER_DEFAULTS in the HTCondor CE configuration.\n\
+Please verify syntax correctness."
+
+    if [ -z "$RETVAL" ]; then
+        daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
+        RETVAL=$?
     fi
 
-    daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
-    RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile
     return $RETVAL
