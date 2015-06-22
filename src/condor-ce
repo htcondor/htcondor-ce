@@ -78,6 +78,14 @@ Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH"
     [ $? -ne 0 ] && fail 6 "Could not read JOB_ROUTER_DEFAULTS in the HTCondor CE configuration.\n\
 Please verify syntax correctness."
 
+    # Check if osg-configure has been run
+    OSG_CONFIGURED=`condor_ce_config_val OSG_CONFIGURED | tr '[:upper:]' '[:lower:]'`
+    if [ "$OSG_CONFIGURED" != 'true' ]; then
+        echo
+        echo -e "WARNING: osg-configure has not been run, degrading the functionality of the CE.\nPlease run \
+'osg-configure -c' and restart condor-ce."
+    fi
+
     daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
     RETVAL=$?
 
