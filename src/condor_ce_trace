@@ -35,7 +35,7 @@ def verify_matching_condor_versions():
                                     'Ensure that condor_version is in your PATH')
     tool_ver = stdout.split('\n')[0]
     if lib_ver != tool_ver:
-        raise RuntimeError('Found multiple, mismatched versions of HTCondor installed. ' \
+        raise RuntimeError('Found multiple, mismatched versions of HTCondor libraries. ' \
                            'Please ensure that you only have one version of HTCondor installed.')
 
 def configure_auth():

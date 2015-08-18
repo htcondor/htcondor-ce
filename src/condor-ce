@@ -46,27 +46,51 @@ if [ "X$CONDORCE_HOSTNAME" != "X" ]; then
   fi
 fi
 
+fail() {
+    RETVAL="$1"
+    MSG="$2"
+    echo
+    echo -e $MSG
+    echo_failure
+    echo
+    exit $RETVAL
+}
+
 start() {
     echo -n $"Starting Condor-CE daemons: "
 
-    # Verify python binding functionality
-    python -c "import htcondor; import classad" &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "Could not load HTCondor python bindings. Please verify that condor-python is installed"
-        exit 1
+    # Check value of QUEUE_SUPER_USER_MAY_IMPERSONATE for HTCondor batch systems
+    condor_ce_config_val -config 2>&1 | grep '02-ce-condor.conf' > /dev/null
+    if [ $? -eq 0 ]; then
+        CONFIG_KNOB='QUEUE_SUPER_USER_MAY_IMPERSONATE'
+        CONFIG_VAL=`CONDOR_CONFIG=/etc/condor/condor_config condor_config_val $CONFIG_KNOB`
+        [ "$CONFIG_VAL" != '.*' ] && fail 6 "HTCondor batch system is improperly configured for use with HTCondor CE.\n\
+Please verify that '$CONFIG_KNOB=.*' is set in your\nHTCondor configuration."
     fi
 
-    # Verify configuration required for the JobRouter
+    # Verify that the HTCondor Python bindings are in the PYTHONPATH
+    python -c "import htcondor; import classad" &> /dev/null
+    [ $? -ne 0 ] && fail 6 "Could not load HTCondor Python bindings.\n\
+Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH"
+
+    # Verify configuration required for the JobRouter. Note that this only verifies 
+    # the first route in JOB_ROUTER_ENTRIES
     for ATTR in 'JOB_ROUTER_DEFAULTS' 'JOB_ROUTER_ENTRIES'; do
         python -c "import htcondor; import classad; classad.parseAds(htcondor.param[\"$ATTR\"]).next()" &> /dev/null
-        if [ $? -ne 0 ]; then
-            echo "Could not read $ATTR in the HTCondor CE configuration. Please verify syntax correctness."
-            exit 6
-        fi
+        [ $? -ne 0 ] && fail 6 "Could not read $ATTR in the HTCondor CE configuration. Please verify syntax correctness."
     done
+
+    # Check if osg-configure has been run
+    OSG_CONFIGURED=`condor_ce_config_val OSG_CONFIGURED | tr '[:upper:]' '[:lower:]'`
+    if [ "$OSG_CONFIGURED" != 'true' ]; then
+        echo
+        echo -e "WARNING: osg-configure has not been run, degrading the functionality of the CE.\nPlease run \
+'osg-configure -c' and restart condor-ce."
+    fi
 
     daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
     RETVAL=$?
+
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile
     return $RETVAL
@@ -77,7 +101,7 @@ stop() {
     killproc -p $pidfile $prog -QUIT
     RETVAL=$?
     echo
-    wait_pid $pidfile 15
+    wait_pid $pidfile 30
     if [ $? -ne 0 ]; then
 	# If this happens during a restart the start is likely to see
 	# condor still running and just return 0, which means when

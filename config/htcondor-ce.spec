@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.13
+Version: 1.14
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -297,8 +297,10 @@ fi
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
@@ -313,6 +315,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Jun 24 2015 Brian Lin <blin@cs.wisc.edu> - 1.14-1
+- CE Collector should accept all CEs (SOFTWARE-1790)
+- Do not utilize the CE config when submitting a job with condor_ce_run without the -r option (SOFTWARE-1910)
+- Verify value of QUEUE_SUPER_USER_MAY_IMPERSONATE for HTCondor batch systems (SOFTWARE-1943)
+- Ensure that the HTCondor Python bindings are in the PYTHONPATH (SOFTWARE-1927)
+- HTCondor CE should warn if osg-configure has not been run (SOFTWARE-1914)
+- Improvements to condor_ce_run error messages
+
 * Mon Apr 27 2015 Brian Lin <blin@cs.wisc.edu> - 1.13-1
 - Fix bug that prevented HTCondor CE service from starting with multiple job routes
 
