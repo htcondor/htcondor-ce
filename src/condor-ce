@@ -73,10 +73,12 @@ Please verify that '$CONFIG_KNOB=.*' is set in your\nHTCondor configuration."
     [ $? -ne 0 ] && fail 6 "Could not load HTCondor Python bindings.\n\
 Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH"
 
-    # Check validity of job router knobs
-    python -c "import htcondor; import classad; classad.ExprTree(htcondor.param['JOB_ROUTER_DEFAULTS'])" &> /dev/null
-    [ $? -ne 0 ] && fail 6 "Could not read JOB_ROUTER_DEFAULTS in the HTCondor CE configuration.\n\
-Please verify syntax correctness."
+    # Verify configuration required for the JobRouter. Note that this only verifies 
+    # the first route in JOB_ROUTER_ENTRIES
+    for ATTR in 'JOB_ROUTER_DEFAULTS' 'JOB_ROUTER_ENTRIES'; do
+        python -c "import htcondor; import classad; classad.parseAds(htcondor.param[\"$ATTR\"]).next()" &> /dev/null
+        [ $? -ne 0 ] && fail 6 "Could not read $ATTR in the HTCondor CE configuration. Please verify syntax correctness."
+    done
 
     # Check if osg-configure has been run
     OSG_CONFIGURED=`condor_ce_config_val OSG_CONFIGURED | tr '[:upper:]' '[:lower:]'`
