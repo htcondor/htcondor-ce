@@ -27,15 +27,15 @@ def main():
 
     log("Starting analysis of host networking for HTCondor-CE")
 
-    default_hostname = socket.gethostname()
+    default_hostname = socket.gethostname().lower()
     log("System hostname: %s", default_hostname)
 
     fd = os.popen("source /etc/sysconfig/condor-ce && echo $CONDORCE_HOSTNAME")
-    override_hostname = fd.read().strip()
+    override_hostname = fd.read().strip().lower()
     if fd.close() or not override_hostname:
         override_hostname = default_hostname
 
-    param_hostname = htcondor.param.get("NETWORK_HOSTNAME", default_hostname)
+    param_hostname = htcondor.param.get("NETWORK_HOSTNAME", default_hostname).lower()
     if param_hostname != default_hostname:
         log("System hostname (%s) overridden by NETWORK_HOSTNAME=%s in HTCondor-CE config.", default_hostname, param_hostname)
         default_hostname = param_hostname
@@ -43,7 +43,7 @@ def main():
         log("System hostname (%s) overridden by CONDORCE_HOSTNAME=%s in /etc/sysconfig/condor-ce.", default_hostname, override_hostname)
         default_hostname = override_hostname
 
-    default_fqdn = socket.getfqdn(default_hostname)
+    default_fqdn = socket.getfqdn(default_hostname).lower()
     if default_fqdn != default_hostname:
         log("Default hostname expands to FQDN %s", default_fqdn)
         log("WARNING: this could be problematic, but is likely OK.")
@@ -57,7 +57,7 @@ def main():
         if fd.close() or not dn:
             print >> sys.stderr, "WARNING: OpenSSL unable to parse host certificate %s; GSI configuration will likely fail." % hostcert
         else:
-            host_dn = dn.split("/CN=")[-1]
+            host_dn = dn.split("/CN=")[-1].lower()
             if host_dn != default_fqdn:
                 print >> sys.stderr, "Host certificate (%s) does not match HTCondor-CE hostname %s." % (dn, default_fqdn)
                 print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
@@ -76,7 +76,7 @@ def main():
     log("Forward resolution of hostname %s is %s.", default_fqdn, ipv4_forward_addr)
 
     try:
-        host_reverse = socket.getnameinfo((ipv4_forward_addr, 9618), socket.NI_NAMEREQD)[0]
+        host_reverse = socket.getnameinfo((ipv4_forward_addr, 9618), socket.NI_NAMEREQD)[0].lower()
     except socket.gaierror, e:
         print >> sys.stderr, "Failed to resolve address %s to hostname: %s" % (ipv4_forward_addr, str(e))
         print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
