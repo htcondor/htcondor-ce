@@ -142,7 +142,7 @@ def is_local_addr(ipv4_addr):
 
 
 def is_loopback_addr(ipv4_addr):
-    return socket.inet_aton("127.0.0.1") == socket.inet_aton(ipv4_addr)
+    return socket.inet_aton("127.0.0.1")[:1] == socket.inet_aton(ipv4_addr)[:1]
 
 
 def pick_condor_addr():
