@@ -136,9 +136,9 @@ def iface_matches(network_iface, pattern):
     return False
 
 def is_local_addr(ipv4_addr):
-    return (socket.inet_aton("192.168.0.0")[:2] == socket.inet_aton(ipv4_addr[:2])) or \
-           (socket.inet_aton("172.16.0.0")[:2] == socket.inet_aton(ipv4_addr[:2])) or  \
-           (socket.inet_aton("10.0.0.0")[:1] == socket.inet_aton(ipv4_addr[:1]))
+    return (socket.inet_aton("192.168.0.0")[:2] == socket.inet_aton(ipv4_addr)[:2]) or \
+           (socket.inet_aton("172.16.0.0")[:2] == socket.inet_aton(ipv4_addr)[:2]) or  \
+           (socket.inet_aton("10.0.0.0")[:1] == socket.inet_aton(ipv4_addr)[:1])
 
 
 def is_loopback_addr(ipv4_addr):
