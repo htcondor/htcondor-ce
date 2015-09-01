@@ -433,6 +433,8 @@ def main():
         elif is_loopback_addr(condor_addr):
             print >> sys.stderr, "WARNING: The address %s is a loopback address; using only this address will not result in a public-facing service." % condor_addr
 
+    # If the address selected by HTCondor-CE is the same as the address the
+    # FQDN resolves to, we are done with network validation!
     if condor_addr == ipv4_forward_addr:
         log("HTCondor primary address %s matches system preferred address.", condor_addr)
         log("Host network configuration should work with HTCondor-CE")
