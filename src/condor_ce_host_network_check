@@ -3,6 +3,7 @@
 import os
 import sys
 import socket
+import struct
 import fnmatch
 import optparse
 
@@ -20,17 +21,44 @@ import ctypes
 
 g_verbose = True
 
+IPV4_PRIVATE_NETWORKS = [dict(subnet='10.0.0.0',    netmask='255.0.0.0'),
+                         dict(subnet='172.16.0.0',  netmask='255.240.0.0'),
+                         dict(subnet='192.168.0.0', netmask='255.255.0.0'),
+]
+
+IPV4_LOOPBACK_NETWORK = dict(subnet='127.0.0.0', netmask='255.0.0.0')
 
 # Based on http://programmaticallyspeaking.com/getting-network-interfaces-in-python.html
 # which is, in turn, based on Based on getifaddrs.py from pydlnadms [http://code.google.com/p/pydlnadms/].
 
 class struct_sockaddr(Structure):
+    """struct sockaddr from sys/socket.h
+    See socket.h in manpage section 0p
+
+    A generic "socket" structure; can be cast into one of the other
+    struct sockaddr_* types
+
+    Fields:
+    - sa_family: identifies the type of socket (e.g. AF_INET for IPv4, AF_INET6
+                 for IPv6)
+    - sa_data:   actual socket data - length and contents are format dependent
+
+    """
     _fields_ = [
         ('sa_family', c_ushort),
         ('sa_data', c_byte * 14),]
 
 
 class struct_sockaddr_in(Structure):
+    """struct sockaddr_in from netinet/in.h
+    See in.h in manpage section 0p
+
+    Fields:
+    - sin_family: always AF_INET
+    - sin_port:   port number
+    - sin_addr:   IP address
+
+    """
     _fields_ = [
         ('sin_family', c_ushort),
         ('sin_port', c_uint16),
@@ -38,6 +66,17 @@ class struct_sockaddr_in(Structure):
 
 
 class struct_sockaddr_in6(Structure):
+    """struct sockaddr_in6 from netinet/in.h
+    See in.h in manpage section 0p
+
+    Fields:
+    - sin6_family:   always AF_INET6
+    - sin6_port:     port number
+    - sin6_flowinfo: IPv6 traffic class and flow information
+    - sin6_addr:     IPv6 address
+    - sin6_scope_id: set of interfaces for a scope
+
+    """
     _fields_ = [
         ('sin6_family', c_ushort),
         ('sin6_port', c_uint16),
@@ -47,13 +86,24 @@ class struct_sockaddr_in6(Structure):
 
 
 class union_ifa_ifu(Union):
+    """Anonymous union used for field ifa_ifu in struct ifaddrs from ifaddrs.h
+    See getifaddrs in manpage section 3
+
+    """
     _fields_ = [
         ('ifu_broadaddr', POINTER(struct_sockaddr)),
         ('ifu_dstaddr', POINTER(struct_sockaddr)),]
 
 
 class struct_ifaddrs(Structure):
-    pass
+    """struct ifaddrs from ifaddrs.h
+    See getifaddrs in manpage section 3
+
+    A linked list; each element describes one network interface.  The ifa_next
+    field is a pointer to the next entry in the list.
+
+    """
+# _fields_ set separately: struct_ifaddrs needs to exist so it can contain a pointer to another struct_ifaddrs
 struct_ifaddrs._fields_ = [
     ('ifa_next', POINTER(struct_ifaddrs)),
     ('ifa_name', c_char_p),
@@ -68,6 +118,15 @@ libc = ctypes.CDLL(ctypes.util.find_library('c'))
 
 
 def ifap_iter(ifap):
+    """Iterate over a pointer to a struct ifaddrs and yield the contents of the
+    structure.
+
+    Params:
+    - ifap: pointer(struct_ifaddrs)
+    Yields:
+    - struct_ifaddrs
+
+    """
     ifa = ifap.contents
     while True:
         yield ifa
@@ -77,6 +136,18 @@ def ifap_iter(ifap):
 
 
 def getfamaddr(sa):
+    """Extract the address family and address from a struct_sockaddr.
+
+    Params:
+    - sa: struct_sockaddr
+    Returns: (family, addr)
+    - family: AF_INET, AF_INET6 or one of the other AF_* constants from the
+              socket module
+    - addr:   if family is AF_INET, the IPv4 address as a string
+              if family is AF_INET6, the IPv6 address as a string
+              otherwise, None
+
+    """
     family = sa.sa_family
     addr = None
     if family == AF_INET:
@@ -89,6 +160,12 @@ def getfamaddr(sa):
 
 
 class NetworkInterface(object):
+    """The name, index, and IP addresses associated with a network interface.
+    - index is taken from if_nametoindex(3).
+    - addresses is a dict of addresses keyed by family (e.g. the AF_INET,
+      AF_INET6 constants from the socket library)
+
+    """
     def __init__(self, name):
         self.name = name
         self.index = libc.if_nametoindex(name)
@@ -102,13 +179,30 @@ class NetworkInterface(object):
 
 
 def get_network_interfaces(pattern):
+    """Return NetworkInterface objects for each network interface present on
+    the machine that matches the glob in `pattern`.
+
+    Params:
+    - pattern: string containing a glob of network interfaces to match; can
+               match on both interface name (e.g. eth0) or IPv4/v6 address
+    Returns: list of NetworkInterface objects
+    Raises: OSError if getifaddrs(3) fails
+
+    """
     ifap = POINTER(struct_ifaddrs)()
+    # getifaddrs takes a *(struct ifaddrs) as the argument to put the interfaces
+    # into; the return code is just a status.
     result = libc.getifaddrs(pointer(ifap))
     if result != 0:
         raise OSError(get_errno())
     del result
+
     try:
+        # retval is a dict of NetworkInterfaces keyed by interface name
+        # Each NetworkInterface has an 'addresses' field that is a dict of
+        # addresses (as strings), keyed by address family.
         retval = {}
+
         for ifa in ifap_iter(ifap):
             name = ifa.ifa_name
             i = retval.get(name)
@@ -118,6 +212,8 @@ def get_network_interfaces(pattern):
             if addr:
                 address_list = i.addresses.setdefault(family, set())
                 address_list.add(addr)
+
+        # Filter the NetworkInterfaces by pattern; return them as a list.
         filtered_values = []
         for iface in retval.values():
             if iface_matches(iface, pattern):
@@ -128,6 +224,17 @@ def get_network_interfaces(pattern):
 
 
 def iface_matches(network_iface, pattern):
+    """Return if a network interface's name or associated addresses match
+    the glob in `pattern`.
+
+    Params:
+    - network_iface: NetworkInterface object
+    - pattern:       string containing a glob to match names or IP addresses
+                     against
+    Returns: True if the name or at least one of the IP addresses in
+    `network_iface` matches `pattern`, False otherwise
+
+    """
     if fnmatch.fnmatch(network_iface.name, pattern):
         return True
     for family, addrs in network_iface.addresses.items():
@@ -135,17 +242,65 @@ def iface_matches(network_iface, pattern):
             return True
     return False
 
-def is_local_addr(ipv4_addr):
-    return (socket.inet_aton("192.168.0.0")[:2] == socket.inet_aton(ipv4_addr)[:2]) or \
-           (socket.inet_aton("172.16.0.0")[:2] == socket.inet_aton(ipv4_addr)[:2]) or  \
-           (socket.inet_aton("10.0.0.0")[:1] == socket.inet_aton(ipv4_addr)[:1])
+
+def ipv4_to_num(ipv4_str):
+    """Return the 32-bit integer representation of a string containing an IPv4 address."""
+    return struct.unpack('!L', socket.inet_aton(ipv4_str))[0]
+
+
+def addr_in_network(addr, subnet, netmask):
+    """Return if an IPv4 network (with subnet mask) contains the given IPv4 address"""
+    subnet_num = ipv4_to_num(subnet)
+    netmask_num = ipv4_to_num(netmask)
+    addr_num = ipv4_to_num(addr)
+
+    return (addr_num & netmask_num) == subnet_num
+
+
+def is_private_addr(ipv4_addr):
+    """Return if an IPv4 address is on a private network, i.e. one of
+    - 192.168.0.0/16
+    - 172.16.0.0/12
+    - 10.0.0.0/8
+
+    """
+    for private in IPV4_PRIVATE_NETWORKS:
+        if addr_in_network(addr=ipv4_addr, **private):
+            return True
+    else:
+        return False
 
 
 def is_loopback_addr(ipv4_addr):
-    return socket.inet_aton("127.0.0.1")[:1] == socket.inet_aton(ipv4_addr)[:1]
+    """Return if an IPv4 address refers to a loopback interface, i.e. on
+    the 127.0.0.0/8 subnet.
+
+    """
+    return addr_in_network(addr=ipv4_addr, **IPV4_LOOPBACK_NETWORK)
 
 
 def pick_condor_addr():
+    """Return the IPv4 address HTCondor would pick based on the ones available
+    on the host and the following htcondor config params:
+    - BIND_ALL_INTERFACES: True if we should look through all available
+      interfaces when searching for IPv4 addresses
+    - NETWORK_INTERFACE: if BIND_ALL_INTERFACES is False, a glob pattern
+      matching the names or IP addresses of interfaces to use; ignored if
+      BIND_ALL_INTERFACES is True
+
+    The following algorithm is used:
+    - Collect all the IPv4 addresses of all the interfaces we are looking
+      through based on the above two params
+    - Rank the addresses as follows:
+      - loopback addresses are ranked lowest (1)
+      - private addresses are ranked medium (2)
+      - other addresses are ranked highest (3)
+    - A random address from the highest available rank is picked
+
+    Return: the IPv4 address as a string of the best ('primary') address to use
+    Exits:  if none of the selected interfaces have any IP addresses
+
+    """
     iface_pattern = "*"
     if not htcondor.param["BIND_ALL_INTERFACES"]:
         iface_pattern = htcondor.param["NETWORK_INTERFACE"]
@@ -155,12 +310,12 @@ def pick_condor_addr():
     ifaces = get_network_interfaces(iface_pattern)
     ranked = {}
     for iface in ifaces:
-        ipv4_addrs = iface.addresses.get(AF_INET)
+        ipv4_addrs = iface.addresses.get(AF_INET, default=[])
         for ipv4_addr in ipv4_addrs:
             if is_loopback_addr(ipv4_addr):
                 addrs = ranked.setdefault(1, set())
                 addrs.add(ipv4_addr)
-            elif is_local_addr(ipv4_addr):
+            elif is_private_addr(ipv4_addr):
                 addrs = ranked.setdefault(2, set())
                 addrs.add(ipv4_addr)
             else:
@@ -177,11 +332,18 @@ def pick_condor_addr():
     return best
 
 def log(msg, *format):
+    """Write message to stdout unless program was asked to be quiet."""
     if g_verbose:
         print msg % format
 
 
 def parse_opts():
+    """Parse command-line options.
+
+    Sets:
+    - g_verbose set to False if user passes -q/--quiet, True otherwise
+
+    """
     global g_verbose
     parser = optparse.OptionParser()
     parser.add_option("-q", "--quiet", dest="quiet", action="store_true", default=False)
@@ -191,10 +353,19 @@ def parse_opts():
 
 
 def main():
+    """Analyse the networking on the running host and determine if it is
+    suitable for running HTCondor-CE.
+
+    """
     parse_opts()
 
     log("Starting analysis of host networking for HTCondor-CE")
 
+    # Determine the hostname HTCondor-CE will use based on the following, in
+    # descending order of preference:
+    # 1. NETWORK_HOSTNAME in the HTCondor-CE config
+    # 2. CONDORCE_HOSTNAME in /etc/sysconfig/condor-ce
+    # 3. The system hostname
     default_hostname = socket.gethostname().lower()
     log("System hostname: %s", default_hostname)
 
@@ -211,6 +382,7 @@ def main():
         log("System hostname (%s) overridden by CONDORCE_HOSTNAME=%s in /etc/sysconfig/condor-ce.", default_hostname, override_hostname)
         default_hostname = override_hostname
 
+    # Resolve the system hostname to its FQDN
     default_fqdn = socket.getfqdn(default_hostname).lower()
     if default_fqdn != default_hostname:
         log("Default hostname expands to FQDN %s", default_fqdn)
@@ -218,6 +390,14 @@ def main():
     else:
         log("FQDN matches hostname")
 
+    # Attempt to validate the host certificate.
+    # The path to the host certificate is taken from GSI_DAEMON_CERT in the
+    # HTCondor-CE config, with "/etc/grid-security/hostcert.pem" as a default.
+    #
+    # Validation will fail if the last CommonName of the host cert does not
+    # match the FQDN of the host, at which point, exit with an error.
+    #
+    # If the host cert is missing or unreadable, emit a warning but keep going.
     hostcert = htcondor.param.get("GSI_DAEMON_CERT", "/etc/grid-security/hostcert.pem")
     if os.access(hostcert, os.R_OK):
         fd = os.popen("openssl x509 -in %s -noout -subject" % hostcert)
@@ -234,6 +414,8 @@ def main():
         print sys.stderr, "WARNING: Unable to access certificate file at %s; skipping host certificate name check." % hostcert
 
 
+    # Forward resolution: resolve the host's FQDN on port 9618 to an IPv4 address.
+    # Exit with an error if resolving fails.
     try:
         ipv4_forward_addr = socket.getaddrinfo(default_fqdn, 9618, socket.AF_INET)[0][4][0]
     except socket.gaierror, e:
@@ -243,6 +425,9 @@ def main():
 
     log("Forward resolution of hostname %s is %s.", default_fqdn, ipv4_forward_addr)
 
+    # Reverse resolution: resolve the IPv4 address from the previous forward
+    # lookup back to the host's FQDN.
+    # Exit with an error if resolving fails.
     try:
         host_reverse = socket.getnameinfo((ipv4_forward_addr, 9618), socket.NI_NAMEREQD)[0].lower()
         host_reverse = socket.getfqdn(host_reverse).lower()
@@ -253,6 +438,7 @@ def main():
 
     log("Backward resolution of IPv4 %s is %s.", ipv4_forward_addr, host_reverse)
 
+    # Exit with an error if forward and reverse resolution do not match.
     if host_reverse != default_fqdn:
         print >> sys.stderr, "Backward resolution of address %s to %s does not match default hostname %s." % (ipv4_forward_addr, host_reverse, default_fqdn)
         print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
@@ -260,31 +446,39 @@ def main():
 
     log("Forward and backward resolution match!")
 
+    # Pick the 'primary' IPv4 address according to the same algorithm HTCondor-CE
+    # uses and warn the user if it is local or loopback.
     condor_addr = pick_condor_addr()
     log("HTCondor would pick address of %s as primary address.", condor_addr)
 
     if not htcondor.param['BIND_ALL_INTERFACES'] and (htcondor.param['NETWORK_INTERFACE'] != "*"):
-        if is_local_addr(condor_addr):
-            print >> sys.stderr, "WARNING: The address %s is a local address; using only this address may not result in a public-facing service." % condor_addr
+        if is_private_addr(condor_addr):
+            print >> sys.stderr, "WARNING: The address %s is a private address; using only this address may not result in a public-facing service." % condor_addr
         elif is_loopback_addr(condor_addr):
             print >> sys.stderr, "WARNING: The address %s is a loopback address; using only this address will not result in a public-facing service." % condor_addr
 
+    # If the address selected by HTCondor-CE is the same as the address the
+    # FQDN resolves to, we are done with network validation!
     if condor_addr == ipv4_forward_addr:
         log("HTCondor primary address %s matches system preferred address.", condor_addr)
         log("Host network configuration should work with HTCondor-CE")
         return
 
+    # Reverse resolution 2: resolve the IPv4 address chosen by HTCondor-CE to
+    # the host's FQDN.
+    # Exit with an error if resolution fails.
+    # Also exit with an error if forward and reverse resolution do not match.
     try:
         host_reverse = socket.getnameinfo((condor_addr, 9618), socket.NI_NAMEREQD)[0].lower()
         host_reverse = socket.getfqdn(host_reverse).lower()
     except socket.gaierror, e:
-        print >> sys.stderr, "Failed to resolve condor address %s to hostname: %s" % (ipv4_forward_addr, str(e))
+        print >> sys.stderr, "Failed to resolve condor address %s to hostname: %s" % (condor_addr, str(e))
         print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
         sys.exit(1)
 
     if host_reverse != default_fqdn:
         print >> sys.stderr, "Backward resolution of HTCondor address %s to %s does not match default hostname %s." % (condor_addr, host_reverse, default_fqdn)
-        if is_local_addr(ipv4_forward_addr) or is_loopback_addr(ipv4_forward_addr):
+        if is_private_addr(ipv4_forward_addr) or is_loopback_addr(ipv4_forward_addr):
             print >> sys.stderr, "The address of %s is not a publicly routable one; forcing use of that instead may not result in a usable service." % ipv4_forward_addr
         else:
             print >> sys.stderr, "Try setting BIND_ALL_INTERFACES=false, NETWORK_INTERFACE=%s to force the HTCondor to use only %s." % (ipv4_forward_addr, ipv4_forward_addr)
@@ -296,9 +490,14 @@ def main():
     try:
         addresses = socket.getaddrinfo(default_fqdn, 9618, socket.AF_INET)
     except socket.gaierror, e:
+        # Shouldn't happen - we already checked for this
         print >> sys.stderr, "Failed to resolve hostname %s to an address: %s" % (default_fqdn, str(e))
         print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
         sys.exit(1)
+
+    # Verify that one of the addresses the FQDN resolves to is the address
+    # HTCondor-CE has picked to bind to.
+    # Exit with an error if it is not the case.
     found_forward_map = False
     for address_struct in addresses:
         address = address_struct[4][0]
