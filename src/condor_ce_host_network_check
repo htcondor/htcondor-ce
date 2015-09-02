@@ -310,7 +310,7 @@ def pick_condor_addr():
     ifaces = get_network_interfaces(iface_pattern)
     ranked = {}
     for iface in ifaces:
-        ipv4_addrs = iface.addresses.get(AF_INET)
+        ipv4_addrs = iface.addresses.get(AF_INET, default=[])
         for ipv4_addr in ipv4_addrs:
             if is_loopback_addr(ipv4_addr):
                 addrs = ranked.setdefault(1, set())
