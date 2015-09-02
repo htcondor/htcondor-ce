@@ -448,7 +448,7 @@ def main():
         host_reverse = socket.getnameinfo((condor_addr, 9618), socket.NI_NAMEREQD)[0].lower()
         host_reverse = socket.getfqdn(host_reverse).lower()
     except socket.gaierror, e:
-        print >> sys.stderr, "Failed to resolve condor address %s to hostname: %s" % (ipv4_forward_addr, str(e))
+        print >> sys.stderr, "Failed to resolve condor address %s to hostname: %s" % (condor_addr, str(e))
         print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
         sys.exit(1)
 
