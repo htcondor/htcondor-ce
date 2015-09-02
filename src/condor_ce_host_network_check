@@ -103,7 +103,7 @@ class struct_ifaddrs(Structure):
     field is a pointer to the next entry in the list.
 
     """
-# _fields_ set separately because we need union_ifa_ifu to exist first
+# _fields_ set separately: struct_ifaddrs needs to exist so it can contain a pointer to another struct_ifaddrs
 struct_ifaddrs._fields_ = [
     ('ifa_next', POINTER(struct_ifaddrs)),
     ('ifa_name', c_char_p),
