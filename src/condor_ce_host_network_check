@@ -21,9 +21,9 @@ import ctypes
 
 g_verbose = True
 
-IPV4_LOCAL_NETWORKS = [dict(subnet='10.0.0.0',    netmask='255.0.0.0'),
-                       dict(subnet='172.16.0.0',  netmask='255.240.0.0'),
-                       dict(subnet='192.168.0.0', netmask='255.255.0.0'),
+IPV4_PRIVATE_NETWORKS = [dict(subnet='10.0.0.0',    netmask='255.0.0.0'),
+                         dict(subnet='172.16.0.0',  netmask='255.240.0.0'),
+                         dict(subnet='192.168.0.0', netmask='255.255.0.0'),
 ]
 
 IPV4_LOOPBACK_NETWORK = dict(subnet='127.0.0.0', netmask='255.0.0.0')
@@ -257,15 +257,15 @@ def addr_in_network(addr, subnet, netmask):
     return (addr_num & netmask_num) == subnet_num
 
 
-def is_local_addr(ipv4_addr):
-    """Return if an IPv4 address is on a local network, i.e. one of
+def is_private_addr(ipv4_addr):
+    """Return if an IPv4 address is on a private network, i.e. one of
     - 192.168.0.0/16
     - 172.16.0.0/12
     - 10.0.0.0/8
 
     """
-    for local_network in IPV4_LOCAL_NETWORKS:
-        if addr_in_network(addr=ipv4_addr, **local_network):
+    for private in IPV4_PRIVATE_NETWORKS:
+        if addr_in_network(addr=ipv4_addr, **private):
             return True
     else:
         return False
@@ -293,7 +293,7 @@ def pick_condor_addr():
       through based on the above two params
     - Rank the addresses as follows:
       - loopback addresses are ranked lowest (1)
-      - local addresses are ranked medium (2)
+      - private addresses are ranked medium (2)
       - other addresses are ranked highest (3)
     - A random address from the highest available rank is picked
 
@@ -315,7 +315,7 @@ def pick_condor_addr():
             if is_loopback_addr(ipv4_addr):
                 addrs = ranked.setdefault(1, set())
                 addrs.add(ipv4_addr)
-            elif is_local_addr(ipv4_addr):
+            elif is_private_addr(ipv4_addr):
                 addrs = ranked.setdefault(2, set())
                 addrs.add(ipv4_addr)
             else:
@@ -452,8 +452,8 @@ def main():
     log("HTCondor would pick address of %s as primary address.", condor_addr)
 
     if not htcondor.param['BIND_ALL_INTERFACES'] and (htcondor.param['NETWORK_INTERFACE'] != "*"):
-        if is_local_addr(condor_addr):
-            print >> sys.stderr, "WARNING: The address %s is a local address; using only this address may not result in a public-facing service." % condor_addr
+        if is_private_addr(condor_addr):
+            print >> sys.stderr, "WARNING: The address %s is a private address; using only this address may not result in a public-facing service." % condor_addr
         elif is_loopback_addr(condor_addr):
             print >> sys.stderr, "WARNING: The address %s is a loopback address; using only this address will not result in a public-facing service." % condor_addr
 
@@ -478,7 +478,7 @@ def main():
 
     if host_reverse != default_fqdn:
         print >> sys.stderr, "Backward resolution of HTCondor address %s to %s does not match default hostname %s." % (condor_addr, host_reverse, default_fqdn)
-        if is_local_addr(ipv4_forward_addr) or is_loopback_addr(ipv4_forward_addr):
+        if is_private_addr(ipv4_forward_addr) or is_loopback_addr(ipv4_forward_addr):
             print >> sys.stderr, "The address of %s is not a publicly routable one; forcing use of that instead may not result in a usable service." % ipv4_forward_addr
         else:
             print >> sys.stderr, "Try setting BIND_ALL_INTERFACES=false, NETWORK_INTERFACE=%s to force the HTCondor to use only %s." % (ipv4_forward_addr, ipv4_forward_addr)
