@@ -3,6 +3,7 @@
 import os
 import sys
 import socket
+import struct
 import fnmatch
 import optparse
 
@@ -20,6 +21,12 @@ import ctypes
 
 g_verbose = True
 
+IPV4_LOCAL_NETWORKS = [dict(subnet='10.0.0.0',    netmask='255.0.0.0'),
+                       dict(subnet='172.16.0.0',  netmask='255.240.0.0'),
+                       dict(subnet='192.168.0.0', netmask='255.255.0.0'),
+]
+
+IPV4_LOOPBACK_NETWORK = dict(subnet='127.0.0.0', netmask='255.0.0.0')
 
 # Based on http://programmaticallyspeaking.com/getting-network-interfaces-in-python.html
 # which is, in turn, based on Based on getifaddrs.py from pydlnadms [http://code.google.com/p/pydlnadms/].
@@ -235,16 +242,33 @@ def iface_matches(network_iface, pattern):
             return True
     return False
 
+
+def ipv4_to_num(ipv4_str):
+    """Return the 32-bit integer representation of a string containing an IPv4 address."""
+    return struct.unpack('!L', socket.inet_aton(ipv4_str))[0]
+
+
+def addr_in_network(addr, subnet, netmask):
+    """Return if an IPv4 network (with subnet mask) contains the given IPv4 address"""
+    subnet_num = ipv4_to_num(subnet)
+    netmask_num = ipv4_to_num(netmask)
+    addr_num = ipv4_to_num(addr)
+
+    return (addr_num & netmask_num) == subnet_num
+
+
 def is_local_addr(ipv4_addr):
     """Return if an IPv4 address is on a local network, i.e. one of
     - 192.168.0.0/16
-    - 172.16.0.0/16
+    - 172.16.0.0/12
     - 10.0.0.0/8
 
     """
-    return (socket.inet_aton("192.168.0.0")[:2] == socket.inet_aton(ipv4_addr)[:2]) or \
-           (socket.inet_aton("172.16.0.0")[:2] == socket.inet_aton(ipv4_addr)[:2]) or  \
-           (socket.inet_aton("10.0.0.0")[:1] == socket.inet_aton(ipv4_addr)[:1])
+    for local_network in IPV4_LOCAL_NETWORKS:
+        if addr_in_network(addr=ipv4_addr, **local_network):
+            return True
+    else:
+        return False
 
 
 def is_loopback_addr(ipv4_addr):
@@ -252,7 +276,7 @@ def is_loopback_addr(ipv4_addr):
     the 127.0.0.0/8 subnet.
 
     """
-    return socket.inet_aton("127.0.0.1")[:1] == socket.inet_aton(ipv4_addr)[:1]
+    return addr_in_network(addr=ipv4_addr, **IPV4_LOOPBACK_NETWORK)
 
 
 def pick_condor_addr():
