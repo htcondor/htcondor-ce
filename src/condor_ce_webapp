@@ -14,6 +14,8 @@ def parse_opts():
     parser = optparse.OptionParser()
     parser.add_option("-p", "--pool", help="HTCondor-CE pool to consider.", dest="pool")
     parser.add_option("-n", "--name", help="HTCondor-CE schedd to consider.", dest="name")
+    parser.add_option("--port", help="Port to use for webapp.", dest="port")
+    parser.add_option("--spool", help="Spool directory to use.", dest="spool")
 
     opts = parser.parse_args()[0]
     return opts
@@ -22,12 +24,17 @@ def main():
     opts = parse_opts()
 
     spooldir = htcondor.param.get("HTCONDORCE_WEBAPP_SPOOL")
+    if opts.spool:
+        spooldir = opts.spool
     if not spooldir:
         if not os.path.exists("tmp"):
             os.mkdir("tmp")
         spooldir = "tmp"
 
-    port = int(htcondor.param.get('HTCONDORCE_WEBAPP_PORT', 8080))
+    if opts.port:
+        port = int(opts.port)
+    else:
+        port = int(htcondor.param.get('HTCONDORCE_WEBAPP_PORT', 8080))
     httpd = make_server('', port, htcondor_ce.web.application)
     httpd.base_environ['htcondorce.spool'] = spooldir
     if os.path.exists('templates'):

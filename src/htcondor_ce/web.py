@@ -12,6 +12,8 @@ import genshi.template
 import classad
 htcondor = None
 
+import htcondor_ce.rrd
+
 _initialized = None
 _loader = None
 _view = None
@@ -188,6 +190,22 @@ def index(environ, start_response):
     return [tmpl.generate(**info).render('html', doctype='html')]
 
 
+ce_graph_re = re.compile(r'^/+graphs/ce/?([a-zA-Z]+)?/?$')
+def ce_graph(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'image/png'),
+               ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    path = environ.get('PATH_INFO', '')
+    m = ce_graph_re.match(path)
+    interval = "daily"
+    if m.groups()[0]:
+        interval=m.groups()[0]
+
+    return [ htcondor_ce.rrd.graph(environ, "jobs", interval) ]
+
+
 def not_found(environ, start_response):
     status = '404 Not Found'
     headers = [('Content-type', 'text/html'),
@@ -203,6 +221,7 @@ urls = [
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedd$'), schedd),
+    (re.compile(r'^graphs/ce/?'), ce_graph),
 ]
 
 

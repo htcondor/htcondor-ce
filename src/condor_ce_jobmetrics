@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import os
+import sys
+import optparse
 
 import rrdtool
 
@@ -9,7 +11,15 @@ import htcondor_ce.web
 import htcondor_ce.rrd
 
 
+def parse_opts():
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--spool", help="Spool directory", dest="spool")
+
+    return parser.parse_args()[0]
+
 def main():
+    opts = parse_opts()
+
     schedd = htcondor_ce.web.get_schedd_obj()
     total_results = {"Running": 0, "Idle": 0, "Held": 0}
     vo_results = {}
@@ -18,7 +28,7 @@ def main():
         VO = job.get('x509UserProxyVOName', 'Unknown')
         if VO not in vo_results:
             vo_results[VO] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0, "VO": VO}
-        results = job_count[job_key];
+        results = vo_results[VO];
         results["Jobs"] += 1
         if job.get("JobStatus") == 1:
             results['Idle'] += 1
@@ -30,12 +40,16 @@ def main():
             results['Held'] += 1
             total_results['Held'] += 1
 
-    spooldir = htcondor_ce.web.get_spooldir()
-    total_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "totals")
+    spooldir = opts.spool
+    if not spooldir:
+        spooldir = htcondor_ce.web.get_spooldir()
+    total_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "jobs")
+    print >> sys.stderr, "Totals:", total_results
     rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
-    for vo, info in vo_results:
+    for vo, info in vo_results.items():
         vo_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "vos")
+        print >> sys.stderr, "VO", vo, "totals:", info
         rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
 
 
