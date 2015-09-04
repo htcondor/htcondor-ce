@@ -1,0 +1,18 @@
+[Unit]
+Description=HTCondor CE Collector
+After=syslog.target network.target
+Wants=network.target
+
+[Service]
+Type=forking
+ExecStart=/etc/init.d/condor-ce-collector start
+ExecStop=/etc/init.d/condor-ce-collector stop
+ExecReload=/etc/init.d/condor-ce-collector reload
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+LimitNOFILE=16384
+
+[Install]
+WantedBy=multi-user.target
+
