@@ -44,12 +44,14 @@ def main():
     if not spooldir:
         spooldir = htcondor_ce.web.get_spooldir()
     total_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "jobs")
-    print >> sys.stderr, "Totals:", total_results
+    if os.isatty(2):
+        print >> sys.stderr, "Totals:", total_results
     rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
     for vo, info in vo_results.items():
         vo_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "vos")
-        print >> sys.stderr, "VO", vo, "totals:", info
+        if os.isatty(2):
+            print >> sys.stderr, "VO", vo, "totals:", info
         rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
 
 
