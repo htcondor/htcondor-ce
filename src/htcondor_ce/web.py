@@ -36,7 +36,7 @@ def _check_htcondor():
     global _initialized
     global htcondor
     if not _initialized and not htcondor:
-        os.environ.setdefault('CONDOR_CONFIG', ce_config)
+        os.environ.setdefault('CONDOR_CONFIG', "/etc/condor-ce/condor_config")
         htcondor = __import__("htcondor")
 
 
@@ -65,7 +65,7 @@ def _get_name(environ):
 
     config_name = htcondor.param.get("HTCONDORCE_WEBAPP_NAME")
     if not config_name:
-        return _get_pool()
+        return _get_pool(environ)
 
 
 def get_schedd_obj(environ=None):
