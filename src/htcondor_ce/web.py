@@ -80,12 +80,12 @@ def get_schedd_obj(environ=None):
 
 
 def get_schedd_ad(environ):
-    if 'htcondorce.pool' in environ:
-        coll = htcondor.Collector(environ['htcondorce.pool'])
-        if 'htcondorce.name' in environ:
-            return coll.locate(htcondor.DaemonTypes.Schedd, environ['htcondorce.name'])
-        return coll.locate(htcondor.DaemonTypes.Schedd, environ['htcondorce.pool'])
-    return coll.locate()
+    pool = _get_pool(environ)
+    coll = htcondor.Collector(pool)
+    name = _get_name(environ)
+    if name:
+        return coll.query(htcondor.AdTypes.Schedd, "Name=?=%s" % classad.quote(name))[0]
+    return coll.locate(htcondor.AdTypes.Schedd)[0]
 
 
 def get_spooldir():

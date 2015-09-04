@@ -18,6 +18,7 @@
         function load_data() {
             $.get('/json/totals', got_totals);
             $.get('/json/pilots', got_pilots);
+            $.get('/json/schedd', got_info);
         }
 
         function got_totals(data) {
@@ -29,6 +30,21 @@
             schedd_stats_table.append("<tr><th>Running</th><th>Idle</th><th>Held</th><th>Last Data Update</th>");
             schedd_stats_table.append("<tr><td>" + data.Running + "</td><td>" + data.Idle + "</td><td>" + data.Held + "</td><td>" + Date(data.UpdateDate).toLocaleString() + "</td></tr>");
             $("#schedd_stats_table").append(schedd_stats_table);
+        }
+
+        function got_info(data) {
+
+          $('#info_table_inner').detach();
+          info_table = $("<table></table>");
+          info_table.addClass("table");
+          info_table.attr("id", "info_table_inner");
+          info_table.append("<tr><td>OSG Resource</td><td>" + data.OSG_Resource + "</td></tr>");
+          info_table.append("<tr><td>OSG Resource Group</td><td>" + data.OSG_ResourceGroup + "</td></tr>");
+          info_table.append("<tr><td>Batch System</td><td>" + data.OSG_BatchSystems + "</td></tr>");
+          info_table.append("<tr><td>HTCondor-CE version</td><td>" + data.HTCondorCEVersion + "</td></tr>");
+          info_table.append("<tr><td>HTCondor version</td><td>" + data.CondorVersion + "</td></tr>");
+          $("#info_table").append(info_table);
+
         }
 
         function got_pilots(data) {
@@ -107,15 +123,8 @@
       </div>
       <div class="row-fluid">
         <div class="span12">
-          <h2>CE info</h2>
-          <table class="table">
-            <tr><td>OSG Resource</td><td>${resource}</td></tr>
-            <tr><td>OSG Resource Group</td><td>${resourcegroup}</td></tr>
-            <tr><td>Batch System</td><td>${batchsys}</td></tr>
-            <tr><td>HTCondor-CE version</td><td>${ceversion}</td></tr>
-            <tr><td>HTCondor version</td><td>${version}</td></tr>
-          </table>
-          <hr/>
+          <h2>Info</h2>
+          <div id="info_table"/>
         </div>
       </div>
     </div>
