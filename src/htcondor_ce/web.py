@@ -98,6 +98,21 @@ def get_spooldir():
     return spooldir
 
 
+def get_schedd_status(environ={}):
+    ad = get_schedd_ad(environ)
+    for missing_attr in ['Status', 'IsOK', 'IsWarning', 'IsCritical']:
+        if missing_attr in ad:
+            continue
+        if missing_attr not in htcondor.param:
+            continue
+        ad[missing_attr] = classad.ExprTree(htcondor.param[missing_attr])
+
+    if 'Status' not in ad:
+        return 'Unknown'
+
+    return ad['Status'].eval()
+
+
 def ad_to_json(ad):
     result = {}
     for key in ad:
@@ -194,6 +209,18 @@ def vos_json(environ, start_response):
     start_response(status, headers)
 
     return [ json.dumps(job_count) ]
+
+
+def status_json(environ, start_response):
+    response = {"status": get_schedd_status(environ)}
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(response) ]
+
 
 
 def vos(environ, start_response):
@@ -319,6 +346,7 @@ urls = [
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedd$'), schedd),
     (re.compile(r'^json/+vos$'), vos_json),
+    (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),
