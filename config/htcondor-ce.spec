@@ -214,11 +214,17 @@ fi
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-webapp-defaults.conf
 %{_datadir}/condor-ce/metrics.d/00-metrics-defaults.conf
+%{_datadir}/condor-ce/templates/index.html
 
 %{_datadir}/condor-ce/osg-wrapper
 %{_datadir}/condor-ce/condor_ce_webapp
 %{_datadir}/condor-ce/condor_ce_metric
 %{_datadir}/condor-ce/condor_ce_jobmetrics
+
+%{python_sitelib}/htcondor_ce
+%{python_sitelib}/htcondor_ce/__init__.py
+%{python_sitelib}/htcondor_ce/web.py
+%{python_sitelib}/htcondor_ce/rrd.py
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -294,10 +300,6 @@ fi
 
 %{python_sitelib}/condor_ce_info_query.py*
 %{python_sitelib}/condor_ce_tools.py*
-%{python_sitelib}/htcondor_ce
-%{python_sitelib}/htcondor_ce/__init__.py
-%{python_sitelib}/htcondor_ce/web.py
-%{python_sitelib}/htcondor_ce/rrd.py
 
 %files collector
 
