@@ -49,7 +49,7 @@ def main():
     rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
     for vo, info in vo_results.items():
-        vo_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "vos")
+        vo_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "vos", vo)
         if os.isatty(2):
             print >> sys.stderr, "VO", vo, "totals:", info
         rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))

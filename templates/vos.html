@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/">
+  <head>
+    <title>HTCondor-CE VO Overview</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet" type="text/css" />
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+//<![CDATA[
+        google.load('visualization', '1', {packages:['table', 'controls']});
+        $(document).ready(function() {
+            load_data();
+            setInterval(load_data, 300000);
+        });
+
+        function load_data() {
+            $.get('/json/vos', got_vos);
+        }
+
+        function got_vos(data) {
+            for (vo in data) {
+                vo_data = data[vo];
+                vo_table = $("<table></table>");
+                vo_table.addClass("table");
+                vo_table.attr('id', vo + '_table');
+                vo_table.append("<tr><th>Running</th><th>Idle</th><th>Held</th>");
+                vo_table.append("<tr><td>" + vo_data.Running + "</td><td>" + vo_data.Idle + "</td><td>" + vo_data.Held + "</td></tr>");
+                $("#" + vo + "_table").append(vo_table);
+            }
+        }
+//]]>
+    </script>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/" class="brand">HTCondor-CE Overview</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="/vos">VOs</a></li>
+              <li><a href="/pilots">Pilots</a></li>
+              <li><a href="/health">Health</a></li>
+              <li><a href="/metrics">Metrics</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" style="padding-top:60px">
+      <div py:for="vo in sorted(vos)" class="row-fluid" id="top_summary">
+        <div class="span12">
+          <div class="span3" style="padding-top:40px">
+            <h1>${vo}</h1>
+            <div id="${vo}_table"></div>
+          </div>
+          <div class="span3">
+            <div class="row-fluid">
+              <h2>Last Hour</h2>
+              <div id="${vo}_hourly_div">
+                <img id="${vo}_hourly_img" src="graphs/vos/${vo}/hourly"/>
+              </div>
+            </div>
+          </div>
+          <div class="span3">
+            <div class="row-fluid">
+              <h2>Last Day</h2>
+              <div id="${vo}_daily_div">
+                <img id="${vo}_daily_img" src="graphs/vos/${vo}/daily"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

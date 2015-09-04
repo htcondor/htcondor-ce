@@ -171,6 +171,48 @@ def pilots(environ, start_response):
     return [ json.dumps(job_count.values()) ]
 
 
+def vos_json(environ, start_response):
+    schedd = get_schedd_obj(environ)
+    job_count = {}
+    for job in schedd.xquery('true', ['x509UserProxyVOName', 'JobStatus']):
+        VO = job.get('x509UserProxyVOName', 'Unknown')
+        job_key = VO
+        if job_key not in job_count:
+            job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+        results = job_count[job_key];
+        results["Jobs"] += 1
+        if job.get("JobStatus") == 1:
+            results['Idle'] += 1
+        elif job.get("JobStatus") == 2:
+            results['Running'] += 1
+        elif job.get("JobStatus") == 5:
+            results['Held'] += 1
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(job_count) ]
+
+
+def vos(environ, start_response):
+    vos = htcondor_ce.rrd.list_vos(environ)
+
+    status = '200 OK'
+    headers = [('Content-type', 'text/html'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    tmpl = _loader.load('vos.html')
+
+    info = {
+        'vos': vos,
+    }
+
+    return [tmpl.generate(**info).render('html', doctype='html')]
+
+
 def index(environ, start_response):
     status = '200 OK'
     headers = [('Content-type', 'text/html'),
@@ -190,7 +232,7 @@ def index(environ, start_response):
     return [tmpl.generate(**info).render('html', doctype='html')]
 
 
-ce_graph_re = re.compile(r'^/+graphs/ce/?([a-zA-Z]+)?/?$')
+ce_graph_re = re.compile(r'^/+graphs/+ce/?([a-zA-Z]+)?/?$')
 def ce_graph(environ, start_response):
     status = '200 OK'
     headers = [('Content-type', 'image/png'),
@@ -206,6 +248,23 @@ def ce_graph(environ, start_response):
     return [ htcondor_ce.rrd.graph(environ, "jobs", interval) ]
 
 
+vo_graph_re = re.compile(r'^/*graphs/+vos/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
+def vo_graph(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'image/png'),
+               ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    path = environ.get('PATH_INFO', '')
+    m = vo_graph_re.match(path)
+    interval = "daily"
+    environ['vo'] = m.groups()[0]
+    if m.groups()[1]:
+        interval=m.groups()[1]
+
+    return [ htcondor_ce.rrd.graph(environ, "vos", interval) ]
+
+
 def not_found(environ, start_response):
     status = '404 Not Found'
     headers = [('Content-type', 'text/html'),
@@ -218,10 +277,13 @@ def not_found(environ, start_response):
 
 urls = [
     (re.compile(r'^/*$'), index),
+    (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedd$'), schedd),
+    (re.compile(r'^json/+vos$'), vos_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
+    (vo_graph_re, vo_graph),
 ]
 
 
