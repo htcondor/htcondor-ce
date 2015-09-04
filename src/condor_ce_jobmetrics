@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import os
+
+import rrdtool
+
+os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
+import htcondor_ce.web
+import htcondor_ce.rrd
+
+
+def main():
+    schedd = htcondor_ce.web.get_schedd_obj()
+    total_results = {"Running": 0, "Idle": 0, "Held": 0}
+    vo_results = {}
+    for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName']):
+
+        VO = job.get('x509UserProxyVOName', 'Unknown')
+        if VO not in vo_results:
+            vo_results[VO] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0, "VO": VO}
+        results = job_count[job_key];
+        results["Jobs"] += 1
+        if job.get("JobStatus") == 1:
+            results['Idle'] += 1
+            total_results['Idle'] += 1
+        elif job.get("JobStatus") == 2:
+            results['Running'] += 1
+            total_results['Running'] += 1
+        elif job.get("JobStatus") == 5:
+            results['Held'] += 1
+            total_results['Held'] += 1
+
+    spooldir = htcondor_ce.web.get_spooldir()
+    total_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "totals")
+    rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
+
+    for vo, info in vo_results:
+        vo_fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "vos")
+        rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
+
+
+if __name__ == '__main__':
+    main()
+

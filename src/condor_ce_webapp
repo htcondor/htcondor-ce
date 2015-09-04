@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import os
+import optparse
+
+os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
+
+import htcondor
+import htcondor_ce.web
+
+from wsgiref.simple_server import make_server
+
+def parse_opts():
+    parser = optparse.OptionParser()
+    parser.add_option("-p", "--pool", help="HTCondor-CE pool to consider.", dest="pool")
+    parser.add_option("-n", "--name", help="HTCondor-CE schedd to consider.", dest="name")
+
+    opts = parser.parse_args()[0]
+    return opts
+
+def main():
+    opts = parse_opts()
+
+    spooldir = htcondor.param.get("HTCONDORCE_WEBAPP_SPOOL")
+    if not spooldir:
+        if not os.path.exists("tmp"):
+            os.mkdir("tmp")
+        spooldir = "tmp"
+
+    port = int(htcondor.param.get('HTCONDORCE_WEBAPP_PORT', 8080))
+    httpd = make_server('', port, htcondor_ce.web.application)
+    httpd.base_environ['htcondorce.spool'] = spooldir
+    if os.path.exists('templates'):
+        httpd.base_environ['htcondorce.templates'] = 'templates'
+    if opts.pool:
+        httpd.base_environ['htcondorce.pool'] = opts.pool
+    if opts.name:
+        httpd.base_environ['htcondorce.name'] = opts.name
+
+    httpd.serve_forever()
+
+if __name__ == '__main__':
+    main()
+
