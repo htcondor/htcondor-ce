@@ -294,6 +294,10 @@ fi
 
 %{python_sitelib}/condor_ce_info_query.py*
 %{python_sitelib}/condor_ce_tools.py*
+%{python_sitelib}/htcondor_ce
+%{python_sitelib}/htcondor_ce/__init__.py
+%{python_sitelib}/htcondor_ce/web.py
+%{python_sitelib}/htcondor_ce/rrd.py
 
 %files collector
 
