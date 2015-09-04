@@ -87,6 +87,7 @@ def get_schedd_ad(environ):
 
 
 def get_spooldir():
+    _check_htcondor()
     spooldir = htcondor.param.get("HTCONDORCE_WEBAPP_SPOOL")
     if not spooldir:
         if not os.path.exists("tmp"):
