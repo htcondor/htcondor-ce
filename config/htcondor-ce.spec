@@ -22,9 +22,6 @@ URL: http://github.com/bbockelm/condor-ce
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 Source1: condor-ce.service
 Source2: condor-ce-collector.service
-Patch0: init-script-lsb-lines.patch
-Patch1: sw1910_run_without_r.patch
-Patch2: drop_userHome.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -154,9 +151,6 @@ Conflicts: %{name}
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
@@ -212,6 +206,7 @@ fi
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
 %{_libdir}/condor/libeval_rsl.so
+%{_libdir}/condor/libclassad_ce.so
 
 %{_initrddir}/condor-ce
 
