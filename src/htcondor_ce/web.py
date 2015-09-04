@@ -258,6 +258,18 @@ def metrics(environ, start_response):
     return [tmpl.generate(**info).render('html', doctype='html')]
 
 
+def health(environ, start_response):
+
+    status = '200 OK'
+    headers = [('Content-type', 'text/html'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    tmpl = _loader.load('health.html')
+
+    return [tmpl.generate().render('html', doctype='html')]
+
+
 def index(environ, start_response):
     status = '200 OK'
     headers = [('Content-type', 'text/html'),
@@ -342,6 +354,7 @@ urls = [
     (re.compile(r'^/*$'), index),
     (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^metrics/*$'), metrics),
+    (re.compile(r'^health/*$'), health),
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedd$'), schedd),

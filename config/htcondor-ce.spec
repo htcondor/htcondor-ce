@@ -234,6 +234,7 @@ fi
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
 %{_datadir}/condor-ce/templates/metrics.html
+%{_datadir}/condor-ce/templates/health.html
 
 %{_datadir}/condor-ce/osg-wrapper
 %{_datadir}/condor-ce/condor_ce_webapp

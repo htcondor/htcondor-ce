@@ -199,6 +199,7 @@ def graph(environ, plot, interval):
             "GPRINT:metric:MAX:%-6.0lf",
             "GPRINT:metric:AVERAGE:%-6.0lf",
             "GPRINT:metric:LAST:%-6.0lf",
+            "COMMENT:\\n",
             )
 
 
