@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/">
+    <xi:include href="header.html" />
   <head>
     <title>HTCondor-CE Overview</title>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet" type="text/css" />
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js" type="text/javascript"></script>
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
     <script type='text/javascript'>
 //<![CDATA[
         google.load('visualization', '1', {packages:['table', 'controls']});
@@ -63,66 +61,46 @@
     </script>
   </head>
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a href="/" class="brand">HTCondor-CE Overview</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="/vos">VOs</a></li>
-              <li><a href="/pilots">Pilots</a></li>
-              <li><a href="/metrics">Metrics</a></li>
-              <li><a href="/health">Health</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    <div class="container-fluid" style="padding-top:60px">
-      <div class="row-fluid" id="top_summary">
-        <div class="span12">
-          <div class="span3" style="padding-top:40px">
+    <div class="container" style="padding-top:60px">
+      <div class="row" id="top_summary">
+        <div class="col-sm-12">
+          <div class="col-sm-3" style="padding-top:40px">
             <div id="schedd_stats_table"></div>
           </div>
-          <div class="span3">
-            <div class="row-fluid">
+          <div class="col-sm-3">
+            <div class="row">
               <h2>Last Hour</h2>
               <div id="ce_hourly_img">
-                  <img id="ce_hourly_img" src="graphs/ce/hourly"/>
+                  <img id="ce_hourly_img" src="graphs/ce/hourly" class="img-responsive"/>
               </div>
             </div>
           </div>
-          <div class="span3">
-            <div class="row-fluid">
+          <div class="col-sm-3">
+            <div class="row">
               <h2>Last Day</h2>
               <div id="ce_daily_div">
-                  <img id="ce_daily_img" src="graphs/ce/daily"/>
+                  <img id="ce_daily_img" src="graphs/ce/daily" class="img-responsive"/>
               </div>
             </div>
           </div>
-          <div class="span3">
-            <div class="row-fluid">
+          <div class="col-sm-3">
+            <div class="row">
               <h2>Last Week</h2>
               <div id="ce_weekly_div">
-                  <img id="ce_weekly_img" src="graphs/ce/weekly"/>
+                  <img id="ce_weekly_img" src="graphs/ce/weekly" class="img-responsive"/>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-sm-12">
           <h2>Pilots</h2>
           <div id="pilots_table"/>
         </div>
       </div>
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-sm-12">
           <h2>Info</h2>
           <div id="info_table"/>
         </div>
