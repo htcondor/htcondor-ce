@@ -205,7 +205,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-webapp.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-default-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
