@@ -7,31 +7,6 @@
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet" type="text/css" />
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js" type="text/javascript"></script>
     <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
-//<![CDATA[
-        google.load('visualization', '1', {packages:['table', 'controls']});
-        $(document).ready(function() {
-            load_data();
-            setInterval(load_data, 300000);
-        });
-
-        function load_data() {
-            $.get('/json/vos', got_vos);
-        }
-
-        function got_vos(data) {
-            for (vo in data) {
-                vo_data = data[vo];
-                vo_table = $("<table></table>");
-                vo_table.addClass("table");
-                vo_table.attr('id', vo + '_table');
-                vo_table.append("<tr><th>Running</th><th>Idle</th><th>Held</th>");
-                vo_table.append("<tr><td>" + vo_data.Running + "</td><td>" + vo_data.Idle + "</td><td>" + vo_data.Held + "</td></tr>");
-                $("#" + vo + "_table").append(vo_table);
-            }
-        }
-//]]>
-    </script>
   </head>
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -55,26 +30,18 @@
       </div>
     </div>
     <div class="container-fluid" style="padding-top:60px">
-      <div py:for="vo in sorted(vos)" class="row-fluid" id="top_summary">
-        <div class="span12">
-          <div class="span3" style="padding-top:40px">
-            <h1>${vo}</h1>
-            <div id="${vo}_table"></div>
-          </div>
-          <div class="span3">
-            <div class="row-fluid">
-              <h2>Last Hour</h2>
-              <div id="${vo}_hourly_div">
-                <img id="${vo}_hourly_img" src="graphs/vos/${vo}/hourly"/>
-              </div>
+      <div py:for="group in sorted(metrics)">
+        <h1>${group}</h1>
+        <div py:for="name in sorted(metrics[group])" class="row-fluid">
+          <div class="span12">
+            <h2>${name}</h2>
+            <div class="span3">
+              <h3>Last Hour</h3>
+              <img src="graphs/metrics/${group}/${name}/hourly"/>
             </div>
-          </div>
-          <div class="span3">
-            <div class="row-fluid">
-              <h2>Last Day</h2>
-              <div id="${vo}_daily_div">
-                <img id="${vo}_daily_img" src="graphs/vos/${vo}/daily"/>
-              </div>
+            <div class="span3">
+              <h3>Last Day</h3>
+              <img src="graphs/metrics/${group}/${name}/daily"/>
             </div>
           </div>
         </div>

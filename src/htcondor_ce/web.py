@@ -213,6 +213,24 @@ def vos(environ, start_response):
     return [tmpl.generate(**info).render('html', doctype='html')]
 
 
+def metrics(environ, start_response):
+
+    metrics = htcondor_ce.rrd.list_metrics(environ)
+
+    status = '200 OK'
+    headers = [('Content-type', 'text/html'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    tmpl = _loader.load('metrics.html')
+
+    info = {
+        'metrics': metrics,
+    }
+
+    return [tmpl.generate(**info).render('html', doctype='html')]
+
+
 def index(environ, start_response):
     status = '200 OK'
     headers = [('Content-type', 'text/html'),
@@ -265,6 +283,24 @@ def vo_graph(environ, start_response):
     return [ htcondor_ce.rrd.graph(environ, "vos", interval) ]
 
 
+metrics_graph_re = re.compile(r'^/*graphs/+metrics/+([a-zA-Z._]+)/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
+def metrics_graph(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'image/png'),
+               ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    path = environ.get('PATH_INFO', '')
+    m = metrics_graph_re.match(path)
+    interval = "daily"
+    environ['group'] = m.groups()[0]
+    environ['name'] = m.groups()[1]
+    if m.groups()[-1]:
+        interval=m.groups()[-1]
+
+    return [ htcondor_ce.rrd.graph(environ, "metrics", interval) ]
+
+
 def not_found(environ, start_response):
     status = '404 Not Found'
     headers = [('Content-type', 'text/html'),
@@ -278,12 +314,14 @@ def not_found(environ, start_response):
 urls = [
     (re.compile(r'^/*$'), index),
     (re.compile(r'^vos/*$'), vos),
+    (re.compile(r'^metrics/*$'), metrics),
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedd$'), schedd),
     (re.compile(r'^json/+vos$'), vos_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
+    (metrics_graph_re, metrics_graph),
 ]
 
 

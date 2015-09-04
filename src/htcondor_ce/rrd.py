@@ -65,12 +65,16 @@ def check_rrd(environ, plot, group=None, name=None):
 
 
 _metric_name_re = re.compile(r'^[-A-za-z0-9_]+[-A-za-z0-9_.]*')
-def list_metrics(environ, group_name):
-    results = []
-    base_path = get_rrd_name(environ, "metrics", group_name)
+def list_metrics(environ):
+    results = {}
+    base_path = get_rrd_name(environ, "metrics")
     for fname in os.listdir(base_path):
-        if os.path.isfile(os.path.join(base_path, fname)) and _metric_name_re.match(fname):
-            results.append(fname)
+        group_path = os.path.join(base_path, fname)
+        if os.path.isdir(group_path) and _metric_name_re.match(fname):
+            group_metrics = results.setdefault(fname, [])
+            for fname in os.listdir(group_path):
+                if os.path.isfile(os.path.join(group_path, fname)) and _metric_name_re.match(fname):
+                    group_metrics.append(fname)
     return results
 
 
@@ -109,7 +113,7 @@ def get_rrd_interval(interval):
 
 def graph(environ, plot, interval):
 
-    if plot not in ['jobs', 'vos']:
+    if plot not in ['jobs', 'vos', 'metrics']:
         raise ValueError("Unknown plot type requested.")
 
     fd, pngpath = tempfile.mkstemp(".png")
@@ -177,6 +181,24 @@ def graph(environ, plot, interval):
             "GPRINT:Held:MAX:%-6.0lf",
             "GPRINT:Held:AVERAGE:%-6.0lf",
             "GPRINT:Held:LAST:%-6.0lf\\n",
+            )
+    elif plot == 'metrics':
+        group = environ.get('group', 'Unknown')
+        name = environ.get('name', 'Unknown')
+        fname = check_rrd(environ, plot, group, name)
+        rrdtool.graph(pngpath,
+            "--imgformat", "PNG",
+            "--width", "400",
+            "--start", "-1%s" % get_rrd_interval(interval),
+            "--lower-limit", "0",
+            "--title", "%s %s" % (group, name),
+            "DEF:metric=%s:metric:AVERAGE" % fname,
+            "LINE2:metric#FF0000:%s" % name,
+            "COMMENT:\\n",
+            "COMMENT:    max     avg     cur\\n",
+            "GPRINT:metric:MAX:%-6.0lf",
+            "GPRINT:metric:AVERAGE:%-6.0lf",
+            "GPRINT:metric:LAST:%-6.0lf",
             )
 
 
