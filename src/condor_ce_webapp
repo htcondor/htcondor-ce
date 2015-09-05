@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import os
+import pwd
+import errno
 import logging
 import optparse
 
@@ -17,7 +19,18 @@ class HTCondorHandler(logging.Handler):
 
     def emit(self, record):
         msg = self.format(record)
+        euid = os.geteuid()
         htcondor.log(htcondor.LogLevel.Always, msg)
+        if euid != os.geteuid():
+            os.seteuid(euid) 
+
+
+def condor_ids():
+    if 'CONDOR_IDS' in htcondor.param:
+        info = htcondor.param['CONDOR_IDS'].split('.', 1)
+        return int(info[0]), int(info[1])
+    info = pwd.getpwnam('condor')
+    return info.pw_uid, info.pw_gid
 
 
 def setup_logging():
@@ -26,7 +39,11 @@ def setup_logging():
     cherrypy.log.error_log.handlers = []
     #cherrypy.log.access_log.handlers = []
     if os.isatty(1):
+        euid = os.geteuid()
         htcondor.enable_debug()
+        if euid != os.geteuid():
+            os.seteuid(euid)
+        pass
     else:
         htcondor.enable_log()
     h = HTCondorHandler()
@@ -144,7 +161,19 @@ def main():
     #server2.thread_pool = 30
     #server2.subscribe()
 
+    uid, gid = condor_ids()
+
     cherrypy.engine.start()
+    try:
+        os.setgid(gid)
+    except OSError, oe:
+        if oe.errno != errno.EPERM:
+            raise
+    try:
+        os.setuid(uid)
+    except OSError, oe:
+        if oe.errno != errno.EPERM:
+            raise
     cherrypy.engine.block()
 
 
