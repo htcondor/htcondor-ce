@@ -3,6 +3,7 @@
 import os
 import pwd
 import errno
+import socket
 import logging
 import optparse
 
@@ -14,6 +15,13 @@ import cherrypy.wsgiserver
 
 import htcondor
 import htcondor_ce.web
+
+
+ALIVE_HEARTBEAT = 60
+def send_heartbeat():
+    htcondor.send_alive(timeout=ALIVE_HEARTBEAT)
+    htcondor.log(htcondor.LogLevel.FullDebug, "Sent heartbeat to parent process")
+
 
 class HTCondorHandler(logging.Handler):
 
@@ -147,18 +155,42 @@ def main():
 
     cherrypy.tree.graft(app, "/")
     cherrypy.server.unsubscribe()
-    server1 = cherrypy._cpserver.Server()
-    server1.socket_host = "0.0.0.0"
-    server1.socket_port = port
-    server1.thread_pool = 50
-    wsgi_server = cherrypy._cpwsgi_server.CPWSGIServer(server1)
-    wsgi_server.gateway = MyWSGIGateway
-    server1.instance = wsgi_server
-    server1.subscribe()
-    #server2.socket_host = "::"
-    #server2.socket_port = 8081
-    #server2.thread_pool = 30
-    #server2.subscribe()
+
+    # Do the IPv6 / v4 dance:
+    #   - If bindv6only is enabled, then we must connect to v4 and v6 separately.
+    #   - Otherwise, only connect via v6
+    bindonly = '/proc/sys/net/ipv6/bindv6only'
+    addrs = socket.getaddrinfo(socket.getfqdn(), 9618, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, 0)
+    families = [i[0] for i in addrs]
+    bind_ipv6_only = False
+    if socket.AF_INET6 in families:
+        bind_ipv6_only = os.path.exists(bindonly) and open(bindonly).read() == "1"
+        server6 = cherrypy._cpserver.Server()
+        server6.socket_host = "::"
+        server6.socket_port = port
+        server6.thread_pool = 5
+        wsgi_server = cherrypy._cpwsgi_server.CPWSGIServer(server6)
+        wsgi_server.gateway = MyWSGIGateway
+        server6.instance = wsgi_server
+        server6.subscribe()
+
+    if (socket.AF_INET in families) and ( \
+             (bind_ipv6_only) or (socket.AF_INET6 not in families) \
+            ):
+        server4 = cherrypy._cpserver.Server()
+        server4.socket_host = "0.0.0.0"
+        server4.socket_port = port
+        server4.thread_pool = 5
+
+        wsgi_server = cherrypy._cpwsgi_server.CPWSGIServer(server4)
+        wsgi_server.gateway = MyWSGIGateway
+        server4.instance = wsgi_server
+        server4.subscribe()
+
+    # If we're running under condor, then we should send keepalives to the master.
+    if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
+        wd = cherrypy.process.plugins.Backgroundtask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
+        wd.start()
 
     uid, gid = condor_ids()
 
