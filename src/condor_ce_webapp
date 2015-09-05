@@ -1,14 +1,61 @@
 #!/usr/bin/python
 
 import os
+import pwd
+import errno
+import logging
 import optparse
 
 os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
 
+import cherrypy
+import cherrypy._cpwsgi_server
+import cherrypy.wsgiserver
+
 import htcondor
 import htcondor_ce.web
 
-from wsgiref.simple_server import make_server
+class HTCondorHandler(logging.Handler):
+
+    def emit(self, record):
+        msg = self.format(record)
+        euid = os.geteuid()
+        htcondor.log(htcondor.LogLevel.Always, msg)
+        if euid != os.geteuid():
+            os.seteuid(euid) 
+
+
+def condor_ids():
+    if 'CONDOR_IDS' in htcondor.param:
+        info = htcondor.param['CONDOR_IDS'].split('.', 1)
+        return int(info[0]), int(info[1])
+    info = pwd.getpwnam('condor')
+    return info.pw_uid, info.pw_gid
+
+
+def setup_logging():
+    if not hasattr(htcondor, 'log'):
+        return
+    cherrypy.log.error_log.handlers = []
+    #cherrypy.log.access_log.handlers = []
+    euid = os.geteuid()
+    if os.isatty(1):
+        htcondor.enable_debug()
+    else:
+        htcondor.enable_log()
+    if euid != os.geteuid():
+        os.seteuid(euid)
+    h = HTCondorHandler()
+    h.setLevel(logging.DEBUG)
+    h.setFormatter(cherrypy._cplogging.logfmt)
+
+    def nulltime():
+        return ''
+
+    cherrypy.log.time = nulltime
+    cherrypy.log.error_log.addHandler(h)
+    cherrypy.log.access_log.addHandler(h)
+
 
 def parse_opts():
     parser = optparse.OptionParser()
@@ -18,7 +65,60 @@ def parse_opts():
     parser.add_option("--spool", help="Spool directory to use.", dest="spool")
 
     opts = parser.parse_args()[0]
+
+    if hasattr(htcondor, 'set_subsystem'):
+        htcondor.set_subsystem("CEMON")
+    setup_logging()
+
     return opts
+
+
+class MyWSGIGateway(cherrypy.wsgiserver.WSGIGateway_10):
+
+    env_override = {}
+
+    def get_environ(self):
+        environ = cherrypy.wsgiserver.WSGIGateway_10.get_environ(self)
+        environ.update(self.env_override)
+        return environ
+
+
+class WSGILogging(object):
+
+    def __init__(self, app):
+        self.app = app
+
+    FORMAT = '{host} "{request}" {status} {size} "{referer}" "{agent}"'
+
+    def __call__(self, environ, start_response):
+        status_codes = []
+        content_lengths = []
+        def custom_start_response(status, response_headers, exc_info=None):
+            status_codes.append(int(status.partition(' ')[0]))
+            for name, value in response_headers:
+                if name.lower() == 'content-length':
+                    content_lengths.append(int(value))
+                    break
+            return start_response(status, response_headers, exc_info)
+        retval = self.app(environ, custom_start_response)
+        content_length = content_lengths[0] if content_lengths else len(b''.join(retval))
+
+        msg = { \
+            'host': environ.get('REMOTE_ADDR', ''),
+            'request': "%s %s %s" % ( \
+              environ.get('REQUEST_METHOD', ''),
+              environ.get('PATH_INFO', ''),
+              environ.get('SERVER_PROTOCOL', '')
+            ),
+            'size': content_length,
+            'status': status_codes[0],
+            'referer': environ.get('HTTP_REFERER', ''),
+            'agent': environ.get('HTTP_USER_AGENT', ''),
+        }
+        msg = self.FORMAT.format(**msg)
+        htcondor.log(htcondor.LogLevel.Always, msg)
+        return retval
+
 
 def main():
     opts = parse_opts()
@@ -35,16 +135,46 @@ def main():
         port = int(opts.port)
     else:
         port = int(htcondor.param.get('HTCONDORCE_WEBAPP_PORT', 8080))
-    httpd = make_server('', port, htcondor_ce.web.application)
-    httpd.base_environ['htcondorce.spool'] = spooldir
+    MyWSGIGateway.env_override['htcondorce.spool'] = spooldir
     if os.path.exists('templates'):
-        httpd.base_environ['htcondorce.templates'] = 'templates'
+        MyWSGIGateway.env_override['htcondorce.templates'] = 'templates'
     if opts.pool:
-        httpd.base_environ['htcondorce.pool'] = opts.pool
+        MyWSGIGateway.env_override['htcondorce.pool'] = opts.pool
     if opts.name:
-        httpd.base_environ['htcondorce.name'] = opts.name
+        MyWSGIGateway.env_override['htcondorce.name'] = opts.name
 
-    httpd.serve_forever()
+    app = WSGILogging(htcondor_ce.web.application)
+
+    cherrypy.tree.graft(app, "/")
+    cherrypy.server.unsubscribe()
+    server1 = cherrypy._cpserver.Server()
+    server1.socket_host = "0.0.0.0"
+    server1.socket_port = port
+    server1.thread_pool = 50
+    wsgi_server = cherrypy._cpwsgi_server.CPWSGIServer(server1)
+    wsgi_server.gateway = MyWSGIGateway
+    server1.instance = wsgi_server
+    server1.subscribe()
+    #server2.socket_host = "::"
+    #server2.socket_port = 8081
+    #server2.thread_pool = 30
+    #server2.subscribe()
+
+    uid, gid = condor_ids()
+
+    cherrypy.engine.start()
+    try:
+        os.setgid(gid)
+    except OSError, oe:
+        if oe.errno != errno.EPERM:
+            raise
+    try:
+        os.setuid(uid)
+    except OSError, oe:
+        if oe.errno != errno.EPERM:
+            raise
+    cherrypy.engine.block()
+
 
 if __name__ == '__main__':
     main()

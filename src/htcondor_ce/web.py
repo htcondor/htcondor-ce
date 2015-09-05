@@ -98,6 +98,21 @@ def get_spooldir():
     return spooldir
 
 
+def get_schedd_status(environ={}):
+    ad = get_schedd_ad(environ)
+    for missing_attr in ['Status', 'IsOK', 'IsWarning', 'IsCritical']:
+        if missing_attr in ad:
+            continue
+        if missing_attr not in htcondor.param:
+            continue
+        ad[missing_attr] = classad.ExprTree(htcondor.param[missing_attr])
+
+    if 'Status' not in ad:
+        return 'Unknown'
+
+    return ad['Status'].eval()
+
+
 def ad_to_json(ad):
     result = {}
     for key in ad:
@@ -196,6 +211,18 @@ def vos_json(environ, start_response):
     return [ json.dumps(job_count) ]
 
 
+def status_json(environ, start_response):
+    response = {"status": get_schedd_status(environ)}
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(response) ]
+
+
+
 def vos(environ, start_response):
     vos = htcondor_ce.rrd.list_vos(environ)
 
@@ -229,6 +256,18 @@ def metrics(environ, start_response):
     }
 
     return [tmpl.generate(**info).render('html', doctype='html')]
+
+
+def health(environ, start_response):
+
+    status = '200 OK'
+    headers = [('Content-type', 'text/html'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    tmpl = _loader.load('health.html')
+
+    return [tmpl.generate().render('html', doctype='html')]
 
 
 def index(environ, start_response):
@@ -315,10 +354,12 @@ urls = [
     (re.compile(r'^/*$'), index),
     (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^metrics/*$'), metrics),
+    (re.compile(r'^health/*$'), health),
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedd$'), schedd),
     (re.compile(r'^json/+vos$'), vos_json),
+    (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),

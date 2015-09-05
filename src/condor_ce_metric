@@ -24,7 +24,7 @@ def parse_opts():
     parser.add_option("-S", "--spoof", dest="spoof")
     parser.add_option("-x", "--tmax", dest="tmax")
     parser.add_option("-d", "--dmax", dest="dmax")
-    parser.add_option("--heartbeat")
+    parser.add_option("--heartbeat", action="store_true")
 
     return parser.parse_args()[0]
 
