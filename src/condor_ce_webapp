@@ -20,7 +20,6 @@ import htcondor_ce.web
 ALIVE_HEARTBEAT = 60
 def send_heartbeat():
     htcondor.send_alive(timeout=ALIVE_HEARTBEAT)
-    htcondor.log(htcondor.LogLevel.FullDebug, "Sent heartbeat to parent process")
 
 
 class HTCondorHandler(logging.Handler):
@@ -71,6 +70,7 @@ def parse_opts():
     parser.add_option("-n", "--name", help="HTCondor-CE schedd to consider.", dest="name")
     parser.add_option("--port", help="Port to use for webapp.", dest="port")
     parser.add_option("--spool", help="Spool directory to use.", dest="spool")
+    parser.add_option("-f", help="Stay in foreground.", action="store_true")
 
     opts = parser.parse_args()[0]
 
@@ -189,7 +189,7 @@ def main():
 
     # If we're running under condor, then we should send keepalives to the master.
     if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
-        wd = cherrypy.process.plugins.Backgroundtask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
+        wd = cherrypy.process.plugins.BackgroundTask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
         wd.start()
 
     uid, gid = condor_ids()
