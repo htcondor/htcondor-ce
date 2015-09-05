@@ -38,14 +38,13 @@ def setup_logging():
         return
     cherrypy.log.error_log.handlers = []
     #cherrypy.log.access_log.handlers = []
+    euid = os.geteuid()
     if os.isatty(1):
-        euid = os.geteuid()
         htcondor.enable_debug()
-        if euid != os.geteuid():
-            os.seteuid(euid)
-        pass
     else:
         htcondor.enable_log()
+    if euid != os.geteuid():
+        os.seteuid(euid)
     h = HTCondorHandler()
     h.setLevel(logging.DEBUG)
     h.setFormatter(cherrypy._cplogging.logfmt)
