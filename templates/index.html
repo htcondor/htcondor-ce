@@ -4,7 +4,8 @@
       xmlns:py="http://genshi.edgewall.org/">
     <xi:include href="header.html" />
   <head>
-    <title>HTCondor-CE Overview</title>
+    <title py:if="multice">Grid Overview</title>
+    <title py:if="not multice">HTCondor-CE Overview</title>
     <script type='text/javascript'>
 //<![CDATA[
         google.load('visualization', '1', {packages:['table', 'controls']});
@@ -16,7 +17,11 @@
         function load_data() {
             $.get('/json/totals', got_totals);
             $.get('/json/pilots', got_pilots);
-            $.get('/json/schedd', got_info);
+            if("${multice}" != "False") {
+                $.get('/json/schedds', got_schedds);
+            } else {
+                $.get('/json/schedd', got_info);
+            }
         }
 
         function got_totals(data) {
@@ -41,6 +46,21 @@
           info_table.append("<tr><td>Batch System</td><td>" + data.OSG_BatchSystems + "</td></tr>");
           info_table.append("<tr><td>HTCondor-CE version</td><td>" + data.HTCondorCEVersion + "</td></tr>");
           info_table.append("<tr><td>HTCondor version</td><td>" + data.CondorVersion + "</td></tr>");
+          $("#info_table").append(info_table);
+
+        }
+
+        function got_schedds(data) {
+
+          $('#info_table_inner').detach();
+          info_table = $("<table></table>");
+          info_table.addClass("table");
+          info_table.attr("id", "info_table_inner");
+          info_table.append("<th>CE</th><th>OSG Resource</th><th>OSG Resource Group</th><th>Batch System</th><th>HTCondor-CE Version</th><th>HTCondor Version</th>");
+          for (name in data) {
+              key = data[name]
+              info_table.append("<tr><td>" + name + "</td><td>" + key.OSG_Resource + "</td><td>" + key.OSG_ResourceGroup + "</td><td>" + key.OSG_BatchSystems + "</td><td>" + key.HTCondorCEVersion + "</td><td>" + key.CondorVersion + "</td></tr>");
+          }
           $("#info_table").append(info_table);
 
         }
@@ -96,7 +116,9 @@
       <div class="row">
         <div class="col-sm-12">
           <h2>Pilots</h2>
-          <div id="pilots_table"/>
+          <div class="table-responsive">
+            <div id="pilots_table"/>
+          </div>
         </div>
       </div>
       <div class="row">

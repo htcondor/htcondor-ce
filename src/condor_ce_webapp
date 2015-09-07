@@ -40,6 +40,20 @@ def condor_ids():
     return info.pw_uid, info.pw_gid
 
 
+g_spooldir = None
+def check_multice():
+    global g_spooldir
+    if not g_spooldir:
+        return
+    dircount = 0
+    for path in os.listdir(g_spooldir):
+        if os.path.isdir(os.path.join(g_spooldir, path)) and (path not in ['vos', 'metrics']):
+            dircount += 1
+            if dircount > 1:
+                break
+    htcondor_ce.web.g_is_multice = dircount > 1
+
+
 def setup_logging():
     if not hasattr(htcondor, 'log'):
         return
@@ -138,6 +152,9 @@ def main():
         if not os.path.exists("tmp"):
             os.mkdir("tmp")
         spooldir = "tmp"
+    global g_spooldir
+    g_spooldir = spooldir
+    check_multice()
 
     if opts.port:
         port = int(opts.port)
@@ -191,6 +208,8 @@ def main():
     if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
         wd = cherrypy.process.plugins.BackgroundTask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
         wd.start()
+    wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
+    wd.start()
 
     uid, gid = condor_ids()
 

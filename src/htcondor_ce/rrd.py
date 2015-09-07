@@ -23,8 +23,8 @@ def get_rrd_name(environ, plot, *other):
     return path_with_base(environ['htcondorce.spool'], plot, *other)
 
 
-def check_rrd(environ, plot, group=None, name=None):
-    path = get_rrd_name(environ, plot, group, name)
+def check_rrd(environ, host, plot, group=None, name=None):
+    path = get_rrd_name(environ, host, plot, group, name)
     dir, fname = os.path.split(path)
     try:
         os.makedirs(dir)
@@ -111,14 +111,14 @@ def get_rrd_interval(interval):
     return rrd_interval
 
 
-def graph(environ, plot, interval):
+def graph(environ, host, plot, interval):
 
     if plot not in ['jobs', 'vos', 'metrics']:
         raise ValueError("Unknown plot type requested.")
 
     fd, pngpath = tempfile.mkstemp(".png")
     if plot == "jobs":
-        fname = check_rrd(environ, plot)
+        fname = check_rrd(environ, host, plot)
         rrdtool.graph(pngpath,
             "--imgformat", "PNG",
             "--width", "400",
@@ -151,7 +151,7 @@ def graph(environ, plot, interval):
             )
     elif plot == 'vos':
         vo = environ.get('vo', 'Unknown')
-        fname = check_rrd(environ, plot, vo)
+        fname = check_rrd(environ, host, plot, vo)
         rrdtool.graph(pngpath,
             "--imgformat", "PNG",
             "--width", "400",
@@ -185,7 +185,7 @@ def graph(environ, plot, interval):
     elif plot == 'metrics':
         group = environ.get('group', 'Unknown')
         name = environ.get('name', 'Unknown')
-        fname = check_rrd(environ, plot, group, name)
+        fname = check_rrd(environ, host, plot, group, name)
         rrdtool.graph(pngpath,
             "--imgformat", "PNG",
             "--width", "400",

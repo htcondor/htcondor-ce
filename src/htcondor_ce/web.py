@@ -4,8 +4,9 @@ import re
 import json
 import time
 import types
-import xml.sax.saxutils
+import socket
 import wsgiref.util
+import xml.sax.saxutils
 
 import genshi.template
 
@@ -17,7 +18,7 @@ import htcondor_ce.rrd
 _initialized = None
 _loader = None
 _view = None
-
+g_is_multice = False
 
 def check_initialized(environ):
     global _initialized
@@ -65,27 +66,37 @@ def _get_name(environ):
     if not htcondor:
         return _get_pool(environ)
 
-    config_name = htcondor.param.get("HTCONDORCE_WEBAPP_NAME")
-    if not config_name:
-        return _get_pool(environ)
+    return htcondor.param.get("HTCONDORCE_WEBAPP_NAME")
 
 
-def get_schedd_obj(environ=None):
+def get_schedd_objs(environ=None):
     pool = _get_pool(environ)
     if pool:
-        coll = htcondor.Collector(pool)
         name = _get_name(environ)
-        return htcondor.Schedd(coll.locate(htcondor.DaemonTypes.Schedd, name))
-    return htcondor.Schedd()
+        coll = htcondor.Collector(pool)
+        if name:
+            schedds = [coll.locate(htcondor.DaemonTypes.Schedd, name)]
+        else:
+            schedds = coll.locateAll(htcondor.DaemonTypes.Schedd)
+        results = []
+        for ad in schedds:
+            if not ad.get("Name"):
+                continue
+            results.append((htcondor.Schedd(ad), ad['Name']))
+        return results
+    return [(htcondor.Schedd(), socket.getfqdn())]
 
 
-def get_schedd_ad(environ):
+def get_schedd_ads(environ):
     pool = _get_pool(environ)
     coll = htcondor.Collector(pool)
-    name = _get_name(environ)
-    if name:
-        return coll.query(htcondor.AdTypes.Schedd, "Name=?=%s" % classad.quote(name))[0]
-    return coll.locate(htcondor.AdTypes.Schedd)[0]
+    if pool:
+        name = _get_name(environ)
+        if name:
+            return [coll.query(htcondor.AdTypes.Schedd, "Name=?=%s" % classad.quote(name))[0]]
+        else:
+            return coll.query(htcondor.AdTypes.Schedd, "true")
+    return [coll.locate(htcondor.DaemonTypes.Schedd)]
 
 
 def get_spooldir():
@@ -98,19 +109,33 @@ def get_spooldir():
     return spooldir
 
 
+def get_schedd_statuses(environ={}):
+    ads = get_schedd_ads(environ)
+    results = {}
+    for ad in ads:
+        if 'Name' not in ad:
+            continue
+
+        for missing_attr in ['Status', 'IsOK', 'IsWarning', 'IsCritical']:
+            if missing_attr in ad:
+                continue
+            if missing_attr not in htcondor.param:
+                continue
+            ad[missing_attr] = classad.ExprTree(htcondor.param[missing_attr])
+
+        if 'Status' not in ad:
+            results[ad['Name']] = 'Unknown'
+        else:
+            results[ad['Name']] = ad['Status'].eval()
+
+    return results
+
+
 def get_schedd_status(environ={}):
-    ad = get_schedd_ad(environ)
-    for missing_attr in ['Status', 'IsOK', 'IsWarning', 'IsCritical']:
-        if missing_attr in ad:
-            continue
-        if missing_attr not in htcondor.param:
-            continue
-        ad[missing_attr] = classad.ExprTree(htcondor.param[missing_attr])
-
-    if 'Status' not in ad:
-        return 'Unknown'
-
-    return ad['Status'].eval()
+    statuses = get_schedd_statuses()
+    keys = statuses.keys()
+    keys.sort()
+    return statuses[keys[0]]
 
 
 def ad_to_json(ad):
@@ -128,28 +153,13 @@ def ad_to_json(ad):
     return result
 
 
-def schedd(environ, start_response):
-    ad = get_schedd_ad(environ)
-    result = ad_to_json(ad)
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
-    return [ json.dumps(result) ]
-
-
-def totals(environ, start_response):
-    schedd = get_schedd_obj(environ)
-    results = {"Running": 0, "Idle": 0, "Held": 0, "UpdateDate": time.time()}
-    for job in schedd.xquery("true", ["JobStatus"]):
-        if job.get("JobStatus") == 1:
-            results['Idle'] += 1
-        elif job.get("JobStatus") == 2:
-            results['Running'] += 1
-        elif job.get("JobStatus") == 5:
-            results['Held'] += 1
+def schedds(environ, start_response):
+    ads = get_schedd_ads(environ)
+    results = {}
+    for ad in ads:
+        if 'Name' not in ad:
+            continue
+        results[ad['Name']] = ad_to_json(ad)
 
     status = '200 OK'
     headers = [('Content-type', 'application/json'),
@@ -159,24 +169,76 @@ def totals(environ, start_response):
     return [ json.dumps(results) ]
 
 
-def pilots(environ, start_response):
-    schedd = get_schedd_obj(environ)
+def schedd(environ, start_response):
+    ads = get_schedd_ads(environ)
+    results = {}
+    for ad in ads:
+        if 'Name' not in ad:
+            continue
+        results[ad['Name']] = ad
+    keys = results.keys()
+    keys.sort()
+    result = ad_to_json(results[keys[0]])
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(result) ]
+
+
+def totals_ce_json(environ, start_response):
+    objs = get_schedd_objs(environ)
+    results = {"Running": 0, "Idle": 0, "Held": 0, "UpdateDate": time.time()}
+    for schedd, name in objs:
+        for job in schedd.xquery("true", ["JobStatus"]):
+            if job.get("JobStatus") == 1:
+                results['Idle'] += 1
+            elif job.get("JobStatus") == 2:
+                results['Running'] += 1
+            elif job.get("JobStatus") == 5:
+                results['Held'] += 1
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(results) ]
+
+
+def totals(environ, start_response):
+    fname = htcondor_ce.rrd.get_rrd_name(environ, "totals")
+    results = json.load(open(fname))
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(results) ]
+
+
+def pilots_ce_json(environ, start_response):
+    objs = get_schedd_objs(environ)
     job_count = {}
-    for job in schedd.xquery('true', ['x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'JobStatus', 'x509userproxysubject']):
-        DN = job.get("x509userproxysubject", 'Unknown')
-        VO = job.get('x509UserProxyVOName', 'Unknown')
-        VOMS = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
-        job_key = (DN, VO, VOMS)
-        if job_key not in job_count:
-            job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0, "DN": DN, "VO": VO, "VOMS": VOMS}
-        results = job_count[job_key];
-        results["Jobs"] += 1
-        if job.get("JobStatus") == 1:
-            results['Idle'] += 1
-        elif job.get("JobStatus") == 2:
-            results['Running'] += 1
-        elif job.get("JobStatus") == 5:
-            results['Held'] += 1
+    for schedd, name in objs:
+        for job in schedd.xquery('true', ['x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'JobStatus', 'x509userproxysubject']):
+            DN = job.get("x509userproxysubject", 'Unknown')
+            VO = job.get('x509UserProxyVOName', 'Unknown')
+            VOMS = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
+            job_key = (DN, VO, VOMS)
+            if job_key not in job_count:
+                job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0, "DN": DN, "VO": VO, "VOMS": VOMS}
+            results = job_count[job_key];
+            results["Jobs"] += 1
+            if job.get("JobStatus") == 1:
+                results['Idle'] += 1
+            elif job.get("JobStatus") == 2:
+                results['Running'] += 1
+            elif job.get("JobStatus") == 5:
+                results['Held'] += 1
 
     status = '200 OK'
     headers = [('Content-type', 'application/json'),
@@ -186,22 +248,35 @@ def pilots(environ, start_response):
     return [ json.dumps(job_count.values()) ]
 
 
+def pilots(environ, start_response):
+    fname = htcondor_ce.rrd.get_rrd_name(environ, "pilots")
+    results = json.load(open(fname))
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(results) ]
+
+
 def vos_json(environ, start_response):
-    schedd = get_schedd_obj(environ)
+    objs = get_schedd_objs(environ)
     job_count = {}
-    for job in schedd.xquery('true', ['x509UserProxyVOName', 'JobStatus']):
-        VO = job.get('x509UserProxyVOName', 'Unknown')
-        job_key = VO
-        if job_key not in job_count:
-            job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-        results = job_count[job_key];
-        results["Jobs"] += 1
-        if job.get("JobStatus") == 1:
-            results['Idle'] += 1
-        elif job.get("JobStatus") == 2:
-            results['Running'] += 1
-        elif job.get("JobStatus") == 5:
-            results['Held'] += 1
+    for schedd, name in objs:
+        for job in schedd.xquery('true', ['x509UserProxyVOName', 'JobStatus']):
+            VO = job.get('x509UserProxyVOName', 'Unknown')
+            job_key = VO
+            if job_key not in job_count:
+                job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+            results = job_count[job_key];
+            results["Jobs"] += 1
+            if job.get("JobStatus") == 1:
+                results['Idle'] += 1
+            elif job.get("JobStatus") == 2:
+                results['Running'] += 1
+            elif job.get("JobStatus") == 5:
+                results['Held'] += 1
 
     status = '200 OK'
     headers = [('Content-type', 'application/json'),
@@ -221,6 +296,19 @@ def status_json(environ, start_response):
 
     return [ json.dumps(response) ]
 
+
+def statuses_json(environ, start_response):
+    result = get_schedd_statuses(environ)
+    response = {}
+    for name, status in result.items():
+        response[name] = {'status': status}
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(response) ]
 
 
 def vos(environ, start_response):
@@ -278,13 +366,7 @@ def index(environ, start_response):
 
     tmpl = _loader.load('index.html')
 
-    info = {
-        'version': htcondor.version(),
-        'ceversion': str(classad.ExprTree(htcondor.param.get("HTCondorCEVersion", '"Unknown"')).eval()),
-        'resource': str(classad.ExprTree(htcondor.param.get("OSG_Resource", '"Unknown"')).eval()),
-        'resourcegroup': str(classad.ExprTree(htcondor.param.get("OSG_ResourceGroup", '"Unknown"')).eval()),
-        'batchsys': str(classad.ExprTree(htcondor.param.get("OSG_BatchSystems", '"Unknown"')).eval()),
-    }
+    info = {'multice': g_is_multice}
 
     return [tmpl.generate(**info).render('html', doctype='html')]
 
@@ -302,7 +384,7 @@ def ce_graph(environ, start_response):
     if m.groups()[0]:
         interval=m.groups()[0]
 
-    return [ htcondor_ce.rrd.graph(environ, "jobs", interval) ]
+    return [ htcondor_ce.rrd.graph(environ, None, "jobs", interval) ]
 
 
 vo_graph_re = re.compile(r'^/*graphs/+vos/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
@@ -319,7 +401,7 @@ def vo_graph(environ, start_response):
     if m.groups()[1]:
         interval=m.groups()[1]
 
-    return [ htcondor_ce.rrd.graph(environ, "vos", interval) ]
+    return [ htcondor_ce.rrd.graph(environ, None, "vos", interval) ]
 
 
 metrics_graph_re = re.compile(r'^/*graphs/+metrics/+([a-zA-Z._]+)/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
@@ -337,7 +419,7 @@ def metrics_graph(environ, start_response):
     if m.groups()[-1]:
         interval=m.groups()[-1]
 
-    return [ htcondor_ce.rrd.graph(environ, "metrics", interval) ]
+    return [ htcondor_ce.rrd.graph(environ, None, "metrics", interval) ]
 
 
 def not_found(environ, start_response):
@@ -357,8 +439,10 @@ urls = [
     (re.compile(r'^health/*$'), health),
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
+    (re.compile(r'^json/+schedds$'), schedds),
     (re.compile(r'^json/+schedd$'), schedd),
     (re.compile(r'^json/+vos$'), vos_json),
+    (re.compile(r'^json/+statuses$'), statuses_json),
     (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
