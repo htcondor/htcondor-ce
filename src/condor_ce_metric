@@ -49,7 +49,7 @@ def main():
     fname = htcondor_ce.rrd.check_rrd(environ, "metrics", opts.group, opts.name)
     rrdtool.update(fname, "N:%s" % str(value))
 
-    fname = htcondor_ce.rrd.check_rrd(environ, "metrics", opts.spoof.split(":")[-1], opts.group, opts.name)
+    fname = htcondor_ce.rrd.check_rrd(environ, opts.spoof.split(":")[-1], "metrics", opts.group, opts.name)
     rrdtool.update(fname, "N:%s" % str(value))
 
 
