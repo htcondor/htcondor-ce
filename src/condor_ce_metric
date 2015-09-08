@@ -44,8 +44,12 @@ def main():
         value = float(opts.value)
 
     spooldir = htcondor_ce.web.get_spooldir()
+    environ = {'htcondorce.spool': spooldir}
 
-    fname = htcondor_ce.rrd.check_rrd({'htcondorce.spool': spooldir}, "metrics", opts.group, opts.name)
+    fname = htcondor_ce.rrd.check_rrd(environ, "metrics", opts.group, opts.name)
+    rrdtool.update(fname, "N:%s" % str(value))
+
+    fname = htcondor_ce.rrd.check_rrd(environ, "metrics", opts.spoof.split(":")[-1], opts.group, opts.name)
     rrdtool.update(fname, "N:%s" % str(value))
 
 
