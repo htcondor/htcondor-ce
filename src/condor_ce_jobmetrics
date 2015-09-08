@@ -132,6 +132,10 @@ def main():
         print >> sys.stderr, "Totals:", total_results
     rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
+
+    vos_fname = htcondor_ce.rrd.get_rrd_name(environ, "vos.json")
+    json.dump(vo_results, open(vos_fname + ".tmp", "w"))
+    os.rename(vos_fname + ".tmp", vos_fname)
     for vo, info in vo_results.items():
         vo_fname = htcondor_ce.rrd.check_rrd(environ, None, "vos", vo)
         if os.isatty(2):

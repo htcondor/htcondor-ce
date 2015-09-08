@@ -260,7 +260,7 @@ def pilots(environ, start_response):
     return [ json.dumps(results) ]
 
 
-def vos_json(environ, start_response):
+def vos_ce_json(environ, start_response):
     objs = get_schedd_objs(environ)
     job_count = {}
     for schedd, name in objs:
@@ -284,6 +284,18 @@ def vos_json(environ, start_response):
     start_response(status, headers)
 
     return [ json.dumps(job_count) ]
+
+
+def vos_json(environ, start_response):
+    fname = htcondor_ce.rrd.get_rrd_name(environ, "vos.json")
+    results = json.load(open(fname))
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(results) ]
 
 
 def status_json(environ, start_response):
