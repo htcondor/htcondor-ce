@@ -335,6 +335,7 @@ def vos(environ, start_response):
 
     info = {
         'vos': vos,
+        'multice': g_is_multice
     }
 
     return [tmpl.generate(**info).render('html', doctype='html')]
