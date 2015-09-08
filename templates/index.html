@@ -68,14 +68,33 @@
         function got_pilots(data) {
             $("#pilots_table_inner").detach();
             pilots_table = $("<table></table>");
-            pilots_table.addClass("table");
+	    pilots_table.addClass("table");
+	    pilots_table.addClass("table-striped");
+	    pilots_table.addClass("table-hover");
+	    pilots_table.addClass("table-condensed");
+	    pilots_table.addClass("tablesorter");
             pilots_table.attr("id", "pilots_table_inner");
-            pilots_table.append("<tr><th>VO</th><th>VOMS</th><th>Jobs</th><th>Running</th><th>Idle</th><th>Held</th><th>DN</th></tr>");
+	    pilots_table.append("<thead><tr><th>VO</th><th>VOMS</th><th>Jobs</th><th>Running</th><th>Idle</th><th>Held</th><th>DN</th></tr></thead>");
+	    pilots_table.append("<tbody>");
             for (idx in data) {
                 pilot = data[idx];
                 pilots_table.append("<tr><td>" + pilot.VO + "</td><td>" + pilot.VOMS + "</td><td>" + pilot.Jobs + "</td><td>" + pilot.Running + "</td><td>" + pilot.Idle + "</td><td>" + pilot.Held + "</td><td>" + pilot.DN + "</td></tr>");
-            }
-            $("#pilots_table").append(pilots_table);
+	    }
+            pilots_table.append("</tbody>");
+	    $("#pilots_table").append(pilots_table);
+	    
+	    $("#pilots_table_inner").tablesorter({ 
+              debug: true,
+	      theme: "bootstrap",
+	      headerTemplate : '{content} {icon}',
+              widgets: ["filter", "uitheme", "zebra"],
+	      widgetOptions : {
+                filter_external : '#pilotSearch',
+		filter_columnFilters: false,
+		zebra : ["even", "odd"],
+	      }
+	    });
+
         }
 //]]>
     </script>
@@ -84,7 +103,8 @@
     <div class="container" style="padding-top:60px">
       <div class="row" id="top_summary">
         <div class="col-sm-12">
-          <div class="col-sm-3" style="padding-top:40px">
+	  <div class="row">	
+	  <div class="col-sm-3" style="padding-top:40px">
             <div id="schedd_stats_table"></div>
           </div>
           <div class="col-sm-3">
@@ -111,11 +131,19 @@
               </div>
             </div>
           </div>
-        </div>
+         </div>
+       </div>
       </div>
       <div class="row">
         <div class="col-sm-12">
-          <h2>Pilots</h2>
+	<h2>Pilots</h2>
+	<div class="row">	
+	  <div class="col-sm-3">
+	    <p>
+	      <input class="form-control" id="pilotSearch" placeholder="Search Table" type="search" data-column="all"></input>
+	   </p>
+	  </div>
+	</div>
           <div class="table-responsive">
             <div id="pilots_table"/>
           </div>
