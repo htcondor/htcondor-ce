@@ -211,19 +211,11 @@ def main():
     wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
     wd.start()
 
-    uid, gid = condor_ids()
+    if os.geteuid() == 0:
+        uid, gid = condor_ids()
+        cherrypy.process.plugins.DropPrivileges(cherrypy.engine, uid=uid, gid=gid).subscribe()
 
     cherrypy.engine.start()
-    try:
-        os.setgid(gid)
-    except OSError, oe:
-        if oe.errno != errno.EPERM:
-            raise
-    try:
-        os.setuid(uid)
-    except OSError, oe:
-        if oe.errno != errno.EPERM:
-            raise
     cherrypy.engine.block()
 
 
