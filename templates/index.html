@@ -54,14 +54,29 @@
 
           $('#info_table_inner').detach();
           info_table = $("<table></table>");
-          info_table.addClass("table");
+	  info_table.addClass("table");
+	  info_table.addClass("tablesorter");
           info_table.attr("id", "info_table_inner");
-          info_table.append("<th>CE</th><th>OSG Resource</th><th>OSG Resource Group</th><th>Batch System</th><th>HTCondor-CE Version</th><th>HTCondor Version</th>");
+	  info_table.append("<thead><th>CE</th><th>OSG Resource</th><th>OSG Resource Group</th><th>Batch System</th><th>HTCondor-CE Version</th><th>HTCondor Version</th></thead>");
+	  info_table.append("<tbody>");
           for (name in data) {
               key = data[name]
               info_table.append("<tr><td>" + name + "</td><td>" + key.OSG_Resource + "</td><td>" + key.OSG_ResourceGroup + "</td><td>" + key.OSG_BatchSystems + "</td><td>" + key.HTCondorCEVersion + "</td><td>" + key.CondorVersion + "</td></tr>");
-          }
-          $("#info_table").append(info_table);
+	  }
+	  info_table.append("</tbody>");
+	  $("#info_table").append(info_table);
+
+          $("#info_table_inner").tablesorter({ 
+              debug: true,
+	      theme: "bootstrap",
+	      headerTemplate : '{content} {icon}',
+              widgets: ["filter", "uitheme", "zebra"],
+	      widgetOptions : {
+                filter_external : '#infoSearch',
+		filter_columnFilters: false,
+		zebra : ["even", "odd"],
+	      }
+	    });
 
         }
 
@@ -152,7 +167,16 @@
       <div class="row">
         <div class="col-sm-12">
           <h2>Info</h2>
-          <div id="info_table"/>
+          <div class="row">	
+	    <div class="col-sm-3">
+	      <p>
+	        <input class="form-control" id="infoSearch" placeholder="Search Table" type="search" data-column="all"></input>
+	     </p>
+	    </div>
+          </div>
+          <div class="table-responsive">
+	    <div id="info_table"/>
+	  </div>
         </div>
       </div>
     </div>
