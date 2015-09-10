@@ -354,6 +354,7 @@ def metrics(environ, start_response):
 
     info = {
         'metrics': metrics,
+        'multice': g_is_multice
     }
 
     return [tmpl.generate(**info).render('html', doctype='html')]
@@ -367,8 +368,11 @@ def health(environ, start_response):
     start_response(status, headers)
 
     tmpl = _loader.load('health.html')
+    info = {
+        'multice': g_is_multice
+    }
 
-    return [tmpl.generate().render('html', doctype='html')]
+    return [tmpl.generate(**info).render('html', doctype='html')]
 
 
 def index(environ, start_response):
