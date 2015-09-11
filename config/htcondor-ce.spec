@@ -20,8 +20,6 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-Source1: condor-ce.service
-Source2: condor-ce-collector.service
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -163,8 +161,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %{?rhel} >= 7
 mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
-install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
+install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
 %endif
 
 # Directories necessary for HTCondor-CE files
