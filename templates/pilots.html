@@ -58,7 +58,11 @@
   margin: 1.5em;
   overflow: hidden;
   text-indent: 100%;
-}
+	}
+
+	.clickable-row {
+		cursor: pointer;
+	}
     </style>
     <script type='text/javascript'>
 //<![CDATA[
@@ -74,13 +78,67 @@
 
         }
 
+        function set_toggle_rows() {
+          console.log("Setting toggleable rows");
+          $('.tablesorter').delegate('.clickable-row', 'click', function() {
+            detail_row = $(this).closest('tr').nextUntil('tr:not(.tablesorter-childRow)');
+            detail_row.empty();
+						detail_row.toggle();
+						arrow_icon = $(this).find('.glyphicon');
+            arrow_icon.toggleClass("glyphicon-menu-right");
+						arrow_icon.toggleClass("glyphicon-menu-down");
+						// TODO: find a better way to determine if the detailed menu is shown.
+            if (arrow_icon.hasClass("glyphicon-menu-right")) {
+              return;
+            }
+            var jobid = $(this).data("jobid");
+            // Set the loading icon
+            var new_data = $("<td colspan=4></td>");
+            var loading = $("<div class='spinner-loader'></div>");
+            new_data.append(loading);
+            detail_row.append(new_data);
+
+            // Get the data
+            load_data("", "GlobalJobId==\"" + jobid + "\"", function(job_data) {
+              console.log("Got data:");
+              console.log(job_data);
+              job_data = job_data[0];
+              loading.detach();
+              new_container = $("<div class='container'></div>");
+              new_row = $("<div class='row'></div>");
+
+              template = $("<div class='col-md-4 col-sm-6'></div>")
+              for (key in job_data) {
+                new_template = template.clone();
+                new_template.text(key + " = " + job_data[key]);
+                new_row.append(new_template);
+              }
+
+              new_container.append(new_row);
+              new_data.append(new_container);
+
+
+
+            });
+
+
+          });
+
+        }
+
         function load_summary_data() {
-            load_data("ClusterId,ProcId,x509userproxysubject,x509UserProxyVOName,JobStatus", "True", create_table);
+            load_data("ClusterId,ProcId,x509userproxysubject,x509UserProxyVOName,JobStatus,GlobalJobId", "True", create_table);
 
         }
 
         function load_data(projection, constraint, callback) {
-            $.get('/json/jobs?projection=' + projection, callback);
+            projection = encodeURIComponent(projection);
+            constraint = encodeURIComponent(constraint);
+            if (projection != "") {
+              $.get('/json/jobs?projection=' + projection + '&constraint=' + constraint, callback);
+            } else {
+              $.get('/json/jobs?constraint=' + constraint, callback);
+            }
         }
 
         function create_table(jobs_data) {
@@ -104,8 +162,14 @@
                   status = "Unknown";
                   break;
               }
-              row = $("<tr><td class='id_cell'>" + job.ClusterId + "." + job.ProcId + "</td><td>" + status + "</td><td>" + job.x509UserProxyVOName + "</td><td>" + job.x509userproxysubject + "</td></tr>");
+              row = $("<tr data-jobid='" + job.GlobalJobId + "'><td class='id_cell'>" + job.ClusterId + "." + job.ProcId + "</td><td>" + status + "</td><td>" + job.x509UserProxyVOName + "</td><td>" + job.x509userproxysubject + "</td></tr>");
+              row.addClass("clickable-row");
+
               job_table.append(row);
+
+              childRow = $("<tr></tr>");
+              childRow.addClass('tablesorter-childRow');
+              job_table.append(childRow);
 
             }
 
@@ -124,8 +188,9 @@
               }
               });
 
+            $('.tablesorter-childRow').hide();
             $("#loading_spinner").removeClass("spinner-loader");
-
+            set_toggle_rows();
 
 
         }
