@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:py="http://genshi.edgewall.org/">
+   <xi:include href="header.html" />
+  <head>
+    <title>HTCondor-CE VO Overview</title>
+    <style>
+@-moz-keyframes spinner-loader {
+  0% {
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spinner-loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner-loader {
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+/* :not(:required) hides this rule from IE9 and below */
+.spinner-loader:not(:required) {
+  -moz-animation: spinner-loader 1500ms infinite linear;
+  -webkit-animation: spinner-loader 1500ms infinite linear;
+  animation: spinner-loader 1500ms infinite linear;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  border-radius: 0.5em;
+  -moz-box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
+  -webkit-box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
+  box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
+  display: inline-block;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin: 1.5em;
+  overflow: hidden;
+  text-indent: 100%;
+}
+    </style>
+    <script type='text/javascript'>
+//<![CDATA[
+        $(document).ready(function() {
+            // Load the data initially
+            set_loading_spinner();
+            load_summary_data();
+            //setInterval(load_, 300000);
+        });
+        function set_loading_spinner() {
+          var target = $("#loading_spinner");
+          target.addClass("spinner-loader");
+
+        }
+
+        function load_summary_data() {
+            load_data("ClusterId,ProcId,x509userproxysubject,x509UserProxyVOName,JobStatus", "True", create_table);
+
+        }
+
+        function load_data(projection, constraint, callback) {
+            $.get('/json/jobs?projection=' + projection, callback);
+        }
+
+        function create_table(jobs_data) {
+            job_table = $("<table></table>");
+            job_table.addClass("table").addClass("tablesorter");
+            job_table.append("<thead><tr><th>Job ID</th><th>Status</th><th>VO</th><th>User</th></tr></thead><tbody>");
+            for (idx in jobs_data) {
+              var job = jobs_data[idx];
+              status = "Unknown"
+              switch(job.JobStatus) {
+                case 1:
+                  status = "Idle";
+                  break;
+                case 2:
+                  status = "Running";
+                  break;
+                case 5:
+                  status = "Held";
+                  break;
+                default:
+                  status = "Unknown";
+                  break;
+              }
+              row = $("<tr><td class='id_cell'>" + job.ClusterId + "." + job.ProcId + "</td><td>" + status + "</td><td>" + job.x509UserProxyVOName + "</td><td>" + job.x509userproxysubject + "</td></tr>");
+              job_table.append(row);
+
+            }
+
+            job_table.append("</tbody></table>");
+            $("#job_table").append(job_table);
+            $(".id_cell").prepend("<span class='glyphicon glyphicon-menu-right'></span>&nbsp;");
+            job_table.tablesorter({ 
+              debug: true,
+              theme: "bootstrap",
+              headerTemplate : '{content} {icon}',
+              widgets: ["filter", "uitheme", "zebra"],
+              widgetOptions : {
+                filter_external : '#jobSearch',
+                filter_columnFilters: false,
+                zebra : ["even", "odd"],
+              }
+              });
+
+            $("#loading_spinner").removeClass("spinner-loader");
+
+
+
+        }
+//]]>
+    </script>
+  </head>
+  <body>
+    <div class="container" style="padding-top:60px">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Jobs</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <p>
+            <input class="form-control" id="jobSearch" placeholder="Search Jobs" type="search" data-column="all"></input>
+          </p>
+        </div>
+        <div class="col-md-1">
+          <div id="loading_spinner"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="job_table" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
