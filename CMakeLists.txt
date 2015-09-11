@@ -62,7 +62,7 @@ install(TARGETS classad_ce LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/condor")
 
 install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
 install(PROGRAMS src/condor_ce_startup src/condor_ce_startup_internal src/condor_ce_env_bootstrap src/condor_ce_client_env_bootstrap src/condor_ce_router_defaults src/osg-wrapper DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
-install(PROGRAMS src/condor_ce_config_generator src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_info_status src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping src/condor_ce_off src/condor_ce_on src/condor_ce_restart src/condor_ce_job_router_info DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(PROGRAMS src/condor_ce_config_generator src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_info_status src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping src/condor_ce_off src/condor_ce_on src/condor_ce_restart src/condor_ce_job_router_info src/condor_ce_host_network_check DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES src/condor_ce_info_query.py src/condor_ce_tools.py DESTINATION ${PYTHON_SITELIB})
 
 install(FILES config/condor_config config/condor_mapfile DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)

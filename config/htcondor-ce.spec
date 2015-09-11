@@ -228,6 +228,8 @@ fi
 
 %{_datadir}/condor-ce/osg-wrapper
 
+%{_bindir}/condor_ce_host_network_check
+
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/log/condor-ce/user
