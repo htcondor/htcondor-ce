@@ -322,6 +322,42 @@ def statuses_json(environ, start_response):
 
     return [ json.dumps(response) ]
 
+def jobs_json(environ, start_response):
+    #result = get_schedd_statuses(environ)
+    response = {}
+    #for name, status in result.items():
+    #    response[name] = {'status': status}
+
+    import urlparse
+
+    parsed_qs = urlparse.parse_qs(environ['QUERY_STRING'])
+
+    if 'projection' in parsed_qs:
+        projection = parsed_qs['projection'][0].split(',')
+    else:
+        projection = []
+
+    if 'constraint' in parsed_qs:
+        constraint = parsed_qs['constraint'][0]
+    else:
+        constraint = True
+    
+    # Get the Schedd object
+    objs = get_schedd_objs(environ)
+    schedd, name = objs[0]
+
+    # Query the schedd
+    jobs = schedd.query(constraint, projection)
+
+    parsed_jobs = map(ad_to_json, jobs)
+
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(parsed_jobs) ]
+
 
 def vos(environ, start_response):
     vos = htcondor_ce.rrd.list_vos(environ)
@@ -373,6 +409,19 @@ def health(environ, start_response):
     }
 
     return [tmpl.generate(**info).render('html', doctype='html')]
+
+
+def pilots_page(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'text/html'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    tmpl = _loader.load('pilots.html')
+
+    info = {'multice': g_is_multice}
+
+    return [tmpl.generate(**info).render('html', doctype='html')] 
 
 
 def index(environ, start_response):
@@ -454,6 +503,7 @@ urls = [
     (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^metrics/*$'), metrics),
     (re.compile(r'^health/*$'), health),
+    (re.compile(r'^pilots/*$'), pilots_page),
     (re.compile(r'^json/+totals$'), totals),
     (re.compile(r'^json/+pilots$'), pilots),
     (re.compile(r'^json/+schedds$'), schedds),
@@ -461,6 +511,7 @@ urls = [
     (re.compile(r'^json/+vos$'), vos_json),
     (re.compile(r'^json/+statuses$'), statuses_json),
     (re.compile(r'^json/+status$'), status_json),
+    (re.compile(r'^json/+jobs*$'), jobs_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),
