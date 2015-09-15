@@ -178,7 +178,11 @@ def agis_json(environ, start_response):
             "endpoint": ad['CollectorHost'],
             "flavour": "HTCondor-CE",
             "jobmanager": ad['OSG_BatchSystems'],
-            "name": ad['Name'],
+            "name": ad['OSG_Resource'],
+            "site": ad['OSG_ResourceGroup'],
+            "status": "Production",
+            "type": "CE",
+            "version": ad['HTCondorCEVersion']
             
         }
 
