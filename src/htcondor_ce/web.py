@@ -168,6 +168,20 @@ def schedds(environ, start_response):
 
     return [ json.dumps(results) ]
 
+def agis_json(environ, start_response):
+    ads = get_schedd_ads(environ)
+    results = { "ce_services": {}, "queues" {}}
+    for ad in ads:
+        if 'Name' not in ad:
+            continue
+        ce_ad = {
+            "endpoint": ad['CollectorHost'],
+            "flavour": "HTCondor-CE",
+            "jobmanager": ad['OSG_BatchSystems'],
+            "name": ad['Name'],
+            
+        }
+
 
 def schedd(environ, start_response):
     ads = get_schedd_ads(environ)
@@ -512,6 +526,7 @@ urls = [
     (re.compile(r'^json/+statuses$'), statuses_json),
     (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^json/+jobs*$'), jobs_json),
+    (re.compile(r'^json/+agis-compat$'), agis_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),
