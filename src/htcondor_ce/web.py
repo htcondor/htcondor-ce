@@ -183,6 +183,8 @@ def agis_json(environ, start_response):
             "status": "Production",
             "type": "CE",
             "version": ad['HTCondorCEVersion']
+        }
+        queue_ad = {
             
         }
 
