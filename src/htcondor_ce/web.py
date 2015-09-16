@@ -185,6 +185,22 @@ def agis_json(environ, start_response):
             "version": ad['HTCondorCEVersion']
         }
         queue_ad = {
+            ad['OSG_Resource']: {
+                "cms": {
+                    "ce": ad['OSG_Resource'],
+                    "max_cputime": 1440,
+                    "max_wallclocktime": 1440,
+                    "name": "cms",
+                    "status": "Production"
+                },
+                "atlas": {
+                    "ce": ad['OSG_Resource'],
+                    "max_cputime": 1440,
+                    "max_wallclocktime": 1440,
+                    "name": "atlas",
+                    "status": "Production"
+                }
+            }
             
         }
 
@@ -551,5 +567,3 @@ def application(environ, start_response):
             environ['htcondorce.url_args'] = match.groups()
             return callback(environ, start_response)
     return not_found(environ, start_response)
-
-
