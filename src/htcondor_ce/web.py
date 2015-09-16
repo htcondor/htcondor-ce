@@ -170,10 +170,11 @@ def schedds(environ, start_response):
 
 def agis_json(environ, start_response):
     ads = get_schedd_ads(environ)
-    results = { "ce_services": {}, "queues" {}}
+    results = { "ce_services": {}, "queues": {}}
     for ad in ads:
         if 'Name' not in ad:
             continue
+
         ce_ad = {
             "endpoint": ad['CollectorHost'],
             "flavour": "HTCondor-CE",
@@ -185,24 +186,30 @@ def agis_json(environ, start_response):
             "version": ad['HTCondorCEVersion']
         }
         queue_ad = {
-            ad['OSG_Resource']: {
-                "cms": {
-                    "ce": ad['OSG_Resource'],
-                    "max_cputime": 1440,
-                    "max_wallclocktime": 1440,
-                    "name": "cms",
-                    "status": "Production"
-                },
-                "atlas": {
-                    "ce": ad['OSG_Resource'],
-                    "max_cputime": 1440,
-                    "max_wallclocktime": 1440,
-                    "name": "atlas",
-                    "status": "Production"
-                }
+            "cms": {
+                "ce": ad['OSG_Resource'],
+                "max_cputime": 1440,
+                "max_wallclocktime": 1440,
+                "name": "cms",
+                "status": "Production"
+            },
+            "atlas": {
+                "ce": ad['OSG_Resource'],
+                "max_cputime": 1440,
+                "max_wallclocktime": 1440,
+                "name": "atlas",
+                "status": "Production"
             }
-            
         }
+        results['ce_services'][ad['OSG_Resource']] = ce_ad
+        results['queues'][ad['OSG_Resource']] = queue_ad
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(results) ]
+
 
 
 def schedd(environ, start_response):
