@@ -168,6 +168,49 @@ def schedds(environ, start_response):
 
     return [ json.dumps(results) ]
 
+def agis_json(environ, start_response):
+    ads = get_schedd_ads(environ)
+    results = { "ce_services": {}, "queues": {}}
+    for ad in ads:
+        if 'Name' not in ad:
+            continue
+
+        ce_ad = {
+            "endpoint": ad['CollectorHost'],
+            "flavour": "HTCondor-CE",
+            "jobmanager": ad['OSG_BatchSystems'],
+            "name": ad['OSG_Resource'],
+            "site": ad['OSG_ResourceGroup'],
+            "status": "Production",
+            "type": "CE",
+            "version": ad['HTCondorCEVersion']
+        }
+        queue_ad = {
+            "cms": {
+                "ce": ad['OSG_Resource'],
+                "max_cputime": 1440,
+                "max_wallclocktime": 1440,
+                "name": "cms",
+                "status": "Production"
+            },
+            "atlas": {
+                "ce": ad['OSG_Resource'],
+                "max_cputime": 1440,
+                "max_wallclocktime": 1440,
+                "name": "atlas",
+                "status": "Production"
+            }
+        }
+        results['ce_services'][ad['OSG_Resource']] = ce_ad
+        results['queues'][ad['OSG_Resource']] = queue_ad
+    status = '200 OK'
+    headers = [('Content-type', 'application/json'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return [ json.dumps(results) ]
+
+
 
 def schedd(environ, start_response):
     ads = get_schedd_ads(environ)
@@ -512,6 +555,7 @@ urls = [
     (re.compile(r'^json/+statuses$'), statuses_json),
     (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^json/+jobs*$'), jobs_json),
+    (re.compile(r'^json/+agis-compat$'), agis_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),
@@ -530,5 +574,3 @@ def application(environ, start_response):
             environ['htcondorce.url_args'] = match.groups()
             return callback(environ, start_response)
     return not_found(environ, start_response)
-
-
