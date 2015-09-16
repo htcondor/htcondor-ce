@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 1.16
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -59,6 +59,9 @@ Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
 Requires: %{name} = %{version}-%{release}, python-cherrypy, python-genshi, ganglia-gmond, rrdtool-python
+
+%description webapp
+%{summary}
 
 %package condor
 Group: Applications/System
