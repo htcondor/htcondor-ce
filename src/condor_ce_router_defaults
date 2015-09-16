@@ -39,7 +39,7 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     copy_environment = "orig_environment"; \\
     set_osg_environment = "@osg_environment@"; \\
     set_CondorCECollectorHost = ifThenElse(regexp(":", "$(COLLECTOR_HOST)"), "$(COLLECTOR_HOST)", strcat("$(COLLECTOR_HOST)", ":", $(COLLECTOR_PORT))); \\
-    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), " CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, " ", \\
+    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), %s" ", \\
         ifThenElse(orig_environment is undefined, osg_environment, \\
           strcat(osg_environment, " ", orig_environment) \\
         ))); \\
@@ -87,12 +87,21 @@ if m:
     major = int(major)
     minor = int(minor)
     bug = int(bug)
-    if major > 8 or (major == 8 and minor >= 1):
-        job_router_defaults = job_router_defaults % input_rsl
-    else:
-        job_router_defaults = job_router_defaults % ""
+    if major < 8 or (major == 8 and minor < 1):
+        input_rsl = ''
 else:
-    job_router_defaults = job_router_defaults % ""
+    input_rsl = ''
+
+# Allow admins to prevent pilots from advertising back to the CE.
+# https://ticket.grid.iu.edu/26666
+advertise_pilots =  '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
+try:
+    if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true':
+        advertise_pilots = ''
+except KeyError:
+    pass
+
+job_router_defaults = job_router_defaults % (advertise_pilots, input_rsl)
 
 osg_environment_files = [ \
     "/var/lib/osg/osg-job-environment.conf",

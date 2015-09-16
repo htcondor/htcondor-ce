@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.15
+Version: 1.16
 Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -169,8 +169,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %{?rhel} >= 7
 mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
-install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
-install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
+install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
 %endif
 
 # Directories necessary for HTCondor-CE files
@@ -238,6 +238,7 @@ fi
 
 %{_datadir}/condor-ce/osg-wrapper
 
+%{_bindir}/condor_ce_host_network_check
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
