@@ -54,6 +54,12 @@ Requires: /usr/bin/unshare
 %description
 %{summary}
 
+%package webapp
+Group: Applications/Internet
+Summary: A Website that will report the current status of the local HTCondor-CE
+
+Requires: %{name} = %{version}-%{release}, python-cherrypy, python-genshi, ganglia-gmond, rrdtool-python
+
 %package condor
 Group: Applications/System
 Summary: Default routes for submission to HTCondor
@@ -218,9 +224,8 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-webapp.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
 %{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
@@ -228,24 +233,11 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
-%{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
-%{_datadir}/condor-ce/config.d/05-ce-webapp-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
-%{_datadir}/condor-ce/templates/index.html
-%{_datadir}/condor-ce/templates/vos.html
-%{_datadir}/condor-ce/templates/metrics.html
-%{_datadir}/condor-ce/templates/health.html
-%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
-%{_datadir}/condor-ce/condor_ce_webapp
-%{_datadir}/condor-ce/condor_ce_metric
-%{_datadir}/condor-ce/condor_ce_jobmetrics
 
-%{python_sitelib}/htcondor_ce
-%{python_sitelib}/htcondor_ce/__init__.py
-%{python_sitelib}/htcondor_ce/web.py
-%{python_sitelib}/htcondor_ce/rrd.py
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -256,6 +248,31 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
+%files webapp
+%defattr(-,root,root,-)
+
+# Web package
+%{python_sitelib}/htcondor_ce
+%{python_sitelib}/htcondor_ce/__init__.py
+%{python_sitelib}/htcondor_ce/web.py
+%{python_sitelib}/htcondor_ce/rrd.py
+
+%{_datadir}/condor-ce/templates/index.html
+%{_datadir}/condor-ce/templates/vos.html
+%{_datadir}/condor-ce/templates/metrics.html
+%{_datadir}/condor-ce/templates/health.html
+%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/templates/pilots.html
+
+%{_datadir}/condor-ce/config.d/05-ce-webapp-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-webapp.conf
+
+%{_datadir}/condor-ce/condor_ce_webapp
+%{_datadir}/condor-ce/condor_ce_metric
+%{_datadir}/condor-ce/condor_ce_jobmetrics
+
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/cemon
 
 %files condor
 %defattr(-,root,root,-)
