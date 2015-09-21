@@ -61,26 +61,26 @@ queue
 def parse_opts():
     parser = optparse.OptionParser()
     parser.add_option("-x", "--extra-attributes-file",
-        help="A file containing additional HTCondor ClassAd attributes to " \
-             "append to the submit ClassAd.",
-        dest="extra_attrs_file")
+                      help="A file containing additional HTCondor ClassAd attributes to " \
+                      "append to the submit ClassAd.",
+                      dest="extra_attrs_file")
     parser.add_option("-s", "--schedd-name",
-        help="Name of the schedd to use.",
-        dest="schedd_name")
+                      help="Name of the schedd to use.",
+                      dest="schedd_name")
     parser.add_option("-d", "--debug", help="Print debugging info. Set " \
-        "environmental variable 'CONDOR_CE_RUN_DEBUG' to true to print " \
-        "stacktraces",
-        dest="debug", default=False, action="store_true")
+                      "environmental variable 'CONDOR_CE_RUN_DEBUG' to true to print " \
+                      "stacktraces",
+                      dest="debug", default=False, action="store_true")
     parser.add_option("-r", "--remote", help="Submit directly to remote " \
-        "schedd, bypassing the local one.", dest="remote", default=False,
-        action="store_true")
+                      "schedd, bypassing the local one.", dest="remote", default=False,
+                      action="store_true")
     parser.add_option("-l", "--local", help="Have the job run in the CE's " \
-        "local universe.", dest="local", default=False, action="store_true")
+                      "local universe.", dest="local", default=False, action="store_true")
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
-        "files.", dest="clean", default=True, action="store_false")
+                      "files.", dest="clean", default=True, action="store_false")
     parser.add_option("--dry-run", help="Verify arguments and options " \
-        "without submitting a job to the specified CE.", dest="dry_run",
-        default=False, action="store_true")
+                      "without submitting a job to the specified CE.", dest="dry_run",
+                      default=False, action="store_true")
 
     parser.disable_interspersed_args()
 
@@ -127,7 +127,7 @@ def submit_job(job_info):
 
     if job_info['remote'] and ('cluster' not in job_info):
         raise ce.CondorRunException("Could not parse job cluster from " \
-                                    "condor_submit output")
+                                    "condor_submit output.\nSTDOUT: %s\n STDERR: %s" % (stdout, stderr))
 
     if rc < 0:
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
@@ -144,22 +144,22 @@ def wait_for_job(job_info):
     if job_info['debug']:
         args.append("-debug")
 
-    rc, _, _ = ce.run_command(args)
+    rc, stdout, stderr = ce.run_command(args)
     if rc < 0:
         raise ce.CondorRunException("Failed to wait for job; condor_wait " \
-                                    "terminated with signal %d." % -rc)
+                                    "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
     elif rc > 0:
         raise ce.CondorRunException("Failed to wait for job; condor_wait " \
-                                    "exited with code %d." % rc)
+                                    "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
 
 def check_remote_status(job_info):
     args = ['condor_q', '-format', '%d\n', 'JobStatus', '-pool',
-        job_info['collector_name'], '-name', job_info['schedd_name'],
-        job_info['cluster']]
+            job_info['collector_name'], '-name', job_info['schedd_name'],
+            job_info['cluster']]
     if job_info['debug']:
         args.append('-debug')
 
-    rc, stdout, _ = ce.run_command(args)
+    rc, stdout, stderr = ce.run_command(args)
     job_status = None
     status_re = re.compile(r"(\d+)")
     for line in stdout:
@@ -170,10 +170,10 @@ def check_remote_status(job_info):
 
     if rc < 0:
         raise ce.CondorRunException("Failed to check job status; condor_q " \
-                                    "terminated with signal %d." % -rc)
+                                    "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
     elif rc > 0:
         raise ce.CondorRunException("Failed to check job status; condor_q " \
-                                    "exited with code %d." % rc)
+                                    "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
 
     if job_status == None:
         raise ce.CondorRunException("condor_q did not return a valid job status.")
@@ -185,17 +185,17 @@ def wait_for_job_remote(job_info):
         time.sleep(1)
 
     args = ['condor_transfer_data', '-pool', job_info['collector_name'],
-        '-name', job_info['schedd_name'], job_info['cluster']]
+            '-name', job_info['schedd_name'], job_info['cluster']]
     if job_info['debug']:
         args.append('-debug')
 
-    rc, _, _ = ce.run_command(args)
+    rc, stdout, stderr = ce.run_command(args)
     if rc < 0:
         raise ce.CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
-                                    "terminated with signal %d." % -rc)
+                                    "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
     elif rc > 0:
         raise ce.CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
-                                    "exited with code %d." % rc)
+                                    "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
 
 def print_results(job_info):
     for line in open(job_info["stdout_file"], "r").readlines():
@@ -257,7 +257,6 @@ def main():
     except TypeError:
         # No attribute file was specified but the extra_attr key is expected by the submit files
         job_info['extra_attr'] = ''
-        pass
     except IOError, e:
         ce.print_formatted_msg("Could not open extra attributes file. %s" % e)
         sys.exit(1)
