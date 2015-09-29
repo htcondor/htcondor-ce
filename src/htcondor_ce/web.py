@@ -170,39 +170,44 @@ def schedds(environ, start_response):
 
 def agis_json(environ, start_response):
     ads = get_schedd_ads(environ)
-    results = { "ce_services": {}, "queues": {}}
+    results = { "ce_services": {}, "queues": {}, "failed_ces": []}
     for ad in ads:
         if 'Name' not in ad:
             continue
-
-        ce_ad = {
-            "endpoint": ad['CollectorHost'],
-            "flavour": "HTCondor-CE",
-            "jobmanager": ad['OSG_BatchSystems'],
-            "name": ad['OSG_Resource'],
-            "site": ad['OSG_ResourceGroup'],
-            "status": "Production",
-            "type": "CE",
-            "version": ad['HTCondorCEVersion']
-        }
-        queue_ad = {
-            "cms": {
-                "ce": ad['OSG_Resource'],
-                "max_cputime": 1440,
-                "max_wallclocktime": 1440,
-                "name": "cms",
-                "status": "Production"
-            },
-            "atlas": {
-                "ce": ad['OSG_Resource'],
-                "max_cputime": 1440,
-                "max_wallclocktime": 1440,
-                "name": "atlas",
-                "status": "Production"
+        try:
+            ce_ad = {
+                "endpoint": ad['CollectorHost'],
+                "flavour": "HTCondor-CE",
+                "jobmanager": ad['OSG_BatchSystems'],
+                "name": ad['OSG_Resource'],
+                "site": ad['OSG_ResourceGroup'],
+                "status": "Production",
+                "type": "CE",
+                "version": ad['HTCondorCEVersion']
             }
-        }
-        results['ce_services'][ad['OSG_Resource']] = ce_ad
-        results['queues'][ad['OSG_Resource']] = queue_ad
+            queue_ad = {
+                "cms": {
+                    "ce": ad['OSG_Resource'],
+                    "max_cputime": 1440,
+                    "max_wallclocktime": 1440,
+                    "name": "cms",
+                    "status": "Production"
+                },
+                "atlas": {
+                    "ce": ad['OSG_Resource'],
+                    "max_cputime": 1440,
+                    "max_wallclocktime": 1440,
+                    "name": "atlas",
+                    "status": "Production"
+                }
+            }
+            results['ce_services'][ad['OSG_Resource']] = ce_ad
+            results['queues'][ad['OSG_Resource']] = queue_ad
+        except KeyError as e:
+            # No way to log an error, stderr doesn't work, stdout, or logging module
+            # So, just add it to the json as "failed_ces"
+            results['failed_ces'].append(ad['Name'])
+
     status = '200 OK'
     headers = [('Content-type', 'application/json'),
               ('Cache-Control', 'max-age=60, public')]
