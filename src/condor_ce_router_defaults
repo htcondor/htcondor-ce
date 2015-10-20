@@ -70,7 +70,8 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     copy_OnExitHoldSubCode = "orig_OnExitHoldSubCode"; \\
     eval_set_OnExitHoldSubCode = ifThenElse((orig_OnExitHold isnt null) && orig_OnExitHold, \\
         ifThenElse(orig_OnExitHoldSubCode isnt null, orig_OnExitHoldSubCode, 1), 42); \\
-    eval_set_AccountingGroup = @accounting_group@ \\
+    eval_set_AccountingGroupOSG = @accounting_group@; \\
+    set_AccountingGroup = AccountingGroupOSG; \\
   ]
 """
 
