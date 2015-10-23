@@ -177,9 +177,9 @@ def agis_json(environ, start_response):
         try:
             ce_ad = {
                 "endpoint": ad['CollectorHost'],
-                "flavour": "HTCondor-CE",
-                "jobmanager": ad['OSG_BatchSystems'],
-                "name": ad['OSG_Resource'],
+                "flavour": "HTCONDOR-CE",
+                "jobmanager": ad['OSG_BatchSystems'].lower(),
+                "name": "%s-CE-HTCondorCE-%s" % (ad['OSG_ResourceGroup'], ad['CollectorHost'].split(':')[0]),
                 "site": ad['OSG_ResourceGroup'],
                 "status": "Production",
                 "type": "CE",
