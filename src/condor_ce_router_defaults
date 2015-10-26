@@ -242,8 +242,8 @@ def main():
 
     try:
         print defaults_with_env.replace("@accounting_group@", accounting_group_str)
-    except TypeError:
-        print defaults_with_env.replace("\n    eval_set_AccountingGroup = @accounting_group@ \\", '')
+    except TypeError: # if no accounting group mappings, remove them from the classad
+        print re.sub(r'.*AccountingGroupOSG.*\n', '', defaults_with_env)
 
 if __name__ == "__main__":
     main()
