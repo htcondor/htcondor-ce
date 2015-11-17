@@ -74,6 +74,13 @@ def get_ads(spooldir):
 
 def main():
     opts = parse_opts()
+
+    htcondor = __import__("htcondor")
+    # Check if the CEMON daemon is in the daemon list, exit if it is not
+    if htcondor.param["DAEMON_LIST"].find("CEMON") == -1:
+        print "CEMON is not in DAEMON_LIST, exiting..."
+        sys.exit(0)
+
     pool = multiprocessing.Pool(10)
     ads, environ = pool.map(get_ads, [opts.spool])[0]
 
