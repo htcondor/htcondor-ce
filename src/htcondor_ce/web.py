@@ -7,6 +7,7 @@ import types
 import socket
 import wsgiref.util
 import xml.sax.saxutils
+import urlparse
 
 import genshi.template
 
@@ -371,12 +372,8 @@ def statuses_json(environ, start_response):
     return [ json.dumps(response) ]
 
 def jobs_json(environ, start_response):
-    #result = get_schedd_statuses(environ)
     response = {}
-    #for name, status in result.items():
-    #    response[name] = {'status': status}
 
-    import urlparse
 
     parsed_qs = urlparse.parse_qs(environ['QUERY_STRING'])
 
