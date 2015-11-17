@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:py="http://genshi.edgewall.org/">
+   <xi:include href="header.html" />
+  <head>
+    <title>HTCondor-CE VO Overview</title>
+    <script type='text/javascript'>
+//<![CDATA[
+        google.load('visualization', '1', {packages:['table', 'controls']});
+        $(document).ready(function() {
+            load_data();
+            setInterval(load_data, 300000);
+        });
+
+        function load_data() {
+            $.get('/json/vos', got_vos);
+        }
+
+        function got_vos(data) {
+            for (vo in data) {
+                vo_data = data[vo];
+                vo_table = $("<table></table>");
+                vo_table.addClass("table");
+                vo_table.attr('id', vo + '_table');
+                vo_table.append("<tr><th>Running</th><th>Idle</th><th>Held</th>");
+                vo_table.append("<tr><td>" + vo_data.Running + "</td><td>" + vo_data.Idle + "</td><td>" + vo_data.Held + "</td></tr>");
+                $("#" + vo + "_table").append(vo_table);
+            }
+        }
+//]]>
+    </script>
+  </head>
+  <body>
+    <div class="container" style="padding-top:60px">
+      <div py:for="vo in sorted(vos)" class="row" id="top_summary">
+        <div class="col-sm-12">
+          <div class="col-sm-3" style="padding-top:40px">
+            <h1>${vo}</h1>
+            <div id="${vo}_table"></div>
+          </div>
+          <div class="col-sm-4 col-sm-offset-1">
+            <div class="row">
+              <h2>Last Hour</h2>
+              <div id="${vo}_hourly_div">
+                <img id="${vo}_hourly_img" src="graphs/vos/${vo}/hourly" class="img-responsive"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <h2>Last Day</h2>
+              <div id="${vo}_daily_div">
+                <img id="${vo}_daily_img" src="graphs/vos/${vo}/daily" class="img-responsive"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

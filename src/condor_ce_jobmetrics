@@ -1,0 +1,155 @@
+#!/usr/bin/python
+
+import os
+import sys
+import json
+import time
+import optparse
+import collections
+import multiprocessing
+
+import rrdtool
+
+os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
+
+import classad
+
+def parse_opts():
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--spool", help="Spool directory", dest="spool")
+
+    return parser.parse_args()[0]
+
+
+def process_one_schedd(ad):
+    htcondor = __import__("htcondor")
+    classad = __import__("classad")
+    ad = classad.ClassAd(ad)
+    schedd = htcondor.Schedd(ad)
+    total_results = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+    vo_results = {}
+    job_count = {}
+    print "Processing CE %s." % ad.get("Name", "Unknown")
+    try:
+        for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'x509userproxysubject']):
+            DN = job.get("x509userproxysubject", 'Unknown')
+            VO = job.get('x509UserProxyVOName', 'Unknown')
+            VOMS = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
+            job_key = (DN, VO, VOMS)
+            if job_key not in job_count:
+                job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+            if VO not in vo_results:
+                vo_results[VO] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+            results = vo_results[VO]
+            job_results = job_count[job_key]
+            results["Jobs"] += 1
+            total_results['Jobs'] += 1
+            job_results['Jobs'] += 1
+            if job.get("JobStatus") == 1:
+                results['Idle'] += 1
+                job_results['Idle'] += 1
+                total_results['Idle'] += 1
+            elif job.get("JobStatus") == 2:
+                results['Running'] += 1
+                job_results['Running'] += 1
+                total_results['Running'] += 1
+            elif job.get("JobStatus") == 5:
+                results['Held'] += 1
+                job_results['Held'] += 1
+                total_results['Held'] += 1
+    except RuntimeError, re:
+        print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), str(re))
+    return [total_results, vo_results, job_count, ad]
+
+
+def get_ads(spooldir):
+
+    htcondor_ce = __import__("htcondor_ce.web")
+    if not spooldir:
+        spooldir = htcondor_ce.web.get_spooldir()
+    environ = {'htcondorce.spool': spooldir}
+    ads = [str(ad) for ad in htcondor_ce.web.get_schedd_ads({})]
+    return [ads, environ]
+
+
+def main():
+    opts = parse_opts()
+
+    htcondor = __import__("htcondor")
+    # Check if the CEMON daemon is in the daemon list, exit if it is not
+    if htcondor.param["DAEMON_LIST"].find("CEMON") == -1:
+        print "CEMON is not in DAEMON_LIST, exiting..."
+        sys.exit(0)
+
+    pool = multiprocessing.Pool(10)
+    ads, environ = pool.map(get_ads, [opts.spool])[0]
+
+    total_results = collections.defaultdict(int, {"Running": 0, "Idle": 0, "Held": 0})
+    vo_results = {}
+    job_results = {}
+
+    map_results = pool.map(process_one_schedd, ads, 1)
+
+    htcondor_ce = __import__("htcondor_ce.rrd")
+
+    for schedd_total_results, schedd_vo_results, schedd_job_results, ad in map_results:
+
+        for key, val in schedd_total_results.items():
+            total_results[key] += val
+            
+        for vo, schedd_results in schedd_vo_results.items():
+            results = vo_results.setdefault(vo, collections.defaultdict(int))
+            for key, val in schedd_results.items():
+                results[key] += val
+
+        for key, val in schedd_job_results.items():
+            results = job_results.setdefault(key, collections.defaultdict(int))
+            for key2, val2 in val.items():
+                results[key2] += val2
+
+        total_fname = htcondor_ce.rrd.check_rrd(environ, ad['Name'], "jobs")
+        if os.isatty(2):
+            print >> sys.stderr, "Schedd", ad['Name'], "totals:", schedd_total_results
+        rrdtool.update(total_fname, "N:%d:%d:%d" % (schedd_total_results["Running"], schedd_total_results["Idle"], schedd_total_results["Held"]))
+
+        for vo, info in schedd_vo_results.items():
+            vo_fname = htcondor_ce.rrd.check_rrd(environ, ad['Name'], "vos", vo)
+            if os.isatty(2):
+                print >> sys.stderr, "Schedd", ad['Name'], "VO", vo, "totals:", info
+            rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
+
+    job_results_final = []
+    for key, val in job_results.items():
+        val['DN'] = key[0]
+        val['VO'] = key[1]
+        val['VOMS'] = key[2]
+        job_results_final.append(val)
+    # TODO: mkstemp this
+    pilots_fname = htcondor_ce.rrd.get_rrd_name(environ, "pilots")
+    json.dump(job_results_final, open(pilots_fname + ".tmp", "w"))
+    os.rename(pilots_fname + ".tmp", pilots_fname)
+
+    total_results['UpdateTime'] = time.time()
+    totals_fname = htcondor_ce.rrd.get_rrd_name(environ, "totals")
+    json.dump(total_results, open(totals_fname + ".tmp", "w"))
+    os.rename(totals_fname + ".tmp", totals_fname)
+
+    total_fname = htcondor_ce.rrd.check_rrd(environ, None, "jobs")
+    if os.isatty(2):
+        print >> sys.stderr, "Totals:", total_results
+    rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
+
+
+    vos_fname = htcondor_ce.rrd.get_rrd_name(environ, "vos.json")
+    json.dump(vo_results, open(vos_fname + ".tmp", "w"))
+    os.rename(vos_fname + ".tmp", vos_fname)
+    for vo, info in vo_results.items():
+        vo_fname = htcondor_ce.rrd.check_rrd(environ, None, "vos", vo)
+        if os.isatty(2):
+            print >> sys.stderr, "VO", vo, "totals:", info
+        rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
+
+
+if __name__ == '__main__':
+    main()
+
