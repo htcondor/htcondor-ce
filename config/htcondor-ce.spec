@@ -54,13 +54,13 @@ Requires: /usr/bin/unshare
 %description
 %{summary}
 
-%package webapp
+%package view
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
 Requires: %{name} = %{version}-%{release}, python-cherrypy, python-genshi, ganglia-gmond, rrdtool-python
 
-%description webapp
+%description view
 %{summary}
 
 %package condor
@@ -182,7 +182,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/cemon
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
@@ -254,7 +254,7 @@ fi
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
-%files webapp
+%files view
 %defattr(-,root,root,-)
 
 # Web package
@@ -270,14 +270,14 @@ fi
 %{_datadir}/condor-ce/templates/header.html
 %{_datadir}/condor-ce/templates/pilots.html
 
-%{_datadir}/condor-ce/config.d/05-ce-webapp-defaults.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-webapp.conf
+%{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
 
-%{_datadir}/condor-ce/condor_ce_webapp
+%{_datadir}/condor-ce/condor_ce_view
 %{_datadir}/condor-ce/condor_ce_metric
 %{_datadir}/condor-ce/condor_ce_jobmetrics
 
-%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/cemon
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 
 %files condor
 %defattr(-,root,root,-)

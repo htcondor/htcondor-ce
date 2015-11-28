@@ -54,7 +54,7 @@ def _get_pool(environ):
     if not htcondor:
         return None
 
-    return htcondor.param.get("HTCONDORCE_WEBAPP_POOL")
+    return htcondor.param.get("HTCONDORCE_VIEW_POOL")
 
 
 def _get_name(environ):
@@ -67,7 +67,7 @@ def _get_name(environ):
     if not htcondor:
         return _get_pool(environ)
 
-    return htcondor.param.get("HTCONDORCE_WEBAPP_NAME")
+    return htcondor.param.get("HTCONDORCE_VIEW_NAME")
 
 
 def get_schedd_objs(environ=None):
@@ -102,7 +102,7 @@ def get_schedd_ads(environ):
 
 def get_spooldir():
     _check_htcondor()
-    spooldir = htcondor.param.get("HTCONDORCE_WEBAPP_SPOOL")
+    spooldir = htcondor.param.get("HTCONDORCE_VIEW_SPOOL")
     if not spooldir:
         if not os.path.exists("tmp"):
             os.mkdir("tmp")

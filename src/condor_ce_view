@@ -92,7 +92,7 @@ def parse_opts():
     opts = parser.parse_args()[0]
 
     if hasattr(htcondor, 'set_subsystem'):
-        htcondor.set_subsystem("CEMON")
+        htcondor.set_subsystem("CEVIEW")
     setup_logging()
 
     return opts
@@ -148,7 +148,7 @@ class WSGILogging(object):
 def main():
     opts = parse_opts()
 
-    spooldir = htcondor.param.get("HTCONDORCE_WEBAPP_SPOOL")
+    spooldir = htcondor.param.get("HTCONDORCE_VIEW_SPOOL")
     if opts.spool:
         spooldir = opts.spool
     if not spooldir:
@@ -162,7 +162,7 @@ def main():
     if opts.port:
         port = int(opts.port)
     else:
-        port = int(htcondor.param.get('HTCONDORCE_WEBAPP_PORT', 8080))
+        port = int(htcondor.param.get('HTCONDORCE_VIEW_PORT', 8080))
     MyWSGIGateway.env_override['htcondorce.spool'] = spooldir
     if os.path.exists('templates'):
         MyWSGIGateway.env_override['htcondorce.templates'] = 'templates'
