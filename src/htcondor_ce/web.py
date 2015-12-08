@@ -482,6 +482,19 @@ def index(environ, start_response):
     return [tmpl.generate(**info).render('html', doctype='html')]
 
 
+def robots(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'text/plain'),
+              ('Cache-Control', 'max-age=60, public')]
+    start_response(status, headers)
+
+    return_text = """User-agent: *
+Disallow: /
+"""
+
+    return return_text
+
+
 ce_graph_re = re.compile(r'^/+graphs/+ce/?([a-zA-Z]+)?/?$')
 def ce_graph(environ, start_response):
     status = '200 OK'
@@ -545,6 +558,7 @@ def not_found(environ, start_response):
 
 urls = [
     (re.compile(r'^/*$'), index),
+    (re.compile(r'^robots\.txt$'), robots),
     (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^metrics/*$'), metrics),
     (re.compile(r'^health/*$'), health),
