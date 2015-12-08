@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.16
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.20
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -20,8 +20,6 @@ URL: http://github.com/bbockelm/condor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-#Source1: condor-ce.service
-#Source2: condor-ce-collector.service
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -375,6 +373,32 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
+* Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
+- Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
+- Allow authenticated, mapped users to advertise glideins
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
+* Fri Nov 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.19-1
+- Fix a bug in setting HTCondor accounting groups for routed jobs (SOFTWARE-2076)
+
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-2
+- Build against condor 8.4.0 (SOFTWARE-2084)
+
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18-1
+- Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
+- Allow users to append lines to JOB_ROUTER_DEFAULTS (SOFTWARE-2065)
+- Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
+- build against condor 8.4.1 (SOFTWARE-2084)
+
+* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+- Add network troubleshooting tool (condor_ce_host_network_check)
+- Add ability to disable glideins advertising to the CE
+- Add non-DigiCert hostcerts for CERN
+- Improvements to 'condor_ce_run' error messages
+
 * Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.15-2
 - bump release to rebuild against condor 8.3.8 (SOFTWARE-1995)
 
