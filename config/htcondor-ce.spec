@@ -54,6 +54,17 @@ Requires: /usr/bin/unshare
 %description
 %{summary}
 
+%if ! 0%{?osg}
+%package bdii
+Group: Application/Internet
+Summary:  BDII GLUE1.3/2 infoproviders and CE config for non-OSG sites.
+
+Requires: %{name} = %{version}-%{release}, bdii
+
+%description bdii
+%{summary}
+%endif
+
 %package view
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
@@ -253,6 +264,16 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
+%if ! 0%{?osg}
+%files bdii
+%defattr(-,root,root,-)
+/var/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py
+/var/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py
+
+%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
+%endif
 
 %files view
 %defattr(-,root,root,-)
