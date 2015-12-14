@@ -20,6 +20,7 @@ _initialized = None
 _loader = None
 _view = None
 g_is_multice = False
+OK_STATUS = '200 OK'
 
 def check_initialized(environ):
     global _initialized
@@ -68,6 +69,11 @@ def _get_name(environ):
         return _get_pool(environ)
 
     return htcondor.param.get("HTCONDORCE_VIEW_NAME")
+
+
+def _headers(content_type):
+    return [('Content-type', content_type),
+            ('Cache-Control', 'max-age=60, public')]
 
 
 def get_schedd_objs(environ=None):
@@ -162,10 +168,7 @@ def schedds(environ, start_response):
             continue
         results[ad['Name']] = ad_to_json(ad)
 
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
+    start_response(OK_STATUS, _headers('application/json'))
 
     return [ json.dumps(results) ]
 
@@ -209,10 +212,7 @@ def agis_json(environ, start_response):
             # So, just add it to the json as "failed_ces"
             results['failed_ces'].append(ad['Name'])
 
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
+    start_response(OK_STATUS, _headers('application/json'))
 
     return [ json.dumps(results) ]
 
@@ -229,11 +229,7 @@ def schedd(environ, start_response):
     keys.sort()
     result = ad_to_json(results[keys[0]])
 
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(result) ]
 
 
@@ -249,23 +245,14 @@ def totals_ce_json(environ, start_response):
             elif job.get("JobStatus") == 5:
                 results['Held'] += 1
 
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
 
 
 def totals(environ, start_response):
     fname = htcondor_ce.rrd.get_rrd_name(environ, "totals")
     results = json.load(open(fname))
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
 
 
@@ -289,23 +276,14 @@ def pilots_ce_json(environ, start_response):
             elif job.get("JobStatus") == 5:
                 results['Held'] += 1
 
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(job_count.values()) ]
 
 
 def pilots(environ, start_response):
     fname = htcondor_ce.rrd.get_rrd_name(environ, "pilots")
     results = json.load(open(fname))
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
 
 
@@ -326,35 +304,20 @@ def vos_ce_json(environ, start_response):
                 results['Running'] += 1
             elif job.get("JobStatus") == 5:
                 results['Held'] += 1
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(job_count) ]
 
 
 def vos_json(environ, start_response):
     fname = htcondor_ce.rrd.get_rrd_name(environ, "vos.json")
     results = json.load(open(fname))
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
 
 
 def status_json(environ, start_response):
     response = {"status": get_schedd_status(environ)}
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(response) ]
 
 
@@ -363,12 +326,7 @@ def statuses_json(environ, start_response):
     response = {}
     for name, status in result.items():
         response[name] = {'status': status}
-
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(response) ]
 
 def jobs_json(environ, start_response):
@@ -396,22 +354,13 @@ def jobs_json(environ, start_response):
 
     parsed_jobs = map(ad_to_json, jobs)
 
-    status = '200 OK'
-    headers = [('Content-type', 'application/json'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(parsed_jobs) ]
 
 
 def vos(environ, start_response):
     vos = htcondor_ce.rrd.list_vos(environ)
-
-    status = '200 OK'
-    headers = [('Content-type', 'text/html'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('vos.html')
 
     info = {
@@ -423,14 +372,8 @@ def vos(environ, start_response):
 
 
 def metrics(environ, start_response):
-
     metrics = htcondor_ce.rrd.list_metrics(environ)
-
-    status = '200 OK'
-    headers = [('Content-type', 'text/html'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('metrics.html')
 
     info = {
@@ -442,12 +385,7 @@ def metrics(environ, start_response):
 
 
 def health(environ, start_response):
-
-    status = '200 OK'
-    headers = [('Content-type', 'text/html'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('health.html')
     info = {
         'multice': g_is_multice
@@ -457,55 +395,34 @@ def health(environ, start_response):
 
 
 def pilots_page(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'text/html'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('pilots.html')
-
     info = {'multice': g_is_multice}
-
     return [tmpl.generate(**info).render('html', doctype='html')] 
 
 
 def index(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'text/html'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('index.html')
-
     info = {'multice': g_is_multice}
-
     return [tmpl.generate(**info).render('html', doctype='html')]
 
 
 def robots(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'text/plain'),
-              ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('text/plain'))
     return_text = """User-agent: *
 Disallow: /
 """
-
     return return_text
 
 
 ce_graph_re = re.compile(r'^/+graphs/+ce/?([a-zA-Z]+)?/?$')
 def ce_graph(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'image/png'),
-               ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('image/png'))
     path = environ.get('PATH_INFO', '')
     m = ce_graph_re.match(path)
     interval = "daily"
-    if m.groups()[0]:
+    if m.group(1):
         interval=m.groups()[0]
 
     return [ htcondor_ce.rrd.graph(environ, None, "jobs", interval) ]
@@ -513,33 +430,25 @@ def ce_graph(environ, start_response):
 
 vo_graph_re = re.compile(r'^/*graphs/+vos/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
 def vo_graph(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'image/png'),
-               ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('image/png'))
     path = environ.get('PATH_INFO', '')
     m = vo_graph_re.match(path)
     interval = "daily"
-    environ['vo'] = m.groups()[0]
-    if m.groups()[1]:
-        interval=m.groups()[1]
+    environ['vo'] = m.group(1)
+    if m.group(2):
+        interval=m.group(2)
 
     return [ htcondor_ce.rrd.graph(environ, None, "vos", interval) ]
 
 
 metrics_graph_re = re.compile(r'^/*graphs/+metrics/+([a-zA-Z._]+)/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
 def metrics_graph(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'image/png'),
-               ('Cache-Control', 'max-age=60, public')]
-    start_response(status, headers)
-
+    start_response(OK_STATUS, _headers('image/png'))
     path = environ.get('PATH_INFO', '')
     m = metrics_graph_re.match(path)
     interval = "daily"
-    environ['group'] = m.groups()[0]
-    environ['name'] = m.groups()[1]
+    environ['group'] = m.group(1)
+    environ['name'] = m.group(2)
     if m.groups()[-1]:
         interval=m.groups()[-1]
 
@@ -548,9 +457,7 @@ def metrics_graph(environ, start_response):
 
 def not_found(environ, start_response):
     status = '404 Not Found'
-    headers = [('Content-type', 'text/html'),
-              ('Cache-Control', 'max-age=60, public'),
-              ('Location', '/')]
+    headers = _headers('text/html') + [('Location', '/')]
     start_response(status, headers)
     path = environ.get('PATH_INFO', '').lstrip('/')
     return ["Resource %s not found" % xml.sax.saxutils.escape(path)]
