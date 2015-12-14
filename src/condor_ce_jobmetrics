@@ -12,7 +12,11 @@ import rrdtool
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
-import classad
+# htcondor and classad modules are imported within the functions that need them 
+# to avoid loading HTCondor code in the parent then forking. Otherwise, issues
+# arise in the child processes.
+
+from htcondorce import rrd, web
 
 def parse_opts():
     parser = optparse.OptionParser()
@@ -63,12 +67,11 @@ def process_one_schedd(ad):
 
 
 def get_ads(spooldir):
-
     htcondor_ce = __import__("htcondor_ce.web")
     if not spooldir:
-        spooldir = htcondor_ce.web.get_spooldir()
+        spooldir = web.get_spooldir()
     environ = {'htcondorce.spool': spooldir}
-    ads = [str(ad) for ad in htcondor_ce.web.get_schedd_ads({})]
+    ads = [str(ad) for ad in web.get_schedd_ads({})]
     return [ads, environ]
 
 
@@ -107,13 +110,13 @@ def main():
             for key2, val2 in val.items():
                 results[key2] += val2
 
-        total_fname = htcondor_ce.rrd.check_rrd(environ, ad['Name'], "jobs")
+        total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):
             print >> sys.stderr, "Schedd", ad['Name'], "totals:", schedd_total_results
         rrdtool.update(total_fname, "N:%d:%d:%d" % (schedd_total_results["Running"], schedd_total_results["Idle"], schedd_total_results["Held"]))
 
         for vo, info in schedd_vo_results.items():
-            vo_fname = htcondor_ce.rrd.check_rrd(environ, ad['Name'], "vos", vo)
+            vo_fname = rrd.check_rrd(environ, ad['Name'], "vos", vo)
             if os.isatty(2):
                 print >> sys.stderr, "Schedd", ad['Name'], "VO", vo, "totals:", info
             rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
@@ -125,26 +128,26 @@ def main():
         val['VOMS'] = key[2]
         job_results_final.append(val)
     # TODO: mkstemp this
-    pilots_fname = htcondor_ce.rrd.get_rrd_name(environ, "pilots")
+    pilots_fname = rrd.get_rrd_name(environ, "pilots")
     json.dump(job_results_final, open(pilots_fname + ".tmp", "w"))
     os.rename(pilots_fname + ".tmp", pilots_fname)
 
     total_results['UpdateTime'] = time.time()
-    totals_fname = htcondor_ce.rrd.get_rrd_name(environ, "totals")
+    totals_fname = rrd.get_rrd_name(environ, "totals")
     json.dump(total_results, open(totals_fname + ".tmp", "w"))
     os.rename(totals_fname + ".tmp", totals_fname)
 
-    total_fname = htcondor_ce.rrd.check_rrd(environ, None, "jobs")
+    total_fname = rrd.check_rrd(environ, None, "jobs")
     if os.isatty(2):
         print >> sys.stderr, "Totals:", total_results
     rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
 
-    vos_fname = htcondor_ce.rrd.get_rrd_name(environ, "vos.json")
+    vos_fname = rrd.get_rrd_name(environ, "vos.json")
     json.dump(vo_results, open(vos_fname + ".tmp", "w"))
     os.rename(vos_fname + ".tmp", vos_fname)
     for vo, info in vo_results.items():
-        vo_fname = htcondor_ce.rrd.check_rrd(environ, None, "vos", vo)
+        vo_fname = rrd.check_rrd(environ, None, "vos", vo)
         if os.isatty(2):
             print >> sys.stderr, "VO", vo, "totals:", info
         rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))

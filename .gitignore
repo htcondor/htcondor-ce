@@ -13,5 +13,5 @@ config/01-ce-router.conf
 config/01-ce-router-defaults.conf
 libclassad_ce.so
 classad_ce_tester
-src/htcondor_ce/*.pyc
+src/htcondorce/*.pyc
 tmp

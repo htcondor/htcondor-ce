@@ -277,10 +277,10 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondor_ce
-%{python_sitelib}/htcondor_ce/__init__.py
-%{python_sitelib}/htcondor_ce/web.py
-%{python_sitelib}/htcondor_ce/rrd.py
+%{python_sitelib}/htcondorce
+%{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/rrd.py*
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -361,8 +361,10 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%{python_sitelib}/condor_ce_info_query.py*
-%{python_sitelib}/condor_ce_tools.py*
+%{python_sitelib}/htcondorce
+%{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/info_query.py*
+%{python_sitelib}/htcondorce/tools.py*
 
 %files collector
 

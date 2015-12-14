@@ -14,7 +14,7 @@ import cherrypy._cpwsgi_server
 import cherrypy.wsgiserver
 
 import htcondor
-import htcondor_ce.web
+import htcondorce.web
 
 
 ALIVE_HEARTBEAT = 60
@@ -54,7 +54,7 @@ def check_multice():
             dircount += 1
             if dircount > 1:
                 break
-    htcondor_ce.web.g_is_multice = dircount > 1
+    htcondorce.web.g_is_multice = dircount > 1
 
 
 def setup_logging():
@@ -171,7 +171,7 @@ def main():
     if opts.name:
         MyWSGIGateway.env_override['htcondorce.name'] = opts.name
 
-    app = WSGILogging(htcondor_ce.web.application)
+    app = WSGILogging(htcondorce.web.application)
 
     cherrypy.tree.graft(app, "/")
     cherrypy.server.unsubscribe()

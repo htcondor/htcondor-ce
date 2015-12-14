@@ -12,7 +12,7 @@ os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 import classad
 import htcondor
 
-import condor_ce_info_query
+import htcondorce.info_query
 
 
 def formatResourceAdsTable(resources, width):
@@ -173,8 +173,8 @@ def main(argv):
         except AttributeError:
             pass
 
-    ce_ads = condor_ce_info_query.fetchCEAds(collector_addr)
-    resources = condor_ce_info_query.filterResourceAds(constraints, condor_ce_info_query.getResourceAdsIter(ce_ads))
+    ce_ads = htcondorce.info_query.fetchCEAds(collector_addr)
+    resources = htcondorce.info_query.filterResourceAds(constraints, htcondorce.info_query.getResourceAdsIter(ce_ads))
 
     if opts.verbose:
         for res in resources:
@@ -190,7 +190,7 @@ def main(argv):
             sorted_resources = sorted(resources, key=lambda x: x['Name'])
             res = sorted_resources[0]
             print "# Submit file for resource " + res['Name']
-            print "\n".join(condor_ce_info_query.getSubmitFileAdditions(res)) + "\n"
+            print "\n".join(htcondorce.info_query.getSubmitFileAdditions(res)) + "\n"
     else:
         print formatResourceAdsTable(resources, opts.width)
 
