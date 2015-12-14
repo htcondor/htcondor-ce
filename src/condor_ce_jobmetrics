@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import tempfile
 import time
 import optparse
 import collections
@@ -24,6 +25,13 @@ def parse_opts():
 
     return parser.parse_args()[0]
 
+def secure_json_write(fname, contents):
+    temp_fd, temp_fname = tempfile.mkstemp(dir=os.path.dirname(fname))
+    try:
+        json.dump(contents, temp_fd)
+        os.rename(temp_fname, fname)
+    finally:
+        os.close(temp_fd)
 
 def process_one_schedd(ad):
     htcondor = __import__("htcondor")
@@ -99,7 +107,7 @@ def main():
 
         for key, val in schedd_total_results.items():
             total_results[key] += val
-            
+
         for vo, schedd_results in schedd_vo_results.items():
             results = vo_results.setdefault(vo, collections.defaultdict(int))
             for key, val in schedd_results.items():
@@ -113,7 +121,8 @@ def main():
         total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):
             print >> sys.stderr, "Schedd", ad['Name'], "totals:", schedd_total_results
-        rrdtool.update(total_fname, "N:%d:%d:%d" % (schedd_total_results["Running"], schedd_total_results["Idle"], schedd_total_results["Held"]))
+        rrdtool.update(total_fname, "N:%d:%d:%d" % (schedd_total_results["Running"], schedd_total_results["Idle"],
+                                                    schedd_total_results["Held"]))
 
         for vo, info in schedd_vo_results.items():
             vo_fname = rrd.check_rrd(environ, ad['Name'], "vos", vo)
@@ -127,15 +136,12 @@ def main():
         val['VO'] = key[1]
         val['VOMS'] = key[2]
         job_results_final.append(val)
-    # TODO: mkstemp this
     pilots_fname = rrd.get_rrd_name(environ, "pilots")
-    json.dump(job_results_final, open(pilots_fname + ".tmp", "w"))
-    os.rename(pilots_fname + ".tmp", pilots_fname)
+    secure_json_write(pilots_fname, job_results_final)
 
     total_results['UpdateTime'] = time.time()
     totals_fname = rrd.get_rrd_name(environ, "totals")
-    json.dump(total_results, open(totals_fname + ".tmp", "w"))
-    os.rename(totals_fname + ".tmp", totals_fname)
+    secure_json_write(totals_fname, total_results)
 
     total_fname = rrd.check_rrd(environ, None, "jobs")
     if os.isatty(2):
@@ -144,8 +150,7 @@ def main():
 
 
     vos_fname = rrd.get_rrd_name(environ, "vos.json")
-    json.dump(vo_results, open(vos_fname + ".tmp", "w"))
-    os.rename(vos_fname + ".tmp", vos_fname)
+    secure_json_write(vos_fname, vo_results)
     for vo, info in vo_results.items():
         vo_fname = rrd.check_rrd(environ, None, "vos", vo)
         if os.isatty(2):
