@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.15
+Version: 1.20
 Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -50,6 +50,15 @@ Requires: /usr/bin/unshare
 %endif
 
 %description
+%{summary}
+
+%package view
+Group: Applications/Internet
+Summary: A Website that will report the current status of the local HTCondor-CE
+
+Requires: %{name} = %{version}-%{release}, python-cherrypy, python-genshi, ganglia-gmond, rrdtool-python
+
+%description view
 %{summary}
 
 %package condor
@@ -171,6 +180,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
@@ -216,12 +226,16 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
+%{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
@@ -237,6 +251,31 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
+%files view
+%defattr(-,root,root,-)
+
+# Web package
+%{python_sitelib}/htcondor_ce
+%{python_sitelib}/htcondor_ce/__init__.py
+%{python_sitelib}/htcondor_ce/web.py
+%{python_sitelib}/htcondor_ce/rrd.py
+
+%{_datadir}/condor-ce/templates/index.html
+%{_datadir}/condor-ce/templates/vos.html
+%{_datadir}/condor-ce/templates/metrics.html
+%{_datadir}/condor-ce/templates/health.html
+%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/templates/pilots.html
+
+%{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
+
+%{_datadir}/condor-ce/condor_ce_view
+%{_datadir}/condor-ce/condor_ce_metric
+%{_datadir}/condor-ce/condor_ce_jobmetrics
+
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 
 %files condor
 %defattr(-,root,root,-)
@@ -335,6 +374,32 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
+* Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+
+* Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
+- Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
+- Allow authenticated, mapped users to advertise glideins
+- Build against condor 8.4.2 (SOFTWARE-2084)
+
+* Fri Nov 06 2015 Brian Lin <blin@cs.wisc.edu> - 1.19-1
+- Fix a bug in setting HTCondor accounting groups for routed jobs (SOFTWARE-2076)
+
+* Mon Nov 2 2015 Edgar Fajardo <emfajard@ucsd.edu> - 1.18-2
+- Build against condor 8.4.0 (SOFTWARE-2084)
+
+* Tue Oct 27 2015 Jeff Dost <jdost@ucsd.edu> - 1.18-1
+- Fix a bug that prevented HTCondor-CE from starting when UID or extattr mappings were not used
+- Allow users to append lines to JOB_ROUTER_DEFAULTS (SOFTWARE-2065)
+- Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
+- build against condor 8.4.1 (SOFTWARE-2084)
+
+* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+- Add network troubleshooting tool (condor_ce_host_network_check)
+- Add ability to disable glideins advertising to the CE
+- Add non-DigiCert hostcerts for CERN
+- Improvements to 'condor_ce_run' error messages
+
 * Mon Aug 31 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.15-2
 - bump release to rebuild against condor 8.3.8 (SOFTWARE-1995)
 
