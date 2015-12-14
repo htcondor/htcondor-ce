@@ -278,9 +278,9 @@ fi
 
 # Web package
 %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/web.py*
-%{python_sitelib}/htcondorce/rrd.py*
+%{python_sitelib}/htcondorce/__init__.py
+%{python_sitelib}/htcondorce/web.py
+%{python_sitelib}/htcondorce/rrd.py
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -362,9 +362,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/info_query.py*
-%{python_sitelib}/htcondorce/tools.py*
+%{python_sitelib}/htcondorce/__init__.py
+%{python_sitelib}/htcondorce/info_query.py
+%{python_sitelib}/htcondorce/tools.py
 
 %files collector
 
