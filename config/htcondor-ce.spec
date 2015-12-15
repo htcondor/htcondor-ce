@@ -67,7 +67,11 @@ Requires: %{name} = %{version}-%{release}, bdii
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
-Requires: %{name} = %{version}-%{release}, python-cherrypy, python-genshi, ganglia-gmond, rrdtool-python
+Requires: %{name} = %{version}-%{release}
+Requires: python-cherrypy
+Requires: python-genshi
+Requires: ganglia-gmond
+Requires: rrdtool-python
 
 %description view
 %{summary}
@@ -197,6 +201,14 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
+%if 0%{?osg}
+rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+%else
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
+   $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+%endif
+
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %clean
@@ -265,9 +277,9 @@ fi
 
 %if ! 0%{?osg}
 %files bdii
-%defattr(-,root,root,-)
-/var/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py
-/var/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py
+# rpmbuilds gets angry if we don't use globs
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
 
 %{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
@@ -277,8 +289,6 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py
 %{python_sitelib}/htcondorce/web.py
 %{python_sitelib}/htcondorce/rrd.py
 
@@ -398,7 +408,7 @@ fi
 
 %changelog
 * Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
-* Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+- Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
 
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
 - Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
