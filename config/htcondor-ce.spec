@@ -2,13 +2,13 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.20
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.21
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
 License: Apache 2.0
-URL: http://github.com/bbockelm/condor-ce
+URL: http://github.com/opensciencegrid/htcondor-ce
 
 # _unitdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
@@ -407,6 +407,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Dec 15 2015 Brian Lin <blin@cs.wisc.edu> - 1.21-1
+- Added a web monitor: htcondor-ce-view
+- Added BDII providers for non-OSG sites
+
 * Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
 - Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
 
