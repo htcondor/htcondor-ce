@@ -27,7 +27,7 @@ def parse_opts():
 
 def secure_json_write(fname, contents):
     temp_fd, temp_fname = tempfile.mkstemp(dir=os.path.dirname(fname))
-    temp_file = os.fdopen(temp_fd)
+    temp_file = os.fdopen(temp_fd, 'w')
     try:
         try:
             json.dump(contents, temp_file)
