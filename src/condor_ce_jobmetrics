@@ -35,7 +35,7 @@ def secure_json_write(fname, contents):
         except:
             print "Error writing json file"
     finally:
-        os.close(temp_file)
+        temp_file.close()
 
 def process_one_schedd(ad):
     htcondor = __import__("htcondor")
