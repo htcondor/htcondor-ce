@@ -27,13 +27,15 @@ def parse_opts():
 
 def secure_json_write(fname, contents):
     temp_fd, temp_fname = tempfile.mkstemp(dir=os.path.dirname(fname))
-    os.close(temp_fd)
-    f = open(temp_fname, 'wb')
+    temp_file = os.fdopen(temp_fd)
     try:
-        json.dump(contents, f)
-        os.rename(temp_fname, fname)
-    except:
-        print "Error writing json file"
+        try:
+            json.dump(contents, temp_file)
+            os.rename(temp_fname, fname)
+        except:
+            print "Error writing json file"
+    finally:
+        os.close(temp_file)
 
 def process_one_schedd(ad):
     htcondor = __import__("htcondor")
