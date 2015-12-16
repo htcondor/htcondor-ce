@@ -27,11 +27,13 @@ def parse_opts():
 
 def secure_json_write(fname, contents):
     temp_fd, temp_fname = tempfile.mkstemp(dir=os.path.dirname(fname))
+    os.close(temp_fd)
+    f = open(temp_fname, 'wb')
     try:
-        json.dump(contents, temp_fd)
+        json.dump(contents, f)
         os.rename(temp_fname, fname)
-    finally:
-        os.close(temp_fd)
+    except:
+        print "Error writing json file"
 
 def process_one_schedd(ad):
     htcondor = __import__("htcondor")
@@ -75,7 +77,6 @@ def process_one_schedd(ad):
 
 
 def get_ads(spooldir):
-    htcondor_ce = __import__("htcondor_ce.web")
     if not spooldir:
         spooldir = web.get_spooldir()
     environ = {'htcondorce.spool': spooldir}
@@ -100,8 +101,6 @@ def main():
     job_results = {}
 
     map_results = pool.map(process_one_schedd, ads, 1)
-
-    htcondor_ce = __import__("htcondor_ce.rrd")
 
     for schedd_total_results, schedd_vo_results, schedd_job_results, ad in map_results:
 
