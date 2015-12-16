@@ -279,7 +279,6 @@ fi
 
 %if ! 0%{?osg}
 %files bdii
-# rpmbuilds gets angry if we don't use globs
 %attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
 %attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
 
@@ -291,8 +290,8 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondorce/web.py
-%{python_sitelib}/htcondorce/rrd.py
+%{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/rrd.py*
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -374,9 +373,9 @@ fi
 %{_bindir}/condor_ce_ping
 
 %dir %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py
-%{python_sitelib}/htcondorce/info_query.py
-%{python_sitelib}/htcondorce/tools.py
+%{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/info_query.py*
+%{python_sitelib}/htcondorce/tools.py*
 
 %files collector
 
