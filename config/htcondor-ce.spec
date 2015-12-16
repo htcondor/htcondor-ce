@@ -203,6 +203,8 @@ install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
@@ -371,7 +373,7 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%{python_sitelib}/htcondorce
+%dir %{python_sitelib}/htcondorce
 %{python_sitelib}/htcondorce/__init__.py
 %{python_sitelib}/htcondorce/info_query.py
 %{python_sitelib}/htcondorce/tools.py
