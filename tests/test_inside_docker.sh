@@ -1,12 +1,14 @@
 #!/bin/sh
 
+OS_VERSION=$1
+
 ls -l /home
 
 # First, install all the needed packages.
-rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OSG_VERSION}.noarch.rpm
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
 yum -y install yum-plugin-priorities
-rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el${OSG_VERSION}-release-latest.rpm
-yum -y install rpm-build gcc gcc-c++ boost-devel globus-rsl-devel condor-classads-devel cmake
+rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el${OS_VERSION}-release-latest.rpm
+yum -y install rpm-build gcc gcc-c++ boost-devel globus-rsl-devel condor-classads-devel cmake git
 
 # Prepare the RPM environment
 sudo -u centos mkdir -p /home/centos/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
