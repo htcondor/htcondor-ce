@@ -13,7 +13,7 @@ os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
 import classad
 import htcondor
-import condor_ce_tools as ce
+import htcondorce.tools as ce
 
 G_DEBUG = False
 

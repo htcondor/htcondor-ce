@@ -5,7 +5,6 @@ import json
 import time
 import types
 import socket
-import wsgiref.util
 import xml.sax.saxutils
 import urlparse
 
@@ -14,7 +13,7 @@ import genshi.template
 import classad
 htcondor = None
 
-import htcondor_ce.rrd
+import htcondorce.rrd
 
 _initialized = None
 _loader = None
@@ -250,7 +249,7 @@ def totals_ce_json(environ, start_response):
 
 
 def totals(environ, start_response):
-    fname = htcondor_ce.rrd.get_rrd_name(environ, "totals")
+    fname = htcondorce.rrd.get_rrd_name(environ, "totals")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
@@ -281,7 +280,7 @@ def pilots_ce_json(environ, start_response):
 
 
 def pilots(environ, start_response):
-    fname = htcondor_ce.rrd.get_rrd_name(environ, "pilots")
+    fname = htcondorce.rrd.get_rrd_name(environ, "pilots")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
@@ -309,7 +308,7 @@ def vos_ce_json(environ, start_response):
 
 
 def vos_json(environ, start_response):
-    fname = htcondor_ce.rrd.get_rrd_name(environ, "vos.json")
+    fname = htcondorce.rrd.get_rrd_name(environ, "vos.json")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
@@ -359,7 +358,7 @@ def jobs_json(environ, start_response):
 
 
 def vos(environ, start_response):
-    vos = htcondor_ce.rrd.list_vos(environ)
+    vos = htcondorce.rrd.list_vos(environ)
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('vos.html')
 
@@ -372,7 +371,7 @@ def vos(environ, start_response):
 
 
 def metrics(environ, start_response):
-    metrics = htcondor_ce.rrd.list_metrics(environ)
+    metrics = htcondorce.rrd.list_metrics(environ)
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _loader.load('metrics.html')
 
@@ -425,7 +424,7 @@ def ce_graph(environ, start_response):
     if m.group(1):
         interval=m.groups()[0]
 
-    return [ htcondor_ce.rrd.graph(environ, None, "jobs", interval) ]
+    return [ htcondorce.rrd.graph(environ, None, "jobs", interval) ]
 
 
 vo_graph_re = re.compile(r'^/*graphs/+vos/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
@@ -438,7 +437,7 @@ def vo_graph(environ, start_response):
     if m.group(2):
         interval=m.group(2)
 
-    return [ htcondor_ce.rrd.graph(environ, None, "vos", interval) ]
+    return [ htcondorce.rrd.graph(environ, None, "vos", interval) ]
 
 
 metrics_graph_re = re.compile(r'^/*graphs/+metrics/+([a-zA-Z._]+)/+([a-zA-Z._]+)/?([a-zA-Z]+)?/?$')
@@ -452,7 +451,7 @@ def metrics_graph(environ, start_response):
     if m.groups()[-1]:
         interval=m.groups()[-1]
 
-    return [ htcondor_ce.rrd.graph(environ, None, "metrics", interval) ]
+    return [ htcondorce.rrd.graph(environ, None, "metrics", interval) ]
 
 
 def not_found(environ, start_response):

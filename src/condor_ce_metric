@@ -1,30 +1,17 @@
 #!/usr/bin/python
 
-import os
 import optparse
-
 import rrdtool
-
-import htcondor
-import htcondor_ce.web
-import htcondor_ce.rrd
-
+from htcondorce import rrd, web
 
 def parse_opts():
     parser = optparse.OptionParser()
+    # TODO: Provide option descriptions
     parser.add_option("-n", "--name", dest="name")
     parser.add_option("-v", "--value", dest="value")
     parser.add_option("-g", "--group", dest="group", default="none")
     parser.add_option("-t", "--type", dest="type")
-    parser.add_option("-D", "--desc", dest="desc")
-    parser.add_option("--slope", dest="slope", help="zero|positive|negative|both|derivative")
-    parser.add_option("-c", "--conf", dest="config")
-    parser.add_option("-u", "--units", dest="units")
-    parser.add_option("-T", "--title", dest="title")
     parser.add_option("-S", "--spoof", dest="spoof")
-    parser.add_option("-x", "--tmax", dest="tmax")
-    parser.add_option("-d", "--dmax", dest="dmax")
-    parser.add_option("--heartbeat", action="store_true")
 
     return parser.parse_args()[0]
 
@@ -43,13 +30,13 @@ def main():
     else:
         value = float(opts.value)
 
-    spooldir = htcondor_ce.web.get_spooldir()
+    spooldir = web.get_spooldir()
     environ = {'htcondorce.spool': spooldir}
 
-    fname = htcondor_ce.rrd.check_rrd(environ, "metrics", opts.group, opts.name)
+    fname = rrd.check_rrd(environ, "metrics", opts.group, opts.name)
     rrdtool.update(fname, "N:%s" % str(value))
 
-    fname = htcondor_ce.rrd.check_rrd(environ, opts.spoof.split(":")[-1], "metrics", opts.group, opts.name)
+    fname = rrd.check_rrd(environ, opts.spoof.split(":")[-1], "metrics", opts.group, opts.name)
     rrdtool.update(fname, "N:%s" % str(value))
 
 

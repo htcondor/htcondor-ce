@@ -9,7 +9,7 @@ import optparse
 import traceback
 
 import htcondor
-import condor_ce_tools as ce
+import htcondorce.tools as ce
 
 # HTCondor-CE simple run script.
 # Mimics the venerable condor_run

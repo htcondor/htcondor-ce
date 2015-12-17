@@ -2,13 +2,13 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.20
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 1.21
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
 License: Apache 2.0
-URL: http://github.com/bbockelm/condor-ce
+URL: http://github.com/opensciencegrid/htcondor-ce
 
 # _unitdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
@@ -67,7 +67,11 @@ Requires: %{name} = %{version}-%{release}, bdii
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
-Requires: %{name} = %{version}-%{release}, python-cherrypy, python-genshi, ganglia-gmond, rrdtool-python
+Requires: %{name} = %{version}-%{release}
+Requires: python-cherrypy
+Requires: python-genshi
+Requires: ganglia-gmond
+Requires: rrdtool-python
 
 %description view
 %{summary}
@@ -197,6 +201,16 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
+%if 0%{?osg}
+rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
+%else
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
+   $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+%endif
+
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %clean
@@ -265,9 +279,8 @@ fi
 
 %if ! 0%{?osg}
 %files bdii
-%defattr(-,root,root,-)
-/var/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py
-/var/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
 
 %{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
@@ -277,10 +290,8 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondor_ce
-%{python_sitelib}/htcondor_ce/__init__.py
-%{python_sitelib}/htcondor_ce/web.py
-%{python_sitelib}/htcondor_ce/rrd.py
+%{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/rrd.py*
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -361,8 +372,10 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%{python_sitelib}/condor_ce_info_query.py*
-%{python_sitelib}/condor_ce_tools.py*
+%dir %{python_sitelib}/htcondorce
+%{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/info_query.py*
+%{python_sitelib}/htcondorce/tools.py*
 
 %files collector
 
@@ -395,8 +408,12 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Dec 15 2015 Brian Lin <blin@cs.wisc.edu> - 1.21-1
+- Added a web monitor: htcondor-ce-view
+- Added BDII providers for non-OSG sites
+
 * Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
-* Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
+- Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
 
 * Wed Nov 11 2015 Carl Edquist <edquist@cs.wisc.edu> - 1.20-1
 - Enable GSI map caching to decrease the number of GSI callouts (SOFTWARE-2105)
