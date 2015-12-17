@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 OS_VERSION=$1
 
@@ -17,10 +17,12 @@ cat >> /etc/rpm/macros.dist << 'EOF'
 %osg 1
 EOF
 
+echo "topdir: /tmp/rpmbuild" > /root/.rpmrc
+
 cp htcondor-ce/config/htcondor-ce.spec /tmp/rpmbuild/SPECS
 package_version=`grep Version htcondor-ce/config/htcondor-ce.spec | awk '{print $2}'`
 pushd htcondor-ce
 git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD  | gzip >/tmp/rpmbuild/SOURCES/htcondor-ce-${package_version}.tar.gz
 popd
 
-rpmbuild --buildroot=/tmp/rpmbuild -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
+rpmbuild -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
