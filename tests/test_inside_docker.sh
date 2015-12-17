@@ -13,7 +13,7 @@ yum -y install rpm-build gcc gcc-c++ boost-devel globus-rsl-devel condor-classad
 # Prepare the RPM environment
 mkdir -p /tmp/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 cat >> /etc/rpm/macros.dist << 'EOF'
-%dist .osg.el6
+%dist .osg.el${OS_VERSION}
 %osg 1
 EOF
 
