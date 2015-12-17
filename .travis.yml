@@ -16,7 +16,7 @@ before_install:
   
 script:
  # Run tests in Container
- - sudo docker run --rm=true -v `pwd`:/htcondor-ce:rw centos:centos${OS_VERSION} /bin/bash -c "ls -l"
+ - sudo docker run --rm=true -v `pwd`:/htcondor-ce:rw centos:centos${OS_VERSION} /bin/bash -c "bash /htcondor-ce/tests/test_inside_docker.sh"
 
 notifications:
   email: false
