@@ -23,4 +23,16 @@ pushd htcondor-ce
 git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD  | gzip >/tmp/rpmbuild/SOURCES/htcondor-ce-${package_version}.tar.gz
 popd
 
+# Build the RPM
 rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
+
+# After building the RPM, try to install it
+yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
+
+# Try starting the service:
+service condor-ce start
+
+# Sleep for a few seconds, then run some basic commands
+sleep 30
+condor_ce_status
+condor_ce_q
