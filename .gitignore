@@ -1,6 +1,5 @@
 Makefile
 *.tar.gz
-.*
 src/.*
 release_dir
 rsl_tester
