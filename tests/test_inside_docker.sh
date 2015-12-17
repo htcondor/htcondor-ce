@@ -27,7 +27,7 @@ popd
 rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
 
 # After building the RPM, try to install it
-yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
+yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
 
 # Try starting the service:
 service condor-ce start
