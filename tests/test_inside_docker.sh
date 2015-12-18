@@ -26,12 +26,21 @@ popd
 # Build the RPM
 rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
 
-# Install the /var/lock directory
-mkdir -p /var/lock/condor
-
 # After building the RPM, try to install it
-yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
+# Can't run on el7 because of an error:
+# Installing : condor-8.4.2-1.2.osg33.el7.x86_64                        117/121 
+# Failed to create directory or subvolume "/var/lock/condor": No such file or directory
+#   Installing : condor-python-8.4.2-1.2.osg33.el7.x86_64                 118/121 
+#   Installing : htcondor-ce-client-1.21-1.osg.el7.x86_64                 119/121 
+#   Installing : htcondor-ce-1.21-1.osg.el7.x86_64                        120/121Error unpacking rpm package htcondor-ce-1.21-1.osg.el7.x86_64
+# 
+# error: unpacking of archive failed on file /var/lock/condor-ce: cpio: mkdir
+#   Installing : htcondor-ce-view-1.21-1.osg.el7.x86_64                   121/121 
+# error: htcondor-ce-1.21-1.osg.el7.x86_64: install failed
 
+if [ "$OS_VERSION" -ne "7" ]; then
+yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
+fi
 ############
 # Cannot start the condor-ce service correctly on docker
 ############
