@@ -26,6 +26,9 @@ popd
 # Build the RPM
 rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
 
+# Install the /var/lock directory
+mkdir -p /var/lock
+
 # After building the RPM, try to install it
 yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
 
