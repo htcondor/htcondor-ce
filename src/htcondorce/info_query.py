@@ -6,16 +6,6 @@ import htcondor
 import logging
 _logger = logging.getLogger(__name__)
 
-# Add htcondor.param.get() to old versions of condor-python that don't have it
-try:
-    htcondor.param.get
-except AttributeError:
-    def _htcondor_param_get(key, default=None):
-        try:
-            return htcondor.param[key]
-        except KeyError:
-            return default
-    htcondor.param.get = _htcondor_param_get
 
 
 class ResourceAd(classad.ClassAd):
