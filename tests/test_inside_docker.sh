@@ -38,8 +38,8 @@ rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.sp
 #   Installing : htcondor-ce-view-1.21-1.osg.el7.x86_64                   121/121 
 # error: htcondor-ce-1.21-1.osg.el7.x86_64: install failed
 
-# Fix the lock file error on EL7
-mkdir -p /var/lock
+# Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
+mkdir -p /var/run/lock
 
 yum localinstall -y /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-client* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/x86_64/htcondor-ce-view*
 ############
