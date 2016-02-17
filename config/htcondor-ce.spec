@@ -406,6 +406,8 @@ fi
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
+<<<<<<< HEAD
+=======
 %changelog
 * Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
 - Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
@@ -674,4 +676,5 @@ fi
 * Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
 - Release after a day of testing with PBS and HTCondor.
 
+>>>>>>> upstream/master
 
