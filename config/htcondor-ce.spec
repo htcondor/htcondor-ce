@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.0
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.0.1
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -409,6 +409,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
+- Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
+- Drop CE ClassAd functions
+
 * Fri Jan 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0-2
 - Require condor >= 8.3.7, which provides the userHome ClassAd function
 
