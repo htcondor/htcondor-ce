@@ -240,8 +240,6 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%{_libdir}/condor/libeval_rsl.so
-
 %{_initrddir}/condor-ce
 
 %if %{?rhel} >= 7
