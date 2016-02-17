@@ -2,15 +2,11 @@ Makefile
 *.tar.gz
 src/.*
 release_dir
-rsl_tester
-libeval_rsl.so
 install_manifest.txt
 cmake_install.cmake
 CMakeFiles
 CMakeCache.txt
 config/01-ce-router.conf
 config/01-ce-router-defaults.conf
-libclassad_ce.so
-classad_ce_tester
 src/htcondorce/*.pyc
 tmp

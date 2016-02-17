@@ -7,10 +7,7 @@ set( HTCONDORCE_VERSION "1.21" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
-find_package( Classad REQUIRED )
-
 find_package(PkgConfig)
-pkg_check_modules( GLOBUS_RSL REQUIRED globus-rsl )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror" )
@@ -21,23 +18,6 @@ CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
-
-string(REPLACE ";" " " _GLOBUS_RSL_CFLAGS_OTHER "${GLOBUS_RSL_CFLAGS_OTHER}" )
-
-link_directories ( ${GLOBUS_RSL_LIBRARY_DIRS} )
-include_directories ( ${GLOBUS_RSL_INCLUDE_DIRS} ${CLASSAD_INCLUDE_DIRS} )
-
-add_library ( eval_rsl MODULE src/rslConverter.cpp )
-target_link_libraries ( eval_rsl ${GLOBUS_RSL_LIBRARIES} ${CLASSAD_LIBRARIES} )
-set_property ( TARGET eval_rsl APPEND PROPERTY COMPILE_FLAGS "${_GLOBUS_RSL_CFLAGS_OTHER}" )
-
-add_library ( classad_ce MODULE src/classad_ce.cpp )
-target_link_libraries ( classad_ce ${CLASSAD_LIBRARIES} )
-
-add_executable ( rsl_tester src/rslTester.cpp )
-add_executable ( classad_ce_tester src/classad_ce_tester.cpp )
-target_link_libraries ( classad_ce_tester ${CLASSAD_LIBRARIES} )
-target_link_libraries ( rsl_tester ${CLASSAD_LIBRARIES} )
 
 set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Base directory for files which go to share/")
 set(SYSCONF_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc" CACHE PATH "Base directory for files which go to etc/")
@@ -56,9 +36,6 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/config/01-ce-router-defaults.conf.in"
   "${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf"
 )
-
-install(TARGETS eval_rsl LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/condor")
-install(TARGETS classad_ce LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/condor")
 
 install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
 install(PROGRAMS src/condor_ce_startup src/condor_ce_startup_internal src/condor_ce_env_bootstrap src/condor_ce_client_env_bootstrap src/condor_ce_router_defaults src/osg-wrapper src/condor_ce_jobmetrics src/condor_ce_metric src/condor_ce_view src/bdii/condor_ce_bdii_generate_glue1.py src/bdii/condor_ce_bdii_generate_glue2.py DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
