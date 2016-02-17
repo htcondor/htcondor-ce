@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.0.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
 Group: Applications/System
@@ -33,6 +33,7 @@ Requires: %{name}-client = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
+Provides:  %{name}-master = %{version}-%{release}
 
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -67,7 +68,7 @@ Requires: %{name} = %{version}-%{release}, bdii
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}-master = %{version}-%{release}
 Requires: python-cherrypy
 Requires: python-genshi
 Requires: ganglia-gmond
@@ -164,6 +165,7 @@ Provides:  condor-ce-client = %{version}
 Group: Applications/System
 Summary: Central HTCondor-CE information services collector
 
+Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: libxml2-python
 Conflicts: %{name}
