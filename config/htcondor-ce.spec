@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 1.21
+Version: 2.0.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 
@@ -23,7 +23,7 @@ Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:  condor >= 8.0.0
+Requires:  condor >= 8.3.7
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
@@ -239,7 +239,6 @@ fi
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
 %{_libdir}/condor/libeval_rsl.so
-%{_libdir}/condor/libclassad_ce.so
 
 %{_initrddir}/condor-ce
 
@@ -408,9 +407,13 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Tue Dec 15 2015 Brian Lin <blin@cs.wisc.edu> - 1.21-1
+* Fri Jan 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.0-2
+- Require condor >= 8.3.7, which provides the userHome ClassAd function
+
+* Tue Dec 15 2015 Brian Lin <blin@cs.wisc.edu> - 2.0.0-1
 - Added a web monitor: htcondor-ce-view
 - Added BDII providers for non-OSG sites
+- Improved formatting for condor_ce_status
 
 * Thu Nov 12 2015 Brian Lin <blin@cs.wisc.edu> - 1.20-2
 - Rebuild against condor-8.4.0 in case we are not satisfied with 8.4.2
