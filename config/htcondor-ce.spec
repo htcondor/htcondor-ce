@@ -136,8 +136,6 @@ Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
 BuildRequires: boost-devel
-BuildRequires: globus-rsl-devel
-BuildRequires: condor-classads-devel
 BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
