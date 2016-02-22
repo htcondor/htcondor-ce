@@ -46,21 +46,20 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     \\
     /* Set new requirements */ \\
     /* set_requirements = LastClientContact - time() < 30*60; */ \\
-    set_requirements = True; \\ %s
+    set_requirements = True; \\
     /* Note default memory request of 2GB */ \\
-    /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd if undefined via RSL */ \\
-    eval_set_RequestMemory = ifThenElse(InputRSL.maxMemory isnt null, InputRSL.maxMemory, ifThenElse(maxMemory isnt null, maxMemory, ifThenElse(default_maxMemory isnt null, default_maxMemory, 2000))); \\
-    eval_set_remote_queue = ifThenElse(InputRSL.queue isnt null, InputRSL.queue, ifThenElse(batch_queue isnt null, batch_queue, ifThenElse(queue isnt null, queue, ifThenElse(default_queue isnt null, default_queue, "")))); \\
+    /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd */ \\
+    eval_set_RequestMemory = ifThenElse(maxMemory isnt null, maxMemory, ifThenElse(default_maxMemory isnt null, default_maxMemory, 2000)); \\
+    eval_set_remote_queue = ifThenElse(batch_queue isnt null, batch_queue, ifThenElse(queue isnt null, queue, ifThenElse(default_queue isnt null, default_queue, ""))); \\
     /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */ \\
-    eval_set_RequestCpus = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
-    eval_set_remote_SMPGranularity = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
-    eval_set_remote_NodeNumber = ifThenElse(InputRSL.xcount isnt null, InputRSL.xcount, ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1))); \\
+    eval_set_RequestCpus = ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1)); \\
+    eval_set_remote_SMPGranularity = ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1)); \\
+    eval_set_remote_NodeNumber = ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1)); \\
     /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */ \\
     eval_set_remote_cerequirements = strcat(ifThenElse(default_remote_cerequirements isnt null, strcat(string(default_remote_cerequirements), " && "), ""), \\
-      ifThenElse(InputRSL.maxWallTime isnt null, strcat("Walltime == ", string(60*InputRSL.maxWallTime), " && CondorCE == 1"), \\
-        ifThenElse(maxWallTime isnt null, strcat("Walltime == ", string(60*maxWallTime), " && CondorCE == 1"), \\
+      ifThenElse(maxWallTime isnt null, strcat("Walltime == ", string(60*maxWallTime), " && CondorCE == 1"), \\
           ifThenElse(default_maxWallTime isnt null, strcat("Walltime == ", string(60*default_maxWallTime), " && CondorCE == 1"), \\
-            "CondorCE == 1")))); \\
+            "CondorCE == 1"))); \\
     copy_OnExitHold = "orig_OnExitHold"; \\
     eval_set_OnExitHold = ifThenElse(orig_OnExitHold isnt null, orig_OnExitHold, false) || ifThenElse(minWalltime isnt null && RemoteWallClockTime isnt null, RemoteWallClockTime < 60*minWallTime, false); \\
     copy_OnExitHoldReason = "orig_OnExitHoldReason"; \\
@@ -75,24 +74,6 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
   ]
 """
 
-input_rsl = "\nset_InputRSL = ifThenElse(GlobusRSL is null, [], eval_rsl(GlobusRSL)); \\"
-
-# Long-winded hack to avoid using 'set_InputRSL' in the 8.0.x series due to
-# HTCondor bug #3772.
-version = '8.0.0'
-if classad:
-    version = classad.version()
-m = re.match(r"(\d+)\.(\d+)\.(\d+)", version)
-if m:
-    major, minor, bug = m.groups()
-    major = int(major)
-    minor = int(minor)
-    bug = int(bug)
-    if major < 8 or (major == 8 and minor < 1):
-        input_rsl = ''
-else:
-    input_rsl = ''
-
 # Allow admins to prevent pilots from advertising back to the CE.
 # https://ticket.grid.iu.edu/26666
 advertise_pilots =  '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
@@ -102,7 +83,7 @@ try:
 except KeyError:
     pass
 
-job_router_defaults = job_router_defaults % (advertise_pilots, input_rsl)
+job_router_defaults = job_router_defaults % advertise_pilots
 
 osg_environment_files = [ \
     "/var/lib/osg/osg-job-environment.conf",
