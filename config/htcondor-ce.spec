@@ -5,6 +5,7 @@ Name: htcondor-ce
 Version: 2.0.2
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
+BuildArch: noarch
 
 Group: Applications/System
 License: Apache 2.0
@@ -145,13 +146,7 @@ Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 Requires: grid-certificates >= 7
 
-# Require the appropriate version of the python library.  This
-# is rather awkward, but better syntax isn't available until RHEL6
-%ifarch x86_64
-Requires: htcondor.so()(64bit)
-%else
-Requires: htcondor.so()
-%endif
+Requires: condor-python
 
 Obsoletes: condor-ce-client < 0.5.4
 Provides:  condor-ce-client = %{version}
