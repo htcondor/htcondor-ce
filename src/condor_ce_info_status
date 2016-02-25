@@ -55,9 +55,9 @@ def formatResourceAdsTable(resources, width):
     table += "\n"
     for resource in resources:
         catalog_entry = resource.catalog_entry
-        table += "\n" + format_str % (catalog_entry['Name'],
-                                      catalog_entry['CPUs'],
-                                      catalog_entry['Memory'],
+        table += "\n" + format_str % (catalog_entry.get('Name','???'),
+                                      catalog_entry.get('CPUs','???'),
+                                      catalog_entry.get('Memory','???'),
                                       catalog_entry.get('MaxWallTime', ''),
                                       ", ".join(list(catalog_entry.get('AllowedVOs', []))))
 
