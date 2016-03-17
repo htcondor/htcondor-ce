@@ -102,12 +102,12 @@ def parse_extattr():
         line = line.strip()
         if not line:
             continue
-        info = line.split(" ", 1)
+        info = line.rsplit(" ", 1)
         if len(info) != 2:
             continue
-        results.append( (info[0], str(info[1]).strip()) )
+        results.append((str(info[0].strip()), str(info[1]).strip()))
     return results
-        
+
 
 def parse_uids():
     if not os.path.exists("/etc/osg/uid_table.txt"):
@@ -141,7 +141,7 @@ def set_accounting_group():
     for mapping in uid_mappings:
         accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (quote(mapping[0]), quote(mapping[1]))
     for mapping in attr_mappings:
-        accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxyFirstFQAN), strcat(%s, ".", Owner), ' % (quote(mapping[0]), quote(mapping[1]))
+        accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxyFQAN), strcat(%s, ".", Owner), ' % (quote(mapping[0]), quote(mapping[1]))
     accounting_group_str += "Owner " + ")"*(len(attr_mappings)+len(uid_mappings))
     return accounting_group_str
 
