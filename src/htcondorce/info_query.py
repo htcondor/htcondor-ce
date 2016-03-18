@@ -148,7 +148,7 @@ def filterResourceAds(constraints, resources):
         # would be 'closing over the loop variable'
         if attr == 'cpus':
             predicates.append(
-                lambda res: constraints['cpus'] <= res['CPUs'])
+                lambda res: constraints['cpus'] <= res.get('CPUs', res.get('Cpus')))
         elif attr == 'constrain':
             predicates.append(
                 lambda res: bool(evalExpressionStr(constraints['constrain'], res)))
