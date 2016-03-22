@@ -176,32 +176,30 @@ def generate_run_script(job_info):
 
 def add_job_proxy_info(job_ad):
 
-    fd = os.popen("voms-proxy-info -file %s -subject" % job_ad['x509userproxy'])
-    output = fd.read().strip()
-    if fd.close():
+    subj_rc, subj_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-subject"])
+    if subj_rc != 0:
         raise ce.CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
-    job_ad['x509userproxysubject'] = output
+    subj_stdout = subj_stdout.strip()
+    job_ad['x509userproxysubject'] = subj_stdout
+    job_ad['x509UserProxyFQAN'] = subj_stdout
 
-    fd = os.popen("voms-proxy-info -file %s -timeleft" % job_ad['x509userproxy'])
-    output = fd.read().strip()
-    if fd.close():
+    time_rc, time_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-timeleft"])
+    if time_rc != 0:
         raise ce.CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
-    output = int(output)
-    if output <= 0:
+    time_stdout = int(time_stdout)
+    if time_stdout <= 0:
         print "WARNING: available proxy appears to be expired"
-    job_ad['x509UserProxyExpiration'] = int(time.time()) + int(output)
+    job_ad['x509UserProxyExpiration'] = int(time.time()) + int(time_stdout)
 
-    fd = os.popen("voms-proxy-info -file %s -vo" % job_ad['x509userproxy'])
-    output = fd.read().strip()
-    if not fd.close():
-        job_ad['x509UserProxyVOName'] = output
+    vo_rc, vo_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-vo"])
+    if vo_rc == 0:
+        job_ad['x509UserProxyVOName'] = vo_stdout.strip()
 
-    fd = os.popen("voms-proxy-info -file %s -fqan" % job_ad['x509userproxy'])
-    output_lines = fd.readlines()
-    if not fd.close():
-        output_lines = [i.strip() for i in output_lines]
-        job_ad['x509UserProxyFirstFQAN'] = output_lines[0]
-        job_ad['x509UserProxyFQAN'] = ",".join(output_lines)
+    fqan_rc, fqan_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-fqan"])
+    if fqan_rc == 0:
+        fqan_lines = [i.strip() for i in fqan_stdout.strip().split('\n')]
+        job_ad['x509UserProxyFirstFQAN'] = fqan_lines[0]
+        job_ad['x509UserProxyFQAN'] += "," + ",".join(fqan_lines)
 
     if G_DEBUG:
         print "Job ad, pre-submit:", job_ad
