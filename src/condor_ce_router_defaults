@@ -139,10 +139,15 @@ def set_accounting_group():
         return None
     accounting_group_str = ''
     for mapping in uid_mappings:
-        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (quote(mapping[0]), quote(mapping[1]))
+        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (quote(mapping[0]),
+                                                                                      quote(mapping[1]))
     for mapping in attr_mappings:
-        accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxyFQAN), strcat(%s, ".", Owner), ' % (quote(mapping[0]), quote(mapping[1]))
-    accounting_group_str += "Owner " + ")"*(len(attr_mappings)+len(uid_mappings))
+        accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxySubject), strcat(%s, ".", Owner), ' \
+                                % (quote(mapping[0]), quote(mapping[1]))
+        accounting_group_str += 'ifThenElse(x509UserProxyFirstFQAN isnt Undefined && ' + \
+                                'regexp(%s, x509UserProxyFirstFQAN), strcat(%s, ".", Owner), ' \
+                                % (quote(mapping[0]), quote(mapping[1]))
+    accounting_group_str += "Owner" + "))"*(len(attr_mappings)+len(uid_mappings))
     return accounting_group_str
 
 def condor_env_escape(val):
