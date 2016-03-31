@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.3
+Version: 2.0.4
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -400,6 +400,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Mar 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.4-1
+- Bug fix for extraneous parens when using uid_table.txt (SOFTWARE-2243)
+
 * Mon Mar 28 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.3-1
 - Drop arch requirements
 - Accept subject DNs in extattr_table.txt (SOFTWARE-2243)
