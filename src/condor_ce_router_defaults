@@ -147,7 +147,7 @@ def set_accounting_group():
         accounting_group_str += 'ifThenElse(x509UserProxyFirstFQAN isnt Undefined && ' + \
                                 'regexp(%s, x509UserProxyFirstFQAN), strcat(%s, ".", Owner), ' \
                                 % (quote(mapping[0]), quote(mapping[1]))
-    accounting_group_str += "Owner" + "))"*(len(attr_mappings)+len(uid_mappings))
+    accounting_group_str += "Owner" + ")"*(len(attr_mappings)*2+len(uid_mappings))
     return accounting_group_str
 
 def condor_env_escape(val):
