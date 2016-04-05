@@ -19,17 +19,17 @@ def path_with_base(base, *paths):
     return joined_path
 
 
-def get_rrd_name(environ, plot, *other):
-    return path_with_base(environ['htcondorce.spool'], plot, *other)
+def get_rrd_name(environ, host, plot, *other):
+    return path_with_base(environ['htcondorce.spool'], host, plot, *other)
 
 
 def check_rrd(environ, host, plot, group=None, name=None):
     path = get_rrd_name(environ, host, plot, group, name)
-    dir, fname = os.path.split(path)
+    dirname, _ = os.path.split(path)
     try:
-        os.makedirs(dir)
-    except OSError, oe:
-        if oe.errno != errno.EEXIST:
+        os.makedirs(dirname)
+    except OSError, exc:
+        if exc.errno != errno.EEXIST:
             raise
     if os.path.exists(path):
         return path

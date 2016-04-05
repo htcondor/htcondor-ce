@@ -43,7 +43,7 @@ def main():
     spooldir = web.get_spooldir()
     environ = {'htcondorce.spool': spooldir}
 
-    fname = rrd.check_rrd(environ, "metrics", opts.group, opts.name)
+    fname = rrd.check_rrd(environ, None, "metrics", opts.group, opts.name)
     rrdtool.update(fname, "N:%s" % str(value))
 
     fname = rrd.check_rrd(environ, opts.spoof.split(":")[-1], "metrics", opts.group, opts.name)
