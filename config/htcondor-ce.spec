@@ -293,6 +293,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%dir %{_sysconfdir}/condor-ce/metrics.d
 %{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_view
