@@ -243,9 +243,6 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
-%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
@@ -294,6 +291,9 @@ fi
 
 %{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_view
 %{_datadir}/condor-ce/condor_ce_metric
