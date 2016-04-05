@@ -12,6 +12,16 @@ def parse_opts():
     parser.add_option("-g", "--group", dest="group", default="none")
     parser.add_option("-t", "--type", dest="type")
     parser.add_option("-S", "--spoof", dest="spoof")
+    parser.add_option("--heartbeat", dest="heartbeat", action="store_true")
+    # These options are passed when called by GangliaD so they are required
+    # even though they are unused
+    parser.add_option("-D", "--desc", dest="desc")
+    parser.add_option("--slope", dest="slope", help="zero|positive|negative|both|derivative")
+    parser.add_option("-c", "--conf", dest="config")
+    parser.add_option("-u", "--units", dest="units")
+    parser.add_option("-T", "--title", dest="title")
+    parser.add_option("-x", "--tmax", dest="tmax")
+    parser.add_option("-d", "--dmax", dest="dmax")
 
     return parser.parse_args()[0]
 
