@@ -33,6 +33,6 @@ mkdir -p /var/run/lock
 yum localinstall -y /tmp/rpmbuild/RPMS/noarch/htcondor-ce-client* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-view*
 
 # Run unit tests
-pushd htcondor-ce/tests
-python -m unittest -v test_condor_ce_router_defaults
+pushd htcondor-ce/tests/
+python run_tests.py
 popd
