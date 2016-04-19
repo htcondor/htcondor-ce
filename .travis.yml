@@ -20,4 +20,8 @@ script:
  - sudo docker run --rm=true -v `pwd`:/htcondor-ce:rw centos:centos${OS_VERSION} /bin/bash -c "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION}"
 
 notifications:
-  email: false
+  email: 
+    recipients:
+      - dweitzel@cse.unl.edu
+      - blin@cs.wisc.edu
+
