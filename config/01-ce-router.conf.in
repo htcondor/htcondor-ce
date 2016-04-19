@@ -45,7 +45,7 @@ SYSTEM_PERIODIC_HOLD_REASON = \
        ifThenElse(time() > x509UserProxyExpiration, "expired user proxy.", \
          ifThenElse(RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12, \
            "invalid job universe.", \
-           "non-existent route or entry in JOB_ROUTER_ENTRIES." \
+           "non-existent route in JOB_ROUTER_ENTRIES or route job limit." \
          ) \
        ) \
      ) \
