@@ -1,0 +1,23 @@
+# extended-attribute matching table
+# format: [perl regular expression] [group]
+# examples:
+
+# FIFE preprod testing
+#/DC=org/DC=opensciencegrid/O=Open\ Science\ Grid/OU=Services/CN=frontend_pp/fifebatch\.fnal\.gov  group_preprod
+
+# Fermilab VO
+\/fermilab\/Role=pilot                                                                             group_fermilab
+
+# DES pilots
+#/DC=com/DC=DigiCert-Grid/O=Open\ Science\ Grid/OU=People/CN=Greg\ Daues\ 1912                     group_des
+#/DC=com/DC=DigiCert-Grid/O=Open\ Science\ Grid/OU=People/CN=Michelle\ Gower\ 1913                 group_des
+#/DC=com/DC=DigiCert-Grid/O=Open\ Science\ Grid/OU=People/CN=Felipe\ Menanteau\ 3137               group_des
+#/DC=com/DC=DigiCert-Grid/O=Open\ Science\ Grid/OU=People/CN=Douglas Nathaniel\ Friedel\ 3371      group_des
+\/DC=com\/DC=DigiCert-Grid\/O=Open\ Science\ Grid\/OU=People\/CN=Michael\ Johnson\ 2274            group_des
+#/DC=com/DC=DigiCert-Grid/O=Open\ Science\ Grid/OU=People/CN=Eric\ Morganson\ 3317                 group_des
+#/DC=com/DC=DigiCert-Grid/O=Open\ Science\ Grid/OU=People/CN=Xinyang\ Lu\ 3630                     group_des
+#/DC=gov/DC=fnal/O=Fermilab/OU=People/CN=Brian\ P\.\ Yanny/CN=UID\:yanny                           group_des
+
+# CMS opportunistic testing
+#/DC=ch/DC=cern/OU=Organic\ Units/OU=Users/CN=mohapatr/CN=659205/CN=Ajit\ Kumar\ Mohapatra         group_cms
+\/DC=com\/DC=DigiCert-Grid\/O=Open\ Science\ Grid\/OU=People\/CN=Brian\ Lin\ 1047                  group_test

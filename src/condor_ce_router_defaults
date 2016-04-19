@@ -91,10 +91,10 @@ osg_environment_files = [ \
 ]
 
 
-def parse_extattr():
-    if not os.path.exists("/etc/osg/extattr_table.txt"):
+def parse_extattr(extattr_file):
+    if not os.path.exists(extattr_file):
         return []
-    fd = open("/etc/osg/extattr_table.txt")
+    fd = open(extattr_file)
     results = []
     for line in fd:
         if line.startswith("#"):
@@ -109,10 +109,10 @@ def parse_extattr():
     return results
 
 
-def parse_uids():
-    if not os.path.exists("/etc/osg/uid_table.txt"):
+def parse_uids(uid_file):
+    if not os.path.exists(uid_file):
         return []
-    fd = open("/etc/osg/uid_table.txt")
+    fd = open(uid_file)
     results = []
     for line in fd:
         if line.startswith("#"):
@@ -130,9 +130,9 @@ def parse_uids():
             results.append( (info[0], str(info[1]).strip()) )
     return results
 
-def set_accounting_group():
-    attr_mappings = parse_extattr()
-    uid_mappings = parse_uids()
+def set_accounting_group(uid_file="/etc/osg/uid_table.txt", extattr_file="/etc/osg/extattr_table.txt"):
+    attr_mappings = parse_extattr(extattr_file)
+    uid_mappings = parse_uids(uid_file)
     if not classad: 
         return "Owner"
     elif not attr_mappings and not uid_mappings:

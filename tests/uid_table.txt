@@ -1,0 +1,6 @@
+# This is a comment
+uscms02 TestGroup
+
+# This is another comment
+osg     other.osgedu
+

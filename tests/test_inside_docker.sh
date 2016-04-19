@@ -31,3 +31,8 @@ rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.sp
 mkdir -p /var/run/lock
 
 yum localinstall -y /tmp/rpmbuild/RPMS/noarch/htcondor-ce-client* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-view*
+
+# Run unit tests
+pushd htcondor-ce/tests/
+python run_tests.py
+popd
