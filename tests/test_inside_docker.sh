@@ -4,6 +4,9 @@ OS_VERSION=$1
 
 ls -l /home
 
+# Clean the yum cache
+yum -y clean all
+
 # First, install all the needed packages.
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
 yum -y install yum-plugin-priorities
