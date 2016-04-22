@@ -137,11 +137,11 @@ def main():
         val['VO'] = key[1]
         val['VOMS'] = key[2]
         job_results_final.append(val)
-    pilots_fname = rrd.get_rrd_name(environ, "pilots")
+    pilots_fname = rrd.path_with_spool(environ, "pilots")
     secure_json_write(pilots_fname, job_results_final)
 
     total_results['UpdateTime'] = time.time()
-    totals_fname = rrd.get_rrd_name(environ, "totals")
+    totals_fname = rrd.path_with_spool(environ, "totals")
     secure_json_write(totals_fname, total_results)
 
     total_fname = rrd.check_rrd(environ, None, "jobs")
@@ -150,7 +150,7 @@ def main():
     rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
 
-    vos_fname = rrd.get_rrd_name(environ, "vos.json")
+    vos_fname = rrd.path_with_spool(environ, "vos.json")
     secure_json_write(vos_fname, vo_results)
     for vo, info in vo_results.items():
         vo_fname = rrd.check_rrd(environ, None, "vos", vo)

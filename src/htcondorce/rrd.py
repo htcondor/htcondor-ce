@@ -7,24 +7,21 @@ import tempfile
 import rrdtool
 
 
-def path_with_base(base, *paths):
-    full_base = os.path.abspath(base)
+def path_with_spool(environ, *paths):
+    spool = environ['htcondorce.spool']
+    full_spool = os.path.abspath(spool)
     filtered_paths = []
     for path in paths:
         if path:
             filtered_paths.append(path)
-    joined_path = os.path.abspath(os.path.join(full_base, *filtered_paths))
-    if not joined_path.startswith(full_base):
+    joined_path = os.path.abspath(os.path.join(full_spool, *filtered_paths))
+    if not joined_path.startswith(full_spool):
         raise Exception("Unable to construct full path name.")
     return joined_path
 
 
-def get_rrd_name(environ, host, plot, *other):
-    return path_with_base(environ['htcondorce.spool'], host, plot, *other)
-
-
 def check_rrd(environ, host, plot, group=None, name=None):
-    path = get_rrd_name(environ, host, plot, group, name)
+    path = path_with_spool(environ, host, plot, group, name)
     dirname, _ = os.path.split(path)
     try:
         os.makedirs(dirname)
@@ -67,7 +64,7 @@ def check_rrd(environ, host, plot, group=None, name=None):
 _metric_name_re = re.compile(r'^[-A-za-z0-9_]+[-A-za-z0-9_.]*')
 def list_metrics(environ):
     results = {}
-    base_path = get_rrd_name(environ, "metrics")
+    base_path = path_with_spool(environ, "metrics")
     for fname in os.listdir(base_path):
         group_path = os.path.join(base_path, fname)
         if os.path.isdir(group_path) and _metric_name_re.match(fname):
@@ -81,7 +78,7 @@ def list_metrics(environ):
 _vo_name_re = re.compile(r'^[-A-za-z0-9_]+[-A-za-z0-9_.]*')
 def list_vos(environ):
     results = []
-    base_path = get_rrd_name(environ, "vos")
+    base_path = path_with_spool(environ, "vos")
     for fname in os.listdir(base_path):
         if os.path.isfile(os.path.join(base_path, fname)) and _vo_name_re.match(fname):
             results.append(fname)

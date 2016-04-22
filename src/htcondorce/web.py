@@ -249,7 +249,7 @@ def totals_ce_json(environ, start_response):
 
 
 def totals(environ, start_response):
-    fname = htcondorce.rrd.get_rrd_name(environ, "totals")
+    fname = htcondorce.rrd.path_with_spool(environ, "totals")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
@@ -280,7 +280,7 @@ def pilots_ce_json(environ, start_response):
 
 
 def pilots(environ, start_response):
-    fname = htcondorce.rrd.get_rrd_name(environ, "pilots")
+    fname = htcondorce.rrd.path_with_spool(environ, "pilots")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
@@ -308,7 +308,7 @@ def vos_ce_json(environ, start_response):
 
 
 def vos_json(environ, start_response):
-    fname = htcondorce.rrd.get_rrd_name(environ, "vos.json")
+    fname = htcondorce.rrd.path_with_spool(environ, "vos.json")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(results) ]
