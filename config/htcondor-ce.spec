@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.4
+Version: 2.0.5
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -401,6 +401,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Apr 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.5-1
+- HTCondor-CE-CEView update to add Schedd (SOFTWARE-2268)
+- Remove extraneous copies of pbs_status.py (SOFTWARE-2279)
+- Add BR ANESP hostcert (https://ticket.opensciencegrid.org/29196)
+- Unit tests for condor_ce_router_defaults accounting groups
+- Add yum clean commands before Travis-CI tests
+- Fix incorrect paths and empty job attr in the CE View
+
 * Thu Mar 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.4-1
 - Bug fix for extraneous parens when using uid_table.txt (SOFTWARE-2243)
 
