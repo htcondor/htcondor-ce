@@ -47,16 +47,21 @@ def process_one_schedd(ad):
     job_count = {}
     print "Processing CE %s." % ad.get("Name", "Unknown")
     try:
-        for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'x509userproxysubject']):
-            DN = job.get("x509userproxysubject", 'Unknown')
-            VO = job.get('x509UserProxyVOName', 'Unknown')
-            VOMS = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
-            job_key = (DN, VO, VOMS)
+        for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
+                                          'x509UserProxyFirstFQAN', 'x509userproxysubject']):
+            jobad = {}
+            jobad['dn'] = job.get("x509userproxysubject", 'Unknown')
+            jobad['vo'] = job.get('x509UserProxyVOName', 'Unknown')
+            jobad['voms'] = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
+            for attr, val in jobad.iteritems():
+                if not val:
+                    jobad[attr] = 'Unknown'
+            job_key = tuple(jobad.values())
             if job_key not in job_count:
                 job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-            if VO not in vo_results:
-                vo_results[VO] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-            results = vo_results[VO]
+            if jobad['vo'] not in vo_results:
+                vo_results[jobad['vo']] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+            results = vo_results[jobad['vo']]
             job_results = job_count[job_key]
             results["Jobs"] += 1
             total_results['Jobs'] += 1
