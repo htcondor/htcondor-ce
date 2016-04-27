@@ -67,7 +67,7 @@ sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 cat << EOF > /etc/condor/config.d/99-local.conf
 NETWORK_INTERFACE=eth0
 GSI_SKIP_HOST_CHECK=true
-SCHEDD_DEBUG=$(SCHEDD_DEBUG) D_FULLDEBUG
+SCHEDD_DEBUG=\$(SCHEDD_DEBUG) D_FULLDEBUG
 EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 

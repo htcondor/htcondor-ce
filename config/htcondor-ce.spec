@@ -28,6 +28,9 @@ Requires:  condor >= 8.3.7
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
+# Init script doesn't function without `which` (which is no longer part of RHEL7 base).
+Requires: which
+
 # Require the htcondor-ce-client subpackage.  The client provides necessary
 # configuration defaults and scripts for the CE itself.
 Requires: %{name}-client = %{version}-%{release}
