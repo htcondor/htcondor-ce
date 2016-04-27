@@ -53,7 +53,7 @@ popd
 # RPM version of osg-test
 yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
-osg-test -vad
+osg-test -vad --hostcert
 cat /var/log/condor-ce/CollectorLog
 cat /var/log/condor-ce/ScheddLog
 _condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
