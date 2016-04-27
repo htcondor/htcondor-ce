@@ -67,6 +67,7 @@ sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 cat << EOF > /etc/condor/config.d/99-local.conf
 NETWORK_INTERFACE=eth0
 GSI_SKIP_HOST_CHECK=true
+SCHEDD_DEBUG=$(SCHEDD_DEBUG) D_FULLDEBUG
 EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 
@@ -88,4 +89,5 @@ echo "------------ HTCondor Logs --------------"
 cat /var/log/condor/MasterLog
 cat /var/log/condor/CollectorLog
 cat /var/log/condor/SchedLog
+condor_config_val -dump
 condor_status -schedd -l | sort
