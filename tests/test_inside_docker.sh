@@ -54,6 +54,8 @@ popd
 yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
 osg-test -vad --hostcert
+openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
+cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
 cat /var/log/condor-ce/ScheddLog
 _condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
