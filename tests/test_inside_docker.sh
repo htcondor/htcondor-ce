@@ -70,6 +70,9 @@ GSI_SKIP_HOST_CHECK=true
 EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 
+# Reduce the trace timeouts
+export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
+
 # Ok, do actual testing
 osg-test -vad --hostcert --no-cleanup
 
@@ -78,5 +81,6 @@ openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
 cat /var/log/condor-ce/SchedLog
+cat /var/log/condor-ce/JobRouterLog
 _condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
 
