@@ -54,8 +54,23 @@ popd
 yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
 # Don't cleanup so we can do reasonable debug printouts later.
+
+# HTCondor really, really wants a domain name.  Fake one.
+sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
+mv /etc/hosts.new /etc/hosts
 echo "127.0.0.1 localhost.localdomain localhost localhost4 localhost4.localdomain4 `hostname`" > /etc/hosts
+
+# Bind on the right interface and skip hostname checks.
+cat << EOF > /etc/condor/config.d/99-local.conf
+NETWORK_INTERFACE=eth0
+GSI_SKIP_HOST_CHECK=true
+EOF
+cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
+
+# Ok, do actual testing
 osg-test -vad --hostcert --no-cleanup
+
+# Some simple debug files for failures.
 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
