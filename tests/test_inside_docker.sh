@@ -45,5 +45,6 @@ git clone https://github.com/opensciencegrid/osg-test.git
 pushd osg-test
 make install
 popd
-osg-test htcondor-ce -vad
+# osg-test will automatically determine the correct tests to run based on the RPMs installed.
+osg-test -vad
 
