@@ -3,10 +3,13 @@
 
 import glob
 import unittest
+import sys
 
 TESTS = [test.strip('.py') for test in glob.glob('test*.py')]
 SUITE = unittest.TestLoader().loadTestsFromNames(TESTS)
-unittest.TextTestRunner(verbosity=2).run(SUITE)
+RESULTS = unittest.TextTestRunner(verbosity=2).run(SUITE)
 
+if not RESULTS.wasSuccessful():
+    sys.exit(1)
 
 
