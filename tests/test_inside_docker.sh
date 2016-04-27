@@ -62,7 +62,6 @@ yum -y install --enablerepo=osg-testing osg-test
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 /bin/cp -f /etc/hosts.new /etc/hosts
-echo "127.0.0.1 localhost.localdomain localhost localhost4 localhost4.localdomain4 `hostname`" > /etc/hosts
 
 # Bind on the right interface and skip hostname checks.
 cat << EOF > /etc/condor/config.d/99-local.conf
