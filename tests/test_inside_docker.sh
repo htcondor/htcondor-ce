@@ -41,10 +41,13 @@ pushd htcondor-ce/tests/
 python run_tests.py
 popd
 
-git clone https://github.com/opensciencegrid/osg-test.git
-pushd osg-test
-make install
-popd
+# Source repo version
+#git clone https://github.com/opensciencegrid/osg-test.git
+#pushd osg-test
+#make install
+#popd
+# RPM version of osg-test
+yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
 osg-test -vad
 
