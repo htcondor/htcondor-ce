@@ -46,8 +46,15 @@ popd
 #pushd osg-test
 #make install
 #popd
+#git clone https://github.com/opensciencegrid/osg-ca-generator.git
+#pushd osg-ca-generator
+#make install
+#popd
 # RPM version of osg-test
 yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
 osg-test -vad
+cat /var/log/condor-ce/CollectorLog
+cat /var/log/condor-ce/ScheddLog
+_condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
 
