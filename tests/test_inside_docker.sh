@@ -59,6 +59,6 @@ osg-test -vad --hostcert --no-cleanup
 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
-cat /var/log/condor-ce/ScheddLog
+cat /var/log/condor-ce/SchedLog
 _condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
 
