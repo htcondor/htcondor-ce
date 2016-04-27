@@ -78,9 +78,14 @@ osg-test -vad --hostcert --no-cleanup
 
 # Some simple debug files for failures.
 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
+echo "------------ CE Logs --------------"
 cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
 cat /var/log/condor-ce/SchedLog
 cat /var/log/condor-ce/JobRouterLog
 _condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
-
+echo "------------ HTCondor Logs --------------"
+cat /var/log/condor/MasterLog
+cat /var/log/condor/CollectorLog
+cat /var/log/condor/SchedLog
+condor_status -schedd -l | sort
