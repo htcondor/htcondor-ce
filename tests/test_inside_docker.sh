@@ -53,7 +53,8 @@ popd
 # RPM version of osg-test
 yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
-osg-test -vad --hostcert
+# Don't cleanup so we can do reasonable debug printouts later.
+osg-test -vad --hostcert --no-cleanup
 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
