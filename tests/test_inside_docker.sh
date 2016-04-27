@@ -54,6 +54,7 @@ popd
 yum -y install --enablerepo=osg-testing osg-test
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
 # Don't cleanup so we can do reasonable debug printouts later.
+echo "127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4 `hostname`" > /etc/hosts
 osg-test -vad --hostcert --no-cleanup
 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 cat /var/log/condor-ce/MasterLog
