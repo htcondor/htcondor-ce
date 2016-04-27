@@ -40,3 +40,10 @@ yum localinstall -y /tmp/rpmbuild/RPMS/noarch/htcondor-ce-client* /tmp/rpmbuild/
 pushd htcondor-ce/tests/
 python run_tests.py
 popd
+
+git clone https://github.com/opensciencegrid/osg-test.git
+pushd osg-test
+make install
+popd
+osg-test htcondor-ce -vad
+
