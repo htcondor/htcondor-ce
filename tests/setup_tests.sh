@@ -17,9 +17,9 @@ DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
 docker logs $DOCKER_CONTAINER_ID
 docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -c "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION};
   echo -ne \"------\nEND HTCONDOR-CE TESTS\n------\nSystemD Units:\n------\n\"; 
-  systemctl --no-pager --all --full status
+  systemctl --no-pager --all --full status;
   echo -ne \"------\nJournalD Logs:\n------\n\" ;
-  journalctl --catalog --all --full --no-pager"
+  journalctl --catalog --all --full --no-pager;"
 docker ps -a
 docker stop $DOCKER_CONTAINER_ID
 docker rm -v $DOCKER_CONTAINER_ID
