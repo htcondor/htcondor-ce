@@ -1,6 +1,10 @@
 HTCondor-CE
 ===========
 
+[![Build Status](https://travis-ci.org/opensciencegrid/htcondor-ce.svg?branch=master)](https://travis-ci.org/opensciencegrid/htcondor-ce)
+
+---
+
 A site grid gatekeeper technology based solely on HTCondor components.
 
 This package is simply a thin set of wrappers around HTCondor, allowing you to
