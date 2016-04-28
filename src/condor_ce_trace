@@ -260,7 +260,7 @@ def check_job_submit(job_info):
 
     print "- Successful spooling"
 
-    attempts = 600
+    attempts = int(htcondor.param.get("CONDOR_CE_TRACE_ATTEMPTS", 600))
     last_status = -1
     for attempt in range(attempts):
         if G_DEBUG:
