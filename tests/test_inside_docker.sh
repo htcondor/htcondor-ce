@@ -55,7 +55,7 @@ popd
 #make install
 #popd
 # RPM version of osg-test
-yum -y install --enablerepo=osg-testing osg-test
+yum -y install --enablerepo=osg-testing osg-test osg-configure
 # osg-test will automatically determine the correct tests to run based on the RPMs installed.
 # Don't cleanup so we can do reasonable debug printouts later.
 
