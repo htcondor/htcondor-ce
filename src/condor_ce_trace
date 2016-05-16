@@ -287,7 +287,7 @@ def check_job_submit(job_info):
 
     if status == 5: # TODO - provide better diagnostics
         raise ce.CondorRunException("Remote job, %d.0, was held" % cluster)
-    if status == 4:
+    elif status == 4:
         try:
             schedd.retrieve("ClusterID == %d" % cluster)
         except RuntimeError, e:
@@ -307,6 +307,8 @@ def check_job_submit(job_info):
             print "*"*20
         else:
             print "- Job was successful"
+    else:
+        raise RuntimeError('Job did not complete within the given timeframe (%ss)' % attempts)
 
 def main():
     opts, args = parse_opts()
