@@ -227,7 +227,8 @@ def check_job_submit(job_info):
     job_ad['LeaveJobInQueue'] = classad.ExprTree("( StageOutFinish > 0 ) =!= true")
     for attr in job_info['attribute']:
         key, value = attr.split('=', 1)
-        job_ad[key.strip()] = set_classad_value_type(value.strip())
+        # Accept submit format '+AttributeName'
+        job_ad[key.lstrip('+').strip()] = set_classad_value_type(value.strip())
     proxy = os.environ.setdefault("X509_USER_PROXY", "/tmp/x509up_u%d" % os.geteuid())
     if not os.path.exists(proxy):
         raise ce.CondorUserException("Could not find an X509 proxy in %s" % proxy)
