@@ -22,9 +22,9 @@ class CondorUserException(Exception):
 def print_formatted_msg(msg):
     """Limit output messages to 80 characters in width"""
     print "*"*80
-    wrapper = textwrap.TextWrapper(width=80, replace_whitespace=False)
-    for line in wrapper.wrap(msg):
-        print line
+    wrapper = textwrap.TextWrapper(width=80)
+    for line in msg.split('\n'):
+        print wrapper.fill(line)
     print "*"*80
 
 def print_timestamped_msg(msg):

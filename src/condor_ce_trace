@@ -348,19 +348,24 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (ce.CondorRunException, ce.CondorUserException, RuntimeError), e:
-        ce.print_timestamped_msg(e)
+    except (ce.CondorRunException, ce.CondorUserException, RuntimeError), tool_exc:
+        ce.print_timestamped_msg(tool_exc)
         sys.exit(1)
-    except Exception, e:
-        pid = os.getpid()
-        try:
-            fd, stack_file = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % pid)
-            f = os.fdopen(fd, 'w')
-            f.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
-            traceback.print_exc(file=f)
-            f.close()
-            ce.print_formatted_msg('Uncaught exception, please send %s to goc@opensciencegrid.org with a description ' \
-                                   'of the issue.' % stack_file)
-        except OSError, e:
-            ce.print_formatted_msg("Unable to write stackfile due to the following error:\n%s" % e)
+    except Exception:
+        PID = os.getpid()
+        if G_DEBUG:
+            ce.print_formatted_msg('Uncaught exception, please send the following error to goc@opensciencegrid.org ' \
+                                   'with a description of the issue:\n%s' % traceback.format_exc())
+        else:
+            try:
+                FD, STACK_FILE = tempfile.mkstemp(dir=".", prefix=".stack_%d_" % PID)
+                F = os.fdopen(FD, 'w')
+                F.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
+                traceback.print_exc(file=F)
+                F.close()
+                ce.print_formatted_msg('Uncaught exception, please send %s to goc@opensciencegrid.org with a ' \
+                                       'description of the issue.' % STACK_FILE)
+            except OSError, write_exc:
+                ce.print_formatted_msg("Unable to write stackfile due to the following error:\n%s"
+                                       % traceback.format_exc())
         sys.exit(1)
