@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.5
+Version: 2.0.6
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -404,6 +404,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed May 25 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.6-1
+- Fix condor_ce_trace timeout exit code
+- Print condor_ce_trace exceptions when -debug is specified
+- Accept submit attribute format, '+AttributeName', in condor_ce_trace
+
 * Tue Apr 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.5-1
 - HTCondor-CE-CEView update to add Schedd (SOFTWARE-2268)
 - Remove extraneous copies of pbs_status.py (SOFTWARE-2279)
