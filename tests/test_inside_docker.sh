@@ -95,4 +95,4 @@ cat /var/log/condor/SchedLog
 condor_config_val -dump
 condor_status -schedd -l | sort
 
-exit $?
+exit $test_exit
