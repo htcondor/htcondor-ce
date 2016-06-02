@@ -77,7 +77,8 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
 # Ok, do actual testing
-osg-test -vad --hostcert --no-cleanup
+(osg-test -vad --hostcert --no-cleanup)
+test_exit=$?
 
 # Some simple debug files for failures.
 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
@@ -93,3 +94,5 @@ cat /var/log/condor/CollectorLog
 cat /var/log/condor/SchedLog
 condor_config_val -dump
 condor_status -schedd -l | sort
+
+exit $?
