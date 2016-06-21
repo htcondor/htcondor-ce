@@ -135,6 +135,19 @@ Provides:  condor-ce-sge = %{version}
 %description sge
 %{summary}
 
+%package bosco
+Group: Applications/System
+Summary: Default routes for submission to BOSCO
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Provides:  condor-ce-bosco = %{version}
+
+%description bosco
+%{summary}
+
 %package client
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
@@ -330,6 +343,12 @@ fi
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-sge.conf
 %{_datadir}/condor-ce/config.d/02-ce-sge-defaults.conf
+
+%files bosco
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
+%{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
 
 %files client
 
