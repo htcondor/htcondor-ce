@@ -71,6 +71,12 @@ VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
 USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper
 
+# Force condor_ce_q to show jobs for all users until 'root' is recognized as
+# a QUEUE_SUPER_USER when using a CERTIFICATE_MAPFILE
+:if version < 8.5.6
+CONDOR_Q_ONLY_MY_JOBS = False
+:endif
+
 # This file is just the base configuration
 # Several other mandatory tasks remain, and are done in /etc/condor-ce/config.d:
 # - Security configuration: /etc/condor-ce/config.d/01-ce-auth.conf
