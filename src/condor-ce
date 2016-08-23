@@ -59,6 +59,12 @@ fail() {
 start() {
     echo -n $"Starting Condor-CE daemons: "
 
+    # Ensure the condor-ce rundir and lockdir exist
+    local rundir=$(condor_ce_config_val RUN)
+    local lockdir=$(condor_ce_config_val LOCK)
+    mkdir -p ${rundir} ${lockdir}
+    chown condor:condor ${rundir} ${lockdir}
+
     # Check value of QUEUE_SUPER_USER_MAY_IMPERSONATE for HTCondor batch systems
     condor_ce_config_val -config 2>&1 | grep '02-ce-condor.conf' > /dev/null
     if [ $? -eq 0 ]; then
