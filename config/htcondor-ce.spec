@@ -249,10 +249,10 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%{_initrddir}/condor-ce
-
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce.service
+%else
+%{_initrddir}/condor-ce
 %endif
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
@@ -395,12 +395,13 @@ fi
 %files collector
 
 %{_bindir}/condor_ce_config_generator
-%{_initrddir}/condor-ce-collector
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce-collector.service
+%else
+%{_initrddir}/condor-ce-collector
 %endif
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
