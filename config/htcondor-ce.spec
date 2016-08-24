@@ -198,6 +198,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
 install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
 install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+%else
+rm $RPM_BUILD_ROOT%{_sysconfdir}/tmpfiles.d/condor-ce{,-collector}.conf
 %endif
 
 # Directories necessary for HTCondor-CE files
@@ -253,6 +255,7 @@ fi
 
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce.service
+%{_sysconfdir}/tmpfiles.d/condor-ce.conf
 %endif
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
@@ -401,6 +404,7 @@ fi
 
 %if %{?rhel} >= 7
 %{_unitdir}/condor-ce-collector.service
+%{_sysconfdir}/tmpfiles.d/condor-ce-collector.conf
 %endif
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
