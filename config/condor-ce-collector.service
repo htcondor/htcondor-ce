@@ -5,12 +5,12 @@ Wants=network.target
 
 [Service]
 Type=forking
-ExecStart=/etc/init.d/condor-ce-collector start
-ExecStop=/etc/init.d/condor-ce-collector stop
-ExecReload=/etc/init.d/condor-ce-collector reload
+ExecStart=/usr/share/condor-ce/condor_ce_startup collector
+ExecStop=/usr/bin/condor_ce_off
+ExecReload=/usr/bin/condor_ce_restart
 Restart=always
 RestartSec=5
-StandardOutput=syslog
+StandardOutput=syslog+console
 LimitNOFILE=16384
 
 [Install]

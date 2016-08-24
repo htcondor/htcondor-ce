@@ -57,7 +57,7 @@ fi
 
 start() {
     echo -n $"Starting Condor-CE daemons: "
-    daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup -pidfile $pidfile
+    daemon --pidfile $pidfile --check $prog /usr/share/condor-ce/condor_ce_startup collector -pidfile $pidfile
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile
