@@ -46,18 +46,17 @@ python run_tests.py
 popd
 
 # Source repo version
-#git clone https://github.com/opensciencegrid/osg-test.git
-#pushd osg-test
-#make install
-#popd
-#git clone https://github.com/opensciencegrid/osg-ca-generator.git
-#pushd osg-ca-generator
-#make install
-#popd
-# RPM version of osg-test
-yum -y install --enablerepo=osg-testing osg-test osg-configure
-# osg-test will automatically determine the correct tests to run based on the RPMs installed.
-# Don't cleanup so we can do reasonable debug printouts later.
+git clone https://github.com/opensciencegrid/osg-test.git
+pushd osg-test
+git rev-parse HEAD
+make install
+popd
+git clone https://github.com/opensciencegrid/osg-ca-generator.git
+pushd osg-ca-generator
+git rev-parse HEAD
+make install
+popd
+yum -y install --enablerepo=osg-testing  osg-configure
 
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
@@ -78,6 +77,7 @@ export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
 # Ok, do actual testing
 set +e # don't exit immediately if osg-test fails
+echo "------------ OSG Test --------------"
 osg-test -vad --hostcert --no-cleanup
 test_exit=$?
 set -e
@@ -89,12 +89,10 @@ cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
 cat /var/log/condor-ce/SchedLog
 cat /var/log/condor-ce/JobRouterLog
-_condor_COLLECTOR_PORT=9619 condor_status -schedd -l | sort
 echo "------------ HTCondor Logs --------------"
 cat /var/log/condor/MasterLog
 cat /var/log/condor/CollectorLog
 cat /var/log/condor/SchedLog
 condor_config_val -dump
-condor_status -schedd -l | sort
 
 exit $test_exit
