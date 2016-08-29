@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.7
+Version: 2.0.8
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -433,6 +433,13 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
+- Remove the HTCondor-CE init script on EL7 (SOFTWARE-2419)
+- Fix OnExitHold to be set to expressions rather than their evaluated forms
+- Force 'condor_ce_q -allusers' until QUEUE_SUPER_USER is fixed to be able to use CERTIFICATE_MAPFILE in 8.5.6
+- Allow mapping of Terana eScience hostcerts
+- Ensure lockdir and rundir exist with correct permissions on startup
+
 * Thu Jun 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.7-1
 - Add a default route for a BOSCO CE (SOFTWARE-2370)
 
