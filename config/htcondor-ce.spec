@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.0.8
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -39,10 +39,15 @@ Obsoletes: condor-ce < 0.5.4
 Provides:  condor-ce = %{version}
 Provides:  %{name}-master = %{version}-%{release}
 
+%if 0%{?rhel} >= 7
+Requires(post): systemd
+Requires(preun): systemd
+%else
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%endif
 
 # On RHEL6 and later, we use this utility to setup a custom hostname.
 %if 0%{?rhel} >= 6
@@ -194,7 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if %{?rhel} >= 7
+%if 0%{?rhel} >= 7
 mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
 install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
 install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
@@ -231,22 +236,35 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%if %{?rhel} >= 7
+%if 0%{?rhel} >= 7
 systemctl enable condor-ce
 %else
 /sbin/chkconfig --add condor-ce
 %endif
 
 %preun
+%if 0%{?rhel} >= 7
+if [ $1 = 0 ]; then
+    systemctl stop condor-ce > /dev/null 2>&1 || :
+    systemctl disable condor-ce > /dev/null 2>&1 || :
+fi
+%else
 if [ $1 = 0 ]; then
   /sbin/service condor-ce stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del condor-ce
 fi
+%endif
 
 %postun
+%if 0%{?rhel} >= 7
+if [ "$1" -ge "1" ]; then
+  systemctl restart condor-ce >/dev/null 2>&1 || :
+fi
+%else
 if [ "$1" -ge "1" ]; then
   /sbin/service condor-ce condrestart >/dev/null 2>&1 || :
 fi
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -256,7 +274,7 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%if %{?rhel} >= 7
+%if 0%{?rhel} >= 7
 %{_unitdir}/condor-ce.service
 %{_sysconfdir}/tmpfiles.d/condor-ce.conf
 %else
@@ -406,7 +424,7 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
-%if %{?rhel} >= 7
+%if 0%{?rhel} >= 7
 %{_unitdir}/condor-ce-collector.service
 %{_sysconfdir}/tmpfiles.d/condor-ce-collector.conf
 %else
@@ -433,6 +451,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
+- Fix EL7 cleanup on uninstall
+
 * Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
 - Remove the HTCondor-CE init script on EL7 (SOFTWARE-2419)
 - Fix OnExitHold to be set to expressions rather than their evaluated forms
