@@ -56,7 +56,6 @@ pushd osg-ca-generator
 git rev-parse HEAD
 make install
 popd
-yum -y install --enablerepo=osg-testing  osg-configure
 
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
