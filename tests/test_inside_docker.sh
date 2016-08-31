@@ -94,4 +94,7 @@ cat /var/log/condor/CollectorLog
 cat /var/log/condor/SchedLog
 condor_config_val -dump
 
+# Verify preun/postun in the spec file
+yum remove -y 'htcondor-ce*'
+
 exit $test_exit
