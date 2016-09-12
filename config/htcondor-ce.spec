@@ -236,36 +236,49 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
 %if %systemd
-systemctl enable condor-ce
+%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
+%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
+                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
+%define restart_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
+                                       /bin/systemctl restart %1 >/dev/null 2>&1 || :)
 %else
-/sbin/chkconfig --add condor-ce
+%define add_service() (/sbin/chkconfig --add %1 || :)
+%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
+                                       /sbin/chkconfig --del %1 || :)
+%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
 %endif
+
+%post
+if [ $1 -eq 1 ]; then
+    %add_service condor-ce
+fi
+
+%post collector
+if [ $1 -eq 1 ]; then
+    %add_service condor-ce-collector
+
+fi
 
 %preun
-%if %systemd
-if [ $1 = 0 ]; then
-    systemctl stop condor-ce > /dev/null 2>&1 || :
-    systemctl disable condor-ce > /dev/null 2>&1 || :
+if [ $1 -eq 0 ]; then
+    %remove_service condor-ce
 fi
-%else
-if [ $1 = 0 ]; then
-  /sbin/service condor-ce stop >/dev/null 2>&1 || :
-  /sbin/chkconfig --del condor-ce
+
+%preun collector
+if [ $1 -eq 0 ]; then
+    %remove_service condor-ce-collector
 fi
-%endif
 
 %postun
-%if %systemd
-if [ "$1" -ge "1" ]; then
-  systemctl restart condor-ce >/dev/null 2>&1 || :
+if [ $1 -ge 1 ]; then
+    %restart_service condor-ce
 fi
-%else
-if [ "$1" -ge "1" ]; then
-  /sbin/service condor-ce condrestart >/dev/null 2>&1 || :
+
+%postun collector
+if [ $1 -ge 1 ]; then
+    %restart_service condor-ce-collector
 fi
-%endif
 
 %files
 %defattr(-,root,root,-)
