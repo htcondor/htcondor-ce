@@ -49,26 +49,26 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     set_requirements = True; \\
     /* Note default memory request of 2GB */ \\
     /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd */ \\
-    eval_set_RequestMemory = ifThenElse(maxMemory isnt null, maxMemory, ifThenElse(default_maxMemory isnt null, default_maxMemory, 2000)); \\
-    eval_set_remote_queue = ifThenElse(batch_queue isnt null, batch_queue, ifThenElse(queue isnt null, queue, ifThenElse(default_queue isnt null, default_queue, ""))); \\
+    eval_set_RequestMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
+    eval_set_remote_queue = ifThenElse(batch_queue isnt undefined, batch_queue, ifThenElse(queue isnt undefined, queue, ifThenElse(default_queue isnt undefined, default_queue, ""))); \\
     /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */ \\
-    eval_set_RequestCpus = ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1)); \\
-    eval_set_remote_SMPGranularity = ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1)); \\
-    eval_set_remote_NodeNumber = ifThenElse(xcount isnt null, xcount, ifThenElse(default_xcount isnt null, default_xcount, 1)); \\
+    eval_set_RequestCpus = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
+    eval_set_remote_SMPGranularity = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
+    eval_set_remote_NodeNumber = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
     /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */ \\
-    eval_set_remote_cerequirements = strcat(ifThenElse(default_remote_cerequirements isnt null, strcat(string(default_remote_cerequirements), " && "), ""), \\
-      ifThenElse(maxWallTime isnt null, strcat("Walltime == ", string(60*maxWallTime), " && CondorCE == 1"), \\
-          ifThenElse(default_maxWallTime isnt null, strcat("Walltime == ", string(60*default_maxWallTime), " && CondorCE == 1"), \\
+    eval_set_remote_cerequirements = strcat(ifThenElse(default_remote_cerequirements isnt undefined, strcat(string(default_remote_cerequirements), " && "), ""), \\
+      ifThenElse(maxWallTime isnt undefined, strcat("Walltime == ", string(60*maxWallTime), " && CondorCE == 1"), \\
+          ifThenElse(default_maxWallTime isnt undefined, strcat("Walltime == ", string(60*default_maxWallTime), " && CondorCE == 1"), \\
             "CondorCE == 1"))); \\
     copy_OnExitHold = "orig_OnExitHold"; \\
-    set_OnExitHold = ifThenElse(orig_OnExitHold isnt null, orig_OnExitHold, false) || ifThenElse(minWalltime isnt null && RemoteWallClockTime isnt null, RemoteWallClockTime < 60*minWallTime, false); \\
+    set_OnExitHold = ifThenElse(orig_OnExitHold isnt undefined, orig_OnExitHold, false) || ifThenElse(minWalltime isnt undefined && RemoteWallClockTime isnt undefined, RemoteWallClockTime < 60*minWallTime, false); \\
     copy_OnExitHoldReason = "orig_OnExitHoldReason"; \\
-    set_OnExitHoldReason = ifThenElse((orig_OnExitHold isnt null) && orig_OnExitHold, \\
-        ifThenElse(orig_OnExitHoldReason isnt null, orig_OnExitHoldReason, strcat("The on_exit_hold expression (", unparse(orig_OnExitHold), ") evaluated to TRUE.")), \\
-        ifThenElse(minWalltime isnt null && RemoteWallClockTime isnt null && (RemoteWallClockTime < 60*minWallTime), strcat("The job's wall clock time, ", int(RemoteWallClockTime/60), "min, is less than the minimum specified by the job (", minWalltime, ")"), "Job held for unknown reason.")); \\
+    set_OnExitHoldReason = ifThenElse((orig_OnExitHold isnt undefined) && orig_OnExitHold, \\
+        ifThenElse(orig_OnExitHoldReason isnt undefined, orig_OnExitHoldReason, strcat("The on_exit_hold expression (", unparse(orig_OnExitHold), ") evaluated to TRUE.")), \\
+        ifThenElse(minWalltime isnt undefined && RemoteWallClockTime isnt undefined && (RemoteWallClockTime < 60*minWallTime), strcat("The job's wall clock time, ", int(RemoteWallClockTime/60), "min, is less than the minimum specified by the job (", minWalltime, ")"), "Job held for unknown reason.")); \\
     copy_OnExitHoldSubCode = "orig_OnExitHoldSubCode"; \\
-    set_OnExitHoldSubCode = ifThenElse((orig_OnExitHold isnt null) && orig_OnExitHold, \\
-        ifThenElse(orig_OnExitHoldSubCode isnt null, orig_OnExitHoldSubCode, 1), 42); \\
+    set_OnExitHoldSubCode = ifThenElse((orig_OnExitHold isnt undefined) && orig_OnExitHold, \\
+        ifThenElse(orig_OnExitHoldSubCode isnt undefined, orig_OnExitHoldSubCode, 1), 42); \\
     set_AccountingGroupOSG = @accounting_group@; \\
     eval_set_AccountingGroup = AccountingGroupOSG; \\
   ]
