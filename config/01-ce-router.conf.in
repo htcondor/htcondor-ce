@@ -69,10 +69,6 @@ ROUTED_JOB_MAX_TIME = 2880
 # More aggressive polling period for testing purposes
 JOB_ROUTER_POLLING_PERIOD = 10
 
-# The following setting will put history.* files into a Gratia directory;
-# this allows us to join identity information for non-Condor batch sites.
-PER_JOB_HISTORY_DIR = /var/lib/gratia/condorce_data
-
 # Give the job router a unique name to distinguish the HTCondor-CE jobs from
 # the site JobRouter jobs.
 JOB_ROUTER_NAME = htcondor-ce

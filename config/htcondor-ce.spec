@@ -25,7 +25,9 @@ Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:  condor >= 8.3.7
+# Requires a bug fix in config conditionals
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
+Requires:  condor >= 8.4.9
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
@@ -287,6 +289,7 @@ fi
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
+%{_datadir}/condor-ce/gratia_cleanup.py*
 
 %if %systemd
 %{_unitdir}/condor-ce.service
@@ -305,8 +308,9 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
-%{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+%{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
 
