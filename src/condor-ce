@@ -49,6 +49,9 @@ fi
 start() {
     echo -n $"Starting Condor-CE daemons: "
 
+    # Error out if config is horribly broken
+    CONFIG_ERROR=`condor_ce_config_val -config 2>&1` || (echo -e "\n$CONFIG_ERROR" && exit 6)
+
     # Ensure the condor-ce rundir and lockdir exist
     local rundir=$(condor_ce_config_val RUN)
     local lockdir=$(condor_ce_config_val LOCK)
