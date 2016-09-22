@@ -26,10 +26,14 @@ Please verify that '$CONFIG_KNOB=.*' is set in your HTCondor configuration."
     [ $? -ne 0 ] && fail 6 "Could not load HTCondor Python bindings. \
 Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH"
 
-    # Verify configuration required for the JobRouter. Note that this only verifies
-    # the first route in JOB_ROUTER_ENTRIES
+    # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare
+    # the unparsed string to the parsed string, counting the number of ads by proxy:
+    # the number of opening square brackets, "["
     for ATTR in 'JOB_ROUTER_DEFAULTS' 'JOB_ROUTER_ENTRIES'; do
-        python -c "import htcondor; import classad; classad.parseAds(htcondor.param[\"$ATTR\"]).next()" &> /dev/null
+        python -c "import os, htcondor, classad;\
+entries = htcondor.param[\"$ATTR\"];\
+ads = classad.parseAds(entries);\
+exit() if entries.count('[') == ''.join([str(x) for x in ads]).count('[') else exit(1)" &> /dev/null
         [ $? -ne 0 ] && fail 6 "Could not read $ATTR in the HTCondor CE configuration. Please verify syntax correctness."
     done
 
