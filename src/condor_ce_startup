@@ -3,7 +3,7 @@
 fail() {
     RETVAL="$1"
     MSG="$2"
-    echo -e "\n$MSG"
+    echo -e "\nERROR: $MSG"
     exit $RETVAL
 }
 
