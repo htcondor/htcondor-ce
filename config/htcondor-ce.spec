@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.0.8
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -11,8 +11,9 @@ Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/opensciencegrid/htcondor-ce
 
-# _unitdir not defined on el6 build hosts
+# _unitdir,_tmpfilesdir not defined on el6 build hosts
 %{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
+%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
 
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
@@ -42,11 +43,13 @@ Provides:  %{name}-master = %{version}-%{release}
 %if 0%{?rhel} >= 7
 Requires(post): systemd
 Requires(preun): systemd
+%define systemd 1
 %else
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+%define systemd 0
 %endif
 
 # On RHEL6 and later, we use this utility to setup a custom hostname.
@@ -199,13 +202,11 @@ rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if 0%{?rhel} >= 7
-mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
-install -m 0644 config/condor-ce.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce.service
-install -m 0644 config/condor-ce-collector.service $RPM_BUILD_ROOT/%{_unitdir}/condor-ce-collector.service
+%if %systemd
 rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
 %else
-rm $RPM_BUILD_ROOT%{_sysconfdir}/tmpfiles.d/condor-ce{,-collector}.conf
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
+rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 %endif
 
 # Directories necessary for HTCondor-CE files
@@ -235,36 +236,49 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-%if 0%{?rhel} >= 7
-systemctl enable condor-ce
+%if %systemd
+%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
+%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
+                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
+%define restart_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
+                                       /bin/systemctl restart %1 >/dev/null 2>&1 || :)
 %else
-/sbin/chkconfig --add condor-ce
+%define add_service() (/sbin/chkconfig --add %1 || :)
+%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
+                                       /sbin/chkconfig --del %1 || :)
+%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
 %endif
+
+%post
+if [ $1 -eq 1 ]; then
+    %add_service condor-ce
+fi
+
+%post collector
+if [ $1 -eq 1 ]; then
+    %add_service condor-ce-collector
+
+fi
 
 %preun
-%if 0%{?rhel} >= 7
-if [ $1 = 0 ]; then
-    systemctl stop condor-ce > /dev/null 2>&1 || :
-    systemctl disable condor-ce > /dev/null 2>&1 || :
+if [ $1 -eq 0 ]; then
+    %remove_service condor-ce
 fi
-%else
-if [ $1 = 0 ]; then
-  /sbin/service condor-ce stop >/dev/null 2>&1 || :
-  /sbin/chkconfig --del condor-ce
+
+%preun collector
+if [ $1 -eq 0 ]; then
+    %remove_service condor-ce-collector
 fi
-%endif
 
 %postun
-%if 0%{?rhel} >= 7
-if [ "$1" -ge "1" ]; then
-  systemctl restart condor-ce >/dev/null 2>&1 || :
+if [ $1 -ge 1 ]; then
+    %restart_service condor-ce
 fi
-%else
-if [ "$1" -ge "1" ]; then
-  /sbin/service condor-ce condrestart >/dev/null 2>&1 || :
+
+%postun collector
+if [ $1 -ge 1 ]; then
+    %restart_service condor-ce-collector
 fi
-%endif
 
 %files
 %defattr(-,root,root,-)
@@ -274,9 +288,9 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%if 0%{?rhel} >= 7
+%if %systemd
 %{_unitdir}/condor-ce.service
-%{_sysconfdir}/tmpfiles.d/condor-ce.conf
+%{_tmpfilesdir}/condor-ce.conf
 %else
 %{_initrddir}/condor-ce
 %endif
@@ -424,9 +438,9 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
-%if 0%{?rhel} >= 7
+%if %systemd
 %{_unitdir}/condor-ce-collector.service
-%{_sysconfdir}/tmpfiles.d/condor-ce-collector.conf
+%{_tmpfilesdir}/condor-ce-collector.conf
 %else
 %{_initrddir}/condor-ce-collector
 %endif
