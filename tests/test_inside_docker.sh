@@ -56,7 +56,6 @@ pushd osg-ca-generator
 git rev-parse HEAD
 make install
 popd
-yum -y install --enablerepo=osg-testing  osg-configure
 
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
@@ -94,5 +93,8 @@ cat /var/log/condor/MasterLog
 cat /var/log/condor/CollectorLog
 cat /var/log/condor/SchedLog
 condor_config_val -dump
+
+# Verify preun/postun in the spec file
+yum remove -y 'htcondor-ce*'
 
 exit $test_exit
