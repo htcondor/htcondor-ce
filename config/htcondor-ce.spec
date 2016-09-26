@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.8
+Version: 2.0.9
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -469,6 +469,12 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Sep 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-1
+- Install tmpfile config to /usr/lib (SOFTWARE-2444)
+- Change 'null' to 'undefined' in the JOB_ROUTER_DEFAULTS (SOFTWARE-2440)
+- HTCondor-CE should detect and refuse to start with invalid configs (SOFTWARE-1856)
+- Handle unbounded HTCondor-CE accounting dir (SOFTWARE-2090)
+
 * Wed Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
 - Fix EL7 cleanup on uninstall
 
