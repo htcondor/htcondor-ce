@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 2.0.9
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -242,8 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 %define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
 %define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
                           /bin/systemctl disable %1 > /dev/null 2>&1 || :)
-%define restart_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
-                                       /bin/systemctl restart %1 >/dev/null 2>&1 || :)
+%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
 %else
 %define add_service() (/sbin/chkconfig --add %1 || :)
 %define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
@@ -252,15 +251,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %post
-if [ $1 -eq 1 ]; then
-    %add_service condor-ce
-fi
+%add_service condor-ce
 
 %post collector
-if [ $1 -eq 1 ]; then
-    %add_service condor-ce-collector
-
-fi
+%add_service condor-ce-collector
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -469,6 +463,13 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-3
+- Always reload daemons after package installation
+- Drop daemon-reload in postun that is handled in post
+
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-2
+- Fix upgrades so that services are condrestarted instead of a regular restart
+
 * Mon Sep 26 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-1
 - Install tmpfile config to /usr/lib (SOFTWARE-2444)
 - Change 'null' to 'undefined' in the JOB_ROUTER_DEFAULTS (SOFTWARE-2440)
