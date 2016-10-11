@@ -27,14 +27,15 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # Requires a bug fix in config conditionals
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
+# TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4
 Requires:  condor >= 8.4.9
-Conflicts: condor = 8.5.0 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
-Conflicts: condor = 8.5.1 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
-Conflicts: condor = 8.5.2 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
-Conflicts: condor = 8.5.3 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
-Conflicts: condor = 8.5.4 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
-Conflicts: condor = 8.5.5 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
-Conflicts: condor = 8.5.6 #  TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4 
+Conflicts: condor = 8.5.0
+Conflicts: condor = 8.5.1
+Conflicts: condor = 8.5.2
+Conflicts: condor = 8.5.3
+Conflicts: condor = 8.5.4
+Conflicts: condor = 8.5.5
+Conflicts: condor = 8.5.6
 
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
