@@ -2,7 +2,7 @@
 
 import os
 import pwd
-import errno
+import sys
 import socket
 import logging
 import optparse
@@ -81,7 +81,7 @@ def setup_logging():
     cherrypy.log.access_log.addHandler(h)
 
 
-def parse_opts():
+def parse_opts(**kwargs):
     parser = optparse.OptionParser()
     parser.add_option("-p", "--pool", help="HTCondor-CE pool to consider.", dest="pool")
     parser.add_option("-n", "--name", help="HTCondor-CE schedd to consider.", dest="name")
@@ -92,7 +92,7 @@ def parse_opts():
     opts = parser.parse_args()[0]
 
     if hasattr(htcondor, 'set_subsystem'):
-        htcondor.set_subsystem("CEVIEW")
+        htcondor.set_subsystem(kwargs.get('localname', 'CEVIEW'))
     setup_logging()
 
     return opts
@@ -146,7 +146,15 @@ class WSGILogging(object):
 
 
 def main():
-    opts = parse_opts()
+    dc_long_opts = {}
+    try:
+        localname_index = sys.argv.index('-local-name')
+        dc_long_opts['localname'] = sys.argv.pop(localname_index + 1)
+        sys.argv.pop(localname_index)
+    except ValueError:
+        pass
+
+    opts = parse_opts(**dc_long_opts)
 
     spooldir = htcondor.param.get("HTCONDORCE_VIEW_SPOOL")
     if opts.spool:
