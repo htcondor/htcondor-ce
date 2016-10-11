@@ -92,10 +92,7 @@ def parse_opts(**kwargs):
     opts = parser.parse_args()[0]
 
     if hasattr(htcondor, 'set_subsystem'):
-        try:
-            htcondor.set_subsystem(kwargs['localname'])
-        except KeyError:
-            htcondor.set_subsystem("CEVIEW")
+        htcondor.set_subsystem(kwargs.get('localname', 'CEVIEW'))
     setup_logging()
 
     return opts
@@ -149,14 +146,15 @@ class WSGILogging(object):
 
 
 def main():
+    dc_long_opts = {}
     try:
         localname_index = sys.argv.index('-local-name')
-        dc_name = sys.argv.pop(localname_index + 1)
+        dc_long_opts['localname'] = sys.argv.pop(localname_index + 1)
         sys.argv.pop(localname_index)
     except ValueError:
         pass
 
-    opts = parse_opts(localname=dc_name)
+    opts = parse_opts(**dc_long_opts)
 
     spooldir = htcondor.param.get("HTCONDORCE_VIEW_SPOOL")
     if opts.spool:
