@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.9
-Release: 4%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.0.10
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -471,6 +471,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Oct 11 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.10-1
+- Fix CE View so that it handles new DaemonCore options in Condor 8.5.7
+
 * Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-4
 - Add conflicts statements so we pseudo-require an condor 8.5.x >= 8.5.7
 
