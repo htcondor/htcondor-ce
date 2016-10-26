@@ -130,7 +130,7 @@ def generate_queue_ad(resource_catalog, ce):
 
 def agis_data(environ):
     ads = get_schedd_ads(environ)
-    results = { "ce_services": {}, "queues": {}, "failed_ces": []}
+    results = {"ce_services": {}, "queues": {}, "failed_ces": [], "resource_groups": {}}
     for ad in ads:
         if 'Name' not in ad:
             continue
@@ -145,6 +145,10 @@ def agis_data(environ):
                 "type": "CE",
                 "version": ad['HTCondorCEVersion']
             }
+            rgroup = ad.get('OSG_ResourceGroup')
+            if rgroup:
+                ce_ad['resource_group'] = rgroup
+                results['resource_groups'][rgroup] = {'name': rgroup}
             default_queue_ad = {
                 "default": {
                     "ce": ad['OSG_Resource'],
