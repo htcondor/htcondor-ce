@@ -71,7 +71,7 @@ def schedds(environ, start_response):
 
 def agis_json(environ, start_response):
 
-    results = json.dumps(htcondorce.web_utils.agis_data(environ))
+    results = htcondorce.web_utils.agis_data(environ)
 
     start_response(OK_STATUS, _headers('application/json'))
 
