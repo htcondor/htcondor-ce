@@ -170,3 +170,12 @@ def agis_data(environ):
 
     return results
 
+def get_spooldir():
+    check_htcondor()
+    spooldir = htcondor.param.get("HTCONDORCE_VIEW_SPOOL")
+    if not spooldir:
+        if not os.path.exists("tmp"):
+            os.mkdir("tmp")
+        spooldir = "tmp"
+    return spooldir
+
