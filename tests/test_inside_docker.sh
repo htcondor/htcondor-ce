@@ -79,7 +79,6 @@ set +e # don't exit immediately if osg-test fails
 echo "------------ OSG Test --------------"
 osg-test -vad --hostcert --no-cleanup
 test_exit=$?
-/usr/share/condor-ce/condor_ce_view
 set -e
 
 # Some simple debug files for failures.
@@ -89,7 +88,6 @@ cat /var/log/condor-ce/MasterLog
 cat /var/log/condor-ce/CollectorLog
 cat /var/log/condor-ce/SchedLog
 cat /var/log/condor-ce/JobRouterLog
-cat /var/log/condor-ce/CEViewLog
 echo "------------ HTCondor Logs --------------"
 cat /var/log/condor/MasterLog
 cat /var/log/condor/CollectorLog
