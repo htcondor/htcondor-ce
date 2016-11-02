@@ -342,6 +342,7 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
+%{python_sitelib}/htcondorce/web.py*
 %{python_sitelib}/htcondorce/web_utils.py*
 %{python_sitelib}/htcondorce/rrd.py*
 
