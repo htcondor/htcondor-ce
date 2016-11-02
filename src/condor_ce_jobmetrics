@@ -17,7 +17,7 @@ os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 # to avoid loading HTCondor code in the parent then forking. Otherwise, issues
 # arise in the child processes.
 
-from htcondorce import rrd, web
+from htcondorce import rrd, web_utils
 
 def parse_opts():
     parser = optparse.OptionParser()
@@ -85,9 +85,9 @@ def process_one_schedd(ad):
 
 def get_ads(spooldir):
     if not spooldir:
-        spooldir = web.get_spooldir()
+        spooldir = web_utils.get_spooldir()
     environ = {'htcondorce.spool': spooldir}
-    ads = [str(ad) for ad in web.get_schedd_ads({})]
+    ads = [str(ad) for ad in web_utils.get_schedd_ads({})]
     return [ads, environ]
 
 

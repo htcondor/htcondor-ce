@@ -14,6 +14,7 @@ import classad
 htcondor = None
 
 import htcondorce.rrd
+import htcondorce.web_utils
 
 _initialized = None
 _loader = None
@@ -32,116 +33,13 @@ def check_initialized(environ):
         else:
             _loader = genshi.template.TemplateLoader('/usr/share/condor-ce/templates', auto_reload=True)
         ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
-        _check_htcondor()
+        htcondor = htcondorce.web_utils.check_htcondor()
         _initialized = True
-
-
-def _check_htcondor():
-    global _initialized
-    global htcondor
-    if not _initialized and not htcondor:
-        os.environ.setdefault('CONDOR_CONFIG', "/etc/condor-ce/condor_config")
-        htcondor = __import__("htcondor")
-
-
-def _get_pool(environ):
-    environ_pool = None
-    if environ and 'htcondorce.pool' in environ:
-        environ_pool = environ['htcondorce.pool']
-    if environ_pool:
-        return environ_pool
-    _check_htcondor()
-    if not htcondor:
-        return None
-
-    return htcondor.param.get("HTCONDORCE_VIEW_POOL")
-
-
-def _get_name(environ):
-    environ_name = None
-    if environ and 'htcondorce.name' in environ:
-        environ_name = environ['htcondorce.name']
-    if environ_name:
-        return environ_name
-    _check_htcondor()
-    if not htcondor:
-        return _get_pool(environ)
-
-    return htcondor.param.get("HTCONDORCE_VIEW_NAME")
 
 
 def _headers(content_type):
     return [('Content-type', content_type),
             ('Cache-Control', 'max-age=60, public')]
-
-
-def get_schedd_objs(environ=None):
-    pool = _get_pool(environ)
-    if pool:
-        name = _get_name(environ)
-        coll = htcondor.Collector(pool)
-        if name:
-            schedds = [coll.locate(htcondor.DaemonTypes.Schedd, name)]
-        else:
-            schedds = coll.locateAll(htcondor.DaemonTypes.Schedd)
-        results = []
-        for ad in schedds:
-            if not ad.get("Name"):
-                continue
-            results.append((htcondor.Schedd(ad), ad['Name']))
-        return results
-    return [(htcondor.Schedd(), socket.getfqdn())]
-
-
-def get_schedd_ads(environ):
-    pool = _get_pool(environ)
-    coll = htcondor.Collector(pool)
-    if pool:
-        name = _get_name(environ)
-        if name:
-            return [coll.query(htcondor.AdTypes.Schedd, "Name=?=%s" % classad.quote(name))[0]]
-        else:
-            return coll.query(htcondor.AdTypes.Schedd, "true")
-    return [coll.locate(htcondor.DaemonTypes.Schedd)]
-
-
-def get_spooldir():
-    _check_htcondor()
-    spooldir = htcondor.param.get("HTCONDORCE_VIEW_SPOOL")
-    if not spooldir:
-        if not os.path.exists("tmp"):
-            os.mkdir("tmp")
-        spooldir = "tmp"
-    return spooldir
-
-
-def get_schedd_statuses(environ={}):
-    ads = get_schedd_ads(environ)
-    results = {}
-    for ad in ads:
-        if 'Name' not in ad:
-            continue
-
-        for missing_attr in ['Status', 'IsOK', 'IsWarning', 'IsCritical']:
-            if missing_attr in ad:
-                continue
-            if missing_attr not in htcondor.param:
-                continue
-            ad[missing_attr] = classad.ExprTree(htcondor.param[missing_attr])
-
-        if 'Status' not in ad:
-            results[ad['Name']] = 'Unknown'
-        else:
-            results[ad['Name']] = ad['Status'].eval()
-
-    return results
-
-
-def get_schedd_status(environ={}):
-    statuses = get_schedd_statuses()
-    keys = statuses.keys()
-    keys.sort()
-    return statuses[keys[0]]
 
 
 def ad_to_json(ad):
@@ -160,7 +58,7 @@ def ad_to_json(ad):
 
 
 def schedds(environ, start_response):
-    ads = get_schedd_ads(environ)
+    ads = htcondorce.web_utils.get_schedd_ads(environ)
     results = {}
     for ad in ads:
         if 'Name' not in ad:
@@ -172,44 +70,8 @@ def schedds(environ, start_response):
     return [ json.dumps(results) ]
 
 def agis_json(environ, start_response):
-    ads = get_schedd_ads(environ)
-    results = { "ce_services": {}, "queues": {}, "failed_ces": []}
-    for ad in ads:
-        if 'Name' not in ad:
-            continue
-        try:
-            ce_ad = {
-                "endpoint": ad['CollectorHost'],
-                "flavour": "HTCONDOR-CE",
-                "jobmanager": ad['OSG_BatchSystems'].lower(),
-                "name": "%s-CE-HTCondorCE-%s" % (ad['OSG_ResourceGroup'], ad['CollectorHost'].split(':')[0]),
-                "site": ad['OSG_ResourceGroup'],
-                "status": "Production",
-                "type": "CE",
-                "version": ad['HTCondorCEVersion']
-            }
-            queue_ad = {
-                "cms": {
-                    "ce": ad['OSG_Resource'],
-                    "max_cputime": 1440,
-                    "max_wallclocktime": 1440,
-                    "name": "cms",
-                    "status": "Production"
-                },
-                "atlas": {
-                    "ce": ad['OSG_Resource'],
-                    "max_cputime": 1440,
-                    "max_wallclocktime": 1440,
-                    "name": "atlas",
-                    "status": "Production"
-                }
-            }
-            results['ce_services'][ad['OSG_Resource']] = ce_ad
-            results['queues'][ad['OSG_Resource']] = queue_ad
-        except KeyError as e:
-            # No way to log an error, stderr doesn't work, stdout, or logging module
-            # So, just add it to the json as "failed_ces"
-            results['failed_ces'].append(ad['Name'])
+
+    results = htcondorce.web_utils.agis_data(environ)
 
     start_response(OK_STATUS, _headers('application/json'))
 
@@ -218,7 +80,7 @@ def agis_json(environ, start_response):
 
 
 def schedd(environ, start_response):
-    ads = get_schedd_ads(environ)
+    ads = htcondorce.web_utils.get_schedd_ads(environ)
     results = {}
     for ad in ads:
         if 'Name' not in ad:
@@ -233,7 +95,7 @@ def schedd(environ, start_response):
 
 
 def totals_ce_json(environ, start_response):
-    objs = get_schedd_objs(environ)
+    objs = htcondorce.web_utils.get_schedd_objs(environ)
     results = {"Running": 0, "Idle": 0, "Held": 0, "UpdateDate": time.time()}
     for schedd, name in objs:
         for job in schedd.xquery("true", ["JobStatus"]):
@@ -256,7 +118,7 @@ def totals(environ, start_response):
 
 
 def pilots_ce_json(environ, start_response):
-    objs = get_schedd_objs(environ)
+    objs = htcondorce.web_utils.get_schedd_objs(environ)
     job_count = {}
     for schedd, name in objs:
         for job in schedd.xquery('true', ['x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'JobStatus', 'x509userproxysubject']):
@@ -287,7 +149,7 @@ def pilots(environ, start_response):
 
 
 def vos_ce_json(environ, start_response):
-    objs = get_schedd_objs(environ)
+    objs = htcondorce.web_utils.get_schedd_objs(environ)
     job_count = {}
     for schedd, name in objs:
         for job in schedd.xquery('true', ['x509UserProxyVOName', 'JobStatus']):
@@ -315,13 +177,13 @@ def vos_json(environ, start_response):
 
 
 def status_json(environ, start_response):
-    response = {"status": get_schedd_status(environ)}
+    response = {"status": htcondorce.web_utils.get_schedd_status(environ)}
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(response) ]
 
 
 def statuses_json(environ, start_response):
-    result = get_schedd_statuses(environ)
+    result = htcondorce.web_utils.get_schedd_statuses(environ)
     response = {}
     for name, status in result.items():
         response[name] = {'status': status}
@@ -345,7 +207,7 @@ def jobs_json(environ, start_response):
         constraint = True
     
     # Get the Schedd object
-    objs = get_schedd_objs(environ)
+    objs = htcondorce.web_utils.get_schedd_objs(environ)
     schedd, name = objs[0]
 
     # Query the schedd
