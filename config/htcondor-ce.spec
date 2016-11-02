@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.0.9
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 2.0.11
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -27,7 +27,16 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # Requires a bug fix in config conditionals
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
+# TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4
 Requires:  condor >= 8.4.9
+Conflicts: condor = 8.5.0
+Conflicts: condor = 8.5.1
+Conflicts: condor = 8.5.2
+Conflicts: condor = 8.5.3
+Conflicts: condor = 8.5.4
+Conflicts: condor = 8.5.5
+Conflicts: condor = 8.5.6
+
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
 
@@ -333,7 +342,7 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondorce/web.py*
+%{python_sitelib}/htcondorce/web_utils.py*
 %{python_sitelib}/htcondorce/rrd.py*
 
 %{_datadir}/condor-ce/templates/index.html
@@ -463,6 +472,16 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.11-1
+- Accept all DaemonCore options in htcondor-ce-view (SOFTWARE-2481)
+- Fix incorrect comment in htcondor-ce-pbs template config (SOFTWARE-2476)
+
+* Tue Oct 11 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.10-1
+- Fix CE View so that it handles new DaemonCore options in Condor 8.5.7
+
+* Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-4
+- Add conflicts statements so we pseudo-require an condor 8.5.x >= 8.5.7
+
 * Tue Sep 27 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.9-3
 - Always reload daemons after package installation
 - Drop daemon-reload in postun that is handled in post
