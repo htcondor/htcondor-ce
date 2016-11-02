@@ -79,6 +79,7 @@ set +e # don't exit immediately if osg-test fails
 echo "------------ OSG Test --------------"
 osg-test -vad --hostcert --no-cleanup
 test_exit=$?
+/usr/share/condor-ce/condor_ce_view &
 set -e
 
 # Some simple debug files for failures.
