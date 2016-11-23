@@ -35,6 +35,7 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
                          (JobStatus == 1 && (time() - QDate) > 6*60);*/ \\
     delete_PeriodicRemove = true; \\
     delete_CondorCE = true; \\
+    delete_TotalSubmitProcs = true; \\
     set_RoutedJob = true; \\
     copy_environment = "orig_environment"; \\
     set_osg_environment = "@osg_environment@"; \\
