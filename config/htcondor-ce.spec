@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.1.0
+Version: 2.1.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -473,8 +473,15 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Nov 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.1-1
+- Fix hold message for jobs that are not picked up by the job router
+  (SOFTWARE-2539)
+- Remove TotalSubmitProcs attribute in routed jobs for correct
+  condor_q job counts for HTCondor 8.5.x+
+
 * Wed Nov 02 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.0-1
-- Overhaul of queue generation in the CE View to support AGIS JSON (SOFTWARE-2525)
+- Overhaul of queue generation in the CE View to support AGIS JSON
+  (SOFTWARE-2525)
 
 * Mon Oct 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.11-1
 - Accept all DaemonCore options in htcondor-ce-view (SOFTWARE-2481)
