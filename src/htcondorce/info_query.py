@@ -6,16 +6,6 @@ import htcondor
 import logging
 _logger = logging.getLogger(__name__)
 
-# Add htcondor.param.get() to old versions of condor-python that don't have it
-try:
-    htcondor.param.get
-except AttributeError:
-    def _htcondor_param_get(key, default=None):
-        try:
-            return htcondor.param[key]
-        except KeyError:
-            return default
-    htcondor.param.get = _htcondor_param_get
 
 
 class ResourceAd(classad.ClassAd):
@@ -158,7 +148,7 @@ def filterResourceAds(constraints, resources):
         # would be 'closing over the loop variable'
         if attr == 'cpus':
             predicates.append(
-                lambda res: constraints['cpus'] <= res['CPUs'])
+                lambda res: constraints['cpus'] <= res.get('CPUs', res.get('Cpus')))
         elif attr == 'constrain':
             predicates.append(
                 lambda res: bool(evalExpressionStr(constraints['constrain'], res)))
