@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.1.1
+Version: 2.1.2
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -473,6 +473,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+- condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
+- Added Russian Data Intensive Grid certs to condor_mapfile (GOC#31952)
+
 * Wed Nov 23 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.1-1
 - Fix hold message for jobs that are not picked up by the job router
   (SOFTWARE-2539)
