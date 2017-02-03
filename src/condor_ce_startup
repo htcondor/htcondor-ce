@@ -21,51 +21,8 @@ if [[ "$1" != "collector" ]]; then
 Please verify that '$CONFIG_KNOB=.*' is set in your HTCondor configuration."
     fi
 
-    # Verify that the HTCondor Python bindings are in the PYTHONPATH
-    python -c "import htcondor; import classad" &> /dev/null || \
-        fail 6 "Could not load HTCondor Python bindings. \
-Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH"
-
-    # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare
-    # the unparsed string to the parsed string, counting the number of ads by proxy:
-    # the number of opening square brackets, "["
-    for ATTR in 'JOB_ROUTER_DEFAULTS' 'JOB_ROUTER_ENTRIES'; do
-        python -c "import os, htcondor, classad;\
-entries = htcondor.param[\"$ATTR\"];\
-ads = classad.parseAds(entries);\
-exit() if entries.count('[') == ''.join([str(x) for x in ads]).count('[') else exit(1)" &> /dev/null || \
-            fail 6 "Could not read $ATTR in the HTCondor CE configuration. Please verify syntax correctness."
-    done
-
-    JOB_ROUTER_DEFAULTS=`/usr/share/condor-ce/condor_ce_router_defaults`
-    JOB_ROUTER_ENTRIES=`condor_ce_config_val JOB_ROUTER_ENTRIES`
-
-    # Ensure that users don't set_ attributes that are eval_set in the JOB_ROUTER_DEFAULTS
-    for attr in `sed -n 's/.*eval_set_\([a-zA-Z_]*\).*/\1/p' <<< "$JOB_ROUTER_DEFAULTS"`; do
-        grep "set_$attr" <<< "$JOB_ROUTER_ENTRIES" &> /dev/null && \
-            echo -e "\nWARNING: set_$attr in the JOB_ROUTER_ENTRIES will be overriden \
-by the JOB_ROUTER DEFAULTS. Use eval_set_$attr instead."
-    done
-
-    # Ensure that users don't set the job environment in the Job Router
-    tr ';' '\n' <<< "$JOB_ROUTER_ENTRIES" | egrep '[][ ]*[a-zA-Z]*_environment' &> /dev/null && \
-        fail 6 "Do not use the Job Router to set the environment. Place variables under \
-[Local Settings] in /etc/osg/config.d/40-localsettings.ini"
-
-    # Ensure that users don't eval_set_ default attributes in the ENTRIES since it may happen
-    # after the expressions containing them get evaluated in the DEFAULTS
-    for attr in `sed -n 's/.*\(default_[a-zA-Z_]*\).*/\1/p' <<< "$JOB_ROUTER_DEFAULTS" | sort | uniq`; do
-
-        grep "eval_set_$attr" <<< "$JOB_ROUTER_ENTRIES" &> /dev/null && \
-            echo -e "\nWARNING: eval_set_$attr in the JOB_ROUTER_ENTRIES \
-may not have any effect. Use set_$attr instead."
-    done
-
-    # Check if osg-configure has been run
-    OSG_CONFIGURED=`condor_ce_config_val OSG_CONFIGURED | tr '[:upper:]' '[:lower:]'`
-    [ "$OSG_CONFIGURED" != 'true' ] && echo -e "\nWARNING: osg-configure has not been run, degrading the functionality \
-of the CE. Please run 'osg-configure -c' and restart condor-ce."
-
+    # Verify configuration using the python bindings
+    python /usr/share/condor-ce/verify_ce_config.py || exit 6
 else
     shift
 fi
