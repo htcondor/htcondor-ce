@@ -123,7 +123,14 @@ def generate_queue_ad(resource_catalog, ce):
         name = entry.get('Name', '')
         queue = entry.get('Transform', {}).get('set_remote_queue', 'default')
         walltime = int(entry.get('MaxWallTime', 1440))
-        ad = {'ce': ce, 'max_wallclocktime': walltime, 'entry': name, 'name': queue, 'status': 'Production'}
+        memory = int(entry.get('Memory', 2048))
+        cpus = int(entry.get('CPUs', 1))
+        votag = entry.get('VOTag', '')
+        if 'Subclusters' in entry:
+            subclusters = entry.get('Subclusters', '')
+            ad = {'ce': ce, 'max_wallclocktime': walltime, 'entry': name, 'name': queue, 'status': 'Production', 'memory': memory, 'cpus': cpus, 'votag': votag, 'subclusters': subclusters}
+        else:
+            ad = {'ce': ce, 'max_wallclocktime': walltime, 'entry': name, 'name': queue, 'status': 'Production', 'memory': memory, 'cpus': cpus, 'votag': votag}
         queues[queue] = ad
     return queues
 
