@@ -414,6 +414,7 @@ fi
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
+%{_datadir}/condor-ce/verify_ce_config.py*
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
