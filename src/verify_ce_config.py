@@ -45,7 +45,7 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
             + " Use the 'eval_set_' prefix instead."
 
     # Ensure that users don't set the job environment in the Job Router
-    if [x for x in entry.keys() if x.endswith('environment')]:
+    if any(x.endswith('environment') for x in entry.keys()):
         sys.exit("ERROR: Do not use the Job Router to set the environment. Place variables under " +\
                  "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
 
