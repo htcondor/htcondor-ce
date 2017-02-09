@@ -16,15 +16,16 @@ except ImportError:
              "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
 
 # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
-JOB_ROUTER_CONFIG = dict((x, [x for x in classad.parseAds(htcondor.param[x])])
-                         for x in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES'])
-    
+JOB_ROUTER_CONFIG = {}
+for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
+    ads = classad.parseAds(htcondor.param[attr])
+    JOB_ROUTER_CONFIG[attr] = list(ads) # store the ads (iterating through ClassAdStringIterator consumes them)
+
 # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare the unparsed string to the
 # parsed string, counting the number of ads by proxy: the number of opening square brackets, "["
 for attr, ads in JOB_ROUTER_CONFIG.items():
     if htcondor.param[attr].count('[') != len(ads):
         sys.exit("ERROR: Could not read %s in the HTCondor CE configuration. Please verify syntax correctness" % attr)
-
 
 # Find all eval_set_ attributes in the JOB_ROUTER_DEFAULTS
 EVAL_SET_DEFAULTS = set([x.lstrip('eval_') for x in JOB_ROUTER_CONFIG['JOB_ROUTER_DEFAULTS'][0].keys()
