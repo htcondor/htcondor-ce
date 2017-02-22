@@ -53,7 +53,11 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     eval_set_RequestMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
     eval_set_remote_queue = ifThenElse(batch_queue isnt undefined, batch_queue, ifThenElse(queue isnt undefined, queue, ifThenElse(default_queue isnt undefined, default_queue, ""))); \\
     /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */ \\
-    eval_set_RequestCpus = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
+    eval_set_RequestCpus = ifThenElse(xcount isnt undefined, xcount, \\
+        ifThenElse(TARGET.RequestCpus isnt undefined, \\
+            ifThenElse(RequestCpus > 1, RequestCpus, \\
+                ifThenElse(default_xcount isnt undefined, default_xcount, 1)), \\
+            ifThenElse(default_xcount isnt undefined, default_xcount, 1))); \\
     eval_set_remote_SMPGranularity = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
     eval_set_remote_NodeNumber = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
     /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */ \\
