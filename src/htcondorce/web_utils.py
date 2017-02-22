@@ -120,11 +120,18 @@ def ad_to_json(ad):
 def generate_queue_ad(resource_catalog, ce):
     queues = {}
     for entry in resource_catalog:
-        name = entry.get('Name', '')
+
         queue = entry.get('Transform', {}).get('set_remote_queue', 'default')
-        walltime = int(entry.get('MaxWallTime', 1440))
-        ad = {'ce': ce, 'max_wallclocktime': walltime, 'entry': name, 'name': queue, 'status': 'Production'}
-        queues[queue] = ad
+        queues[queue] = {'ce': ce,
+                         'max_wallclocktime': int(entry.get('MaxWallTime', 1440)),
+                         'entry': entry.get('Name', ''),
+                         'name': queue,
+                         'status': 'Production',
+                         'memory': int(entry.get('Memory')),
+                         'cpus': int(entry.get('CPUs', 1)),
+                         'votag': entry.get('VOTag', ''),
+                         'subclusters': entry.get('Subclusters', [])
+                        }
     return queues
 
 
