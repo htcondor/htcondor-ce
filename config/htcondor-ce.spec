@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.1.2
+Version: 2.1.3
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -474,6 +474,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Feb 22 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.1.3-1
+- Add JSON attributes for AGIS (SOFTWARE-2591)
+- Respect RequestCpus of incoming jobs (SOFTWARE-2598)
+
 * Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
 - condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
 - Added Russian Data Intensive Grid certs to condor_mapfile (GOC#31952)
