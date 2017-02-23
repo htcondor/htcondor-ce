@@ -477,6 +477,7 @@ fi
 * Wed Feb 22 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.1.3-1
 - Add JSON attributes for AGIS (SOFTWARE-2591)
 - Respect RequestCpus of incoming jobs (SOFTWARE-2598)
+- Fix set_attr check in condor_ce_startup (SOFTWARE-2581)
 
 * Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
 - condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
