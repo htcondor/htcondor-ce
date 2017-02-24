@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.1.3
+Version: 2.1.4
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -474,6 +474,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Feb 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.4-1
+- Fix RequestCpus expression (SOFTWARE-2598)
+
 * Wed Feb 22 2017 Derek Weitzel <dweitzel@cse.unl.edu> - 2.1.3-1
 - Add JSON attributes for AGIS (SOFTWARE-2591)
 - Respect RequestCpus of incoming jobs (SOFTWARE-2598)
