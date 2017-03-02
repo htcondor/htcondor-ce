@@ -154,6 +154,20 @@ Provides:  condor-ce-sge = %{version}
 %description sge
 %{summary}
 
+%package slurm
+Group: Applications/System
+Summary: Default routes for submission to Slurm
+
+Requires: %{name} = %{version}-%{release}
+Requires: /usr/bin/grid-proxy-init
+Requires: /usr/bin/voms-proxy-init
+
+Obsoletes: condor-ce-slurm < 0.5.4
+Provides:  condor-ce-slurm = %{version}
+
+%description slurm
+%{summary}
+
 %package bosco
 Group: Applications/System
 Summary: Default routes for submission to BOSCO
@@ -391,6 +405,12 @@ fi
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-sge.conf
 %{_datadir}/condor-ce/config.d/02-ce-sge-defaults.conf
+
+%files slurm
+%defattr(-,root,root,-)
+
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-slurm.conf
+%{_datadir}/condor-ce/config.d/02-ce-slurm-defaults.conf
 
 %files bosco
 %defattr(-,root,root,-)
