@@ -2,7 +2,6 @@
 
 # Configuration for LCMAPS
 export LLGT_LOG_IDENT=htcondor-ce
-export LLGT_VOMS_DISABLE_CREDENTIAL_CHECK=1
 export LCMAPS_DB_FILE=/etc/lcmaps.db
 export LCMAPS_POLICY_NAME=authorize_only
 #level 0: no messages, 1: errors, 2: also warnings, 3: also notices,
