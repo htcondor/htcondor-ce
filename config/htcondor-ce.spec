@@ -4,7 +4,7 @@
 Name: htcondor-ce
 Version: 2.2.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
-Summary: A framework to run HTCondor as a CE
+Summary: A framework to run HTCondor as a CE on the OSG
 BuildArch: noarch
 
 Group: Applications/System
@@ -43,13 +43,12 @@ Requires: blahp
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
 
+# Require the htcondor-ce-core subpackage that contains the non-OSG specific bits
+Requires: %{name}-core = %{version}-%{release}
+
 # Require the htcondor-ce-client subpackage.  The client provides necessary
 # configuration defaults and scripts for the CE itself.
 Requires: %{name}-client = %{version}-%{release}
-
-Obsoletes: condor-ce < 0.5.4
-Provides:  condor-ce = %{version}
-Provides:  %{name}-master = %{version}-%{release}
 
 %if 0%{?rhel} >= 7
 Requires(post): systemd
@@ -74,6 +73,20 @@ Requires: /usr/bin/unshare
 %endif
 
 %description
+%{summary}
+
+%package core
+Group: Applications/System
+Summary: Core configuration for HTCondor-CE
+
+Provides:  condor-ce = %{version}
+Provides:  %{name}-master = %{version}-%{release}
+
+Requires: condor
+
+Obsoletes: condor-ce < 0.5.4
+
+%description core
 %{summary}
 
 %if ! 0%{?osg}
@@ -299,13 +312,21 @@ if [ $1 -ge 1 ]; then
 fi
 
 %files
+%{_datadir}/condor-ce/osg-wrapper
+
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+%{_datadir}/condor-ce/gratia_cleanup.py*
+
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+
+%files core
 %defattr(-,root,root,-)
 
 %{_bindir}/condor_ce_history
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
-%{_datadir}/condor-ce/gratia_cleanup.py*
 
 %if %systemd
 %{_unitdir}/condor-ce.service
@@ -321,14 +342,10 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
-
-%{_datadir}/condor-ce/osg-wrapper
 
 %{_bindir}/condor_ce_host_network_check
 
@@ -340,7 +357,6 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
-%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %if ! 0%{?osg}
 %files bdii
