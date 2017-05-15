@@ -83,6 +83,7 @@ Provides:  condor-ce = %{version}
 Provides:  %{name}-master = %{version}-%{release}
 
 Requires: condor
+Requires: %{name}-core-client = %{version}-%{release}
 
 Obsoletes: condor-ce < 0.5.4
 
@@ -198,6 +199,19 @@ Provides:  condor-ce-bosco = %{version}
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
+Requires: %{name}-core-client = %{version}-%{release}
+
+Obsoletes: condor-ce-client < 0.5.4
+Provides:  condor-ce-client = %{version}
+
+%description client
+%{summary}
+
+%package core-client
+Group: Applications/System
+Summary: Client-side tools for submission to HTCondor-CE
+
+BuildRequires: boost-devel
 BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
@@ -209,10 +223,7 @@ Requires: grid-certificates >= 7
 
 Requires: condor-python
 
-Obsoletes: condor-ce-client < 0.5.4
-Provides:  condor-ce-client = %{version}
-
-%description client
+%description core-client
 %{summary}
 
 %package collector
@@ -434,7 +445,11 @@ fi
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
 
 %files client
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
+%{_bindir}/condor_ce_info_status
+%{python_sitelib}/htcondorce/info_query.py*
 
+%files core-client
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
@@ -443,7 +458,6 @@ fi
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
 %{_datadir}/condor-ce/pilot-status.cpf
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
@@ -453,7 +467,6 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
-%{_bindir}/condor_ce_info_status
 %{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
@@ -473,7 +486,6 @@ fi
 
 %dir %{python_sitelib}/htcondorce
 %{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/info_query.py*
 %{python_sitelib}/htcondorce/tools.py*
 
 %files collector
