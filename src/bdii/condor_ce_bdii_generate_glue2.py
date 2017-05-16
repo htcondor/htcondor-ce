@@ -74,15 +74,11 @@ GLUE2EntityOtherInfo: SmpSize=2
 GLUE2EntityOtherInfo: Cores=0
 GLUE2ExecutionEnvironmentWallTimeScalingFactor: 1
 GLUE2ExecutionEnvironmentPhysicalCPUs:%(cores)s
-GLUE2EntityCreationTime: %(dateandtime)s
-GLUE2ComputingShareTotalJobs: %(totaljobs)d
-GLUE2ComputingShareRunningJobs: %(runningjobs)d
-GLUE2ComputingShareMaxWaitingJobs: 349952
-GLUE2ComputingShareRequestedSlots: %(idlejobs)d"""
+GLUE2EntityCreationTime: %(dateandtime)s"""
 
 endpoint_template = """
 dn: GLUE2EndpointID=%(cescheddname)s_%(gocservice)s,GLUE2ServiceID=%(cescheddname)s
- .ch_ComputingElement,GLUE2GroupID=resource,o=glue
+ _ComputingElement,GLUE2GroupID=resource,o=glue
 GLUE2ComputingEndpointStaging: staginginout
 GLUE2EndpointQualityLevel: production
 GLUE2EndpointImplementor: %(gocservice)s
@@ -227,7 +223,7 @@ class PublicationLeader(object):
     def update_ts(self):
         pass
 
-    def leader(self):
+    def isleader(self):
         return self.is_leader
 
 
@@ -336,7 +332,7 @@ def main():
         schedd_ad = coll.locate(htcondor.DaemonTypes.Schedd)
     else:
         schedd_ad = coll.locate(htcondor.DaemonTypes.Schedd, opts.name)
-    sitename = htcondor.param.get('OSG_ResourceGroup', htcondor.param.get('HTCONDORCE_SiteName'))
+    sitename = htcondor.param.get('OSG_ResourceGroup', htcondor.param.get('HTCONDORCE_SiteName')).replace("\"","")
     if not sitename:
         print >> sys.stderr, "Neither OSG_ResourceGroup nor HTCONDORCE_SiteName set in config file."
         sys.exit(1)
@@ -377,10 +373,10 @@ def main():
     poolcoll = htcondor.Collector(opts.pool)
     hosts = poolcoll.query(htcondor.AdTypes.Collector, True, ['HostsUnclaimed'])[0]
     total_instances = hosts.get('HostsUnclaimed', 0)
-    if not leader.leader():
+    if not leader.isleader():
         total_instances = 0
     for ad in poolcoll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ["State", "Cpus"]):
-        if not ad.get('State') or not ad.get('Cpus') or not leader.leader():
+        if not ad.get('State') or not ad.get('Cpus') or not leader.isleader():
             continue
         total_cores += ad['Cpus']
         if ad['State'] == 'Unclaimed':
