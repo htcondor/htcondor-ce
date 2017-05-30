@@ -493,6 +493,7 @@ fi
 %changelog
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
 - Add ability to request whole node jobs (SOFTWARE-2715)
+- Fix bugs to pass GLUE2 Validator
 
 * Wed Mar 22 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.5-1
 - Do not disable LCMAPS VOMS attribute checking (SOFTWARE-2633)
