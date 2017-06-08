@@ -77,6 +77,9 @@ USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper
 CONDOR_Q_ONLY_MY_JOBS = False
 :endif
 
+# Disable mail on service restart
+SCHEDD_RESTART_REPORT=
+
 # This file is just the base configuration
 # Several other mandatory tasks remain, and are done in /etc/condor-ce/config.d:
 # - Security configuration: /etc/condor-ce/config.d/01-ce-auth.conf
