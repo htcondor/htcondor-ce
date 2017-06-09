@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.1.4
+Version: 2.2.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -185,7 +185,6 @@ Provides:  condor-ce-bosco = %{version}
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
-BuildRequires: boost-devel
 BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
@@ -494,6 +493,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
+- Add ability to request whole node jobs (SOFTWARE-2715)
+- Fix bugs to pass GLUE2 Validator
+
+* Wed Mar 22 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.5-1
+- Do not disable LCMAPS VOMS attribute checking (SOFTWARE-2633)
+- Package htcondor-ce-slurm (SOFTWARE-2631)
+
 * Fri Feb 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.4-1
 - Fix RequestCpus expression (SOFTWARE-2598)
 
