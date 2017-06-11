@@ -445,7 +445,8 @@ fi
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
 
 %files client
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile.osg
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-osg.conf
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
 
@@ -453,6 +454,7 @@ fi
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
