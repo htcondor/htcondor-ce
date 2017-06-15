@@ -63,7 +63,7 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
                 ifThenElse(default_xcount isnt undefined, default_xcount, 1)), \\
             ifThenElse(default_xcount isnt undefined, default_xcount, 1))); \\
     set_GlideinCpusIsGood = !isUndefined(MATCH_EXP_JOB_GLIDEIN_Cpus) && (int(MATCH_EXP_JOB_GLIDEIN_Cpus) isnt error); \\
-    set_JOB_GLIDEIN_Cpus = ifThenElse(WantWholeNode is true, !isUndefined(TotalCpus) ? TotalCpus : JobCpus, OriginalCpus); \\
+    set_JOB_GLIDEIN_Cpus = $$(ifThenElse(WantWholeNode is true, !isUndefined(TotalCpus) ? TotalCpus : JobCpus, OriginalCpus)); \\
     set_JobIsRunning = (JobStatus =!= 1) && (JobStatus =!= 5) && GlideinCpusIsGood; \\
     set_JobCpus = JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Cpus) : OriginalCpus; \\
     set_RequestCpus = ifThenElse(WantWholeNode is true, !isUndefined(TotalCpus) ? TotalCpus : JobCpus, OriginalCpus); \\
