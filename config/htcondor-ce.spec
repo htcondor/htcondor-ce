@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.2.0
+Version: 2.2.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -315,6 +315,7 @@ fi
 %endif
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-audit-payload.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-ce-shared-port.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
@@ -329,6 +330,8 @@ fi
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
+
+%{python_sitelib}/htcondorce/audit_payloads.py*
 
 %{_bindir}/condor_ce_host_network_check
 
@@ -477,6 +480,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-audit-payload.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
@@ -493,6 +497,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Jun 22 2017 Dave Dykstra <dwd@fnal.gov> - 2.2.1-1
+- Add audit_payloads function
+
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
 - Add ability to request whole node jobs (SOFTWARE-2715)
 - Fix bugs to pass GLUE2 Validator
