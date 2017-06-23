@@ -42,10 +42,17 @@ import htcondor
 #   undefined symbol: PyExc_ValueError
 from datetime import datetime
 
-maxjobsecs = None
 runningjobs = {}
 firstidx = None
 lastidx = None
+
+if 'AUDIT_PAYLOAD_MAX_HOURS' in htcondor.param:
+    maxjobhours = int(htcondor.param['AUDIT_PAYLOAD_MAX_HOURS'])
+else:
+    maxjobhours = 3 * 24
+htcondor.log(htcondor.LogLevel.Audit,
+    "Audit payload maximum job hours: %d" % maxjobhours)
+maxjobsecs = maxjobhours * 60 * 60
 
 def dumpvars():
     htcondor.log(htcondor.LogLevel.Audit, "firstidx: %s, lastidx: %s, runningjobs: %s" % (firstidx, lastidx, str(runningjobs)))
@@ -137,16 +144,6 @@ def startjob(info):
     htcondor.log(htcondor.LogLevel.Audit, "Job start: %s" % info)
     now = datetime.now()
     addrunningjob(idx, globaljobid, now)
-
-    if maxjobsecs == None:
-	# initialize this global variable
-	if 'AUDIT_PAYLOAD_MAX_HOURS' in htcondor.param:
-	    maxjobhours = int(htcondor.param['AUDIT_PAYLOAD_MAX_HOURS'])
-	else:
-	    maxjobhours = 3 * 24
-	htcondor.log(htcondor.LogLevel.Audit,
-	    "Audit payload maximum job hours: %d" % maxjobhours)
-	maxjobsecs = maxjobhours * 60 * 60
 
     # also look for expired jobs at the beginning of the list and stop them
     idx = firstidx
