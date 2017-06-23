@@ -498,7 +498,9 @@ fi
 
 %changelog
 * Thu Jun 22 2017 Dave Dykstra <dwd@fnal.gov> - 2.2.1-1
-- Add audit_payloads function
+- Add the audit_payloads function.  This logs the starting and stopping of
+  all payloads that were started from pilot systems based on condor.
+  Config in /etc/condor-ce/config.d/01-ce-collector-audit-payload.conf.
 
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
 - Add ability to request whole node jobs (SOFTWARE-2715)
