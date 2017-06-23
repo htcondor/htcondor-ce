@@ -112,7 +112,7 @@ def stopjob(info):
     loginfo = {}
     loginfo['Name'] = info['Name']
     loginfo['SlotID'] = info['SlotID']
-    loginfo['GlobalJobId'] = runningjobs[idx]['GlobalJobId']
+    loginfo['GlobalJobId'] = runningjobs[idx]['globaljobid']
     htcondor.log(htcondor.LogLevel.Audit, "Job stop: %s" % loginfo)
 
     removerunningjob(idx)
