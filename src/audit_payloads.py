@@ -96,7 +96,11 @@ def addrunningjob(idx, globaljobid, now):
     thisjob['globaljobid'] = globaljobid
     thisjob['starttime'] = now
 
-    # append this job the end of the doubly-linked list
+    # Use a doubly-linked list so jobs can stay sorted by start time,
+    #  making checking for expired jobs order(1) instead of order(n).
+    #  This is better because n (the number of running jobs) can be
+    #  very large.
+    # Append this job the end of the list.
     thisjob['previdx'] =  lastidx
     thisjob['nextidx'] =  None
     if lastidx != None:
