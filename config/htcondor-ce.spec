@@ -480,7 +480,6 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-audit-payload.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
@@ -497,7 +496,7 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Thu Jun 22 2017 Dave Dykstra <dwd@fnal.gov> - 2.2.1-1
+* Thu Jun 26 2017 Dave Dykstra <dwd@fnal.gov> - 2.2.1-1
 - Add the audit_payloads function.  This logs the starting and stopping of
   all payloads that were started from pilot systems based on condor.
   Config in /etc/condor-ce/config.d/01-ce-collector-audit-payload.conf.
