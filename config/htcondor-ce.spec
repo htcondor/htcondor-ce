@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.2.1
+Version: 2.3.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -496,7 +496,7 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Thu Jun 26 2017 Dave Dykstra <dwd@fnal.gov> - 2.2.1-1
+* Tue Jun 27 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
 - Add the audit_payloads function.  This logs the starting and stopping of
   all payloads that were started from pilot systems based on condor.
   Config in /etc/condor-ce/config.d/01-ce-collector-audit-payload.conf.
