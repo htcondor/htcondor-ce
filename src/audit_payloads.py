@@ -180,8 +180,7 @@ def update(command, ad):
     info = {}
     keys = ['Name', 'SlotID', 'GlobalJobId',
 	    'RemoteOwner', 'ClientMachine', 'ProjectName', 'Group',
-	    'x509UserProxyVOName', 'x509userproxysubject',
-	    'x509UserProxyFQAN', 'x509UserProxyEmail' ]
+	    'x509UserProxyVOName', 'x509userproxysubject', 'x509UserProxyEmail']
     for key in keys:
         if key in ad:
             info[key] = ad[key]
