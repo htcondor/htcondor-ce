@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.2.0
+Version: 2.2.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -493,6 +493,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Jun 27 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.1-1
+- CPU accounting and non-Condor batch system memory request fixes (SOFTWARE-2786, SOFTWARE-2787)
+- Disable mail on service restart
+
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
 - Add ability to request whole node jobs (SOFTWARE-2715)
 - Fix bugs to pass GLUE2 Validator
