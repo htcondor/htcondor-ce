@@ -54,9 +54,6 @@ htcondor.log(htcondor.LogLevel.Audit,
     "Audit payload maximum job hours: %d" % maxjobhours)
 maxjobsecs = maxjobhours * 60 * 60
 
-def dumpvars():
-    htcondor.log(htcondor.LogLevel.Audit, "firstidx: %s, lastidx: %s, runningjobs: %s" % (firstidx, lastidx, str(runningjobs)))
-
 # stop tracking a running job
 def removerunningjob(idx):
     global runningjobs
@@ -127,7 +124,6 @@ def stopjob(info):
     htcondor.log(htcondor.LogLevel.Audit, "Job stop: %s" % loginfo)
 
     removerunningjob(idx)
-    #dumpvars()
 
 # a job may be being started
 def startjob(info):
@@ -166,8 +162,6 @@ def startjob(info):
 	    "Cleaning up %d-second expired job: %s" % (deltasecs, loginfo))
 	removerunningjob(idx)
 	idx = nextidx
-
-    #dumpvars()
 
 
 # this is the primary entry point called by the API
