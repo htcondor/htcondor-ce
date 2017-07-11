@@ -42,6 +42,10 @@ install(PROGRAMS src/condor_ce_startup src/verify_ce_config.py src/condor_ce_sta
 install(PROGRAMS src/condor_ce_config_generator src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_info_status src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping src/condor_ce_off src/condor_ce_on src/condor_ce_restart src/condor_ce_job_router_info src/condor_ce_host_network_check DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES src/htcondorce/__init__.py src/htcondorce/web_utils.py src/htcondorce/web.py src/htcondorce/rrd.py src/htcondorce/tools.py src/htcondorce/info_query.py src/audit_payloads.py DESTINATION ${PYTHON_SITELIB}/htcondorce)
 
+if( DEFINED PYTHON_COLLECTION_MODULES )
+  install(FILES ${PYTHON_COLLECTION_MODULES} DESTINATION ${PYTHON_SITELIB}/collections)
+endif( PYTHON_COLLECTION_MODULES )
+
 install(FILES config/condor_config config/condor_mapfile DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 install(FILES config/metrics.d/00-metrics-defaults.conf config/metrics.d/00-example-metrics.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/metrics.d)
 install(FILES config/01-ce-collector.conf config/01-ce-collector-audit-payload.conf config/01-ce-collector-requirements.conf config/02-ce-auth-generated.conf config/01-ce-auth.conf config/01-common-auth.conf ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf config/02-ce-condor.conf config/02-ce-pbs.conf config/02-ce-lsf.conf config/02-ce-sge.conf config/02-ce-slurm.conf config/02-ce-bosco.conf config/03-ce-shared-port.conf config/03-managed-fork.conf config/04-ce-collector-auth.conf config/05-ce-view.conf config/05-ce-health.conf config/06-ce-bdii.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
