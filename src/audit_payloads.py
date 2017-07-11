@@ -38,13 +38,10 @@
 #
 
 import htcondor
-# I would use the simpler "time" module but it gets a load error
-#   undefined symbol: PyExc_ValueError
-from datetime import datetime
+import time
+from collections import OrderedDict
 
-runningjobs = {}
-firstidx = None
-lastidx = None
+runningjobs = OrderedDict()
 
 if 'AUDIT_PAYLOAD_MAX_HOURS' in htcondor.param:
     maxjobhours = int(htcondor.param['AUDIT_PAYLOAD_MAX_HOURS'])
@@ -53,61 +50,6 @@ else:
 htcondor.log(htcondor.LogLevel.Audit,
     "Audit payload maximum job hours: %d" % maxjobhours)
 maxjobsecs = maxjobhours * 60 * 60
-
-# stop tracking a running job
-def removerunningjob(idx):
-    global runningjobs
-    global firstidx
-    global lastidx
-
-    if idx not in runningjobs:
-	# shouldn't happen, but just in case
-	return
-
-    # remove this job from the doubly-linked list
-    thisjob = runningjobs[idx]
-    if thisjob['previdx'] == None:
-	firstidx = thisjob['nextidx']
-    else:
-	runningjobs[thisjob['previdx']]['nextidx'] = thisjob['nextidx']
-    if thisjob['nextidx'] == None:
-	lastidx = thisjob['nextidx']
-    else:
-	runningjobs[thisjob['nextidx']]['previdx'] = thisjob['previdx']
-
-    # and remove it from the running jobs
-    del runningjobs[idx]
-
-
-# start tracking a running job
-def addrunningjob(idx, globaljobid, now):
-    global runningjobs
-    global firstidx
-    global lastidx
-
-    if idx in runningjobs:
-	# shouldn't happen, but just in case
-	removerunningjob(idx)
-
-    thisjob = {}
-    thisjob['globaljobid'] = globaljobid
-    thisjob['starttime'] = now
-
-    # Use a doubly-linked list so jobs can stay sorted by start time,
-    #  making checking for expired jobs order(1) instead of order(n).
-    #  This is better because n (the number of running jobs) can be
-    #  very large.
-    # Append this job the end of the list.
-    thisjob['previdx'] =  lastidx
-    thisjob['nextidx'] =  None
-    if lastidx != None:
-	runningjobs[lastidx]['nextidx'] = idx
-    lastidx = idx
-    if firstidx == None:
-	firstidx = idx 
-
-    # and add it to the running jobs
-    runningjobs[idx] = thisjob
 
 # a job may be being stopped
 def stopjob(info):
@@ -123,11 +65,12 @@ def stopjob(info):
     loginfo['GlobalJobId'] = runningjobs[idx]['globaljobid']
     htcondor.log(htcondor.LogLevel.Audit, "Job stop: %s" % loginfo)
 
-    removerunningjob(idx)
+    del runningjobs[idx]
 
 # a job may be being started
 def startjob(info):
     global maxjobsecs
+    global runningjobs
 
     if 'Name' not in info or 'SlotID' not in info or 'GlobalJobId' not in info:
 	return
@@ -142,26 +85,25 @@ def startjob(info):
 	stopjob(info)
 
     htcondor.log(htcondor.LogLevel.Audit, "Job start: %s" % info)
-    now = datetime.now()
-    addrunningjob(idx, globaljobid, now)
+    now = time.time()
+    thisjob = {}
+    thisjob['globaljobid'] = globaljobid
+    thisjob['starttime'] = now
+    runningjobs[idx] = thisjob
 
     # also look for expired jobs at the beginning of the list and stop them
-    idx = firstidx
-    while idx != None:
+    for idx in runningjobs:
 	thisjob = runningjobs[idx]
-	delta = now - thisjob['starttime']
-	deltasecs = int(delta.total_seconds())
+	deltasecs = int(now - thisjob['starttime'])
 	if deltasecs <= maxjobsecs:
 	    break
-	nextidx = thisjob['nextidx']
 	loginfo = {}
 	loginfo['Name'] = idx[0]
 	loginfo['SlotID'] = idx[1]
 	loginfo['GlobalJobId'] = thisjob['globaljobid']
 	htcondor.log(htcondor.LogLevel.Audit,
 	    "Cleaning up %d-second expired job: %s" % (deltasecs, loginfo))
-	removerunningjob(idx)
-	idx = nextidx
+	del runningjobs[idx]
 
 
 # this is the primary entry point called by the API
