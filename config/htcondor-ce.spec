@@ -496,10 +496,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Tue Jun 27 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
+* Tue Jul 11 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
 - Add the audit_payloads function.  This logs the starting and stopping of
   all payloads that were started from pilot systems based on condor.
   Config in /etc/condor-ce/config.d/01-ce-collector-audit-payload.conf.
+
+* Tue Jun 27 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.1-1
+- CPU accounting and non-Condor batch system memory request fixes (SOFTWARE-2786, SOFTWARE-2787)
+- Disable mail on service restart
 
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
 - Add ability to request whole node jobs (SOFTWARE-2715)

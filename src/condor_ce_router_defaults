@@ -51,6 +51,8 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     /* Note default memory request of 2GB */ \\
     /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd */ \\
     eval_set_OriginalMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
+    /* Duplicate OriginalMemory expression and add remote_ prefix. This passes the attribute from gridmanager to BLAHP. */ \\
+    eval_set_remote_OriginalMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
     set_JOB_GLIDEIN_Memory = "$$(TotalMemory:0)"; \\
     set_JobMemory = JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Memory)*95/100 : OriginalMemory; \\
     set_RequestMemory = ifThenElse(WantWholeNode is true, !isUndefined(TotalMemory) ? TotalMemory*95/100 : JobMemory, OriginalMemory); \\
