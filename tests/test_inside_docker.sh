@@ -15,7 +15,7 @@ rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
 yum -y install yum-plugin-priorities
-rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el${OS_VERSION}-release-latest.rpm
+rpm -Uvh https://repo.grid.iu.edu/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
 yum -y install rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools
 
 # Prepare the RPM environment
