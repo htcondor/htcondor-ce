@@ -38,7 +38,7 @@ rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.sp
 # Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
 mkdir -p /var/run/lock
 
-yum localinstall -y /tmp/rpmbuild/RPMS/noarch/htcondor-ce-client* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-condor-${package_version}* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-view*
+yum localinstall -y /tmp/rpmbuild/RPMS/noarch/htcondor-ce-client* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-${package_version}* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-condor-${package_version}* /tmp/rpmbuild/RPMS/noarch/htcondor-ce-view* --enablerepo=osg-development
 
 # Run unit tests
 pushd htcondor-ce/tests/
