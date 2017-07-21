@@ -13,7 +13,7 @@
 #   at the end of the job, sending to both comannds' standard input at least
 #   these variables with format var = value, string values double-quoted:
 #     Name (string) - name identifying the worker node, typically in the
-#	format user@fully.qualified.domain.name
+#       format user@fully.qualified.domain.name
 #     SlotID (integer) - slot identifier number on the worker node
 #     MyType (string) - required to be set to the value of "Machine"
 #   The condor_advertise at the begining of the message must also contain
@@ -39,9 +39,17 @@
 
 import htcondor
 import time
+import re
 from collections import OrderedDict
 
-runningjobs = OrderedDict()
+# Dictionary containing all tracked running jobs.
+# Each entry is for a 'master', which is either a pilot job/glidein or
+#  individual job.
+# The index of the dictionary is a tuple of (mastername, slotid).
+# The contents of each entry is a tuple of (starttime, jobs), where
+#  jobs is a dictionary of individual job names running in that master
+#  and each entry has a value of the GlobalJobId of that job.
+runningmasters = OrderedDict()
 
 if 'AUDIT_PAYLOAD_MAX_HOURS' in htcondor.param:
     maxjobhours = int(htcondor.param['AUDIT_PAYLOAD_MAX_HOURS'])
@@ -53,57 +61,116 @@ maxjobsecs = maxjobhours * 60 * 60
 
 # a job may be being stopped
 def stopjob(info):
-    global runningjobs
+    global runningmasters
     if 'Name' not in info or 'SlotID' not in info:
-	return
-    idx = (info['Name'], info['SlotID'])
-    if idx not in runningjobs:
-	return
-    loginfo = {}
-    loginfo['Name'] = info['Name']
-    loginfo['SlotID'] = info['SlotID']
-    loginfo['GlobalJobId'] = runningjobs[idx]['globaljobid']
-    htcondor.log(htcondor.LogLevel.Audit, "Job stop: %s" % loginfo)
+        return
+    name = info['Name']
+    matchre = ""
+    if 'GLIDEIN_MASTER_NAME' in info:
+        idxname = info['GLIDEIN_MASTER_NAME']
+        if idxname == name:
+            # stop all jobs under this master
+            matchre = '.*'
+        else:
+            # names of form "slotN@" stop that name and all "slotN_M@" names
+            slotn = re.sub('^(slot[0-9]*)@.*', r'\1', name)
+            if slotn != name:
+                # match any name starting with slotN@ or slotN_
+                matchre = '^' + slotn + '[@_]'
+            # else take the default of matching only one name
+    else:
+        idxname = name
+    idx = (idxname, info['SlotID'])
+    if idx not in runningmasters:
+        return
 
-    del runningjobs[idx]
+    runningjobs = runningmasters[idx][1]
+    if matchre == "":
+        # no match expression, just stop one
+        if name not in runningjobs:
+            return
+        stopjobnames = [name]
+    else:
+        # select all jobs in this master
+        stopjobnames = runningjobs.keys()
+        if matchre != '.*':
+            # restrict to the matching regular expression
+            regex = re.compile(matchre)
+            stopjobnames = filter(regex.search, stopjobnames)
+
+    for stopjobname in stopjobnames:
+        loginfo = {}
+        loginfo['Name'] = stopjobname
+        loginfo['SlotID'] = info['SlotID']
+        loginfo['GlobalJobId'] = runningjobs[stopjobname]
+        htcondor.log(htcondor.LogLevel.Audit, "Job stop: %s" % loginfo)
+        del runningjobs[stopjobname]
+
+    if len(runningjobs) == 0:
+        del runningmasters[idx]
 
 # a job may be being started
 def startjob(info):
     global maxjobsecs
-    global runningjobs
+    global runningmasters
 
     if 'Name' not in info or 'SlotID' not in info or 'GlobalJobId' not in info:
-	return
+        return
 
-    idx = (info['Name'], info['SlotID'])
+    name = info['Name']
+    if 'GLIDEIN_MASTER_NAME' in info:
+        # Glidein may be partitioned and sometimes tear down all contained
+        #  slots at once, so need to track those slots together
+        idxname = info['GLIDEIN_MASTER_NAME']
+    else:
+        idxname = name
+    idx = (idxname, info['SlotID'])
     globaljobid = info['GlobalJobId']
-    if idx in runningjobs:
-	if globaljobid == runningjobs[idx]['globaljobid']:
-	    # just an update to a running job, ignore
-	    return
-	# first stop the existing job, the slot is being reused
-	stopjob(info)
+    now = 0
+    if idx in runningmasters:
+        thismaster = runningmasters[idx]
+        runningjobs = thismaster[1]
+        if name in runningjobs:
+            if globaljobid == runningjobs[name]:
+                # just an update to a running job, ignore
+                return
+            # first stop the existing job, the slot is being reused
+            stopjob(info)
+    else:
+        # new master
+        now = time.time()
+        thismaster = (now, {})
+        runningmasters[idx] = thismaster
+    # add job to this master
+    thismaster[1][name] = globaljobid
 
-    htcondor.log(htcondor.LogLevel.Audit, "Job start: %s" % info)
-    now = time.time()
-    thisjob = {}
-    thisjob['globaljobid'] = globaljobid
-    thisjob['starttime'] = now
-    runningjobs[idx] = thisjob
+    printinfo = {}
+    keys = ['Name', 'SlotID', 'GlobalJobId',
+            'RemoteOwner', 'ClientMachine', 'ProjectName', 'Group',
+            'x509UserProxyVOName', 'x509userproxysubject', 'x509UserProxyEmail']
+    for key in keys:
+        if key in info:
+            printinfo[key] = info[key]
+    htcondor.log(htcondor.LogLevel.Audit, "Job start: %s" % printinfo)
+
+    if now == 0:
+        return
 
     # also look for expired jobs at the beginning of the list and stop them
-    for idx in runningjobs:
-	thisjob = runningjobs[idx]
-	deltasecs = int(now - thisjob['starttime'])
-	if deltasecs <= maxjobsecs:
-	    break
-	loginfo = {}
-	loginfo['Name'] = idx[0]
-	loginfo['SlotID'] = idx[1]
-	loginfo['GlobalJobId'] = thisjob['globaljobid']
-	htcondor.log(htcondor.LogLevel.Audit,
-	    "Cleaning up %d-second expired job: %s" % (deltasecs, loginfo))
-	del runningjobs[idx]
+    for idx in runningmasters:
+        thismaster = runningmasters[idx]
+        deltasecs = int(now - thismaster[0])
+        if deltasecs <= maxjobsecs:
+            break
+        loginfo = {}
+        loginfo['SlotID'] = idx[1]
+        runningjobs = thismaster[1]
+        for jobname in runningjobs:
+            loginfo['Name'] = jobname
+            loginfo['GlobalJobId'] = runningjobs[jobname]
+            htcondor.log(htcondor.LogLevel.Audit,
+                "Cleaning up %d-second expired job: %s" % (deltasecs, loginfo))
+        del runningmasters[idx]
 
 
 # this is the primary entry point called by the API
@@ -111,16 +178,9 @@ def update(command, ad):
     if command != "UPDATE_STARTD_AD":
         return
     if ad.get('State') == 'Unclaimed':
-	stopjob(ad)  # stop previous job on this slot if any
-	return
-    info = {}
-    keys = ['Name', 'SlotID', 'GlobalJobId',
-	    'RemoteOwner', 'ClientMachine', 'ProjectName', 'Group',
-	    'x509UserProxyVOName', 'x509userproxysubject', 'x509UserProxyEmail']
-    for key in keys:
-        if key in ad:
-            info[key] = ad[key]
-    startjob(info)
+        stopjob(ad)  # stop previous job on this slot if any
+        return
+    startjob(ad)
 
 
 # this can also be called from the API when a job or slot is deleted
