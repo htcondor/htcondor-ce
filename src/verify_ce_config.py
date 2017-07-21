@@ -57,9 +57,10 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
         print "WARNING: %s in JOB_ROUTER_ENTRIES " % ', '.join(no_effect_attr) + \
             "may not have any effect. Use the 'set_' prefix instead."
 
-# Warn users if osg-configure has not been run
-try:
-    htcondor.param['OSG_CONFIGURED']
-except KeyError:
-    print "WARNING: osg-configure has not been run, degrading the functionality " + \
-        "of the CE. Please run 'osg-configure -c' and restart condor-ce."
+# Warn users on OSG CEs if osg-configure has not been run
+if htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1'):
+    try:
+        htcondor.param['OSG_CONFIGURED']
+    except KeyError:
+        print "WARNING: osg-configure has not been run, degrading the functionality " + \
+            "of the CE. Please run 'osg-configure -c' and restart condor-ce."
