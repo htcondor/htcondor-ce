@@ -26,7 +26,7 @@ Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
-Requires:  condor >= 8.6.4-1.1
+Requires:  condor >= 8.6.5
 
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
@@ -487,7 +487,7 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Wed Jul 11 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
+* Fri Jul 21 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
 - Add the audit_payloads function.  This logs the starting and stopping of
   all payloads that were started from pilot systems based on condor.
 
