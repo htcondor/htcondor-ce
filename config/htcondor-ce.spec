@@ -232,6 +232,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview/vos
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview/metrics
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
@@ -374,6 +375,7 @@ fi
 
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/vos
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/metrics
 
 %files condor
 %defattr(-,root,root,-)
