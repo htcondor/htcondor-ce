@@ -5,10 +5,11 @@
 # Version of CentOS/RHEL
 el_version=$1
 
- # Run tests in Container
+# Run tests in Container
+# We use `--privileged` for cgroup compatability, which seems to be enabled by default in HTCondor 8.6.x
 if [ "$el_version" = "6" ]; then
 
-sudo docker run --rm=true -v `pwd`:/htcondor-ce:rw centos:centos${OS_VERSION} /bin/bash -c "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION}"
+sudo docker run --privileged -v /sys/fs/cgroup:/sys/fs/cgroup --rm=true -v `pwd`:/htcondor-ce:rw centos:centos${OS_VERSION} /bin/bash -c "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION}"
 
 elif [ "$el_version" = "7" ]; then
 
