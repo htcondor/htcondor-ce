@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.3.0
+Version: 3.0.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -491,9 +491,12 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri Jul 21 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
+* Thu Jul 27 2017 Dave Dykstra <dwd@fnal.gov> - 3.0.0-1
 - Add the audit_payloads function.  This logs the starting and stopping of
   all payloads that were started from pilot systems based on condor.
+- Do not hold jobs with expired proxy (SOFTWARE-2803)
+- Only warn about configuration if osg-configure is present (SOFTWARE-2805)
+- CEView VO tab throws 500 error on inital installation (SOFTWARE-2826)
 
 * Tue Jun 27 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.1-1
 - CPU accounting and non-Condor batch system memory request fixes (SOFTWARE-2786, SOFTWARE-2787)
