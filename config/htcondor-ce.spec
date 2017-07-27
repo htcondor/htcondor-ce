@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.2.1
+Version: 2.3.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -25,17 +25,8 @@ Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# Requires a bug fix in config conditionals
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
-# TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4
-Requires:  condor >= 8.4.9
-Conflicts: condor = 8.5.0
-Conflicts: condor = 8.5.1
-Conflicts: condor = 8.5.2
-Conflicts: condor = 8.5.3
-Conflicts: condor = 8.5.4
-Conflicts: condor = 8.5.5
-Conflicts: condor = 8.5.6
+# because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
+Requires:  condor >= 8.6.5
 
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
@@ -322,6 +313,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
@@ -330,6 +322,8 @@ fi
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
+
+%{python_sitelib}/htcondorce/audit_payloads.py*
 
 %{_bindir}/condor_ce_host_network_check
 
@@ -495,6 +489,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Jul 21 2017 Dave Dykstra <dwd@fnal.gov> - 2.3.0-1
+- Add the audit_payloads function.  This logs the starting and stopping of
+  all payloads that were started from pilot systems based on condor.
+
 * Tue Jun 27 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.1-1
 - CPU accounting and non-Condor batch system memory request fixes (SOFTWARE-2786, SOFTWARE-2787)
 - Disable mail on service restart
