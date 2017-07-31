@@ -136,7 +136,8 @@ def startjob(info):
                 return
             # first stop the existing job, the slot is being reused
             stopjob(info)
-    else:
+	    # this may have removed the last job in thismaster, check again
+    if idx not in runningmasters:
         # new master
         now = time.time()
         thismaster = (now, {})
