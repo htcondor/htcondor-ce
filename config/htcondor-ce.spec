@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 3.0.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -491,6 +491,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Jul 31 2017 Dave Dykstra <dwd@fnal.gov> - 3.0.0-2
+- Fix loss of job audit info when a new job implicitly stopped a previous
+  job that was the last one in a master slot (SOFTWARE-2788).
+
 * Thu Jul 27 2017 Dave Dykstra <dwd@fnal.gov> - 3.0.0-1
 - Add the audit_payloads function.  This logs the starting and stopping of
   all payloads that were started from pilot systems based on condor.
