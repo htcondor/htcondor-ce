@@ -18,7 +18,10 @@ except ImportError:
 # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
 JOB_ROUTER_CONFIG = {}
 for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
-    ads = classad.parseAds(htcondor.param[attr])
+    try:
+        ads = classad.parseAds(htcondor.param[attr])
+    except KeyError:
+        sys.exit("ERROR: Missing required configuration: %s" % attr)
     JOB_ROUTER_CONFIG[attr] = list(ads) # store the ads (iterating through ClassAdStringIterator consumes them)
 
 # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare the unparsed string to the
