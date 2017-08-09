@@ -47,7 +47,9 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     \\
     /* Set new requirements */ \\
     /* set_requirements = LastClientContact - time() < 30*60; */ \\
-    set_requirements = True; \\
+    /* Respect gwms factory distro requests (RHEL6/RHEL7 are used to request EL6/EL7) */ \\
+    /* requirements are ignored for 'batch' grid universe jobs so this only applies to condor backends */ \\
+    set_requirements = !isUndefined(distro) ? strcat("OpSysVer =?= ", substr(distro, 3)) : True; \\
     /* Note default memory request of 2GB */ \\
     /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd */ \\
     eval_set_OriginalMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
