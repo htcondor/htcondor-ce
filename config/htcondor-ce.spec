@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.2.2
+Version: 2.2.3
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -497,6 +497,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Aug 28 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.3-1
+- Fix traceback if JOB_ROUTER_ENTRIES not present (SOFTWARE-2814)
+- Improve POSIX compatability
+
 * Fri Jul 21 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.2-1
 - Do not hold jobs with expired proxy (SOFTWARE-2803)
 - Only warn about configuration if osg-configure is present (SOFTWARE-2805)

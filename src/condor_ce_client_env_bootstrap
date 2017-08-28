@@ -6,6 +6,6 @@ export _condor_CLASSAD_USER_LIBS=
 
 # Instead of changing the default in 01-common-auth.conf, we set client auth methods
 # with an env variable. This way, only condor_ce_* tools are affected.
-if [ "$_condor_SEC_CLIENT_AUTHENTICATION_METHODS" == "" ]; then
+if [ "$_condor_SEC_CLIENT_AUTHENTICATION_METHODS" = "" ]; then
     export _condor_SEC_CLIENT_AUTHENTICATION_METHODS=GSI,FS
 fi
