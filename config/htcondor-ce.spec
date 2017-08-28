@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.0.1
+Version: 3.0.2
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -491,6 +491,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Aug 28 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.2-1
+- Fix traceback if JOB_ROUTER_ENTRIES not present (SOFTWARE-2814)
+- Improve POSIX compatability
+
 * Tue Aug 01 2017 Dave Dykstra <dwd@fnal.gov> - 3.0.1-1
 - Fix loss of job audit info when a new job implicitly stopped a previous
   job that was the last one in a master slot (SOFTWARE-2788).
