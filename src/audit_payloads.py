@@ -7,9 +7,9 @@
 #   server, if the jobs are run with condor glideins such as with GlideinWMS.
 #
 # Otherwise a job should use
-#     condor_advertise -pool $CONDORCE_COLLECTOR_HOST:9619 UPDATE_STARTD_AD
+#     condor_advertise -pool $CONDORCE_COLLECTOR_HOST UPDATE_STARTD_AD
 #   at the start of the job and
-#     condor_advertise -pool $CONDORCE_COLLECTOR_HOST:9619 INVALIDATE_STARTD_ADS
+#     condor_advertise -pool $CONDORCE_COLLECTOR_HOST INVALIDATE_STARTD_ADS
 #   at the end of the job, sending to both comannds' standard input at least
 #   these variables with format var = value, string values double-quoted:
 #     Name (string) - name identifying the worker node, typically in the
