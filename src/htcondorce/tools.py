@@ -46,7 +46,7 @@ def generate_job_files():
             fd, job_info[filetype + '_file'] = tempfile.mkstemp(dir=".", prefix=".%s_%d_" % (filetype, pid))
             os.close(fd)
         except OSError:
-            raise RuntimeError('Unable to create temporary files in the current working directory')
+            raise RuntimeError('Unable to create temporary files in the current working directory: %s' % os.getcwd())
 
     return job_info
 
