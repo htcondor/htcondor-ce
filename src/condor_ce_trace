@@ -354,7 +354,7 @@ if __name__ == '__main__':
     except Exception:
         PID = os.getpid()
         if G_DEBUG:
-            ce.print_formatted_msg('Uncaught exception, please send the following error to goc@opensciencegrid.org ' \
+            ce.print_formatted_msg('Uncaught exception, please send the following error to %s ' % ce.HELP_EMAIL + \
                                    'with a description of the issue:\n%s' % traceback.format_exc())
         else:
             try:
@@ -363,8 +363,8 @@ if __name__ == '__main__':
                 F.write('%s\n' % time.strftime('%Y-%m-%d %H:%M:%S'))
                 traceback.print_exc(file=F)
                 F.close()
-                ce.print_formatted_msg('Uncaught exception, please send %s to goc@opensciencegrid.org with a ' \
-                                       'description of the issue.' % STACK_FILE)
+                ce.print_formatted_msg('Uncaught exception, please send %s to %s with a description of the issue.' %
+                                       (STACK_FILE, ce.HELP_EMAIL))
             except OSError, write_exc:
                 ce.print_formatted_msg("Unable to write stackfile due to the following error:\n%s"
                                        % traceback.format_exc())
