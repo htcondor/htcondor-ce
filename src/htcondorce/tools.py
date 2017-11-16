@@ -7,6 +7,8 @@ import textwrap
 import time
 from subprocess import Popen, PIPE
 
+HELP_EMAIL = 'help@opensciencegrid.org'
+
 # Excluding submit file so the respective scripts
 # can generate it as they see fit
 JOB_FILES = ['stdout', 'stderr', 'log']
