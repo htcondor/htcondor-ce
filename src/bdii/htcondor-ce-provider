@@ -1,0 +1,225 @@
+#!/usr/bin/env python
+import re
+import os
+import sys
+import datetime
+import htcondor
+import subprocess
+import collections
+
+manager_ldif = """dn: GLUE2ManagerID=%(central_manager)s_Manager,%(bind_dn)s
+objectClass: GLUE2Entity
+objectClass: GLUE2Manager
+objectClass: GLUE2ComputingManager
+GLUE2ManagerID: %(central_manager)s_Manager
+GLUE2ManagerProductName: HTCondor
+GLUE2ManagerProductVersion: %(version)s
+GLUE2ComputingManagerTotalPhysicalCPUs: %(total_cores)s
+GLUE2ComputingManagerTotalLogicalCPUs: %(total_cores)s
+GLUE2ManagerServiceForeignKey: %(central_manager)s
+GLUE2ComputingManagerComputingServiceForeignKey: %(central_manager)s
+"""
+
+resource_ldif = """dn: GLUE2ResourceID=%(central_manager)s_standard,%(bind_dn)s
+objectClass: GLUE2Entity
+objectClass: GLUE2Resource
+objectClass: GLUE2ExecutionEnvironment
+GLUE2ResourceID: %(central_manager)s_standard
+GLUE2ExecutionEnvironmentMainMemorySize: 2000
+GLUE2ExecutionEnvironmentVirtualMemorySize: 2048
+GLUE2ExecutionEnvironmentOSFamily: linux
+GLUE2ExecutionEnvironmentCPUMultiplicity: singlecpu-multicore
+GLUE2ExecutionEnvironmentPlatform: amd64
+GLUE2ExecutionEnvironmentPhysicalCPUs: 8
+GLUE2ExecutionEnvironmentLogicalCPUs: 8
+GLUE2ExecutionEnvironmentConnectivityIn: TRUE
+GLUE2ExecutionEnvironmentConnectivityOut: TRUE
+GLUE2ExecutionEnvironmentTotalInstances: %(instances)s
+GLUE2ResourceManagerForeignKey:  %(central_manager)s_Manager
+GLUE2ExecutionEnvironmentComputingManagerForeignKey:  %(central_manager)s_Manager
+""" 
+
+endpoint_ldif = """dn: GLUE2EndpointID=%(name)s_HTCondorCE,%(bind_dn)s
+objectClass: GLUE2Entity
+objectClass: GLUE2Endpoint
+objectClass: GLUE2ComputingEndpoint
+GLUE2EndpointID: %(name)s_HTCondorCE
+GLUE2EndpointCapability: executionmanagement.jobexecution
+GLUE2EndpointInterfaceName: org.opensciencegrid.htcondorce
+GLUE2EndpointImplementor: HTCondor
+GLUE2EndpointImplementationName: HTCondor
+GLUE2EndpointImplementationVersion: %(version)s
+GLUE2EndpointURL: condor://%(name)s:9619
+GLUE2EndpointQualityLevel: production
+GLUE2EndpointServingState: production
+GLUE2EndpointHealthState: %(state)s
+GLUE2EndpointHealthStateInfo: %(state_info)s
+GLUE2EndpointStartTime: %(start_time)s
+GLUE2EndpointIssuerCA: %(issuer)s
+GLUE2EndpointDowntimeInfo: See the GOC DB for downtimes: https://goc.egi.eu/
+GLUE2EndpointServiceForeignKey: %(central_manager)s
+GLUE2ComputingEndpointComputingServiceForeignKey: %(central_manager)s
+"""
+share_ldif = """dn: GLUE2ShareID=%(shareid)s,%(bind_dn)s
+objectClass: GLUE2Entity
+objectClass: GLUE2Share
+objectClass: GLUE2ComputingShare
+GLUE2ShareID: %(shareid)s
+GLUE2ComputingShareServingState: production
+GLUE2ComputingShareTotalJobs: %(total_vo_jobs)s
+GLUE2ComputingShareWaitingJobs: %(idle_vo_jobs)s
+GLUE2ComputingShareRunningJobs: %(running_vo_jobs)s
+GLUE2ComputingShareComputingServiceForeignKey: %(central_manager)s
+GLUE2ComputingShareComputingEndpointForeignKey: %(endpointid)s
+GLUE2ComputingShareExecutionEnvironmentForeignKey: %(central_manager)s_standard
+GLUE2ShareServiceForeignKey: %(central_manager)s
+GLUE2ShareEndpointForeignKey: %(endpointid)s
+GLUE2ShareResourceForeignKey: %(central_manager)s_standard
+"""
+
+policy_ldif = """dn: GLUE2PolicyID=%(policyid)s,GLUE2ShareID=%(shareid)s,%(bind_dn)s
+objectClass: GLUE2Entity
+objectClass: GLUE2Policy
+objectClass: GLUE2MappingPolicy
+GLUE2PolicyID: %(policyid)s
+GLUE2PolicyScheme: org.glite.standard
+GLUE2PolicyRule: vo:%(vo)s
+GLUE2MappingPolicyShareForeignKey: %(shareid)s
+"""
+
+def main():
+    
+    # Get central_manager hostname
+    central_manager = htcondor.param.get('CENTRAL_MANAGER')
+    if not central_manager:
+        sys.stderr.write("Error: CENTRAL_MANAGER not set\n")
+        sys.exit(1)
+
+    # Get VO Names
+    vonames = htcondor.param.get('HTCONDORCE_VONames')
+    if not vonames:
+        sys.stderr.write("Error: HTCONDORCE_VONames not set\n")
+        sys.exit(1)
+    vonames = vonames.split(',')
+
+    # This is the bind DN for all entries
+    bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
+
+    # Query collector for number of CPUs and Collector ad
+    coll = htcondor.Collector(central_manager)
+    total_cores = 0
+    for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Cpus']):
+        if ad.get('Cpus'):
+            total_cores += ad['Cpus']
+    coll_ad = coll.locate(htcondor.DaemonTypes.Collector)
+    version = coll_ad['CondorVersion'].split()[1]
+
+    # Print the entry for the GLUE2 Manager
+    print manager_ldif %{
+        'central_manager': central_manager, 
+        'bind_dn': bind_dn, 
+        'version': version,
+        'total_cores': total_cores,
+        }
+
+    instances = coll_ad['HostsUnclaimed']
+    # Print the entry for the GLUE2 Resource
+    print resource_ldif %{
+        'central_manager': central_manager, 
+        'bind_dn': bind_dn,
+        'instances': instances,
+        }
+
+    schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
+    for schedd_ad in schedd_ads:
+
+        if not schedd_ad['AuthenticatedIdentity'] == 'computing-element@cern.ch':
+            continue
+
+        try:
+            if htcondor.SecMan().ping(schedd_ad, "READ")['AuthorizationSucceeded']:
+                state = 'ok'
+            else:
+                state = 'warning'
+            state_info = 'Authorization ping successful'
+        except Exception, e:
+            state = 'critial'
+            state_info = 'Authorization ping failed'
+
+        schedd = htcondor.Schedd(schedd_ad)
+        machine = schedd_ad['Machine'] 
+
+        try:
+            query = schedd.xquery("x509userproxyvoname isnt undefined", ["JobStatus", "x509userproxyvoname"])
+        except RuntimeError, e:
+            sys.stderr.write("%s: %s\n" %(e, machine))
+            continue
+
+        idle_vo_jobs = collections.defaultdict(int)
+        running_vo_jobs = collections.defaultdict(int)
+        total_vo_jobs = collections.defaultdict(int)
+
+        for job in query:
+            if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
+                continue
+            total_vo_jobs[job['x509userproxyvoname']] += 1
+            if job['JobStatus'] == 1:
+                idle_vo_jobs[job['x509userproxyvoname']] += 1
+            elif job['JobStatus'] == 2:
+                running_vo_jobs[job['x509userproxyvoname']] += 1
+
+        cmd = ['/usr/bin/openssl', 'x509', '-noout', '-issuer', '-nameopt', 'RFC2253', '-in', '/etc/grid-security/hostcert.pem']
+        cp = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        issuer = cp.communicate()[0].replace('issuer= ','').strip()
+
+        name = schedd_ad['Name']
+        versions = schedd_ad['CondorVersion'].split()[1]
+        start_time = datetime.datetime.fromtimestamp(int(schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        print endpoint_ldif %{
+            'name': name, 
+            'bind_dn': bind_dn, 
+            'version': version, 
+            'state': state,
+            'state_info': state_info,
+            'start_time': start_time,
+            'issuer': issuer,
+            'central_manager': central_manager,
+            }
+
+        for vo in vonames:
+            vo = vo.strip()
+            shareid="%s_%s_share" %(machine,vo)
+            endpointid="%s_HTCondorCE" %(machine)
+            total_jobs = total_vo_jobs.get(vo, 0) 
+            idle_jobs = idle_vo_jobs.get(vo, 0)
+            running_jobs = running_vo_jobs.get(vo, 0)
+            print share_ldif %{
+                'shareid': shareid,
+                'bind_dn': bind_dn,
+                'total_vo_jobs': total_jobs,
+                'idle_vo_jobs': idle_jobs,
+                'running_vo_jobs': running_jobs,
+                'central_manager': central_manager,
+                'endpointid': endpointid,
+                }
+
+            policyid="%s_%s_policy" %(machine,vo)
+            print policy_ldif %{
+                'policyid': policyid,
+                'shareid': shareid, 
+                'bind_dn': bind_dn,
+                'vo': vo,
+                }
+
+if __name__ == '__main__':
+    main()
+    
+
+
+
+
+
+
+
+
