@@ -177,7 +177,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DCMAKE_INSTALL_LIBDIR=%{_libdir}  -DPYTHON_SITELIB=%{python_sitelib}
+%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python_sitelib}
 make %{?_smp_mflags}
 
 %install
