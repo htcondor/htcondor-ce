@@ -21,6 +21,7 @@ endif()
 
 set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Base directory for files which go to share/")
 set(SYSCONF_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc" CACHE PATH "Base directory for files which go to etc/")
+set(STATE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/var" CACHE PATH "Base directory for files which go to var/")
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Base directory for files which go to lib/")
 
 include(FindPythonInterp)
@@ -139,6 +140,26 @@ install(FILES
   contrib/bdii/50-ce-bdii-defaults.conf
   DESTINATION
   ${SYSCONF_INSTALL_DIR}/condor/config.d)
+
+set(HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/run/condor-ce ${STATE_INSTALL_DIR}/log/condor-ce
+  ${STATE_INSTALL_DIR}/log/condor-ce/user ${STATE_INSTALL_DIR}/lib/condor-ce ${STATE_INSTALL_DIR}/lib/condor-ce/spool
+  ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview/vos
+  ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview/metrics ${STATE_INSTALL_DIR}/lib/condor-ce/execute
+  ${STATE_INSTALL_DIR}/lock/condor-ce ${STATE_INSTALL_DIR}/lock/condor-ce/user
+  ${STATE_INSTALL_DIR}/lib/gratia/condorce_data ${SYSCONF_INSTALL_DIR}/logrotate.d)
+
+foreach(dir IN ITEMS ${HTCONDORCE_DIRS})
+  install(DIRECTORY DESTINATION ${dir})
+  install(CODE "execute_process(COMMAND chown condor:condor ${dir})")
+endforeach(dir)
+
+set(STICKY_HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/log/condor-ce/user ${STATE_INSTALL_DIR}/lock/condor-ce/user
+  ${SYSCONF_INSTALL_DIR}/logrotate.d)
+
+foreach(sticky_dir IN ITEMS ${STICKY_HTCONDORCE_DIRS})
+  install(CODE "execute_process(COMMAND chmod 1777 ${sticky_dir})")
+endforeach(sticky_dir)
+
 install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(FILES templates/index.html templates/vos.html templates/metrics.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
