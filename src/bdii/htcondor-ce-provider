@@ -7,6 +7,19 @@ import htcondor
 import subprocess
 import collections
 
+service_ldif = """dn: %(bind_dn)s
+GLUE2ServiceID: %(central_manager)s
+objectClass: GLUE2Entity
+objectClass: GLUE2Service
+objectClass: GLUE2ComputingService
+GLUE2EntityName: Computing Service %(central_manager)s
+GLUE2ServiceCapability: executionmanagement.jobexecution
+GLUE2ServiceType: org.opensciencegrid.htcondorce
+GLUE2ServiceQualityLevel: production
+GLUE2ServiceComplexity: endpointType=%(num_endpoints)s, share=%(num_shares)s, resource=1
+GLUE2ServiceAdminDomainForeignKey: %(site_name)s
+"""
+
 manager_ldif = """dn: GLUE2ManagerID=%(central_manager)s_Manager,%(bind_dn)s
 objectClass: GLUE2Entity
 objectClass: GLUE2Manager
@@ -102,6 +115,12 @@ def main():
         sys.exit(1)
     vonames = vonames.split(',')
 
+    # Get Site Name
+    site_name = htcondor.param.get('GLUE2DomainID')
+    if not site_name:
+        sys.stderr.write("Error: GLUE2DomainID: not set\n")
+        sys.exit(1)
+
     # This is the bind DN for all entries
     bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
 
@@ -131,6 +150,16 @@ def main():
         }
 
     schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
+
+    # Print the entry for the GLUE2 Service
+    print service_ldif %{
+        'central_manager': central_manager, 
+        'bind_dn': bind_dn, 
+        'num_endpoints': len(schedd_ads),
+        'num_shares': len(vonames),
+        'site_name': site_name,
+        }
+
     for schedd_ad in schedd_ads:
 
         if not schedd_ad['AuthenticatedIdentity'] == 'computing-element@cern.ch':
@@ -211,6 +240,7 @@ def main():
                 'bind_dn': bind_dn,
                 'vo': vo,
                 }
+
 
 if __name__ == '__main__':
     main()
