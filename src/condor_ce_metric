@@ -2,7 +2,7 @@
 
 import optparse
 import rrdtool
-from htcondorce import rrd, web
+from htcondorce import rrd, web_utils
 
 def parse_opts():
     parser = optparse.OptionParser()
@@ -40,7 +40,7 @@ def main():
     else:
         value = float(opts.value)
 
-    spooldir = web.get_spooldir()
+    spooldir = web_utils.get_spooldir()
     environ = {'htcondorce.spool': spooldir}
 
     fname = rrd.check_rrd(environ, None, "metrics", opts.group, opts.name)
