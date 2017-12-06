@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.0.2
+Version: 3.0.3
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -491,6 +491,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Dec 06 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.3-1
+- Fix condor_ce_ping with IPv6 addresses (SOFTWARE-3030)
+- Fix for CEView being killed after 24h (SOFTWARE-2820)
+- Import the web_utils library for condor_ce_metric
+
 * Mon Aug 28 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.2-1
 - Fix traceback if JOB_ROUTER_ENTRIES not present (SOFTWARE-2814)
 - Improve POSIX compatability
