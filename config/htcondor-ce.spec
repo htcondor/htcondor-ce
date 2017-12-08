@@ -23,8 +23,6 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
