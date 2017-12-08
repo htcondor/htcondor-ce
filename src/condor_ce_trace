@@ -113,7 +113,7 @@ def parse_opts():
     return opts, args
 
 
-def check_authz(collector_ad, schedd_ad=None):
+def check_authz(collector_ad, schedd_ad):
     print "Testing HTCondor-CE authorization..."
     ping_args = [(collector_ad, 'READ', 'collector'),
                  (schedd_ad, 'WRITE', 'scheduler')]
