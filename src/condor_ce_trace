@@ -113,13 +113,12 @@ def parse_opts():
     return opts, args
 
 
-def check_authz(collector_ad, schedd_ad=None):
+def check_authz(collector_ad, schedd_ad):
     print "Testing HTCondor-CE authorization..."
-    ping_args = [(collector_ad, 'READ'),
-                 (schedd_ad, 'WRITE')]
+    ping_args = [(collector_ad, 'READ', 'collector'),
+                 (schedd_ad, 'WRITE', 'scheduler')]
 
-    for daemon_ad, cmd in ping_args:
-        dtype = daemon_ad['MyType'].lower()
+    for daemon_ad, cmd, dtype in ping_args:
         addr = daemon_ad['MyAddress']
         try:
             ping_ad = htcondor.SecMan().ping(daemon_ad, cmd)
