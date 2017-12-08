@@ -54,15 +54,8 @@ Requires(preun): initscripts
 %define systemd 0
 %endif
 
-# On RHEL6 and later, we use this utility to setup a custom hostname.
-%if 0%{?rhel} >= 6
+# We use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
-%endif
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %description
 %{summary}
@@ -213,8 +206,6 @@ Conflicts: %{name}
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
@@ -249,9 +240,6 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %if %systemd
 %define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
