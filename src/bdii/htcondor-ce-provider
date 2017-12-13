@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import re
 import os
 import sys
@@ -7,37 +8,37 @@ import htcondor
 import subprocess
 import collections
 
-service_ldif = """dn: %(bind_dn)s
-GLUE2ServiceID: %(central_manager)s
+service_ldif = """dn: {bind_dn}
+GLUE2ServiceID: {central_manager}
 objectClass: GLUE2Entity
 objectClass: GLUE2Service
 objectClass: GLUE2ComputingService
-GLUE2EntityName: Computing Service %(central_manager)s
+GLUE2EntityName: Computing Service {central_manager}
 GLUE2ServiceCapability: executionmanagement.jobexecution
 GLUE2ServiceType: org.opensciencegrid.htcondorce
 GLUE2ServiceQualityLevel: production
-GLUE2ServiceComplexity: endpointType=%(num_endpoints)s, share=%(num_shares)s, resource=1
-GLUE2ServiceAdminDomainForeignKey: %(site_name)s
+GLUE2ServiceComplexity: endpointType={num_endpoints}, share={num_shares}, resource=1
+GLUE2ServiceAdminDomainForeignKey: {site_name}
 """
 
-manager_ldif = """dn: GLUE2ManagerID=%(central_manager)s_Manager,%(bind_dn)s
+manager_ldif = """dn: GLUE2ManagerID={central_manager}_Manager,{bind_dn}
 objectClass: GLUE2Entity
 objectClass: GLUE2Manager
 objectClass: GLUE2ComputingManager
-GLUE2ManagerID: %(central_manager)s_Manager
+GLUE2ManagerID: {central_manager}_Manager
 GLUE2ManagerProductName: HTCondor
-GLUE2ManagerProductVersion: %(version)s
-GLUE2ComputingManagerTotalPhysicalCPUs: %(total_cores)s
-GLUE2ComputingManagerTotalLogicalCPUs: %(total_cores)s
-GLUE2ManagerServiceForeignKey: %(central_manager)s
-GLUE2ComputingManagerComputingServiceForeignKey: %(central_manager)s
+GLUE2ManagerProductVersion: {version}
+GLUE2ComputingManagerTotalPhysicalCPUs: {total_cores}
+GLUE2ComputingManagerTotalLogicalCPUs: {total_cores}
+GLUE2ManagerServiceForeignKey: {central_manager}
+GLUE2ComputingManagerComputingServiceForeignKey: {central_manager}
 """
 
-resource_ldif = """dn: GLUE2ResourceID=%(central_manager)s_standard,%(bind_dn)s
+resource_ldif = """dn: GLUE2ResourceID={central_manager}_standard,{bind_dn}
 objectClass: GLUE2Entity
 objectClass: GLUE2Resource
 objectClass: GLUE2ExecutionEnvironment
-GLUE2ResourceID: %(central_manager)s_standard
+GLUE2ResourceID: {central_manager}_standard
 GLUE2ExecutionEnvironmentMainMemorySize: 2000
 GLUE2ExecutionEnvironmentVirtualMemorySize: 2048
 GLUE2ExecutionEnvironmentOSFamily: linux
@@ -47,57 +48,57 @@ GLUE2ExecutionEnvironmentPhysicalCPUs: 8
 GLUE2ExecutionEnvironmentLogicalCPUs: 8
 GLUE2ExecutionEnvironmentConnectivityIn: TRUE
 GLUE2ExecutionEnvironmentConnectivityOut: TRUE
-GLUE2ExecutionEnvironmentTotalInstances: %(instances)s
-GLUE2ResourceManagerForeignKey:  %(central_manager)s_Manager
-GLUE2ExecutionEnvironmentComputingManagerForeignKey:  %(central_manager)s_Manager
+GLUE2ExecutionEnvironmentTotalInstances: {instances}
+GLUE2ResourceManagerForeignKey:  {central_manager}_Manager
+GLUE2ExecutionEnvironmentComputingManagerForeignKey:  {central_manager}_Manager
 """ 
 
-endpoint_ldif = """dn: GLUE2EndpointID=%(name)s_HTCondorCE,%(bind_dn)s
+endpoint_ldif = """dn: GLUE2EndpointID={name}_HTCondorCE,{bind_dn}
 objectClass: GLUE2Entity
 objectClass: GLUE2Endpoint
 objectClass: GLUE2ComputingEndpoint
-GLUE2EndpointID: %(name)s_HTCondorCE
+GLUE2EndpointID: {name}_HTCondorCE
 GLUE2EndpointCapability: executionmanagement.jobexecution
 GLUE2EndpointInterfaceName: org.opensciencegrid.htcondorce
 GLUE2EndpointImplementor: HTCondor
 GLUE2EndpointImplementationName: HTCondor
-GLUE2EndpointImplementationVersion: %(version)s
-GLUE2EndpointURL: condor://%(name)s:9619
+GLUE2EndpointImplementationVersion: {version}
+GLUE2EndpointURL: condor://{name}:9619
 GLUE2EndpointQualityLevel: production
 GLUE2EndpointServingState: production
-GLUE2EndpointHealthState: %(state)s
-GLUE2EndpointHealthStateInfo: %(state_info)s
-GLUE2EndpointStartTime: %(start_time)s
-GLUE2EndpointIssuerCA: %(issuer)s
+GLUE2EndpointHealthState: {state}
+GLUE2EndpointHealthStateInfo: {state_info}
+GLUE2EndpointStartTime: {start_time}
+GLUE2EndpointIssuerCA: {issuer}
 GLUE2EndpointDowntimeInfo: See the GOC DB for downtimes: https://goc.egi.eu/
-GLUE2EndpointServiceForeignKey: %(central_manager)s
-GLUE2ComputingEndpointComputingServiceForeignKey: %(central_manager)s
+GLUE2EndpointServiceForeignKey: {central_manager}
+GLUE2ComputingEndpointComputingServiceForeignKey: {central_manager}
 """
-share_ldif = """dn: GLUE2ShareID=%(shareid)s,%(bind_dn)s
+share_ldif = """dn: GLUE2ShareID={shareid},{bind_dn}
 objectClass: GLUE2Entity
 objectClass: GLUE2Share
 objectClass: GLUE2ComputingShare
-GLUE2ShareID: %(shareid)s
+GLUE2ShareID: {shareid}
 GLUE2ComputingShareServingState: production
-GLUE2ComputingShareTotalJobs: %(total_vo_jobs)s
-GLUE2ComputingShareWaitingJobs: %(idle_vo_jobs)s
-GLUE2ComputingShareRunningJobs: %(running_vo_jobs)s
-GLUE2ComputingShareComputingServiceForeignKey: %(central_manager)s
-GLUE2ComputingShareComputingEndpointForeignKey: %(endpointid)s
-GLUE2ComputingShareExecutionEnvironmentForeignKey: %(central_manager)s_standard
-GLUE2ShareServiceForeignKey: %(central_manager)s
-GLUE2ShareEndpointForeignKey: %(endpointid)s
-GLUE2ShareResourceForeignKey: %(central_manager)s_standard
+GLUE2ComputingShareTotalJobs: {total_vo_jobs}
+GLUE2ComputingShareWaitingJobs: {idle_vo_jobs}
+GLUE2ComputingShareRunningJobs: {running_vo_jobs}
+GLUE2ComputingShareComputingServiceForeignKey: {central_manager}
+GLUE2ComputingShareComputingEndpointForeignKey: {endpointid}
+GLUE2ComputingShareExecutionEnvironmentForeignKey: {central_manager}_standard
+GLUE2ShareServiceForeignKey: {central_manager}
+GLUE2ShareEndpointForeignKey: {endpointid}
+GLUE2ShareResourceForeignKey: {central_manager}_standard
 """
 
-policy_ldif = """dn: GLUE2PolicyID=%(policyid)s,GLUE2ShareID=%(shareid)s,%(bind_dn)s
+policy_ldif = """dn: GLUE2PolicyID={policyid},GLUE2ShareID={shareid},{bind_dn}
 objectClass: GLUE2Entity
 objectClass: GLUE2Policy
 objectClass: GLUE2MappingPolicy
-GLUE2PolicyID: %(policyid)s
+GLUE2PolicyID: {policyid}
 GLUE2PolicyScheme: org.glite.standard
-GLUE2PolicyRule: vo:%(vo)s
-GLUE2MappingPolicyShareForeignKey: %(shareid)s
+GLUE2PolicyRule: vo:{vo}
+GLUE2MappingPolicyShareForeignKey: {shareid}
 """
 
 def main():
@@ -134,35 +135,35 @@ def main():
     version = coll_ad['CondorVersion'].split()[1]
 
     # Print the entry for the GLUE2 Manager
-    print manager_ldif %{
-        'central_manager': central_manager, 
-        'bind_dn': bind_dn, 
-        'version': version,
-        'total_cores': total_cores,
-        }
+    print( manager_ldif.format(
+        central_manager = central_manager, 
+        bind_dn = bind_dn, 
+        version = version,
+        total_cores = total_cores,
+        ))
 
     instances = coll_ad['HostsUnclaimed']
     # Print the entry for the GLUE2 Resource
-    print resource_ldif %{
-        'central_manager': central_manager, 
-        'bind_dn': bind_dn,
-        'instances': instances,
-        }
+    print(resource_ldif.format(
+        central_manager = central_manager, 
+        bind_dn = bind_dn,
+        instances = instances,
+        ))
 
     schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
 
     # Print the entry for the GLUE2 Service
-    print service_ldif %{
-        'central_manager': central_manager, 
-        'bind_dn': bind_dn, 
-        'num_endpoints': len(schedd_ads),
-        'num_shares': len(vonames),
-        'site_name': site_name,
-        }
+    print (service_ldif.format(
+        central_manager = central_manager, 
+        bind_dn = bind_dn, 
+        num_endpoints = len(schedd_ads),
+        num_shares = len(vonames),
+        site_name = site_name,
+        ))
 
     for schedd_ad in schedd_ads:
 
-        if not schedd_ad['AuthenticatedIdentity'] == 'computing-element@cern.ch':
+        if not schedd_ad['AuthenticatedIdentity'][:17] == 'computing-element':
             continue
 
         try:
@@ -171,7 +172,7 @@ def main():
             else:
                 state = 'warning'
             state_info = 'Authorization ping successful'
-        except KeyError, e:
+        except (KeyError, RuntimeError) as e:
             state = 'critial'
             state_info = 'Authorization ping failed'
 
@@ -205,16 +206,16 @@ def main():
         versions = schedd_ad['CondorVersion'].split()[1]
         start_time = datetime.datetime.fromtimestamp(int(schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        print endpoint_ldif %{
-            'name': name, 
-            'bind_dn': bind_dn, 
-            'version': version, 
-            'state': state,
-            'state_info': state_info,
-            'start_time': start_time,
-            'issuer': issuer,
-            'central_manager': central_manager,
-            }
+        print (endpoint_ldif.format(
+            name = name, 
+            bind_dn = bind_dn, 
+            version = version, 
+            state = state,
+            state_info = state_info,
+            start_time = start_time,
+            issuer = issuer,
+            central_manager = central_manager,
+            ))
 
         for vo in vonames:
             vo = vo.strip()
@@ -223,23 +224,23 @@ def main():
             total_jobs = total_vo_jobs.get(vo, 0) 
             idle_jobs = idle_vo_jobs.get(vo, 0)
             running_jobs = running_vo_jobs.get(vo, 0)
-            print share_ldif %{
-                'shareid': shareid,
-                'bind_dn': bind_dn,
-                'total_vo_jobs': total_jobs,
-                'idle_vo_jobs': idle_jobs,
-                'running_vo_jobs': running_jobs,
-                'central_manager': central_manager,
-                'endpointid': endpointid,
-                }
+            print (share_ldif.format(
+                shareid = shareid,
+                bind_dn = bind_dn,
+                total_vo_jobs = total_jobs,
+                idle_vo_jobs = idle_jobs,
+                running_vo_jobs = running_jobs,
+                central_manager = central_manager,
+                endpointid = endpointid,
+                ))
 
             policyid="%s_%s_policy" %(machine,vo)
-            print policy_ldif %{
-                'policyid': policyid,
-                'shareid': shareid, 
-                'bind_dn': bind_dn,
-                'vo': vo,
-                }
+            print (policy_ldif.format(
+                policyid = policyid,
+                shareid = shareid, 
+                bind_dn = bind_dn,
+                vo = vo,
+                ))
 
 if __name__ == '__main__':
     main()
