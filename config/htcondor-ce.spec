@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.0.2
+Version: 3.0.4
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -22,8 +22,6 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 # git archive --prefix=%{name}-%{version}/ %{gitrev} | gzip > %{name}-%{version}-%{gitrev}.tar.gz
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
-
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
@@ -54,15 +52,8 @@ Requires(preun): initscripts
 %define systemd 0
 %endif
 
-# On RHEL6 and later, we use this utility to setup a custom hostname.
-%if 0%{?rhel} >= 6
+# We use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
-%endif
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %description
 %{summary}
@@ -213,8 +204,6 @@ Conflicts: %{name}
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
@@ -249,9 +238,6 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %if %systemd
 %define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
@@ -491,6 +477,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.4-1
+- Handle missing 'MyType' attribute in condor 8.7.5
+
+* Wed Dec 06 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.3-1
+- Fix condor_ce_ping with IPv6 addresses (SOFTWARE-3030)
+- Fix for CEView being killed after 24h (SOFTWARE-2820)
+- Import the web_utils library for condor_ce_metric
+
 * Mon Aug 28 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.2-1
 - Fix traceback if JOB_ROUTER_ENTRIES not present (SOFTWARE-2814)
 - Improve POSIX compatability

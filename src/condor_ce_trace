@@ -113,46 +113,31 @@ def parse_opts():
     return opts, args
 
 
-def check_authz(job_info):
-    print "Testing HTCondor-CE collector connectivity."
-    try:
-        addresses = socket.getaddrinfo(job_info['collector_fqdn'], job_info['collector_port'], 0, socket.SOCK_STREAM)
-    except socket.gaierror:
-        raise RuntimeError("Failed to retrieve socket information for %s:%s. Verify the specified hostname and " \
-                           "network connectivity to the CE." %  (job_info['collector_fqdn'],
-                                                                 job_info['collector_port']))
-    had_success = False
-    for addrinfo in addresses:
-        addr = "<%s:%d>" % addrinfo[4][:2]
+def check_authz(collector_ad, schedd_ad):
+    print "Testing HTCondor-CE authorization..."
+    ping_args = [(collector_ad, 'READ', 'collector'),
+                 (schedd_ad, 'WRITE', 'scheduler')]
+
+    for daemon_ad, cmd, dtype in ping_args:
+        addr = daemon_ad['MyAddress']
         try:
-            run_ping("<%s:%d>" % addrinfo[4][:2], daemon="COLLECTOR")
-            had_success = True
-            print "- Successful ping of collector on %s.\n" % addr
-        except Exception, e:
-            print "- Failed ping of collector on %s.\n" % addr
-            raise e
-
-    if not had_success:
-        raise ce.CondorRunException("No collector check was successful! Please contact the site's system " \
-                                    "adminstrator to ensure that the CE you're trying to contact is functional.")
-    coll = htcondor.Collector(job_info['collector_name'])
-
-    try:
-        ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
-    except (ValueError, IOError):
-        raise ce.CondorRunException("Could not find CE's schedd. Please contact the site's system administrator "
-                                    "to ensure that CE you're trying to contact is functional.")
-
-    job_info['schedd_ad'] = ad
-    addr = ad['MyAddress']
-    print "Testing HTCondor-CE schedd connectivity."
-    try:
-        run_ping(addr)
-        print "- Successful ping of schedd on %s.\n" % addr
-    except Exception, e:
-        print "- Failed ping of schedd on %s.\n" % addr
-        raise e
-
+            ping_ad = htcondor.SecMan().ping(daemon_ad, cmd)
+        except RuntimeError:
+            # if python binding ping fails to authz, it raises an exception and doesn't tell us anything useful
+            # actually run condor_ping for troubleshooting information
+            msg = 'ERROR: %s access failed for %s daemon at %s.' % (cmd, dtype, addr)
+            if not G_DEBUG:
+                msg += " Re-run with '--debug' for more information."
+            else:
+                cmd = ['condor_ping', '-addr', addr, '-verbose', cmd]
+                _, stdout, _ = ce.run_command(cmd)
+                msg += '\n' + stdout
+            raise ce.CondorRunException(msg)
+        else:
+            print "Verified %s access for %s daemon at %s" % (cmd, dtype, addr)
+            if G_DEBUG:
+                print "*"*5, "Ping response ClassAd", "*"*5, ping_ad
+                print "*"*20
 
 def generate_run_script(job_info):
 
@@ -216,7 +201,7 @@ def set_classad_value_type(value):
 
     return value
 
-def check_job_submit(job_info):
+def check_job_submit(job_info, schedd_ad):
 
     job_ad = classad.ClassAd()
     job_ad["Cmd"] = job_info['command']
@@ -236,28 +221,28 @@ def check_job_submit(job_info):
     add_job_proxy_info(job_ad)
 
     try:
-        schedd = htcondor.Schedd(job_info['schedd_ad'])
+        schedd = htcondor.Schedd(schedd_ad)
     except RuntimeError, e:
         raise ce.CondorRunException("Failed to contact schedd at %s due to the following error:\n%s" \
-                                    % (job_info['schedd_ad']['Machine'], e))
-    print "Submitting job to schedd %s" % job_info['schedd_ad']['MyAddress']
+                                    % (schedd_ad['Machine'], e))
+    print "Submitting job to schedd %s" % schedd_ad['MyAddress']
     ad_results = []
     try:
         cluster = schedd.submit(job_ad, 1, True, ad_results)
     except RuntimeError, e:
         raise ce.CondorRunException("- Failed to submit job to %s due to the following error:\n%s" \
-                                    % (job_info['schedd_ad']['Machine'], e))
+                                    % (schedd_ad['Machine'], e))
 
     print "- Successful submission; cluster ID %d" % cluster
 
     print "Resulting job ad:", ad_results[0]
 
-    print "Spooling cluster %d files to schedd %s" % (cluster, job_info['schedd_ad']['MyAddress'])
+    print "Spooling cluster %d files to schedd %s" % (cluster, schedd_ad['MyAddress'])
     try:
         schedd.spool(ad_results)
     except RuntimeError, e:
         raise ce.CondorRunException("- Failed to spool files to %s due to the following error:\n%s" \
-                                 % (job_info['schedd_ad']['Machine'], e))
+                                 % (schedd_ad['Machine'], e))
 
     print "- Successful spooling"
 
@@ -293,12 +278,12 @@ def check_job_submit(job_info):
             schedd.retrieve("ClusterID == %d" % cluster)
         except RuntimeError, e:
             raise ce.CondorRunException("Failed to retrieve output from %s due to the following error:\n%s" \
-                                        % (job_info['schedd_ad']['Machine'], e))
+                                        % (schedd_ad['Machine'], e))
         try:
             schedd.act(htcondor.JobAction.Remove, "ClusterID == %d" % cluster)
         except RuntimeError, e:
             raise ce.CondorRunException("Failed to cleanup job on %s due to the following error:\n%s" \
-                                     % (job_info['schedd_ad']['Machine'], e))
+                                     % (schedd_ad['Machine'], e))
         output = open(job_info['stdout_file'], "r").read()
         if not output:
             raise ce.CondorRunException("Job produced empty stdout")
@@ -315,16 +300,19 @@ def main():
     opts, args = parse_opts()
 
     if len(args) < 1:
-        raise RuntimeError("Usage: condor_ce_trace [options] <hostname>")
+        raise ce.CondorUserException('ERROR: Insufficient number of arguments\n' + \
+                                     '"Usage: condor_ce_trace [options] <hostname>[:<port>]"')
+    coll_addr = args[0]
 
     verify_matching_condor_versions()
 
+    # TODO: refactor all of this into parse_opts, this is insanity
     job_info = {}
     job_info['attribute'] = opts.attribute
-    collector_hostname = args[0].split(":")[0]
+    collector_hostname = coll_addr.split(":")[0]
     collector_hostname = socket.getfqdn(collector_hostname)
     job_info['collector_fqdn'] = collector_hostname
-    port_info = args[0].split(":")[1:]
+    port_info = coll_addr.split(":")[1:]
     if port_info:
         job_info['collector_port'] = int(port_info[0])
     else:
@@ -336,11 +324,24 @@ def main():
     else:
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
+    try:
+        coll = htcondor.Collector(collector_hostname)
+        coll_ad = coll.locate(htcondor.DaemonTypes.Collector)
+    except IOError:
+        raise ce.CondorRunException("ERROR: Could not contact CE collector at '%s'. " % collector_hostname + \
+                                    "Verify that the collector daemon is up with `condor_ce_status`.")
+
+    try:
+        schedd_ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
+    except ValueError:
+        raise ce.CondorRunException('ERROR: Could not find CE schedd at %s.\n' % job_info['schedd_name'] + \
+                                    'Verify that the schedd daemon is up with `condor_ce_status`.')
+
     configure_auth()
-    check_authz(job_info)
+    check_authz(coll_ad, schedd_ad)
     try:
         generate_run_script(job_info)
-        check_job_submit(job_info)
+        check_job_submit(job_info, schedd_ad)
     finally:
         if opts.clean:
             ce.cleanup_job_files(job_info)
