@@ -228,7 +228,7 @@ install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
 %if 0%{?osg}
-rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
 %else
