@@ -61,7 +61,7 @@ Requires: /usr/bin/unshare
 %if ! 0%{?osg}
 %package bdii
 Group: Applications/Internet
-Summary:  BDII GLUE1.3/2 infoproviders and CE config for non-OSG sites.
+Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
 Requires: %{name} = %{version}-%{release}, bdii
 
@@ -233,7 +233,7 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
-mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
+mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 %endif
 
@@ -326,8 +326,7 @@ fi
 
 %if ! 0%{?osg}
 %files bdii
-%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
-%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/htcondor-ce-provider
 
 %{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
