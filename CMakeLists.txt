@@ -38,7 +38,7 @@ configure_file (
 )
 
 install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
-install(PROGRAMS src/condor_ce_startup src/verify_ce_config.py src/condor_ce_startup_internal src/condor_ce_env_bootstrap src/condor_ce_client_env_bootstrap src/condor_ce_router_defaults src/osg-wrapper src/condor_ce_jobmetrics src/condor_ce_metric src/condor_ce_view src/bdii/condor_ce_bdii_generate_glue1.py src/bdii/condor_ce_bdii_generate_glue2.py src/gratia_cleanup.py DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
+install(PROGRAMS src/condor_ce_startup src/verify_ce_config.py src/condor_ce_startup_internal src/condor_ce_env_bootstrap src/condor_ce_client_env_bootstrap src/condor_ce_router_defaults src/osg-wrapper src/condor_ce_jobmetrics src/condor_ce_metric src/condor_ce_view src/bdii/htcondor-ce-provider src/gratia_cleanup.py DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(PROGRAMS src/condor_ce_config_generator src/condor_ce_config_val src/condor_ce_history src/condor_ce_hold src/condor_ce_info_status src/condor_ce_q src/condor_ce_qedit src/condor_ce_release src/condor_ce_rm src/condor_ce_submit src/condor_ce_version src/condor_ce_reconfig src/condor_ce_router_q src/condor_ce_status src/condor_ce_reschedule src/condor_ce_run src/condor_ce_trace src/condor_ce_ping src/condor_ce_off src/condor_ce_on src/condor_ce_restart src/condor_ce_job_router_info src/condor_ce_host_network_check DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES src/htcondorce/__init__.py src/htcondorce/web_utils.py src/htcondorce/web.py src/htcondorce/rrd.py src/htcondorce/tools.py src/htcondorce/info_query.py src/audit_payloads.py DESTINATION ${PYTHON_SITELIB}/htcondorce)
 
