@@ -7,6 +7,8 @@ import textwrap
 import time
 from subprocess import Popen, PIPE
 
+HELP_EMAIL = 'help@opensciencegrid.org'
+
 # Excluding submit file so the respective scripts
 # can generate it as they see fit
 JOB_FILES = ['stdout', 'stderr', 'log']
@@ -42,8 +44,12 @@ def generate_job_files():
     pid = os.getpid()
     job_info = {}
     for filetype in JOB_FILES:
-        fd, job_info[filetype + '_file'] = tempfile.mkstemp(dir=".", prefix=".%s_%d_" % (filetype, pid))
-        os.close(fd)
+        try:
+            fd, job_info[filetype + '_file'] = tempfile.mkstemp(dir=".", prefix=".%s_%d_" % (filetype, pid))
+            os.close(fd)
+        except OSError:
+            raise RuntimeError('Unable to create temporary files in the current working directory: %s' % os.getcwd())
+
     return job_info
 
 def cleanup_job_files(job_info):

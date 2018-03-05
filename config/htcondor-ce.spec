@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 2.2.0
+Version: 3.0.4
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE on the OSG
 BuildArch: noarch
@@ -23,19 +23,8 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-# Requires a bug fix in config conditionals
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5914
-# TODO Replace Conflicts with "Requires: condor >= 8.6.0" in OSG 3.4
-Requires:  condor >= 8.4.9
-Conflicts: condor = 8.5.0
-Conflicts: condor = 8.5.1
-Conflicts: condor = 8.5.2
-Conflicts: condor = 8.5.3
-Conflicts: condor = 8.5.4
-Conflicts: condor = 8.5.5
-Conflicts: condor = 8.5.6
+# because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
+Requires:  condor >= 8.6.5
 
 # This ought to pull in the HTCondor-CE specific version of the blahp
 Requires: blahp
@@ -62,15 +51,8 @@ Requires(preun): initscripts
 %define systemd 0
 %endif
 
-# On RHEL6 and later, we use this utility to setup a custom hostname.
-%if 0%{?rhel} >= 6
+# We use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
-%endif
-
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
 
 %description
 %{summary}
@@ -93,7 +75,7 @@ Obsoletes: condor-ce < 0.5.4
 %if ! 0%{?osg}
 %package bdii
 Group: Applications/Internet
-Summary:  BDII GLUE1.3/2 infoproviders and CE config for non-OSG sites.
+Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
 Requires: %{name} = %{version}-%{release}, bdii
 
@@ -246,8 +228,6 @@ Conflicts: %{name}
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
@@ -264,25 +244,24 @@ install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview/vos
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview/metrics
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
 %if 0%{?osg}
-rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue*
+rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
-mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_bdii_generate_glue* \
+mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %if %systemd
 %define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
@@ -353,10 +332,16 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
+
+%{_datadir}/condor-ce/osg-wrapper
+
+%{python_sitelib}/htcondorce/audit_payloads.py*
 
 %{_bindir}/condor_ce_host_network_check
 
@@ -371,8 +356,7 @@ fi
 
 %if ! 0%{?osg}
 %files bdii
-%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue1.py*
-%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/condor_ce_bdii_generate_glue2.py*
+%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/htcondor-ce-provider
 
 %{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
@@ -405,6 +389,8 @@ fi
 %{_datadir}/condor-ce/condor_ce_jobmetrics
 
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/vos
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/metrics
 
 %files condor
 %defattr(-,root,root,-)
@@ -523,6 +509,33 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Dec 08 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.4-1
+- Handle missing 'MyType' attribute in condor 8.7.5
+
+* Wed Dec 06 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.3-1
+- Fix condor_ce_ping with IPv6 addresses (SOFTWARE-3030)
+- Fix for CEView being killed after 24h (SOFTWARE-2820)
+- Import the web_utils library for condor_ce_metric
+
+* Mon Aug 28 2017 Brian Lin <blin@cs.wisc.edu> - 3.0.2-1
+- Fix traceback if JOB_ROUTER_ENTRIES not present (SOFTWARE-2814)
+- Improve POSIX compatability
+
+* Tue Aug 01 2017 Dave Dykstra <dwd@fnal.gov> - 3.0.1-1
+- Fix loss of job audit info when a new job implicitly stopped a previous
+  job that was the last one in a master slot (SOFTWARE-2788).
+
+* Thu Jul 27 2017 Dave Dykstra <dwd@fnal.gov> - 3.0.0-1
+- Add the audit_payloads function.  This logs the starting and stopping of
+  all payloads that were started from pilot systems based on condor.
+- Do not hold jobs with expired proxy (SOFTWARE-2803)
+- Only warn about configuration if osg-configure is present (SOFTWARE-2805)
+- CEView VO tab throws 500 error on inital installation (SOFTWARE-2826)
+
+* Tue Jun 27 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.1-1
+- CPU accounting and non-Condor batch system memory request fixes (SOFTWARE-2786, SOFTWARE-2787)
+- Disable mail on service restart
+
 * Thu May 25 2017 Brian Lin <blin@cs.wisc.edu> - 2.2.0-1
 - Add ability to request whole node jobs (SOFTWARE-2715)
 - Fix bugs to pass GLUE2 Validator
