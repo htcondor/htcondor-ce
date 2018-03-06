@@ -23,6 +23,9 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
+BuildRequires: boost-devel
+BuildRequires: cmake
+
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
@@ -61,13 +64,10 @@ Requires: /usr/bin/unshare
 Group: Applications/System
 Summary: Core configuration for HTCondor-CE
 
-Provides:  condor-ce = %{version}
 Provides:  %{name}-master = %{version}-%{release}
 
 Requires: condor
 Requires: %{name}-core-client = %{version}-%{release}
-
-Obsoletes: condor-ce < 0.5.4
 
 %description core
 %{summary}
@@ -183,18 +183,12 @@ Summary: Client-side tools for submission to HTCondor-CE
 
 Requires: %{name}-core-client = %{version}-%{release}
 
-Obsoletes: condor-ce-client < 0.5.4
-Provides:  condor-ce-client = %{version}
-
 %description client
 %{summary}
 
 %package core-client
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
-
-BuildRequires: boost-devel
-BuildRequires: cmake
 
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
