@@ -25,8 +25,8 @@ cat >> /etc/rpm/macros.dist << EOF
 %osg 1
 EOF
 
-cp htcondor-ce/config/htcondor-ce.spec /tmp/rpmbuild/SPECS
-package_version=`grep Version htcondor-ce/config/htcondor-ce.spec | awk '{print $2}'`
+cp htcondor-ce/rpm/htcondor-ce.spec /tmp/rpmbuild/SPECS
+package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
 pushd htcondor-ce
 git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD  | gzip >/tmp/rpmbuild/SOURCES/htcondor-ce-${package_version}.tar.gz
 popd
