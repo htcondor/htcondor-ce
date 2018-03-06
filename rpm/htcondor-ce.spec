@@ -102,9 +102,6 @@ Summary: Default routes for submission to HTCondor
 
 Requires: %{name} = %{version}-%{release}
 
-Obsoletes: condor-ce-condor < 0.5.4
-Provides:  condor-ce-condor = %{version}
-
 %description condor
 %{summary}
 
@@ -115,9 +112,6 @@ Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
-
-Obsoletes: condor-ce-pbs < 0.5.4
-Provides:  condor-ce-pbs = %{version}
 
 %description pbs
 %{summary}
@@ -130,9 +124,6 @@ Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 
-Obsoletes: condor-ce-lsf < 0.5.4
-Provides:  condor-ce-lsf = %{version}
-
 %description lsf
 %{summary}
 
@@ -143,9 +134,6 @@ Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
-
-Obsoletes: condor-ce-sge < 0.5.4
-Provides:  condor-ce-sge = %{version}
 
 %description sge
 %{summary}
@@ -158,9 +146,6 @@ Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
 
-Obsoletes: condor-ce-slurm < 0.5.4
-Provides:  condor-ce-slurm = %{version}
-
 %description slurm
 %{summary}
 
@@ -171,8 +156,6 @@ Summary: Default routes for submission to BOSCO
 Requires: %{name} = %{version}-%{release}
 Requires: /usr/bin/grid-proxy-init
 Requires: /usr/bin/voms-proxy-init
-
-Provides:  condor-ce-bosco = %{version}
 
 %description bosco
 %{summary}
