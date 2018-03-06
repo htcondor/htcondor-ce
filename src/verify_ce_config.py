@@ -15,6 +15,8 @@ except ImportError:
     sys.exit("ERROR: Could not load HTCondor Python bindings. " + \
              "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
 
+is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
+
 # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
 JOB_ROUTER_CONFIG = {}
 for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
@@ -48,8 +50,8 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
             + " Use the 'eval_set_' prefix instead."
 
     # Ensure that users don't set the job environment in the Job Router
-    if any(x.endswith('environment') for x in entry.keys()):
-        sys.exit("ERROR: Do not use the Job Router to set the environment. Place variables under " +\
+    if is_osg and any(x.endswith('environment') for x in entry.keys()):
+        sys.exit("ERROR: Do not use the Job Router to set the environment. Place variables under " + \
                  "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
 
     # Warn users about eval_set_ default attributes in the ENTRIES since their
@@ -61,7 +63,7 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
             "may not have any effect. Use the 'set_' prefix instead."
 
 # Warn users on OSG CEs if osg-configure has not been run
-if htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1'):
+if is_osg:
     try:
         htcondor.param['OSG_CONFIGURED']
     except KeyError:
