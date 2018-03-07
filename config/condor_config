@@ -26,6 +26,7 @@ GRIDMANAGER  = $(SBIN)/condor_gridmanager
 GRID_MONITOR = $(SBIN)/grid_monitor.sh
 JOB_ROUTER    = $(LIBEXEC)/condor_job_router
 COLLECTOR     = $(SBIN)/condor_collector
+SHARED_PORT = $(LIBEXEC)/condor_shared_port
 
 LOCAL_DIR = /var
 RUN     = $(LOCAL_DIR)/run/condor-ce
