@@ -7,13 +7,19 @@ Verify HTCondor-CE configuration before service startup
 import re
 import sys
 
+def error(msg):
+    sys.exit("ERROR: " + msg)
+
+def warn(msg):
+    print "WARNING: " + msg
+
 # Verify that the HTCondor Python bindings are in the PYTHONPATH
 try:
     import classad
     import htcondor
 except ImportError:
-    sys.exit("ERROR: Could not load HTCondor Python bindings. " + \
-             "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
+    error("Could not load HTCondor Python bindings. " + \
+          "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
 
 is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
 
@@ -23,14 +29,14 @@ for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
     try:
         ads = classad.parseAds(htcondor.param[attr])
     except KeyError:
-        sys.exit("ERROR: Missing required configuration: %s" % attr)
+        error("Missing required configuration: %s" % attr)
     JOB_ROUTER_CONFIG[attr] = list(ads) # store the ads (iterating through ClassAdStringIterator consumes them)
 
 # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare the unparsed string to the
 # parsed string, counting the number of ads by proxy: the number of opening square brackets, "["
 for attr, ads in JOB_ROUTER_CONFIG.items():
     if htcondor.param[attr].count('[') != len(ads):
-        sys.exit("ERROR: Could not read %s in the HTCondor CE configuration. Please verify syntax correctness" % attr)
+        error("Could not read %s in the HTCondor CE configuration. Please verify syntax correctness" % attr)
 
 # Find all eval_set_ attributes in the JOB_ROUTER_DEFAULTS
 EVAL_SET_DEFAULTS = set([x.lstrip('eval_') for x in JOB_ROUTER_CONFIG['JOB_ROUTER_DEFAULTS'][0].keys()
@@ -45,27 +51,27 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
     # Warn users if they've set_ attributes that would be overriden by eval_set in the JOB_ROUTER_DEFAULTS
     overriden_attr = EVAL_SET_DEFAULTS.intersection(set(entry.keys()))
     if overriden_attr:
-        print "WARNING: %s in JOB_ROUTER_ENTRIES will be overriden by the JOB_ROUTER_DEFAULTS." \
-            % ', '.join(overriden_attr) \
-            + " Use the 'eval_set_' prefix instead."
+        warn("%s in JOB_ROUTER_ENTRIES will be overriden by the JOB_ROUTER_DEFAULTS." \
+             % ', '.join(overriden_attr) \
+             + " Use the 'eval_set_' prefix instead.")
 
     # Ensure that users don't set the job environment in the Job Router
     if is_osg and any(x.endswith('environment') for x in entry.keys()):
-        sys.exit("ERROR: Do not use the Job Router to set the environment. Place variables under " + \
-                 "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
+        error("Do not use the Job Router to set the environment. Place variables under " + \
+              "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
 
     # Warn users about eval_set_ default attributes in the ENTRIES since their
     # evaluation may occur after the eval_set_ expressions containg them in the
     # JOB_ROUTER_DEFAULTS
     no_effect_attr = DEFAULT_ATTR.intersection(set([x for x in entry.keys() if x.startswith('eval_set_')]))
     if no_effect_attr:
-        print "WARNING: %s in JOB_ROUTER_ENTRIES " % ', '.join(no_effect_attr) + \
-            "may not have any effect. Use the 'set_' prefix instead."
+        warn("%s in JOB_ROUTER_ENTRIES " % ', '.join(no_effect_attr) + \
+             "may not have any effect. Use the 'set_' prefix instead.")
 
 # Warn users on OSG CEs if osg-configure has not been run
 if is_osg:
     try:
         htcondor.param['OSG_CONFIGURED']
     except KeyError:
-        print "WARNING: osg-configure has not been run, degrading the functionality " + \
-            "of the CE. Please run 'osg-configure -c' and restart condor-ce."
+        warn("osg-configure has not been run, degrading the functionality " + \
+             "of the CE. Please run 'osg-configure -c' and restart condor-ce.")
