@@ -4,7 +4,7 @@
 Name: htcondor-ce
 Version: 3.0.4
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
-Summary: A framework to run HTCondor as a CE on the OSG
+Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
 Group: Applications/System
@@ -35,12 +35,11 @@ Requires: blahp
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
 
-# Require the htcondor-ce-core subpackage that contains the non-OSG specific bits
-Requires: %{name}-core = %{version}-%{release}
-
 # Require the htcondor-ce-client subpackage.  The client provides necessary
 # configuration defaults and scripts for the CE itself.
 Requires: %{name}-client = %{version}-%{release}
+
+Provides:  %{name}-master = %{version}-%{release}
 
 %if 0%{?rhel} >= 7
 Requires(post): systemd
@@ -58,18 +57,6 @@ Requires(preun): initscripts
 Requires: /usr/bin/unshare
 
 %description
-%{summary}
-
-%package core
-Group: Applications/System
-Summary: Core configuration for HTCondor-CE
-
-Provides:  %{name}-master = %{version}-%{release}
-
-Requires: condor
-Requires: %{name}-core-client = %{version}-%{release}
-
-%description core
 %{summary}
 
 %if ! 0%{?osg}
@@ -164,15 +151,6 @@ Requires: /usr/bin/voms-proxy-init
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
-Requires: %{name}-core-client = %{version}-%{release}
-
-%description client
-%{summary}
-
-%package core-client
-Group: Applications/System
-Summary: Client-side tools for submission to HTCondor-CE
-
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
@@ -182,7 +160,7 @@ Requires: grid-certificates >= 7
 
 Requires: condor-python
 
-%description core-client
+%description client
 %{summary}
 
 %package collector
@@ -279,21 +257,13 @@ if [ $1 -ge 1 ]; then
 fi
 
 %files
-%{_datadir}/condor-ce/osg-wrapper
-
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
-%{_datadir}/condor-ce/gratia_cleanup.py*
-
-%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
-
-%files core
 %defattr(-,root,root,-)
 
 %{_bindir}/condor_ce_history
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
+%{_datadir}/condor-ce/gratia_cleanup.py*
 
 %if %systemd
 %{_unitdir}/condor-ce.service
@@ -314,6 +284,7 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
@@ -330,6 +301,7 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %if ! 0%{?osg}
 %files bdii
@@ -408,21 +380,16 @@ fi
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
 
 %files client
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile.osg
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-osg.conf
-%{_bindir}/condor_ce_info_status
-%{python_sitelib}/htcondorce/info_query.py*
 
-%files core-client
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
 %{_datadir}/condor-ce/pilot-status.cpf
+%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_client_env_bootstrap
@@ -432,6 +399,7 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
+%{_bindir}/condor_ce_info_status
 %{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
@@ -451,6 +419,7 @@ fi
 
 %dir %{python_sitelib}/htcondorce
 %{python_sitelib}/htcondorce/__init__.py*
+%{python_sitelib}/htcondorce/info_query.py*
 %{python_sitelib}/htcondorce/tools.py*
 
 %files collector
