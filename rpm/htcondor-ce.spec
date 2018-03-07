@@ -259,11 +259,17 @@ fi
 %files
 %defattr(-,root,root,-)
 
+%if 0%{?osg}
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+%{_datadir}/condor-ce/gratia_cleanup.py*
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+%endif
+
 %{_bindir}/condor_ce_history
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
-%{_datadir}/condor-ce/gratia_cleanup.py*
 
 %if %systemd
 %{_unitdir}/condor-ce.service
@@ -280,11 +286,9 @@ fi
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/osg-wrapper
@@ -301,7 +305,6 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
-%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %if ! 0%{?osg}
 %files bdii
@@ -381,6 +384,11 @@ fi
 
 %files client
 
+%if 0%{?osg}
+%{_bindir}/condor_ce_info_status
+%{python_sitelib}/htcondorce/info_query.py*
+%endif
+
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
@@ -399,7 +407,6 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
-%{_bindir}/condor_ce_info_status
 %{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
@@ -419,7 +426,6 @@ fi
 
 %dir %{python_sitelib}/htcondorce
 %{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/info_query.py*
 %{python_sitelib}/htcondorce/tools.py*
 
 %files collector
