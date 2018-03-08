@@ -29,8 +29,16 @@ BuildRequires: cmake
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
-# This ought to pull in the HTCondor-CE specific version of the blahp
+# UW builds of HTCondor include the blahp and do not use the Globus-lcmaps
+# plugin architecture for authz
+%if ! 0%{?uw_build}
 Requires: blahp
+%ifarch %{ix86}
+Requires: liblcas_lcmaps_gt4_mapping.so.0
+%else
+Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
+%endif
+%endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -59,7 +67,7 @@ Requires: /usr/bin/unshare
 %description
 %{summary}
 
-%if ! 0%{?osg}
+%if ! 0%{?osg} && ! 0%{?uw_build}
 %package bdii
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
@@ -95,10 +103,7 @@ Requires: %{name} = %{version}-%{release}
 %package pbs
 Group: Applications/System
 Summary: Default routes for submission to PBS
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
 
 %description pbs
 %{summary}
@@ -106,10 +111,7 @@ Requires: /usr/bin/voms-proxy-init
 %package lsf
 Group: Applications/System
 Summary: Default routes for submission to LSF
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
 
 %description lsf
 %{summary}
@@ -117,10 +119,8 @@ Requires: /usr/bin/voms-proxy-init
 %package sge
 Group: Applications/System
 Summary: Default routes for submission to SGE
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+
 
 %description sge
 %{summary}
@@ -130,19 +130,13 @@ Group: Applications/System
 Summary: Default routes for submission to Slurm
 
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
-
 %description slurm
 %{summary}
 
 %package bosco
 Group: Applications/System
 Summary: Default routes for submission to BOSCO
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
 
 %description bosco
 %{summary}
@@ -154,9 +148,10 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+Requires: /usr/bin/voms-proxy-info
+%if ! 0%{?uw_build}
 Requires: grid-certificates >= 7
+%endif
 
 Requires: condor-python
 
@@ -206,7 +201,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
-%if 0%{?osg}
+# bdii is CERN-only
+%if 0%{?osg} || 0%{?uw_build}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
@@ -214,6 +210,15 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+%endif
+
+# remove central ce collector tools and gratia accounting cleanup
+%if ! 0%{?osg}
+rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
+rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
@@ -306,7 +311,7 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 
-%if ! 0%{?osg}
+%if ! 0%{?osg} && ! 0%{?uw_build}
 %files bdii
 %attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/htcondor-ce-provider
 
