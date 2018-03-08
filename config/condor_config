@@ -69,7 +69,7 @@ VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 
 # Use wrapper script to set environment in local universe jobs
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
-USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper
+USER_JOB_WRAPPER = $(DATA_DIR)/local-wrapper
 
 # Force condor_ce_q to show jobs for all users until 'root' is recognized as
 # a QUEUE_SUPER_USER when using a CERTIFICATE_MAPFILE

@@ -291,7 +291,7 @@ fi
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
-%{_datadir}/condor-ce/osg-wrapper
+%{_datadir}/condor-ce/local-wrapper
 
 %{python_sitelib}/htcondorce/audit_payloads.py*
 
