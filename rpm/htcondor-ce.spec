@@ -223,6 +223,15 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
+# Use simplified CERTIFICATE_MAPFILE for UW builds
+# OSG and CERN have entries in the original mapfile so we
+# use it for non-UW builds
+%if 0%{?uw_build}
+rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
+%else
+mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
+%endif
+
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %if %systemd
