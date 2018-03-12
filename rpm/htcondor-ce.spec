@@ -217,6 +217,7 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
 %if ! 0%{?osg}
 rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
 rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
@@ -266,6 +267,9 @@ fi
 %defattr(-,root,root,-)
 
 %if 0%{?osg}
+# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
+%{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/gratia_cleanup.py*
 %{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf

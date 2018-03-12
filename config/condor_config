@@ -60,7 +60,6 @@ C_GAHP_WORKER_THREAD_LOG = $(USER_LOG)/CGAHPWorkerLog.$(USERNAME)
 CONDOR_GAHP = $(SBIN)/condor_c-gahp
 CONDOR_GAHP_WORKER = $(SBIN)/condor_c-gahp_worker_thread
 AMAZON_GAHP = $(SBIN)/amazon_gahp
-BATCH_GAHP = $(BIN)/blahpd
 CREAM_GAHP = $(SBIN)/cream_gahp
 GT2_GAHP = $(SBIN)/gahp_server
 NORDUGRID_GAHP = $(SBIN)/nordugrid_gahp
