@@ -148,6 +148,7 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
+# voms-proxy-info used by condor_ce_trace
 Requires: /usr/bin/voms-proxy-info
 %if ! 0%{?uw_build}
 Requires: grid-certificates >= 7
