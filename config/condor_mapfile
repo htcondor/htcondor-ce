@@ -1,3 +1,16 @@
-GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.opensciencegrid.org
+# HTCondor-CE certificate mapfile
+# http://research.cs.wisc.edu/htcondor/manual/v8.6/3_8Security.html#SECTION00484000000000000000
+
+# To configure authorization between HTCondor-CE daemons, uncomment and replace
+# <HOST CERT DISTINGUISHED NAME> and <HOSTNAME>, (replacing any '/' with '\/')
+# in the following line:
+# GSI "<HOST CERT DISTINGUISHED NAME>" <HOSTNAME>@daemon.htcondor.org
+
+# To configure authorization for users submitting jobs to your HTCondor-CE,
+# uncomment and replace <USER CERT DISTINGUISHED NAME> and <USERNAME> (replacing
+# any '/' with '\/') in the following line for each user you wish to map:
+# GSI "<USER CERT DISTINGUISHED NAME>" <USERNAME>@users.htcondor.org
+
+GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
 CLAIMTOBE .* anonymous@claimtobe
 FS (.*) \1

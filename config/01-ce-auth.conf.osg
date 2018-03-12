@@ -13,31 +13,31 @@ DENY_DAEMON = anonymous@*, unmapped@*
 DENY_OWNER = anonymous@*, unmapped@*
 
 # Defaults authorizations
-FRIENDLY_DAEMONS = $(FULL_HOSTNAME)@daemon.htcondor.org/$(FULL_HOSTNAME) condor@users.htcondor.org/$(FULL_HOSTNAME) condor@child/$(FULL_HOSTNAME)
-# Setting the UID_DOMAIN appends @users.htcondor.org to GUMS mappings.
-UID_DOMAIN = users.htcondor.org
-USERS = *@users.htcondor.org
+FRIENDLY_DAEMONS = $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME) condor@users.opensciencegrid.org/$(FULL_HOSTNAME) condor@child/$(FULL_HOSTNAME)
+# Setting the UID_DOMAIN appends @users.opensciencegrid.org to GUMS mappings.
+UID_DOMAIN = users.opensciencegrid.org
+USERS = *@users.opensciencegrid.org
 
 # Unmapped users who authenticated with GSI; they are allowed to advertise
 # to the collector, but that is all.
-UNMAPPED_USERS = *@unmapped.htcondor.org
+UNMAPPED_USERS = *@unmapped.opensciencegrid.org
 
 # Authz settings for each daemon.  Preferably, change the templates above
 ALLOW_WRITE = $(FRIENDLY_DAEMONS)
-SCHEDD.ALLOW_WRITE = $(USERS), $(FULL_HOSTNAME)@daemon.htcondor.org/$(FULL_HOSTNAME)
+SCHEDD.ALLOW_WRITE = $(USERS), $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME)
 COLLECTOR.ALLOW_ADVERTISE_MASTER = $(FRIENDLY_DAEMONS)
 COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(FRIENDLY_DAEMONS)
 COLLECTOR.ALLOW_ADVERTISE_STARTD =  $(UNMAPPED_USERS), $(USERS)
-SCHEDD.ALLOW_NEGOTIATOR = $(FULL_HOSTNAME)@daemon.htcondor.org/$(FULL_HOSTNAME)
+SCHEDD.ALLOW_NEGOTIATOR = $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME)
 ALLOW_DAEMON = $(FRIENDLY_DAEMONS)
 C_GAHP.ALLOW_DAEMON = $(ALLOW_DAEMON)
-ALLOW_ADMINISTRATOR = $(FULL_HOSTNAME)@daemon.htcondor.org/$(FULL_HOSTNAME)
+ALLOW_ADMINISTRATOR = $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME)
 QUEUE_SUPER_USERS = $(FULL_HOSTNAME)
 
 # These security settings are likely unnecessary as we don't run a negotiator or
 # a startd.  However, we'd prefer to see the least number of authorizations possible.
-ALLOW_NEGOTIATOR = $(FULL_HOSTNAME)@daemon.htcondor.org/$(FULL_HOSTNAME)
-ALLOW_OWNER = $(FULL_HOSTNAME)@daemon.htcondor.org/$(FULL_HOSTNAME)
+ALLOW_NEGOTIATOR = $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME)
+ALLOW_OWNER = $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME)
 
 # Authentication settings
 SCHEDD.SEC_WRITE_AUTHENTICATION_METHODS = FS,GSI
