@@ -29,17 +29,17 @@ BuildRequires: cmake
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
-# UW builds of HTCondor include the blahp and do not use the Globus-lcmaps
-# plugin architecture for authz
-%if ! 0%{?uw_build}
+# UW builds of HTCondor call the blahp the "batch_gahp" and do not use
+# the Globus-lcmaps plugin architecture for authz
+%if 0%{?uw_build}
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
+%else
 Requires: blahp
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
-%else
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
 %endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
