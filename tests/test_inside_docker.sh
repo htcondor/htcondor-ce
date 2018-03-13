@@ -18,8 +18,8 @@ function run_osg_tests {
 
 function run_integration_tests {
     # create host/user certificates
-    useradd -m cetest
     test_user=cetest
+    useradd -m $test_user
     yum install -y openssl # centos7 containers don't have openssl by default
     osg-ca-generator --host --user $test_user --pass $test_user
 
