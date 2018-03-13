@@ -38,6 +38,8 @@ Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
 %endif
+%else
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
 %endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
