@@ -215,20 +215,24 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 %endif
 
-# remove central ce collector tools and gratia accounting cleanup
+# Gratia accounting cleanup
 %if ! 0%{?osg}
-rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
-rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
+%if 0%{?uw_build}
+# Remove BATCH_GAHP location override
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
+
+# Remove central collector tools
+rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
+rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+
 # Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
 # OSG and CERN have entries in the original mapfile/authz for *cern.ch and
 # *opensciencegrid.org so we use original config non-UW builds
-%if 0%{?uw_build}
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf.osg
 rm -rf ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf.osg
@@ -281,11 +285,14 @@ fi
 %files
 %defattr(-,root,root,-)
 
-%if 0%{?osg}
+%if ! 0%{?uw_build}
 # TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+%endif
+
+%if 0%{?osg}
 %{_datadir}/condor-ce/gratia_cleanup.py*
 %{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
@@ -409,7 +416,7 @@ fi
 
 %files client
 
-%if 0%{?osg}
+%if ! 0%{?uw_build}
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
 %endif
