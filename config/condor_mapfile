@@ -1,11 +1,33 @@
-GSI "^\/DC\=com\/DC\=DigiCert-Grid\/O=Open Science Grid\/OU\=Services\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
-GSI "^\/DC\=DigiCert-Grid\/DC\=com\/O=Open Science Grid\/OU\=Services\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
-GSI "^\/DC\=org\/DC\=opensciencegrid\/O=Open Science Grid\/OU\=Services\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
-GSI "^\/C\=RU\/O\=RDIG\/OU\=hosts\/OU=*\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
-GSI "^\/C\=BR\/O\=ANSP\/OU\=ANSPGrid\ CA\/OU\=Services\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
-GSI "^\/DC\=org\/DC\=terena\/DC\=tcs.*\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@daemon.opensciencegrid.org
-GSI "^\/DC\=ch\/DC\=cern\/OU\=computers\/CN\=(host\/)?([A-Za-z0-9.\-]*)$" \2@cern.ch
-GSI (.*) GSS_ASSIST_GRIDMAP
-GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.opensciencegrid.org
+# HTCondor-CE Certificate Mapfile
+# http://research.cs.wisc.edu/htcondor/manual/v8.6/3_8Security.html#SECTION00484000000000000000
+# Using GSI authentication for certificates requires the issuer CAs to be
+# installed in /etc/grid-security/certificates. If you would also like to
+# authenticate VOMS attributes, *.lsc files should be installed in
+# /etc/grid-security/vomsdir/
+
+# To configure authorization between HTCondor-CE daemons, uncomment and replace
+# <HOST CERT DISTINGUISHED NAME> and <HOSTNAME>, (escaping any '/' with '\/')
+# in the following line:
+#
+# GSI "^<HOST CERT DISTINGUISHED NAME>$" <HOSTNAME>@daemon.htcondor.org
+
+# To configure authorization for users submitting jobs to your HTCondor-CE,
+# uncomment and replace <DISTINGUISHED NAME> and <USERNAME> (escaping any '/'
+# with '\/') with the distinguished name of the incoming user certificate and
+# the unix account under which the job should run, respectively:
+#
+# GSI "^<DISTINGUISHED NAME>$" <USERNAME>@users.htcondor.org
+
+# The first VOMS attribute can also be used for mapping:
+#
+# GSI "<DISTINGUISHED NAME>,<FIRST VOMS FQAN>" <USERNAME>@users.htcondor.org
+
+# You can use regular expressions for mapping certificate and VOMS attribute
+# credentials.  For example, to map any GLOW certificate with the 'htpc' role to
+# the 'glow' user, add a line that looks like the following:
+#
+# GSI ".*,\/GLOW\/Role=htpc.*" glow@users.htcondor.org
+
+GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
 CLAIMTOBE .* anonymous@claimtobe
 FS (.*) \1

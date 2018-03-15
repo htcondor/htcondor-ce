@@ -60,7 +60,6 @@ C_GAHP_WORKER_THREAD_LOG = $(USER_LOG)/CGAHPWorkerLog.$(USERNAME)
 CONDOR_GAHP = $(SBIN)/condor_c-gahp
 CONDOR_GAHP_WORKER = $(SBIN)/condor_c-gahp_worker_thread
 AMAZON_GAHP = $(SBIN)/amazon_gahp
-BATCH_GAHP = $(BIN)/blahpd
 CREAM_GAHP = $(SBIN)/cream_gahp
 GT2_GAHP = $(SBIN)/gahp_server
 NORDUGRID_GAHP = $(SBIN)/nordugrid_gahp
@@ -69,7 +68,7 @@ VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 
 # Use wrapper script to set environment in local universe jobs
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
-USER_JOB_WRAPPER = $(DATA_DIR)/osg-wrapper
+USER_JOB_WRAPPER = $(DATA_DIR)/local-wrapper
 
 # Force condor_ce_q to show jobs for all users until 'root' is recognized as
 # a QUEUE_SUPER_USER when using a CERTIFICATE_MAPFILE

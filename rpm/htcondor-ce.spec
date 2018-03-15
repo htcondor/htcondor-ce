@@ -23,11 +23,24 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
+BuildRequires: boost-devel
+BuildRequires: cmake
+
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
-# This ought to pull in the HTCondor-CE specific version of the blahp
+# UW builds of HTCondor call the blahp the "batch_gahp" and do not use
+# the Globus-lcmaps plugin architecture for authz
+%if 0%{?uw_build}
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
+%else
 Requires: blahp
+%ifarch %{ix86}
+Requires: liblcas_lcmaps_gt4_mapping.so.0
+%else
+Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
+%endif
+%endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -36,8 +49,6 @@ Requires: which
 # configuration defaults and scripts for the CE itself.
 Requires: %{name}-client = %{version}-%{release}
 
-Obsoletes: condor-ce < 0.5.4
-Provides:  condor-ce = %{version}
 Provides:  %{name}-master = %{version}-%{release}
 
 %if 0%{?rhel} >= 7
@@ -58,7 +69,7 @@ Requires: /usr/bin/unshare
 %description
 %{summary}
 
-%if ! 0%{?osg}
+%if ! 0%{?osg} && ! 0%{?uw_build}
 %package bdii
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
@@ -88,22 +99,13 @@ Summary: Default routes for submission to HTCondor
 
 Requires: %{name} = %{version}-%{release}
 
-Obsoletes: condor-ce-condor < 0.5.4
-Provides:  condor-ce-condor = %{version}
-
 %description condor
 %{summary}
 
 %package pbs
 Group: Applications/System
 Summary: Default routes for submission to PBS
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
-
-Obsoletes: condor-ce-pbs < 0.5.4
-Provides:  condor-ce-pbs = %{version}
 
 %description pbs
 %{summary}
@@ -111,13 +113,7 @@ Provides:  condor-ce-pbs = %{version}
 %package lsf
 Group: Applications/System
 Summary: Default routes for submission to LSF
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
-
-Obsoletes: condor-ce-lsf < 0.5.4
-Provides:  condor-ce-lsf = %{version}
 
 %description lsf
 %{summary}
@@ -125,13 +121,8 @@ Provides:  condor-ce-lsf = %{version}
 %package sge
 Group: Applications/System
 Summary: Default routes for submission to SGE
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
 
-Obsoletes: condor-ce-sge < 0.5.4
-Provides:  condor-ce-sge = %{version}
 
 %description sge
 %{summary}
@@ -141,24 +132,13 @@ Group: Applications/System
 Summary: Default routes for submission to Slurm
 
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
-
-Obsoletes: condor-ce-slurm < 0.5.4
-Provides:  condor-ce-slurm = %{version}
-
 %description slurm
 %{summary}
 
 %package bosco
 Group: Applications/System
 Summary: Default routes for submission to BOSCO
-
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
-
-Provides:  condor-ce-bosco = %{version}
 
 %description bosco
 %{summary}
@@ -167,19 +147,16 @@ Provides:  condor-ce-bosco = %{version}
 Group: Applications/System
 Summary: Client-side tools for submission to HTCondor-CE
 
-BuildRequires: cmake
-
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
-Requires: /usr/bin/grid-proxy-init
-Requires: /usr/bin/voms-proxy-init
+# voms-proxy-info used by condor_ce_trace
+Requires: /usr/bin/voms-proxy-info
+%if ! 0%{?uw_build}
 Requires: grid-certificates >= 7
+%endif
 
 Requires: condor-python
-
-Obsoletes: condor-ce-client < 0.5.4
-Provides:  condor-ce-client = %{version}
 
 %description client
 %{summary}
@@ -227,7 +204,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
-%if 0%{?osg}
+# bdii is CERN-only
+%if 0%{?osg} || 0%{?uw_build}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
@@ -235,6 +213,33 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+%endif
+
+# Gratia accounting cleanup
+%if ! 0%{?osg}
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
+%endif
+
+%if 0%{?uw_build}
+# Remove BATCH_GAHP location override
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
+
+# Remove central collector tools
+rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
+rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
+rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+
+# Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
+# OSG and CERN have entries in the original mapfile/authz for *cern.ch and
+# *opensciencegrid.org so we use original config non-UW builds
+rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
+rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf.osg
+rm -rf ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf.osg
+%else
+mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
+mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf{.osg,}
+mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
@@ -280,11 +285,23 @@ fi
 %files
 %defattr(-,root,root,-)
 
+%if ! 0%{?uw_build}
+# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
+# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
+%{_datadir}/condor-ce/config.d/01-blahp-location.conf
+%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
+%endif
+
+%if 0%{?osg}
+%{_datadir}/condor-ce/gratia_cleanup.py*
+%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
+%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+%endif
+
 %{_bindir}/condor_ce_history
 %{_bindir}/condor_ce_router_q
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
-%{_datadir}/condor-ce/gratia_cleanup.py*
 
 %if %systemd
 %{_unitdir}/condor-ce.service
@@ -301,14 +318,12 @@ fi
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/03-ce-shared-port-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
-%{_datadir}/condor-ce/osg-wrapper
+%{_datadir}/condor-ce/local-wrapper
 
 %{python_sitelib}/htcondorce/audit_payloads.py*
 
@@ -322,9 +337,8 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
-%attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
-%if ! 0%{?osg}
+%if ! 0%{?osg} && ! 0%{?uw_build}
 %files bdii
 %attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/htcondor-ce-provider
 
@@ -402,6 +416,11 @@ fi
 
 %files client
 
+%if ! 0%{?uw_build}
+%{_bindir}/condor_ce_info_status
+%{python_sitelib}/htcondorce/info_query.py*
+%endif
+
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
@@ -420,7 +439,6 @@ fi
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
-%{_bindir}/condor_ce_info_status
 %{_bindir}/condor_ce_job_router_info
 %{_bindir}/condor_ce_off
 %{_bindir}/condor_ce_on
@@ -440,7 +458,6 @@ fi
 
 %dir %{python_sitelib}/htcondorce
 %{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/info_query.py*
 %{python_sitelib}/htcondorce/tools.py*
 
 %files collector
