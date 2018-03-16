@@ -13,16 +13,6 @@ fail() {
 
 # Skip sanity checks if running as a central collector
 if [ "$1" != "collector" ]; then
-    # Check value of QUEUE_SUPER_USER_MAY_IMPERSONATE for HTCondor batch systems
-    # We don't do this with python bindings because switching between CE and batch system config is non-trivial
-    condor_ce_config_val -config 2>&1 | grep '02-ce-condor.conf' > /dev/null
-    if [ $? -eq 0 ]; then
-        CONFIG_KNOB='QUEUE_SUPER_USER_MAY_IMPERSONATE'
-        CONFIG_VAL=`CONDOR_CONFIG=/etc/condor/condor_config condor_config_val $CONFIG_KNOB`
-        [ "$CONFIG_VAL" != '.*' ] && fail 6 "HTCondor batch system is improperly configured for use with HTCondor CE.\
-Please verify that '$CONFIG_KNOB=.*' is set in your HTCondor configuration."
-    fi
-
     # Verify configuration using the python bindings
     python /usr/share/condor-ce/verify_ce_config.py || exit 6
 else
