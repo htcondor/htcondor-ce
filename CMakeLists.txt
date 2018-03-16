@@ -106,7 +106,6 @@ install(FILES
   config/02-ce-sge.conf
   config/02-ce-slurm.conf
   config/02-ce-bosco.conf
-  config/03-ce-shared-port.conf
   config/03-managed-fork.conf
   config/04-ce-collector-auth.conf
   config/05-ce-view.conf
@@ -129,7 +128,6 @@ install(FILES
   config/02-ce-sge-defaults.conf
   config/02-ce-slurm-defaults.conf
   config/02-ce-bosco-defaults.conf
-  config/03-ce-shared-port-defaults.conf
   config/03-managed-fork-defaults.conf
   config/03-gratia-cleanup.conf
   config/05-ce-view-defaults.conf
