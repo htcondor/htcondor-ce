@@ -4,6 +4,7 @@
 Verify HTCondor-CE configuration before service startup
 """
 
+import os
 import re
 import sys
 
@@ -75,3 +76,18 @@ if is_osg:
     except KeyError:
         warn("osg-configure has not been run, degrading the functionality " + \
              "of the CE. Please run 'osg-configure -c' and restart condor-ce.")
+
+# Ensure that HTCondor back-ends have QUEUE_SUPER_USER_MAY_IMPERSONATE set correctly
+try:
+    htcondor.param['JOB_ROUTER_SCHEDD2_NAME']
+except KeyError:
+    pass
+else:
+    os.environ['CONDOR_CONFIG'] = '/etc/condor/condor_config'
+    htcondor.reload_config()
+    su_attr = 'QUEUE_SUPER_USER_MAY_IMPERSONATE'
+    if htcondor.param.get(su_attr, '') != '.*':
+        err_exit("HTCondor batch system is improperly configured for use with HTCondor CE. " \
+                 "Please verify that '%s = .*' is set in your HTCondor configuration." % su_attr)
+finally:
+    os.environ['CONDOR_CONFIG'] = '/etc/condor-ce/condor_config'
