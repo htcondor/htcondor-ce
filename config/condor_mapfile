@@ -18,9 +18,9 @@
 #
 # GSI "^<DISTINGUISHED NAME>$" <USERNAME>@users.htcondor.org
 
-# The first VOMS attribute can also be used for mapping:
+# VOMS attributes can also be used for mapping:
 #
-# GSI "<DISTINGUISHED NAME>,<FIRST VOMS FQAN>" <USERNAME>@users.htcondor.org
+# GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>@users.htcondor.org
 
 # You can use regular expressions for mapping certificate and VOMS attribute
 # credentials.  For example, to map any GLOW certificate with the 'htpc' role to
