@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.1.0
+Version: 3.1.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -491,7 +491,12 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Thu Mar 15 2018 Brian Lin <blin@cs.wisc.edu> - 3.0.4-1
+* Fri Apr 06 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.1-1
+- Allow InCommon host certs
+- Drop vestigal HTCondor-related configuration
+- Add documentation for mapping multiple VOMS attributes
+
+* Thu Mar 15 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.0-1
 - Removed OSG-specific code and configuration from builds intended for the
   HTCondor repo
 - Updated the CERN BDII provider
