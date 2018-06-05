@@ -69,7 +69,7 @@ Requires: /usr/bin/unshare
 %description
 %{summary}
 
-%if ! 0%{?osg} && ! 0%{?uw_build}
+%if ! 0%{?osg}
 %package bdii
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
