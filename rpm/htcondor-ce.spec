@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 3.1.2
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -491,6 +491,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Jun 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.2-2
+- Build the BDII sub-package for the condor repository
+
 * Wed May 02 2018 Carl Edquist <edquist@cs.wisc.edu> - 3.1.2-1
 - Require voms-clients-cpp explicitly (SOFTWARE-3201)
 - Add CN -> daemon.opensciencegrid.org mapping (SOFTWARE-3236)
