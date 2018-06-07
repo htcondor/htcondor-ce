@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 3.1.2
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -204,8 +204,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
 install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
 
-# bdii is CERN-only
-%if 0%{?osg} || 0%{?uw_build}
+# Don't build bdii sub-package for the OSG
+%if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/06-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/06-ce-bdii.conf
@@ -336,7 +336,7 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 
-%if ! 0%{?osg} && ! 0%{?uw_build}
+%if ! 0%{?osg}
 %files bdii
 %attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/htcondor-ce-provider
 
@@ -491,6 +491,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Jun 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.2-3
+- Ensure that all BDII files exist for the condor repository
+
 * Thu Jun 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.2-2
 - Build the BDII sub-package for the condor repository
 
