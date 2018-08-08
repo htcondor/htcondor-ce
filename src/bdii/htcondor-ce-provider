@@ -104,11 +104,8 @@ GLUE2MappingPolicyShareForeignKey: {shareid}
 
 def main():
 
-    # Get central_manager hostname
-    central_manager = htcondor.param.get('CENTRAL_MANAGER')
-    if not central_manager:
-        sys.stderr.write("Error: CENTRAL_MANAGER not set\n")
-        sys.exit(1)
+    # Get hostname of the batch system central manager
+    central_manager = htcondor.param.get('COLLECTOR_HOST')
 
     # Get VO Names
     vonames = htcondor.param.get('HTCONDORCE_VONames')
@@ -126,8 +123,8 @@ def main():
     # This is the bind DN for all entries
     bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
 
-    # Query collector for number of CPUs and Collector ad
-    coll = htcondor.Collector(central_manager)
+    # Query collector for the number of CPUs and batch system Collector ad
+    coll = htcondor.Collector()
     total_cores = 0
     for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Cpus']):
         if ad.get('Cpus'):
