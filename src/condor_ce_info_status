@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-FALLBACK_COLLECTOR = 'collector.opensciencegrid.org'
-FALLBACK_COLLECTOR_PORT = 9619
+DEFAULT_COLLECTOR = 'collector.opensciencegrid.org:9619'
+DEFAULT_COLLECTOR_PORT = '9619'
 
 import os
 import sys
@@ -146,10 +146,9 @@ which results in:
     if opts.pool:
         collector = opts.pool
     else:
-        collector = htcondor.param.get('CONDOR_CE_COLLECTOR_HOST', FALLBACK_COLLECTOR)
+        collector = htcondor.param.get('CONDOR_CE_COLLECTOR_HOST', DEFAULT_COLLECTOR)
     if ':' not in collector:
-        collector_port = htcondor.param.get('COLLECTOR_PORT', FALLBACK_COLLECTOR_PORT)
-        collector += ":" + str(collector_port)
+        collector += ":" + DEFAULT_COLLECTOR_PORT
 
     return opts, collector
 
