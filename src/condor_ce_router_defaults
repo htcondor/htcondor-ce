@@ -39,7 +39,7 @@ JOB_ROUTER_DEFAULTS_GENERATED = \\
     set_RoutedJob = true; \\
     copy_environment = "orig_environment"; \\
     set_osg_environment = "@osg_environment@"; \\
-    set_CondorCECollectorHost = ifThenElse(regexp(":", "$(COLLECTOR_HOST)"), "$(COLLECTOR_HOST)", strcat("$(COLLECTOR_HOST)", ":", $(COLLECTOR_PORT))); \\
+    set_CondorCECollectorHost = "$(COLLECTOR_HOST)"; \\
     eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), %s" ", \\
         ifThenElse(orig_environment is undefined, osg_environment, \\
           strcat(osg_environment, " ", orig_environment) \\
