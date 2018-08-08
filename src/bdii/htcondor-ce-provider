@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import re
-import os
 import sys
-import datetime
-import htcondor
+from datetime import datetime
 import subprocess
 import collections
+
+import htcondor
 
 service_ldif = """dn: {bind_dn}
 GLUE2ServiceID: {central_manager}
@@ -206,7 +205,6 @@ def main():
         issuer = cp.communicate()[0].replace(r'issuer=\s*', '').strip()
 
         name = schedd_ad['Name']
-        versions = schedd_ad['CondorVersion'].split()[1]
         start_time = datetime.datetime.fromtimestamp(int(schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         print (endpoint_ldif.format(
