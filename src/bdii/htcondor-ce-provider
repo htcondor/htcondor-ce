@@ -148,39 +148,40 @@ def main():
         instances=instances,
         ))
 
-    schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
+    batch_schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
+    ce_batch_schedd_ads = [ad for ad in batch_schedd_ads if ad.get('HAS_HTCONDOR_CE')]
 
     # Print the entry for the GLUE2 Service
     print (service_ldif.format(
         central_manager=central_manager,
         bind_dn=bind_dn,
-        num_endpoints=len(schedd_ads),
+        num_endpoints=len(ce_batch_schedd_ads),
         num_shares=len(vonames),
         site_name=site_name,
         ))
 
-    for schedd_ad in schedd_ads:
+    for ce_batch_schedd_ad in ce_batch_schedd_ads:
 
-        if not schedd_ad['AuthenticatedIdentity'][:17] == 'computing-element':
-            continue
+        ce_host = ce_batch_schedd_ad['Machine']
+        ce_collector = htcondor.Collector(ce_host + ':9619')  # find the CE using the default CE port
+        ce_schedd_ad = ce_collector.locate(htcondor.DaemonTypes.Schedd)
 
         try:
-            if htcondor.SecMan().ping(schedd_ad, "READ")['AuthorizationSucceeded']:
+            if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
                 state = 'ok'
             else:
                 state = 'warning'
             state_info = 'Authorization ping successful'
-        except (KeyError, RuntimeError) as e:
-            state = 'critial'
+        except (KeyError, RuntimeError):
+            state = 'critical'
             state_info = 'Authorization ping failed'
 
-        schedd = htcondor.Schedd(schedd_ad)
-        machine = schedd_ad['Machine']
+        ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
         try:
-            query = schedd.xquery("x509userproxyvoname isnt undefined", ["JobStatus", "x509userproxyvoname"])
-        except RuntimeError, e:
-            sys.stderr.write("%s: %s\n" % (e, machine))
+            query = ce_schedd.xquery(attr_list=["JobStatus", "x509userproxyvoname"])
+        except RuntimeError, exc:
+            sys.stderr.write("%s: %s\n" % (exc, ce_host))
             continue
 
         idle_vo_jobs = collections.defaultdict(int)
@@ -201,8 +202,8 @@ def main():
         cp = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         issuer = cp.communicate()[0].replace(r'issuer=\s*', '').strip()
 
-        name = schedd_ad['Name']
-        start_time = datetime.datetime.fromtimestamp(int(schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ')
+        name = ce_schedd_ad['Name']
+        start_time = datetime.fromtimestamp(int(ce_schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         print (endpoint_ldif.format(
             name=name,
@@ -217,8 +218,8 @@ def main():
 
         for vo in vonames:
             vo = vo.strip()
-            shareid = "%s_%s_share" % (machine, vo)
-            endpointid = "%s_HTCondorCE" % (machine)
+            shareid = "%s_%s_share" % (ce_host, vo)
+            endpointid = "%s_HTCondorCE" % (ce_host)
             total_jobs = total_vo_jobs.get(vo, 0)
             idle_jobs = idle_vo_jobs.get(vo, 0)
             running_jobs = running_vo_jobs.get(vo, 0)
@@ -232,7 +233,7 @@ def main():
                 endpointid=endpointid,
                 ))
 
-            policyid = "%s_%s_policy" % (machine, vo)
+            policyid = "%s_%s_policy" % (ce_host, vo)
             print (policy_ldif.format(
                 policyid=policyid,
                 shareid=shareid,
