@@ -164,7 +164,11 @@ def main():
 
         ce_host = ce_batch_schedd_ad['Machine']
         ce_collector = htcondor.Collector(ce_host + ':9619')  # find the CE using the default CE port
-        ce_schedd_ad = ce_collector.locate(htcondor.DaemonTypes.Schedd)
+        try:
+            ce_schedd_ad = ce_collector.locate(htcondor.DaemonTypes.Schedd)
+        except RuntimeError:
+            sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
+            continue
 
         try:
             if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
