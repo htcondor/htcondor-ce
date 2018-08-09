@@ -49,8 +49,8 @@ install(PROGRAMS
   src/condor_ce_jobmetrics
   src/condor_ce_metric
   src/condor_ce_view
-  src/bdii/htcondor-ce-provider
   src/gratia_cleanup.py
+  contrib/bdii/htcondor-ce-provider
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(PROGRAMS
   src/condor_ce_config_generator
@@ -110,7 +110,6 @@ install(FILES
   config/04-ce-collector-auth.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
-  config/06-ce-bdii.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES
   config/01-blahp-location.conf
@@ -132,12 +131,17 @@ install(FILES
   config/03-gratia-cleanup.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
-  config/06-ce-bdii-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
+install(FILES
+  config/99-condor-ce.conf
+  config/50-condor-ce-defaults.conf
+  contrib/bdii/99-ce-bdii.conf
+  contrib/bdii/50-ce-bdii-defaults.conf
+  DESTINATION
+  ${SYSCONF_INSTALL_DIR}/condor/config.d)
 install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(FILES templates/index.html templates/vos.html templates/metrics.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
-install(FILES config/99-condor-ce.conf config/50-condor-ce-defaults.conf DESTINATION ${SYSCONF_INSTALL_DIR}/condor/config.d)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 install(FILES config/condor-ce-collector-generator.cron DESTINATION ${SYSCONF_INSTALL_DIR}/cron.d)
 install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
