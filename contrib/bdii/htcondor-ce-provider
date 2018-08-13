@@ -129,7 +129,7 @@ def main():
     for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Cpus']):
         if ad.get('Cpus'):
             total_cores += ad['Cpus']
-    coll_ad = coll.locate(htcondor.DaemonTypes.Collector)
+    coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
 
     # Print the entry for the GLUE2 Manager
