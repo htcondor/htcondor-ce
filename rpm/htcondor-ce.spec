@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.1.2
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 3.1.3
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -491,6 +491,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Aug 13 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.3-1
+- Fix condor_ce_info_status using the wrong port for the central collector (SOFTWARE-3381)
+
 * Thu Jun 07 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.2-3
 - Ensure that all BDII files exist for the condor repository
 
