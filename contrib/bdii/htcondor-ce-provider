@@ -183,7 +183,7 @@ def main():
         ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
         try:
-            query = ce_schedd.xquery(attr_list=["JobStatus", "x509userproxyvoname"])
+            query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
         except RuntimeError, exc:
             sys.stderr.write("%s: %s\n" % (exc, ce_host))
             continue
