@@ -148,8 +148,7 @@ def main():
         instances=instances,
         ))
 
-    batch_schedd_ads = coll.locateAll(htcondor.DaemonTypes.Schedd)
-    ce_batch_schedd_ads = [ad for ad in batch_schedd_ads if ad.get('HAS_HTCONDOR_CE')]
+    ce_batch_schedd_ads = coll.query(htcondor.AdTypes.Schedd, 'HAS_HTCONDOR_CE =?= True', ['Machine'])
 
     # Print the entry for the GLUE2 Service
     print (service_ldif.format(
@@ -165,7 +164,7 @@ def main():
         ce_host = ce_batch_schedd_ad['Machine']
         ce_collector = htcondor.Collector(ce_host + ':9619')  # find the CE using the default CE port
         try:
-            ce_schedd_ad = ce_collector.locate(htcondor.DaemonTypes.Schedd)
+            ce_schedd_ad = ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(ce_host))[0]
         except RuntimeError:
             sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
             continue
