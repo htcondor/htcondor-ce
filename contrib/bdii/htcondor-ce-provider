@@ -101,7 +101,6 @@ GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
 """
 
-
 def main():
 
     # Get hostname of the batch system central manager
@@ -133,7 +132,7 @@ def main():
     version = coll_ad['CondorVersion'].split()[1]
 
     # Print the entry for the GLUE2 Manager
-    print(manager_ldif.format(
+    print (manager_ldif.format(
         central_manager=central_manager,
         bind_dn=bind_dn,
         version=version,
