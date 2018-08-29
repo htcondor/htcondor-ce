@@ -28,7 +28,6 @@ objectClass: GLUE2ComputingManager
 GLUE2ManagerID: {central_manager}_Manager
 GLUE2ManagerProductName: HTCondor
 GLUE2ManagerProductVersion: {version}
-GLUE2ComputingManagerTotalPhysicalCPUs: {total_cores}
 GLUE2ComputingManagerTotalLogicalCPUs: {total_cores}
 GLUE2ManagerServiceForeignKey: {central_manager}
 GLUE2ComputingManagerComputingServiceForeignKey: {central_manager}
