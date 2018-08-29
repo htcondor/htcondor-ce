@@ -1,8 +1,8 @@
 HTCondor-CE BDII Provider
 =========================
 
-This folder contains the HTCondor-CE provider for [BDII](http://gridinfo.web.cern.ch/sys-admins/bdii-releases) and
-associated configuration intended for use with an HTCondor batch system.
+This folder contains the HTCondor-CE [GLUE2] provider for and associated configuration intended for use with an HTCondor
+batch system.
 Since BDII is not used in the OSG, the `htcondor-ce-bdii` package is excluded from OSG builds.
 
 Usage
@@ -19,3 +19,10 @@ To report BDII data, use the following instructions
    following HTCondor configuration:
 
         HAS_HTCONDOR_CE = False
+
+References
+----------
+
+- [BDII releases]((http://gridinfo.web.cern.ch/sys-admins/bdii-releases))
+- [Official GLUE2 documentation](https://www.ogf.org/documents/GFD.147.pdf)
+- [CERN GLUE2 reference](http://glue20.web.cern.ch/glue20/)
