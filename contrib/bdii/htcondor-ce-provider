@@ -33,18 +33,19 @@ GLUE2ManagerServiceForeignKey: {central_manager}
 GLUE2ComputingManagerComputingServiceForeignKey: {central_manager}
 """
 
-resource_ldif = """dn: GLUE2ResourceID={central_manager}_standard,{bind_dn}
+resource_ldif = """dn: GLUE2ResourceID={central_manager}_{resource},{bind_dn}
 objectClass: GLUE2Entity
 objectClass: GLUE2Resource
 objectClass: GLUE2ExecutionEnvironment
-GLUE2ResourceID: {central_manager}_standard
-GLUE2ExecutionEnvironmentMainMemorySize: 2000
-GLUE2ExecutionEnvironmentVirtualMemorySize: 2048
-GLUE2ExecutionEnvironmentOSFamily: linux
+GLUE2ResourceID: {central_manager}_{resource}
+GLUE2ExecutionEnvironmentMainMemorySize: {memory}
+GLUE2ExecutionEnvironmentVirtualMemorySize: {memory}
+GLUE2ExecutionEnvironmentOSFamily: {os}
+GLUE2ExecutionEnvironmentOSName: {name}
+GLUE2ExecutionEnvironmentOSVersion: {version}
 GLUE2ExecutionEnvironmentCPUMultiplicity: singlecpu-multicore
-GLUE2ExecutionEnvironmentPlatform: amd64
-GLUE2ExecutionEnvironmentPhysicalCPUs: 8
-GLUE2ExecutionEnvironmentLogicalCPUs: 8
+GLUE2ExecutionEnvironmentPlatform: {arch}
+GLUE2ExecutionEnvironmentLogicalCPUs: {cpu}
 GLUE2ExecutionEnvironmentConnectivityIn: TRUE
 GLUE2ExecutionEnvironmentConnectivityOut: TRUE
 GLUE2ExecutionEnvironmentTotalInstances: {instances}
@@ -84,10 +85,9 @@ GLUE2ComputingShareWaitingJobs: {idle_vo_jobs}
 GLUE2ComputingShareRunningJobs: {running_vo_jobs}
 GLUE2ComputingShareComputingServiceForeignKey: {central_manager}
 GLUE2ComputingShareComputingEndpointForeignKey: {endpointid}
-GLUE2ComputingShareExecutionEnvironmentForeignKey: {central_manager}_standard
 GLUE2ShareServiceForeignKey: {central_manager}
 GLUE2ShareEndpointForeignKey: {endpointid}
-GLUE2ShareResourceForeignKey: {central_manager}_standard
+{resource_keys}
 """
 
 policy_ldif = """dn: GLUE2PolicyID={policyid},GLUE2ShareID={shareid},{bind_dn}
@@ -99,6 +99,7 @@ GLUE2PolicyScheme: org.glite.standard
 GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
 """
+
 
 def main():
 
@@ -123,10 +124,49 @@ def main():
 
     # Query collector for the number of CPUs and batch system Collector ad
     coll = htcondor.Collector()
-    total_cores = 0
-    for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Cpus']):
-        if ad.get('Cpus'):
-            total_cores += ad['Cpus']
+    total_cores = {}
+    topologies = {}
+    for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName',
+                                                                      'DetectedCpus', 'DetectedMemory', 'Machine']):
+        if ad['Machine'] not in total_cores:
+            total_cores[ad['Machine']] = ad['DetectedCpus']
+            if ad['Arch'] not in topologies:
+                topologies[ad['Arch']] = {}
+            if ad['OpSys'] not in topologies[ad['Arch']]:
+                topologies[ad['Arch']][ad['OpSys']] = {}
+            if ad['OpSysName'] not in topologies[ad['Arch']][ad['OpSys']]:
+                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']] = {}
+            if ad['OpSysMajorVer'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']]:
+                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']] = {}
+            if ad['DetectedCpus'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']]:
+                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']] = {}
+            if ad['DetectedMemory'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']]:
+                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] = 0
+            topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] += 1
+
+    resources = []
+    # Print the entry for the GLUE2 Resource
+    for arch in topologies:
+        for os in topologies[arch]:
+            for name in topologies[arch][os]:
+                for version in topologies[arch][os][name]:
+                    for cpu in topologies[arch][os][name][version]:
+                        for memory in topologies[arch][os][name][version][cpu]:
+                            resource = '{0}_{1}_{2}_{3}_{4}_{5}'.format(arch, os, name, version, memory, cpu)
+                            instances = topologies[arch][os][name][version][cpu][memory]
+                            resources.append(resource)
+                            print (resource_ldif.format(
+                                central_manager=central_manager,
+                                resource=resource,
+                                arch=arch,
+                                os=os,
+                                name=name,
+                                version=version,
+                                memory=memory,
+                                cpu=cpu,
+                                bind_dn=bind_dn,
+                                instances=instances,
+                                ))
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
 
@@ -135,15 +175,7 @@ def main():
         central_manager=central_manager,
         bind_dn=bind_dn,
         version=version,
-        total_cores=total_cores,
-        ))
-
-    instances = coll_ad['HostsUnclaimed']
-    # Print the entry for the GLUE2 Resource
-    print(resource_ldif.format(
-        central_manager=central_manager,
-        bind_dn=bind_dn,
-        instances=instances,
+        total_cores=sum(total_cores.values()),
         ))
 
     ce_batch_schedd_ads = coll.query(htcondor.AdTypes.Schedd, 'HAS_HTCONDOR_CE =?= True', ['Machine'])
@@ -224,6 +256,10 @@ def main():
             total_jobs = total_vo_jobs.get(vo, 0)
             idle_jobs = idle_vo_jobs.get(vo, 0)
             running_jobs = running_vo_jobs.get(vo, 0)
+            resource_keys = ""
+            for resource in resources:
+                resource_keys += 'GLUE2ComputingShareExecutionEnvironmentForeignKey: {0}_{1}\n'.format(central_manager, resource)
+                resource_keys += 'GLUE2ShareResourceForeignKey: {0}_{1}\n'.format(central_manager, resource)
             print (share_ldif.format(
                 shareid=shareid,
                 bind_dn=bind_dn,
@@ -232,6 +268,7 @@ def main():
                 running_vo_jobs=running_jobs,
                 central_manager=central_manager,
                 endpointid=endpointid,
+                resource_keys=resource_keys,
                 ))
 
             policyid = "%s_%s_policy" % (ce_host, vo)
