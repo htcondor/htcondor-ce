@@ -184,7 +184,7 @@ def set_classad_value_type(value):
 def check_job_submit(job_info, schedd_ad):
 
     job_ad = classad.ClassAd()
-    job_ad["Cmd"] = '/bin/env'
+    job_ad["Cmd"] = '/usr/bin/env'
     job_ad["Args"] = ''
     job_ad["TransferExecutable"] = False
     job_ad['Out'] = job_info['stdout_file']
