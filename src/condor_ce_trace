@@ -139,26 +139,6 @@ def check_authz(collector_ad, schedd_ad):
                 print "*"*5, "Ping response ClassAd", "*"*5, ping_ad
                 print "*"*20
 
-def generate_run_script(job_info):
-
-    job_info['command'] = 'env'
-    job_info['arguments'] = ''
-
-    if job_info['command'][0] != '/':
-        for pathdir in os.environ.get("PATH", "").split(":"):
-            test_path = os.path.join(pathdir, job_info['command'])
-            if os.path.exists(test_path):
-                job_info['command'] = test_path
-                break
-
-    if job_info['arguments']:
-        job_info['arguments'] = '"%s"' % ' '.join(["'%s'" % i for i in \
-            job_info['arguments']])
-    else:
-        job_info['arguments'] = ''
-
-    job_info.update(ce.generate_job_files())
-
 def add_job_proxy_info(job_ad):
 
     subj_rc, subj_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-subject"])
@@ -204,8 +184,9 @@ def set_classad_value_type(value):
 def check_job_submit(job_info, schedd_ad):
 
     job_ad = classad.ClassAd()
-    job_ad["Cmd"] = job_info['command']
-    job_ad["Args"] = job_info['arguments']
+    job_ad["Cmd"] = '/bin/env'
+    job_ad["Args"] = ''
+    job_ad["TransferExecutable"] = False
     job_ad['Out'] = job_info['stdout_file']
     job_ad['Err'] = job_info['stderr_file']
     job_ad['Log'] = job_info['log_file']
@@ -340,7 +321,7 @@ def main():
     configure_auth()
     check_authz(coll_ad, schedd_ad)
     try:
-        generate_run_script(job_info)
+        job_info.update(ce.generate_job_files())
         check_job_submit(job_info, schedd_ad)
     finally:
         if opts.clean:
