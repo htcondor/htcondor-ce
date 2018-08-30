@@ -35,11 +35,11 @@ function run_integration_tests {
     yum install -y sudo # run tests as non-root user
 
     echo "------------ Integration Test --------------"
-    set +e
     # start necessary services
     service condor-ce start
     service condor start
 
+    set +e
     # wait until the schedd is ready before submitting a job
     for service in condor condor-ce; do
         timeout 30 bash -c "until (grep 'JobQueue hash' /var/log/${service}/SchedLog); do sleep 0.5; done" > /dev/null 2>&1
