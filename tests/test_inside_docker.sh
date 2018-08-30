@@ -43,6 +43,7 @@ function run_integration_tests {
     # wait until the schedd is ready before submitting a job
     for service in condor condor-ce; do
         timeout 30 bash -c "until (grep 'JobQueue hash' /var/log/${service}/SchedLog); do sleep 0.5; done" > /dev/null 2>&1
+        timeout 30 bash -c "until (grep 'ScheddAd' /var/log/${service}/CollectorLog); do sleep 0.5; done" > /dev/null 2>&1
     done
 
     # submit test job as a normal user
