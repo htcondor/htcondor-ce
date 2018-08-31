@@ -177,7 +177,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DCMAKE_INSTALL_LIBDIR=%{_libdir} -DPYTHON_SITELIB=%{python_sitelib}
+%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python_sitelib}
 make %{?_smp_mflags}
 
 %install
@@ -190,21 +190,6 @@ rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
 rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 %endif
 
-# Directories necessary for HTCondor-CE files
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/run/condor-ce
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce
-install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/log/condor-ce/user
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview/vos
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/spool/ceview/metrics
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/condor-ce/execute
-install -m 0755 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce
-install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lock/condor-ce/user
-install -m 1777 -d -p $RPM_BUILD_ROOT/%{_localstatedir}/lib/gratia/condorce_data
-
-# Don't build bdii sub-package for the OSG
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
