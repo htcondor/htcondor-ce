@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.1.3
+Version: 3.1.4
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -476,6 +476,11 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Sep 11 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.1.4-1
+- Fix condor_ce_trace failures caused by transferring /usr/bin/env (SOFTWARE-3387)
+- Fix regex for RDIG certs (SOFTWARE-3399)
+- Don't require authz check for condor_ce_q (SOFTWARE-3414)
+
 * Mon Aug 13 2018 Brian Lin <blin@cs.wisc.edu> - 3.1.3-1
 - Fix condor_ce_info_status using the wrong port for the central collector (SOFTWARE-3381)
 
