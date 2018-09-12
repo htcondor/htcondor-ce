@@ -70,12 +70,6 @@ VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
 USER_JOB_WRAPPER = $(DATA_DIR)/local-wrapper
 
-# Force condor_ce_q to show jobs for all users until 'root' is recognized as
-# a QUEUE_SUPER_USER when using a CERTIFICATE_MAPFILE
-:if version < 8.5.6
-CONDOR_Q_ONLY_MY_JOBS = False
-:endif
-
 # Disable mail on service restart
 SCHEDD_RESTART_REPORT=
 
