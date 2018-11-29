@@ -20,7 +20,15 @@ import htcondorce.web
 ALIVE_HEARTBEAT = 60
 def send_heartbeat():
     euid = os.geteuid()
-    htcondor.send_alive(timeout=ALIVE_HEARTBEAT)
+    try:
+        htcondor.send_alive(timeout=ALIVE_HEARTBEAT)
+    except (RuntimeError, ValueError) as exc:
+        if 'CONDOR_INHERIT' in exc or 'location ClassAd' in exc:
+            htcondor.log(htcondor.LogLevel.FullDebug,
+                         'WARNING: Could not find location of HTCondor-CE master daemon to send keepalive')
+        else:
+            htcondor.log(htcondor.LogLevel.Always,
+                         'ERROR: Failed to send keepalive to the HTCondor-CE master daemon with EUID {0}'.format(euid))
     if euid != os.geteuid():
         os.seteuid(euid)
 
@@ -231,12 +239,6 @@ def main():
     if os.geteuid() == 0:
         uid, gid = condor_ids()
         cherrypy.process.plugins.DropPrivileges(cherrypy.engine, uid=uid, gid=gid).subscribe()
-
-    # Send a heartbeat before dropping privileges.  This makes sure we initialize the 
-    # security session as root.  Prevents a race condition between dropping privs and
-    # the first heartbeat.
-    if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
-        send_heartbeat()
 
     cherrypy.engine.start()
 
