@@ -64,6 +64,9 @@ function debug_info {
     cat /var/log/condor-ce/CollectorLog
     cat /var/log/condor-ce/SchedLog
     cat /var/log/condor-ce/JobRouterLog
+    if [ "$BUILD_ENV" == 'osg' ]; then
+        cat /var/log/condor-ce/CEViewLog
+    fi
     condor_ce_config_val -dump
     echo "------------ HTCondor Logs --------------"
     cat /var/log/condor/MasterLog
@@ -80,6 +83,7 @@ ls -l /home
 # Clean the yum cache
 yum -y clean all
 yum -y clean expire-cache
+yum -y update  # Update the OS packages
 
 # First, install all the needed packages.
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
@@ -156,7 +160,7 @@ popd
 cat << EOF > /etc/condor/config.d/99-local.conf
 NETWORK_INTERFACE=eth0
 GSI_SKIP_HOST_CHECK=true
-ALL_DEBUG=\$(ALL_DEBUG) D_FULLDEBUG
+ALL_DEBUG=\$(ALL_DEBUG) D_FULLDEBUG D_CAT
 SCHEDD_INTERVAL=1
 SCHEDD_MIN_INTERVAL=1
 EOF
