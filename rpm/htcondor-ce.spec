@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.1.4
+Version: 3.2.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -476,6 +476,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Dec 11 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.0-1
+- Map certs with VOMS attr before local daemons (SOFTWARE-3489)
+- Send CEView keepalives as the condor user (SOFTWARE-3486)
+
 * Tue Sep 11 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.1.4-1
 - Fix condor_ce_trace failures caused by transferring /usr/bin/env (SOFTWARE-3387)
 - Fix regex for RDIG certs (SOFTWARE-3399)
