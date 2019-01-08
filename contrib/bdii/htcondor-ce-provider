@@ -5,8 +5,9 @@ import sys
 from datetime import datetime
 import subprocess
 import collections
-
+import time
 import htcondor
+import signal
 
 service_ldif = """dn: {bind_dn}
 GLUE2ServiceID: {central_manager}
@@ -100,6 +101,8 @@ GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
 """
 
+def handler(signum, frame):
+    raise Exception("TimeoutError")
 
 def main():
 
@@ -128,21 +131,24 @@ def main():
     topologies = {}
     for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName',
                                                                       'DetectedCpus', 'DetectedMemory', 'Machine']):
-        if ad['Machine'] not in total_cores:
-            total_cores[ad['Machine']] = ad['DetectedCpus']
-            if ad['Arch'] not in topologies:
-                topologies[ad['Arch']] = {}
-            if ad['OpSys'] not in topologies[ad['Arch']]:
-                topologies[ad['Arch']][ad['OpSys']] = {}
-            if ad['OpSysName'] not in topologies[ad['Arch']][ad['OpSys']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']] = {}
-            if ad['OpSysMajorVer'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']] = {}
-            if ad['DetectedCpus'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']] = {}
-            if ad['DetectedMemory'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] = 0
-            topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] += 1
+        try:
+            if ad['Machine'] not in total_cores:
+                total_cores[ad['Machine']] = ad['DetectedCpus']
+                if ad['Arch'] not in topologies:
+                    topologies[ad['Arch']] = {}
+                if ad['OpSys'] not in topologies[ad['Arch']]:
+                    topologies[ad['Arch']][ad['OpSys']] = {}
+                if ad['OpSysName'] not in topologies[ad['Arch']][ad['OpSys']]:
+                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']] = {}
+                if ad['OpSysMajorVer'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']]:
+                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']] = {}
+                if ad['DetectedCpus'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']]:
+                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']] = {}
+                if ad['DetectedMemory'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']]:
+                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] = 0
+                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] += 1
+        except KeyError:
+            pass
 
     resources = []
     # Print the entry for the GLUE2 Resource
@@ -199,6 +205,8 @@ def main():
             sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
             continue
 
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(10)
         try:
             if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
                 state = 'ok'
@@ -208,6 +216,11 @@ def main():
         except (KeyError, RuntimeError):
             state = 'critical'
             state_info = 'Authorization ping failed'
+        except Exception, e:
+            sys.stderr.write("Ping to CE schedd on %s timed out.\n" % ce_host )
+            continue
+        
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
         ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
@@ -221,14 +234,22 @@ def main():
         running_vo_jobs = collections.defaultdict(int)
         total_vo_jobs = collections.defaultdict(int)
 
-        for job in query:
-            if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
-                continue
-            total_vo_jobs[job['x509userproxyvoname']] += 1
-            if job['JobStatus'] == 1:
-                idle_vo_jobs[job['x509userproxyvoname']] += 1
-            elif job['JobStatus'] == 2:
-                running_vo_jobs[job['x509userproxyvoname']] += 1
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(10)
+        try:
+            for job in query:
+                if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
+                    continue
+                total_vo_jobs[job['x509userproxyvoname']] += 1
+                if job['JobStatus'] == 1:
+                    idle_vo_jobs[job['x509userproxyvoname']] += 1
+                elif job['JobStatus'] == 2:
+                    running_vo_jobs[job['x509userproxyvoname']] += 1
+        except Exception, e:
+            sys.stderr.write("CE schedd on %s timed out.\n" % ce_host )
+            continue
+        
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
         cmd = ['/usr/bin/openssl', 'x509', '-noout', '-issuer', '-nameopt', 'RFC2253', '-in',
                '/etc/grid-security/hostcert.pem']
@@ -278,7 +299,6 @@ def main():
                 bind_dn=bind_dn,
                 vo=vo,
                 ))
-
 
 if __name__ == '__main__':
     main()
