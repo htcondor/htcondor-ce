@@ -130,24 +130,26 @@ def main():
     topologies = {}
     for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName',
                                                                       'DetectedCpus', 'DetectedMemory', 'Machine']):
+        if not ad.get('Machine'):
+            continue  # skip malformed ads where we can't provide additional information
+
         try:
             if ad['Machine'] not in total_cores:
                 total_cores[ad['Machine']] = ad['DetectedCpus']
-                if ad['Arch'] not in topologies:
-                    topologies[ad['Arch']] = {}
-                if ad['OpSys'] not in topologies[ad['Arch']]:
-                    topologies[ad['Arch']][ad['OpSys']] = {}
-                if ad['OpSysName'] not in topologies[ad['Arch']][ad['OpSys']]:
-                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']] = {}
-                if ad['OpSysMajorVer'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']]:
-                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']] = {}
-                if ad['DetectedCpus'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']]:
-                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']] = {}
-                if ad['DetectedMemory'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']]:
-                    topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] = 0
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] += 1
-        except KeyError:
-            pass
+
+            k = (ad['Arch'],
+                 ad['OpSys'],
+                 ad['OpSysName'],
+                 ad['OpSysMajorVer'],
+                 ad['DetectedCpus'],
+                 ad['DetectedMemory'])
+            if k not in topologies:
+                topologies[k] = 1
+            else:
+                topologies[k] += 1
+        except KeyError, exc:
+            msg = "Malformed machine ad: Missing '{0}' attribute for {1}".format(exc, ad['Machine'])
+            sys.stderr.write(msg)
 
     resources = []
     # Print the entry for the GLUE2 Resource
