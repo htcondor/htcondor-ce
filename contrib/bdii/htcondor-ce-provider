@@ -5,9 +5,8 @@ import sys
 from datetime import datetime
 import subprocess
 import collections
-import time
-import htcondor
 import signal
+import htcondor
 
 service_ldif = """dn: {bind_dn}
 GLUE2ServiceID: {central_manager}
