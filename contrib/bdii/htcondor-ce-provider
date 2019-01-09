@@ -100,8 +100,12 @@ GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
 """
 
+class TimeoutError(Exception):
+    pass
+
+
 def handler(signum, frame):
-    raise Exception("TimeoutError")
+    raise TimeoutError("TimeoutError")
 
 def main():
 
@@ -120,6 +124,11 @@ def main():
     if not site_name:
         sys.stderr.write("Error: GLUE2DomainID: not set\n")
         sys.exit(1)
+
+    # Get the timeout value
+    time_out = htcondor.param.get('CE_QUERY_TIMEOUT')
+    if not time_out:
+        time_out = 10
 
     # This is the bind DN for all entries
     bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
@@ -153,27 +162,22 @@ def main():
 
     resources = []
     # Print the entry for the GLUE2 Resource
-    for arch in topologies:
-        for os in topologies[arch]:
-            for name in topologies[arch][os]:
-                for version in topologies[arch][os][name]:
-                    for cpu in topologies[arch][os][name][version]:
-                        for memory in topologies[arch][os][name][version][cpu]:
-                            resource = '{0}_{1}_{2}_{3}_{4}_{5}'.format(arch, os, name, version, memory, cpu)
-                            instances = topologies[arch][os][name][version][cpu][memory]
-                            resources.append(resource)
-                            print (resource_ldif.format(
-                                central_manager=central_manager,
-                                resource=resource,
-                                arch=arch,
-                                os=os,
-                                name=name,
-                                version=version,
-                                memory=memory,
-                                cpu=cpu,
-                                bind_dn=bind_dn,
-                                instances=instances,
-                                ))
+    for tup in topologies:
+        resource = '{0}_{1}_{2}_{3}_{4}_{5}'.format(tup[0], tup[1], tup[2], tup[3], tup[4], tup[5])
+        instances = topologies[tup]
+        resources.append(resource)
+        print (resource_ldif.format(
+            central_manager=central_manager,
+            resource=resource,
+            arch=tup[0],
+            os=tup[1],
+            name=tup[2],
+            version=tup[3],
+            memory=tup[4],
+            cpu=tup[5],
+            bind_dn=bind_dn,
+            instances=instances,
+        ))
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
 
@@ -207,7 +211,7 @@ def main():
             continue
 
         signal.signal(signal.SIGALRM, handler)
-        signal.alarm(10)
+        signal.alarm(time_out)
         try:
             if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
                 state = 'ok'
@@ -217,8 +221,8 @@ def main():
         except (KeyError, RuntimeError):
             state = 'critical'
             state_info = 'Authorization ping failed'
-        except Exception, e:
-            sys.stderr.write("Ping to CE schedd on %s timed out.\n" % ce_host )
+        except TimeoutError, e:
+            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n" % ce_host, timeout )
             continue
         
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
@@ -236,7 +240,7 @@ def main():
         total_vo_jobs = defaultdict(int)
 
         signal.signal(signal.SIGALRM, handler)
-        signal.alarm(10)
+        signal.alarm(time_out)
         try:
             for job in query:
                 if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
@@ -246,8 +250,8 @@ def main():
                     idle_vo_jobs[job['x509userproxyvoname']] += 1
                 elif job['JobStatus'] == 2:
                     running_vo_jobs[job['x509userproxyvoname']] += 1
-        except Exception, e:
-            sys.stderr.write("CE schedd on %s timed out.\n" % ce_host )
+        except TimeoutError, e:
+            sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_host, time_out )
             continue
         
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
