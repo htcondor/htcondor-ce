@@ -4,8 +4,8 @@ from __future__ import print_function
 import sys
 from datetime import datetime
 import subprocess
-import collections
-
+from collections import defaultdict
+import signal
 import htcondor
 
 service_ldif = """dn: {bind_dn}
@@ -100,6 +100,12 @@ GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
 """
 
+class TimeoutError(Exception):
+    pass
+
+
+def handler(signum, frame):
+    raise TimeoutError("TimeoutError")
 
 def main():
 
@@ -119,6 +125,11 @@ def main():
         sys.stderr.write("Error: GLUE2DomainID: not set\n")
         sys.exit(1)
 
+    # Get the timeout value
+    time_out = htcondor.param.get('GLUE_PROVIDER_TIMEOUT')
+    if not time_out:
+        time_out = 10
+
     # This is the bind DN for all entries
     bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
 
@@ -128,45 +139,45 @@ def main():
     topologies = {}
     for ad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName',
                                                                       'DetectedCpus', 'DetectedMemory', 'Machine']):
-        if ad['Machine'] not in total_cores:
-            total_cores[ad['Machine']] = ad['DetectedCpus']
-            if ad['Arch'] not in topologies:
-                topologies[ad['Arch']] = {}
-            if ad['OpSys'] not in topologies[ad['Arch']]:
-                topologies[ad['Arch']][ad['OpSys']] = {}
-            if ad['OpSysName'] not in topologies[ad['Arch']][ad['OpSys']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']] = {}
-            if ad['OpSysMajorVer'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']] = {}
-            if ad['DetectedCpus'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']] = {}
-            if ad['DetectedMemory'] not in topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']]:
-                topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] = 0
-            topologies[ad['Arch']][ad['OpSys']][ad['OpSysName']][ad['OpSysMajorVer']][ad['DetectedCpus']][ad['DetectedMemory']] += 1
+        if not ad.get('Machine'):
+            continue  # skip malformed ads where we can't provide additional information
+
+        try:
+            if ad['Machine'] not in total_cores:
+                total_cores[ad['Machine']] = ad['DetectedCpus']
+
+            k = (ad['Arch'],
+                 ad['OpSys'],
+                 ad['OpSysName'],
+                 ad['OpSysMajorVer'],
+                 ad['DetectedCpus'],
+                 ad['DetectedMemory'])
+            if k not in topologies:
+                topologies[k] = 1
+            else:
+                topologies[k] += 1
+        except KeyError, exc:
+            msg = "Malformed machine ad: Missing '{0}' attribute for {1}".format(exc, ad['Machine'])
+            sys.stderr.write(msg)
 
     resources = []
     # Print the entry for the GLUE2 Resource
-    for arch in topologies:
-        for os in topologies[arch]:
-            for name in topologies[arch][os]:
-                for version in topologies[arch][os][name]:
-                    for cpu in topologies[arch][os][name][version]:
-                        for memory in topologies[arch][os][name][version][cpu]:
-                            resource = '{0}_{1}_{2}_{3}_{4}_{5}'.format(arch, os, name, version, memory, cpu)
-                            instances = topologies[arch][os][name][version][cpu][memory]
-                            resources.append(resource)
-                            print (resource_ldif.format(
-                                central_manager=central_manager,
-                                resource=resource,
-                                arch=arch,
-                                os=os,
-                                name=name,
-                                version=version,
-                                memory=memory,
-                                cpu=cpu,
-                                bind_dn=bind_dn,
-                                instances=instances,
-                                ))
+    for tup in topologies:
+        resource = '{0}_{1}_{2}_{3}_{4}_{5}'.format(tup[0], tup[1], tup[2], tup[3], tup[4], tup[5])
+        instances = topologies[tup]
+        resources.append(resource)
+        print (resource_ldif.format(
+            central_manager=central_manager,
+            resource=resource,
+            arch=tup[0],
+            os=tup[1],
+            name=tup[2],
+            version=tup[3],
+            memory=tup[4],
+            cpu=tup[5],
+            bind_dn=bind_dn,
+            instances=instances,
+        ))
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
 
@@ -199,6 +210,8 @@ def main():
             sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
             continue
 
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(time_out)
         try:
             if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
                 state = 'ok'
@@ -208,6 +221,11 @@ def main():
         except (KeyError, RuntimeError):
             state = 'critical'
             state_info = 'Authorization ping failed'
+        except TimeoutError, e:
+            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n" % ce_host, time_out )
+            continue
+        
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
         ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
@@ -217,18 +235,26 @@ def main():
             sys.stderr.write("%s: %s\n" % (exc, ce_host))
             continue
 
-        idle_vo_jobs = collections.defaultdict(int)
-        running_vo_jobs = collections.defaultdict(int)
-        total_vo_jobs = collections.defaultdict(int)
+        idle_vo_jobs = defaultdict(int)
+        running_vo_jobs = defaultdict(int)
+        total_vo_jobs = defaultdict(int)
 
-        for job in query:
-            if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
-                continue
-            total_vo_jobs[job['x509userproxyvoname']] += 1
-            if job['JobStatus'] == 1:
-                idle_vo_jobs[job['x509userproxyvoname']] += 1
-            elif job['JobStatus'] == 2:
-                running_vo_jobs[job['x509userproxyvoname']] += 1
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(time_out)
+        try:
+            for job in query:
+                if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
+                    continue
+                total_vo_jobs[job['x509userproxyvoname']] += 1
+                if job['JobStatus'] == 1:
+                    idle_vo_jobs[job['x509userproxyvoname']] += 1
+                elif job['JobStatus'] == 2:
+                    running_vo_jobs[job['x509userproxyvoname']] += 1
+        except TimeoutError, e:
+            sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_host, time_out )
+            continue
+        
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
         cmd = ['/usr/bin/openssl', 'x509', '-noout', '-issuer', '-nameopt', 'RFC2253', '-in',
                '/etc/grid-security/hostcert.pem']
@@ -278,7 +304,6 @@ def main():
                 bind_dn=bind_dn,
                 vo=vo,
                 ))
-
 
 if __name__ == '__main__':
     main()
