@@ -129,12 +129,17 @@ mkdir -p /var/run/lock
 RPM_LOCATION=/tmp/rpmbuild/RPMS/noarch
 if [ "$BUILD_ENV" == 'osg' ]; then
     extra_repos='--enablerepo=osg-development'
+else
+    # UW build tests run against HTCondor 8.8.0, which does not automatically configure a personal condor
+    # The 'minicondor' package now provides that configuration
+    extra_packages='minicondor'
 fi
 
 yum localinstall -y $RPM_LOCATION/htcondor-ce-${package_version}* \
     $RPM_LOCATION/htcondor-ce-client-* \
     $RPM_LOCATION/htcondor-ce-condor-* \
     $RPM_LOCATION/htcondor-ce-view-* \
+    $extra_packages \
     $extra_repos
 
 # ensure that our test users can generate proxies
