@@ -59,19 +59,23 @@ function run_integration_tests {
 function debug_info {
     # Some simple debug files for failures.
     openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
-    echo "------------ CE Logs --------------"
-    cat /var/log/condor-ce/MasterLog
-    cat /var/log/condor-ce/CollectorLog
-    cat /var/log/condor-ce/SchedLog
-    cat /var/log/condor-ce/JobRouterLog
-    if [ "$BUILD_ENV" == 'osg' ]; then
-        cat /var/log/condor-ce/CEViewLog
-    fi
+    for logdir in condor-ce condor; do
+        abs_logdir="/var/log/$logdir"
+        echo "------------ $abs_logdir Logs --------------"
+        for logfile in MasterLog CollectorLog SchedLog SharedPortLog; do
+            cat $abs_logdir/$logfile
+        done
+
+        if [ $logdir == 'condor-ce' ]; then
+            cat $abs_logdir/JobRouterLog
+            if [ "$BUILD_ENV" == 'osg' ]; then
+                cat $abs_logdir/CEViewLog
+            fi
+        fi
+    done
+
+    echo "------------ HTCondor{-CE,} Config --------------"
     condor_ce_config_val -dump
-    echo "------------ HTCondor Logs --------------"
-    cat /var/log/condor/MasterLog
-    cat /var/log/condor/CollectorLog
-    cat /var/log/condor/SchedLog
     condor_config_val -dump
 }
 
