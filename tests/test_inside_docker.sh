@@ -139,11 +139,10 @@ yum localinstall -y $RPM_LOCATION/htcondor-ce-${package_version}* \
     $RPM_LOCATION/htcondor-ce-client-* \
     $RPM_LOCATION/htcondor-ce-condor-* \
     $RPM_LOCATION/htcondor-ce-view-* \
-    $extra_packages \
     $extra_repos
 
 # ensure that our test users can generate proxies
-yum install -y globus-proxy-utils
+yum install -y globus-proxy-utils $extra_packages
 
 # Run unit tests
 pushd htcondor-ce/tests/
