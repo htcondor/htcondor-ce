@@ -23,6 +23,7 @@ USERS = *@users.opensciencegrid.org
 UNMAPPED_USERS = *@unmapped.opensciencegrid.org
 
 # Authz settings for each daemon.  Preferably, change the templates above
+ALLOW_READ = *
 ALLOW_WRITE = $(FRIENDLY_DAEMONS)
 SCHEDD.ALLOW_WRITE = $(USERS), $(FULL_HOSTNAME)@daemon.opensciencegrid.org/$(FULL_HOSTNAME)
 COLLECTOR.ALLOW_ADVERTISE_MASTER = $(FRIENDLY_DAEMONS)
