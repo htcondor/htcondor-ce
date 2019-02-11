@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.2.0
+Version: 3.2.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -476,6 +476,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Feb 11 2019 Brian Lin <blin@cs.wisc.edu> - 3.2.1-1
+- Explicitly set ALLOW_READ to support HTCondor 8.9 (SOFTWARE-3538)
+- Add timeouts to the BDII provider
+
 * Tue Dec 11 2018 Brian Lin <blin@cs.wisc.edu> - 3.2.0-1
 - Map certs with VOMS attr before local daemons (SOFTWARE-3489)
 - Send CEView keepalives as the condor user (SOFTWARE-3486)
