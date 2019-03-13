@@ -29,12 +29,9 @@ BuildRequires: cmake
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
-# UW builds of HTCondor call the blahp the "batch_gahp" and do not use
-# the Globus-lcmaps plugin architecture for authz
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
-Requires: blahp
+# OSG builds of HTCondor-CE use the Globus-lcmaps plugin architecture
+# for authz
+%if 0%{?osg}
 %ifarch %{ix86}
 Requires: liblcas_lcmaps_gt4_mapping.so.0
 %else
@@ -107,6 +104,12 @@ Group: Applications/System
 Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
 
+%if 0%{?uw_build}
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
+%else
+Requires: blahp
+%endif
+
 %description pbs
 %{summary}
 
@@ -114,6 +117,12 @@ Requires: %{name} = %{version}-%{release}
 Group: Applications/System
 Summary: Default routes for submission to LSF
 Requires: %{name} = %{version}-%{release}
+
+%if 0%{?uw_build}
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
+%else
+Requires: blahp
+%endif
 
 %description lsf
 %{summary}
@@ -123,6 +132,11 @@ Group: Applications/System
 Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
 
+%if 0%{?uw_build}
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
+%else
+Requires: blahp
+%endif
 
 %description sge
 %{summary}
@@ -130,8 +144,14 @@ Requires: %{name} = %{version}-%{release}
 %package slurm
 Group: Applications/System
 Summary: Default routes for submission to Slurm
-
 Requires: %{name} = %{version}-%{release}
+
+%if 0%{?uw_build}
+Requires: /usr/libexec/condor/glite/bin/batch_gahp
+%else
+Requires: blahp
+%endif
+
 %description slurm
 %{summary}
 
