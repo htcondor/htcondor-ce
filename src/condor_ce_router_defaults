@@ -3,21 +3,7 @@
 import os
 import re
 import pwd
-
-try:
-    import classad
-except ImportError:
-    classad = None
-
-# This is part of the classad module as of HTCondor 8.1.2
-def quote(value):
-    ad = classad.ClassAd()
-    ad["foo"] = str(value).strip()
-    return ad.lookup("foo").__str__()
-try:
-    quote = classad.quote
-except:
-    pass
+import classad
 
 JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
@@ -151,14 +137,14 @@ def set_accounting_group(uid_file="/etc/osg/uid_table.txt", extattr_file="/etc/o
         return None
     accounting_group_str = ''
     for mapping in uid_mappings:
-        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (quote(mapping[0]),
-                                                                                      quote(mapping[1]))
+        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (classad.quote(mapping[0]),
+                                                                                      classad.quote(mapping[1]))
     for mapping in attr_mappings:
         accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxySubject), strcat(%s, ".", Owner), ' \
-                                % (quote(mapping[0]), quote(mapping[1]))
+                                % (classad.quote(mapping[0]), classad.quote(mapping[1]))
         accounting_group_str += 'ifThenElse(x509UserProxyFirstFQAN isnt Undefined && ' + \
                                 'regexp(%s, x509UserProxyFirstFQAN), strcat(%s, ".", Owner), ' \
-                                % (quote(mapping[0]), quote(mapping[1]))
+                                % (classad.quote(mapping[0]), classad.quote(mapping[1]))
     accounting_group_str += "Owner" + ")"*(len(attr_mappings)*2+len(uid_mappings))
     return accounting_group_str
 
