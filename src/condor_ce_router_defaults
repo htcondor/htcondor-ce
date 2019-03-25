@@ -3,7 +3,6 @@
 import os
 import re
 import pwd
-import sys
 
 try:
     import classad
@@ -20,9 +19,7 @@ try:
 except:
     pass
 
-job_router_defaults = \
-"""
-JOB_ROUTER_DEFAULTS_GENERATED @=jrd
+JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
     MaxJobs = $(CONDORCE_MAX_JOBS);
     /* by default, accept all jobs */
@@ -99,12 +96,10 @@ try:
 except KeyError:
     pass
 
-job_router_defaults = job_router_defaults % advertise_pilots
+JOB_ROUTER_DEFAULTS = JOB_ROUTER_DEFAULTS % advertise_pilots
 
-osg_environment_files = [ \
-    "/var/lib/osg/osg-job-environment.conf",
-    "/var/lib/osg/osg-local-job-environment.conf"    
-]
+osg_environment_files = ["/var/lib/osg/osg-job-environment.conf",
+                         "/var/lib/osg/osg-local-job-environment.conf"]
 
 
 def parse_extattr(extattr_file):
@@ -193,9 +188,10 @@ def condor_env_escape(val):
     val = val.replace("'", "''")
     return "'" + val + "'"
 
-export_line_re = re.compile("^export\s+([a-zA-Z_]\w*)")
-variable_line_re = re.compile("([a-zA-Z_]\w*)=(.+)")
-shell_var_re = re.compile("\"?\$(\w*)\"?")
+
+export_line_re = re.compile(r'^export\s+([a-zA-Z_]\w*)')
+variable_line_re = re.compile(r'([a-zA-Z_]\w*)=(.+)')
+shell_var_re = re.compile(r'"?\$(\w*)"?')
 
 
 def read_osg_environment_file(filename):
