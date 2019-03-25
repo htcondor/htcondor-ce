@@ -92,7 +92,7 @@ JOB_ROUTER_DEFAULTS_GENERATED @=jrd
 
 # Allow admins to prevent pilots from advertising back to the CE.
 # https://ticket.grid.iu.edu/26666
-advertise_pilots =  '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
+advertise_pilots = '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
 try:
     if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true':
         advertise_pilots = ''
@@ -141,15 +141,16 @@ def parse_uids(uid_file):
             continue
         try:
             uid = int(info[0])
-            results.append( (pwd.getpwuid(uid).pw_name, str(info[1]).strip()) )
+            results.append((pwd.getpwuid(uid).pw_name, str(info[1]).strip()))
         except ValueError:
-            results.append( (info[0], str(info[1]).strip()) )
+            results.append((info[0], str(info[1]).strip()))
     return results
+
 
 def set_accounting_group(uid_file="/etc/osg/uid_table.txt", extattr_file="/etc/osg/extattr_table.txt"):
     attr_mappings = parse_extattr(extattr_file)
     uid_mappings = parse_uids(uid_file)
-    if not classad: 
+    if not classad:
         return "Owner"
     elif not attr_mappings and not uid_mappings:
         return None
@@ -166,19 +167,20 @@ def set_accounting_group(uid_file="/etc/osg/uid_table.txt", extattr_file="/etc/o
     accounting_group_str += "Owner" + ")"*(len(attr_mappings)*2+len(uid_mappings))
     return accounting_group_str
 
+
 def condor_env_escape(val):
     """
     Escape the environment variable to match Condor's escape sequence.
 
     From condor_submit's man page:
-    1 Put double quote marks around the entire argument string. Any literal 
-      double quote marks within the string must be escaped by repeating the 
+    1 Put double quote marks around the entire argument string. Any literal
+      double quote marks within the string must be escaped by repeating the
       double quote mark.
     2 Use white space (space or tab characters) to separate environment
       entries.
-    3 To put any white space in an environment entry, surround the space and 
+    3 To put any white space in an environment entry, surround the space and
       as much of the surrounding entry as desired with single quote marks.
-    4 To insert a literal single quote mark, repeat the single quote mark 
+    4 To insert a literal single quote mark, repeat the single quote mark
       anywhere inside of a section surrounded by single quote marks.
 
     THIS IS NOT A GENERIC ESCAPER; we assume this only works on the OSG
@@ -186,7 +188,7 @@ def condor_env_escape(val):
     """
     if val.startswith('"') and val.endswith('"'):
         val = val[1:-1]
-    val = val.replace('\\', '') # Nuke escape sequences.
+    val = val.replace('\\', '')  # Nuke escape sequences.
     val = val.replace('"', '""')
     val = val.replace("'", "''")
     return "'" + val + "'"
@@ -194,6 +196,8 @@ def condor_env_escape(val):
 export_line_re = re.compile("^export\s+([a-zA-Z_]\w*)")
 variable_line_re = re.compile("([a-zA-Z_]\w*)=(.+)")
 shell_var_re = re.compile("\"?\$(\w*)\"?")
+
+
 def read_osg_environment_file(filename):
     """
     Parse the OSG environment file.
@@ -224,6 +228,7 @@ def read_osg_environment_file(filename):
                 env[job_var] = condor_env_escape(value)
     return dict([(i[0], i[1]) for i in env.items() if i[0] in export_lines])
 
+
 def main():
     master_env = {}
     env_file_contents = []
@@ -240,13 +245,13 @@ def main():
 
     accounting_group_str = set_accounting_group()
 
-    defaults_with_env = job_router_defaults.replace("@osg_environment@", env_string)
+    defaults_with_env = JOB_ROUTER_DEFAULTS.replace("@osg_environment@", env_string)
 
     try:
         print defaults_with_env.replace("@accounting_group@", accounting_group_str)
-    except TypeError: # if no accounting group mappings, remove them from the classad
+    except TypeError:  # if no accounting group mappings, remove them from the classad
         print re.sub(r'.*AccountingGroupOSG.*\n', '', defaults_with_env)
+
 
 if __name__ == "__main__":
     main()
-
