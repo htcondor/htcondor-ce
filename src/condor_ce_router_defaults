@@ -3,108 +3,159 @@
 import os
 import re
 import pwd
-import sys
+import classad
 
-try:
-    import classad
-except ImportError:
-    classad = None
+JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
+  [ MaxIdleJobs = 2000;
+    MaxJobs = $(CONDORCE_MAX_JOBS);
+    /* by default, accept all jobs */
+    Requirements = True;
 
-# This is part of the classad module as of HTCondor 8.1.2
-def quote(value):
-    ad = classad.ClassAd()
-    ad["foo"] = str(value).strip()
-    return ad.lookup("foo").__str__()
-try:
-    quote = classad.quote
-except:
-    pass
+    /* now modify routed job attributes */
+    /* remove routed job if the client disappears for 48 hours or it is idle for 6 */
+    /*set_PeriodicRemove = (LastClientContact - time() > 48*60*60) ||
+                           (JobStatus == 1 && (time() - QDate) > 6*60);*/
+    delete_PeriodicRemove = true;
+    delete_CondorCE = true;
+    delete_TotalSubmitProcs = true;
+    set_RoutedJob = true;
+    copy_environment = "orig_environment";
+    set_osg_environment = "@osg_environment@";
+    set_CondorCECollectorHost = "$(COLLECTOR_HOST)";
+    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), %s" ",
+                           ifThenElse(orig_environment is undefined,
+                                      osg_environment,
+                                      strcat(osg_environment, " ", orig_environment))));
 
-job_router_defaults = \
-"""
-JOB_ROUTER_DEFAULTS_GENERATED = \\
-  [ \\
-    MaxIdleJobs = 2000; \\
-    MaxJobs = $(CONDORCE_MAX_JOBS); \\
-    /* by default, accept all jobs */ \\
-    Requirements = True; \\
-    \\
-    /* now modify routed job attributes */ \\
-    /* remove routed job if the client disappears for 48 hours or it is idle for 6 */ \\
-    /*set_PeriodicRemove = (LastClientContact - time() > 48*60*60) || \\
-                         (JobStatus == 1 && (time() - QDate) > 6*60);*/ \\
-    delete_PeriodicRemove = true; \\
-    delete_CondorCE = true; \\
-    delete_TotalSubmitProcs = true; \\
-    set_RoutedJob = true; \\
-    copy_environment = "orig_environment"; \\
-    set_osg_environment = "@osg_environment@"; \\
-    set_CondorCECollectorHost = "$(COLLECTOR_HOST)"; \\
-    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), %s" ", \\
-        ifThenElse(orig_environment is undefined, osg_environment, \\
-          strcat(osg_environment, " ", orig_environment) \\
-        ))); \\
-    \\
-    /* Set new requirements */ \\
-    /* set_requirements = LastClientContact - time() < 30*60; */ \\
-    set_requirements = True; \\
-    /* Note default memory request of 2GB */ \\
-    /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue) via gWMS Factory described within ClassAd */ \\
-    eval_set_OriginalMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
-    /* Duplicate OriginalMemory expression and add remote_ prefix. This passes the attribute from gridmanager to BLAHP. */ \\
-    eval_set_remote_OriginalMemory = ifThenElse(maxMemory isnt undefined, maxMemory, ifThenElse(default_maxMemory isnt undefined, default_maxMemory, 2000)); \\
-    set_JOB_GLIDEIN_Memory = "$$(TotalMemory:0)"; \\
-    set_JobMemory = JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Memory)*95/100 : OriginalMemory; \\
-    set_RequestMemory = ifThenElse(WantWholeNode is true, !isUndefined(TotalMemory) ? TotalMemory*95/100 : JobMemory, OriginalMemory); \\
-    eval_set_remote_queue = ifThenElse(batch_queue isnt undefined, batch_queue, ifThenElse(queue isnt undefined, queue, ifThenElse(default_queue isnt undefined, default_queue, ""))); \\
-    /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */ \\
-    copy_RequestCpus = "orig_RequestCpus"; \\
-    eval_set_OriginalCpus = ifThenElse(xcount isnt undefined, xcount, \\
-        ifThenElse(orig_RequestCpus isnt undefined, \\
-            ifThenElse(orig_RequestCpus > 1, orig_RequestCpus, \\
-                ifThenElse(default_xcount isnt undefined, default_xcount, 1)), \\
-            ifThenElse(default_xcount isnt undefined, default_xcount, 1))); \\
-    set_GlideinCpusIsGood = !isUndefined(MATCH_EXP_JOB_GLIDEIN_Cpus) && (int(MATCH_EXP_JOB_GLIDEIN_Cpus) isnt error); \\
-    set_JOB_GLIDEIN_Cpus = "$$(ifThenElse(WantWholeNode is true, !isUndefined(TotalCpus) ? TotalCpus : JobCpus, OriginalCpus))"; \\
-    set_JobIsRunning = (JobStatus =!= 1) && (JobStatus =!= 5) && GlideinCpusIsGood; \\
-    set_JobCpus = JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Cpus) : OriginalCpus; \\
-    set_RequestCpus = ifThenElse(WantWholeNode is true, !isUndefined(TotalCpus) ? TotalCpus : JobCpus, OriginalCpus); \\
-    eval_set_remote_SMPGranularity = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
-    eval_set_remote_NodeNumber = ifThenElse(xcount isnt undefined, xcount, ifThenElse(default_xcount isnt undefined, default_xcount, 1)); \\
-    /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */ \\
-    eval_set_remote_cerequirements = strcat(ifThenElse(default_remote_cerequirements isnt undefined, strcat(string(default_remote_cerequirements), " && "), ""), \\
-      ifThenElse(maxWallTime isnt undefined, strcat("Walltime == ", string(60*maxWallTime), " && CondorCE == 1"), \\
-          ifThenElse(default_maxWallTime isnt undefined, strcat("Walltime == ", string(60*default_maxWallTime), " && CondorCE == 1"), \\
-            "CondorCE == 1"))); \\
-    copy_OnExitHold = "orig_OnExitHold"; \\
-    set_OnExitHold = ifThenElse(orig_OnExitHold isnt undefined, orig_OnExitHold, false) || ifThenElse(minWalltime isnt undefined && RemoteWallClockTime isnt undefined, RemoteWallClockTime < 60*minWallTime, false); \\
-    copy_OnExitHoldReason = "orig_OnExitHoldReason"; \\
-    set_OnExitHoldReason = ifThenElse((orig_OnExitHold isnt undefined) && orig_OnExitHold, \\
-        ifThenElse(orig_OnExitHoldReason isnt undefined, orig_OnExitHoldReason, strcat("The on_exit_hold expression (", unparse(orig_OnExitHold), ") evaluated to TRUE.")), \\
-        ifThenElse(minWalltime isnt undefined && RemoteWallClockTime isnt undefined && (RemoteWallClockTime < 60*minWallTime), strcat("The job's wall clock time, ", int(RemoteWallClockTime/60), "min, is less than the minimum specified by the job (", minWalltime, ")"), "Job held for unknown reason.")); \\
-    copy_OnExitHoldSubCode = "orig_OnExitHoldSubCode"; \\
-    set_OnExitHoldSubCode = ifThenElse((orig_OnExitHold isnt undefined) && orig_OnExitHold, \\
-        ifThenElse(orig_OnExitHoldSubCode isnt undefined, orig_OnExitHoldSubCode, 1), 42); \\
-    set_AccountingGroupOSG = @accounting_group@; \\
-    eval_set_AccountingGroup = AccountingGroupOSG; \\
+    /* Set new requirements */
+    /* set_requirements = LastClientContact - time() < 30*60; */
+    set_requirements = True;
+
+    /* Note default memory request of 2GB */
+    /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue)
+       via gWMS Factory described within ClassAd */
+    eval_set_OriginalMemory = ifThenElse(maxMemory isnt undefined,
+                                         maxMemory,
+                                         ifThenElse(default_maxMemory isnt undefined,
+                                                    default_maxMemory,
+                                                    2000));
+
+    /* Duplicate OriginalMemory expression and add remote_ prefix.
+       This passes the attribute from gridmanager to BLAHP. */
+    eval_set_remote_OriginalMemory = ifThenElse(maxMemory isnt undefined,
+                                                maxMemory,
+                                                ifThenElse(default_maxMemory isnt undefined,
+                                                           default_maxMemory,
+                                                           2000));
+    set_JOB_GLIDEIN_Memory = "$$(TotalMemory:0)";
+    set_JobMemory = JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Memory)*95/100 : OriginalMemory;
+
+    set_RequestMemory = ifThenElse(WantWholeNode is true,
+                                   !isUndefined(TotalMemory) ? TotalMemory*95/100 : JobMemory,
+                                   OriginalMemory);
+    eval_set_remote_queue = ifThenElse(batch_queue isnt undefined,
+                            batch_queue,
+                            ifThenElse(queue isnt undefined,
+                                       queue,
+                                       ifThenElse(default_queue isnt undefined,
+                                                  default_queue,
+                                                  "")));
+
+    /* HTCondor uses RequestCpus; blahp uses SMPGranularity and NodeNumber.  Default is 1 core. */
+    copy_RequestCpus = "orig_RequestCpus";
+    eval_set_OriginalCpus = ifThenElse(xcount isnt undefined,
+                                       xcount,
+                                       ifThenElse(orig_RequestCpus isnt undefined,
+                                                  ifThenElse(orig_RequestCpus > 1,
+                                                             orig_RequestCpus,
+                                                             ifThenElse(default_xcount isnt undefined,
+                                                                        default_xcount,
+                                                                        1)),
+                                                  ifThenElse(default_xcount isnt undefined,
+                                                             default_xcount,
+                                                             1)));
+    set_GlideinCpusIsGood = !isUndefined(MATCH_EXP_JOB_GLIDEIN_Cpus) && (int(MATCH_EXP_JOB_GLIDEIN_Cpus) isnt error);
+    set_JOB_GLIDEIN_Cpus = "$$(ifThenElse(WantWholeNode is true, !isUndefined(TotalCpus) ? TotalCpus : JobCpus, OriginalCpus))";
+    set_JobIsRunning = (JobStatus =!= 1) && (JobStatus =!= 5) && GlideinCpusIsGood;
+    set_JobCpus = JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Cpus) : OriginalCpus;
+    set_RequestCpus = ifThenElse(WantWholeNode is true,
+                                 !isUndefined(TotalCpus) ? TotalCpus : JobCpus,
+                                 OriginalCpus);
+    eval_set_remote_SMPGranularity = ifThenElse(xcount isnt undefined,
+                                                xcount,
+                                                ifThenElse(default_xcount isnt undefined,
+                                                           default_xcount,
+                                                           1));
+    eval_set_remote_NodeNumber = ifThenElse(xcount isnt undefined,
+                                            xcount,
+                                            ifThenElse(default_xcount isnt undefined,
+                                                       default_xcount,
+                                                       1));
+
+    /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */
+    eval_set_remote_cerequirements = strcat(ifThenElse(default_remote_cerequirements isnt undefined,
+                                                       strcat(string(default_remote_cerequirements), " && "),
+                                                       ""),
+                                            ifThenElse(maxWallTime isnt undefined,
+                                                       strcat("Walltime == ",
+                                                              string(60*maxWallTime),
+                                                              " && CondorCE == 1"),
+                                                       ifThenElse(default_maxWallTime isnt undefined,
+                                                                  strcat("Walltime == ",
+                                                                         string(60*default_maxWallTime),
+                                                                         " && CondorCE == 1"),
+                                                                  "CondorCE == 1")));
+
+    copy_OnExitHold = "orig_OnExitHold";
+    set_OnExitHold = ifThenElse(orig_OnExitHold isnt undefined,
+                                orig_OnExitHold,
+                                false) ||
+                     ifThenElse(minWalltime isnt undefined && RemoteWallClockTime isnt undefined,
+                                RemoteWallClockTime < 60*minWallTime,
+                                false);
+    copy_OnExitHoldReason = "orig_OnExitHoldReason";
+    set_OnExitHoldReason = ifThenElse((orig_OnExitHold isnt undefined) && orig_OnExitHold,
+                                      ifThenElse(orig_OnExitHoldReason isnt undefined,
+                                                 orig_OnExitHoldReason,
+                                                 strcat("The on_exit_hold expression (",
+                                                        unparse(orig_OnExitHold),
+                                                        ") evaluated to TRUE.")),
+                                      ifThenElse(minWalltime isnt undefined &&
+                                                   RemoteWallClockTime isnt undefined &&
+                                                   (RemoteWallClockTime < 60*minWallTime),
+                                                 strcat("The job's wall clock time, ",
+                                                        int(RemoteWallClockTime/60),
+                                                        "min, is less than the minimum specified by the job (",
+                                                        minWalltime,
+                                                        ")"),
+                                                 "Job held for unknown reason."));
+
+    copy_OnExitHoldSubCode = "orig_OnExitHoldSubCode";
+    set_OnExitHoldSubCode = ifThenElse((orig_OnExitHold isnt undefined) && orig_OnExitHold,
+                                       ifThenElse(orig_OnExitHoldSubCode isnt undefined,
+                                                   orig_OnExitHoldSubCode,
+                                                   1),
+                                       42);
+
+    set_AccountingGroupOSG = @accounting_group@;
+    eval_set_AccountingGroup = AccountingGroupOSG;
   ]
+  @jrd
 """
 
 # Allow admins to prevent pilots from advertising back to the CE.
 # https://ticket.grid.iu.edu/26666
-advertise_pilots =  '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
+advertise_pilots = '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
 try:
     if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true':
         advertise_pilots = ''
 except KeyError:
     pass
 
-job_router_defaults = job_router_defaults % advertise_pilots
+JOB_ROUTER_DEFAULTS = JOB_ROUTER_DEFAULTS % advertise_pilots
 
-osg_environment_files = [ \
-    "/var/lib/osg/osg-job-environment.conf",
-    "/var/lib/osg/osg-local-job-environment.conf"    
-]
+osg_environment_files = ["/var/lib/osg/osg-job-environment.conf",
+                         "/var/lib/osg/osg-local-job-environment.conf"]
 
 
 def parse_extattr(extattr_file):
@@ -141,44 +192,46 @@ def parse_uids(uid_file):
             continue
         try:
             uid = int(info[0])
-            results.append( (pwd.getpwuid(uid).pw_name, str(info[1]).strip()) )
+            results.append((pwd.getpwuid(uid).pw_name, str(info[1]).strip()))
         except ValueError:
-            results.append( (info[0], str(info[1]).strip()) )
+            results.append((info[0], str(info[1]).strip()))
     return results
+
 
 def set_accounting_group(uid_file="/etc/osg/uid_table.txt", extattr_file="/etc/osg/extattr_table.txt"):
     attr_mappings = parse_extattr(extattr_file)
     uid_mappings = parse_uids(uid_file)
-    if not classad: 
+    if not classad:
         return "Owner"
     elif not attr_mappings and not uid_mappings:
         return None
     accounting_group_str = ''
     for mapping in uid_mappings:
-        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (quote(mapping[0]),
-                                                                                      quote(mapping[1]))
+        accounting_group_str += 'ifThenElse(Owner == %s, strcat(%s, ".", Owner), ' % (classad.quote(mapping[0]),
+                                                                                      classad.quote(mapping[1]))
     for mapping in attr_mappings:
         accounting_group_str += 'ifThenElse(regexp(%s, x509UserProxySubject), strcat(%s, ".", Owner), ' \
-                                % (quote(mapping[0]), quote(mapping[1]))
+                                % (classad.quote(mapping[0]), classad.quote(mapping[1]))
         accounting_group_str += 'ifThenElse(x509UserProxyFirstFQAN isnt Undefined && ' + \
                                 'regexp(%s, x509UserProxyFirstFQAN), strcat(%s, ".", Owner), ' \
-                                % (quote(mapping[0]), quote(mapping[1]))
+                                % (classad.quote(mapping[0]), classad.quote(mapping[1]))
     accounting_group_str += "Owner" + ")"*(len(attr_mappings)*2+len(uid_mappings))
     return accounting_group_str
+
 
 def condor_env_escape(val):
     """
     Escape the environment variable to match Condor's escape sequence.
 
     From condor_submit's man page:
-    1 Put double quote marks around the entire argument string. Any literal 
-      double quote marks within the string must be escaped by repeating the 
+    1 Put double quote marks around the entire argument string. Any literal
+      double quote marks within the string must be escaped by repeating the
       double quote mark.
     2 Use white space (space or tab characters) to separate environment
       entries.
-    3 To put any white space in an environment entry, surround the space and 
+    3 To put any white space in an environment entry, surround the space and
       as much of the surrounding entry as desired with single quote marks.
-    4 To insert a literal single quote mark, repeat the single quote mark 
+    4 To insert a literal single quote mark, repeat the single quote mark
       anywhere inside of a section surrounded by single quote marks.
 
     THIS IS NOT A GENERIC ESCAPER; we assume this only works on the OSG
@@ -186,14 +239,17 @@ def condor_env_escape(val):
     """
     if val.startswith('"') and val.endswith('"'):
         val = val[1:-1]
-    val = val.replace('\\', '') # Nuke escape sequences.
+    val = val.replace('\\', '')  # Nuke escape sequences.
     val = val.replace('"', '""')
     val = val.replace("'", "''")
     return "'" + val + "'"
 
-export_line_re = re.compile("^export\s+([a-zA-Z_]\w*)")
-variable_line_re = re.compile("([a-zA-Z_]\w*)=(.+)")
-shell_var_re = re.compile("\"?\$(\w*)\"?")
+
+export_line_re = re.compile(r'^export\s+([a-zA-Z_]\w*)')
+variable_line_re = re.compile(r'([a-zA-Z_]\w*)=(.+)')
+shell_var_re = re.compile(r'"?\$(\w*)"?')
+
+
 def read_osg_environment_file(filename):
     """
     Parse the OSG environment file.
@@ -224,6 +280,7 @@ def read_osg_environment_file(filename):
                 env[job_var] = condor_env_escape(value)
     return dict([(i[0], i[1]) for i in env.items() if i[0] in export_lines])
 
+
 def main():
     master_env = {}
     env_file_contents = []
@@ -240,13 +297,13 @@ def main():
 
     accounting_group_str = set_accounting_group()
 
-    defaults_with_env = job_router_defaults.replace("@osg_environment@", env_string)
+    defaults_with_env = JOB_ROUTER_DEFAULTS.replace("@osg_environment@", env_string)
 
     try:
         print defaults_with_env.replace("@accounting_group@", accounting_group_str)
-    except TypeError: # if no accounting group mappings, remove them from the classad
+    except TypeError:  # if no accounting group mappings, remove them from the classad
         print re.sub(r'.*AccountingGroupOSG.*\n', '', defaults_with_env)
+
 
 if __name__ == "__main__":
     main()
-
