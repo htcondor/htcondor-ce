@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.2.1
+Version: 3.2.2
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -496,6 +496,12 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Mar 26 2019 Brian Lin <blin@cs.wisc.edu> - 3.2.2-1
+- Make blahp requirement binary package specific (SOFTWARE-3623)
+- Added condor_ce_store_cred for PASSWORD authentication
+- Use new multi-line syntax configuration syntax (SOFTWARE-3637)
+- Update MyOSG URL and queries
+
 * Mon Feb 11 2019 Brian Lin <blin@cs.wisc.edu> - 3.2.1-1
 - Explicitly set ALLOW_READ to support HTCondor 8.9 (SOFTWARE-3538)
 - Add timeouts to the BDII provider
