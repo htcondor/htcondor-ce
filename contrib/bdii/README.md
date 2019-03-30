@@ -1,8 +1,9 @@
 HTCondor-CE BDII Provider
 =========================
 
-This folder contains the HTCondor-CE [GLUE2] provider for and associated configuration intended for use with an HTCondor
-batch system.
+This folder contains the HTCondor-CE [GLUE2](https://www.ogf.org/documents/GFD.147.pdf) provider for HTCondor-CE and
+associated configuration intended for use with an HTCondor batch system.
+This provider works by contacting the site's local HTCondor's central manager to discover each HTCondor-CE at a site.
 Since BDII is not used in the OSG, the `htcondor-ce-bdii` package is excluded from OSG builds.
 
 Usage
