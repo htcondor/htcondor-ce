@@ -38,6 +38,7 @@ configure_file (
 )
 
 install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
+
 install(PROGRAMS
   src/condor_ce_startup
   src/verify_ce_config.py
@@ -52,6 +53,14 @@ install(PROGRAMS
   src/gratia_cleanup.py
   contrib/bdii/htcondor-ce-provider
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
+
+install(PROGRAMS
+  contrib/apelscripts/condor_ce_blah.sh
+  contrib/apelscripts/condor_ce_batch.sh
+  contrib/apelscripts/accountingRun.sh
+  contrib/apelscripts/README.md
+  DESTINATION ${SHARE_INSTALL_PREFIX}/apel)
+
 install(PROGRAMS
   src/condor_ce_config_generator
   src/condor_ce_config_val

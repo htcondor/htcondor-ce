@@ -77,6 +77,17 @@ Requires: %{name} = %{version}-%{release}, bdii
 %{summary}
 %endif
 
+%if ! 0%{?osg}
+%package apelscripts
+Group: Applications/Internet
+Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
+
+Requires: %{name} = %{version}-%{release}, apel-lib >= 1.8.0
+
+%description apelscripts
+%{summary}
+%endif
+
 %package view
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
@@ -218,6 +229,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/apel
 %endif
 
 # Gratia accounting cleanup
@@ -347,6 +359,15 @@ fi
 
 %{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor/config.d/99-ce-bdii.conf
+%endif
+
+
+%if ! 0%{?osg}
+%files apelscripts
+%config(noreplace) %{_datadir}/apel/condor_ce_blah.sh
+%config(noreplace) %{_datadir}/apel/condor_ce_batch.sh
+%config(noreplace) %{_datadir}/apel/accountingRun.sh
+%{_datadir}/apel/README.md
 %endif
 
 %files view
