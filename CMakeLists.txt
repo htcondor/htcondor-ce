@@ -61,6 +61,7 @@ install(PROGRAMS
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES
   contrib/apelscripts/apelscripts.conf
+  contrib/apelscripts/README.md
   DESTINATION ${SYSCONF_INSTALL_DIR}/apel)
 
 install(PROGRAMS
