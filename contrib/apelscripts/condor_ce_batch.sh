@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CONDOR_LOCATION=/usr
+CONDOR_HISTORY=`condor_config_val HISTORY_HELPER`
 OUTPUT_LOCATION=/var/lib/condor/accounting/
 
 # Create a temporary accounting file name
@@ -13,7 +13,7 @@ OUTPUT_FILE=$OUTPUT_LOCATION/$output
 # Build the filter for the history command
 CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
 
-$CONDOR_LOCATION/bin/condor_history -constraint "$CONSTR" \
+$CONDOR_HISTORY -constraint "$CONSTR" \
     -format "%s_hepgrid6.ph.liv.ac.uk|" ClusterId \
     -format "%s|" Owner \
     -format "%d|" RemoteWallClockTime \

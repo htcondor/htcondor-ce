@@ -1,7 +1,7 @@
 HTCondor-CE APEL Scripts
 =========================
 
-This folder contains the HTCondor-CE scripts for extracting accounting log files suitable for input to the APEL system.
+Scripts for a HTCondor + HTCondor-CE setup that parse accounting log files to make input to the APEL system.
 
 Usage
 -----

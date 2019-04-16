@@ -58,8 +58,10 @@ install(PROGRAMS
   contrib/apelscripts/condor_ce_blah.sh
   contrib/apelscripts/condor_ce_batch.sh
   contrib/apelscripts/accountingRun.sh
-  contrib/apelscripts/README.md
-  DESTINATION ${SHARE_INSTALL_PREFIX}/apel)
+  DESTINATION ${BIN_INSTALL_DIR})
+install(FILES
+  contrib/apelscripts/apelscripts.conf
+  DESTINATION ${SYSCONF_INSTALL_DIR}/apel)
 
 install(PROGRAMS
   src/condor_ce_config_generator
