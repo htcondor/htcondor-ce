@@ -85,6 +85,7 @@ Summary: Scripts for writing accounting log files in APEL format, blah (ce) and 
 Requires: %{name} = %{version}-%{release}
 Requires: apel-client >= 1.8.0
 Requires: apel-parsers >= 1.8.0
+Requires: apel-ssm
 
 %description apelscripts
 %{summary}
