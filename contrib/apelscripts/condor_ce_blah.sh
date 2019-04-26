@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONDOR_HISTORY=`condor_config_val HISTORY_HELPER`
+CONDOR_HISTORY=`condor_ce_config_val HISTORY_HELPER`
 OUTPUT_LOCATION=/var/lib/condor/accounting/
 
 # "timestamp=1544614059" "userDN=/C=UK/O=eScience/OU=Liverpool/L=CSD/CN=stephen jones" "userFQAN=/dteam/Role=NULL/Capability=NULL" "ceID=hepgrid6.ph.liv.ac.uk:9619/hepgrid6.ph.liv.ac.uk-condor" "jobID=1.0_hepgrid6.ph.liv.ac.uk" "lrmsID=1_hepgrid6.ph.liv.ac.uk" "localUser=dteam001"
