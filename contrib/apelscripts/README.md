@@ -6,7 +6,9 @@ Scripts for a HTCondor + HTCondor-CE setup that parse accounting log files to ma
 Usage
 -----
 
-Installation instructions are provided in the references.
+Full installation instructions are provided in the references;
+the accountingRun.sh script now tries to find configuration
+settings in /etc/apel/etc/apel/htcondorce.cfg.
 
 References
 ----------

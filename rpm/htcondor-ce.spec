@@ -233,6 +233,7 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/apel/
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 %endif
 
 # Gratia accounting cleanup
@@ -367,11 +368,13 @@ fi
 
 %if ! 0%{?osg}
 %files apelscripts
+%{_sysconfdir}/apel/README.md
 %{_bindir}/condor_ce_blah.sh
 %{_bindir}/condor_ce_batch.sh
 %{_bindir}/accountingRun.sh
-%{_sysconfdir}/apel/apelscripts.conf
-%{_sysconfdir}/apel/README.md
+%config(noreplace) %{_sysconfdir}/apel/htcondorce.cfg
+%attr(-,root,root) %dir %{_sysconfdir}/apel/
+%attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
 %endif
 
 %files view

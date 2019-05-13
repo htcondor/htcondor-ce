@@ -60,7 +60,7 @@ install(PROGRAMS
   contrib/apelscripts/accountingRun.sh
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES
-  contrib/apelscripts/apelscripts.conf
+  contrib/apelscripts/htcondorce.cfg
   contrib/apelscripts/README.md
   DESTINATION ${SYSCONF_INSTALL_DIR}/apel)
 
