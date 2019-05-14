@@ -370,7 +370,7 @@ fi
 %files apelscripts
 %{_sysconfdir}/apel/README.md
 %{_bindir}/condor_ce_blah.sh
-%{_bindir}/condor_ce_batch.sh
+%{_bindir}/condor_batch.sh
 %{_bindir}/accountingRun.sh
 %config(noreplace) %{_sysconfdir}/apel/htcondorce.cfg
 %attr(-,root,root) %dir %{_sysconfdir}/apel/
