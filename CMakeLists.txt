@@ -55,8 +55,8 @@ install(PROGRAMS
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
 install(PROGRAMS
-  contrib/apelscripts/condor_blah.sh
-  contrib/apelscripts/condor_ce_batch.sh
+  contrib/apelscripts/condor_ce_blah.sh
+  contrib/apelscripts/condor_batch.sh
   contrib/apelscripts/accountingRun.sh
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES
