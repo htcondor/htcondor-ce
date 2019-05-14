@@ -228,6 +228,10 @@ rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/apel
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_blah.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/accountingRun.sh
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -368,12 +372,12 @@ fi
 
 %if ! 0%{?osg}
 %files apelscripts
-%{_sysconfdir}/apel/README.md
-%{_bindir}/condor_ce_blah.sh
-%{_bindir}/condor_batch.sh
-%{_bindir}/accountingRun.sh
-%config(noreplace) %{_sysconfdir}/apel/htcondorce.cfg
-%attr(-,root,root) %dir %{_sysconfdir}/apel/
+%{_sysconfdir}/condor-ce/apel/README.md
+%{_datadir}/condor-ce/condor_ce_blah.sh
+%{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/accountingRun.sh
+%config(noreplace) %{_sysconfdir}/condor-ce/apel/htcondorce.cfg
+%attr(-,root,root) %dir %{_sysconfdir}/condor-ce/apel/
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
 %endif
 
