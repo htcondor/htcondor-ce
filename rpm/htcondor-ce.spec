@@ -78,7 +78,7 @@ Requires: %{name} = %{version}-%{release}, bdii
 %endif
 
 %if ! 0%{?osg}
-%package apelscripts
+%package apel
 Group: Applications/Internet
 Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
 
@@ -87,7 +87,7 @@ Requires: apel-client >= 1.8.0
 Requires: apel-parsers >= 1.8.0
 Requires: apel-ssm
 
-%description apelscripts
+%description apel
 %{summary}
 %endif
 
@@ -371,7 +371,7 @@ fi
 
 
 %if ! 0%{?osg}
-%files apelscripts
+%files apel
 %{_sysconfdir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_ce_blah.sh
 %{_datadir}/condor-ce/condor_batch.sh
