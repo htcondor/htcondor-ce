@@ -28,7 +28,7 @@ TZ=GMT condor_ce_history -const "$CONSTR" \
  -format "\"userDN=%s\" " x509userproxysubject \
  -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
  -format "\"ceID=${CE_ID}\" " EMPTY \
- -format "\"jobID=%v_${CE_HOST}\" " ClusterId \
+ -format "\"jobID=%v_${CE_HOST}\" " 'split(ClusterId,"\.")[0]' \
  -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
  -format "\"localUser=%s\"\n"  Owner  > $OUTPUT_FILE
 
@@ -37,7 +37,7 @@ TZ=GMT condor_ce_q   -const "$CONSTR" \
  -format "\"userDN=%s\" " x509userproxysubject \
  -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
  -format "\"ceID=${CE_ID}\" " EMPTY \
- -format "\"jobID=%v_${CE_HOST}\" " ClusterId \
+ -format "\"jobID=%v_${CE_HOST}\" " 'split(ClusterId,"\.")[0]' \
  -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
  -format "\"localUser=%s\"\n"  Owner  >> $OUTPUT_FILE
 
