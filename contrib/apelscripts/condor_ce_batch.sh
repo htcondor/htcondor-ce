@@ -33,5 +33,5 @@ TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%d|" ImageSize_RAW \
     -format "%d|" RequestCpus \
     -format "%v|" ${SCALING_ATTR} \
-    -format "\n" EMPTY  | sed -e "s/undefined|$/1.0|/" # > $OUTPUT_FILE
+    -format "\n" EMPTY  | sed -e "s/undefined|$/1.0|/" > $OUTPUT_FILE
 
