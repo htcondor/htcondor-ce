@@ -39,5 +39,5 @@ TZ=GMT condor_ce_q   -const "$CONSTR" \
  -format "\"ceID=${CE_ID}\" " EMPTY \
  -format "\"jobID=%v_${CE_HOST}\" " ClusterId \
  -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
- -format "\"localUser=%s\"\n"  Owner  > $OUTPUT_FILE
+ -format "\"localUser=%s\"\n"  Owner  >> $OUTPUT_FILE
 
