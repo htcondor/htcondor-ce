@@ -1,7 +1,5 @@
 #!/bin/sh
 
-CONDOR_HISTORY=`condor_config_val HISTORY_HELPER`
-
 # Create a temporary accounting file name
 today=$(date -u --date='00:00:00 today' +%s)
 yesterday=$(date -u --date='00:00:00 yesterday' +%s)
@@ -23,7 +21,7 @@ trap '' ERR
 
 OUTPUT_FILE=$OUTPUT_LOCATION/$output
 
-$CONDOR_HISTORY -constraint "$CONSTR" \
+TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%s_${BATCH_HOST}|" ClusterId \
     -format "%s|" Owner \
     -format "%d|" RemoteWallClockTime \
@@ -35,5 +33,5 @@ $CONDOR_HISTORY -constraint "$CONSTR" \
     -format "%d|" ImageSize_RAW \
     -format "%d|" RequestCpus \
     -format "%v|" ${SCALING_ATTR} \
-    -format "\n" EMPTY  | sed -e "s/undefined|$/1.0|/" > $OUTPUT_FILE
+    -format "\n" EMPTY  | sed -e "s/undefined|$/1.0|/" # > $OUTPUT_FILE
 

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-CONDOR_HISTORY=`condor_ce_config_val HISTORY_HELPER`
-
 # "timestamp=2019-05-01 23:56:01" "userDN=/C=UK/O=eScience/OU=Liverpool/L=CSD/CN=stephen jones" "userFQAN=/dteam/Role=NULL/Capability=NULL" "ceID=hepgrid6.ph.liv.ac.uk:9619/hepgrid6.ph.liv.ac.uk-condor" "jobID=1.0_hepgrid6.ph.liv.ac.uk" "lrmsID=1_hepgrid6.ph.liv.ac.uk" "localUser=dteam001"
 
 today=$(date -u --date='00:00:00 today' +%s)
@@ -9,7 +7,7 @@ yesterday=$(date -u --date='00:00:00 yesterday' +%s)
 output=blah-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)
 
 # Build the filter for the history command
-CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
+CONSTR="CompletionDate >= $yesterday && CompletionDate < $today "
 
 function die() { echo "$0 aborted when reading config"; exit 1; }
 trap die ERR;
@@ -25,12 +23,21 @@ trap '' ERR
 
 OUTPUT_FILE=$OUTPUT_LOCATION/$output
 
-TZ=GMT $CONDOR_HISTORY -const "$CONSTR" \
- -format "\"timestamp=%s\" " 'formatTime(EnteredCurrentStatus, "%Y-%m-%d %H:%M:%S")' \
+TZ=GMT condor_ce_history -const "$CONSTR" \
+ -format "\"timestamp=%s\" " 'formatTime(CompletionDate, "%Y-%m-%d %H:%M:%S")' \
  -format "\"userDN=%s\" " x509userproxysubject \
  -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
  -format "\"ceID=${CE_ID}\" " EMPTY \
- -format "\"jobID=%v_${CE_HOST}\" " RoutedFromJobId \
- -format "\"lrmsID=%v_${BATCH_HOST}\" " ClusterId \
- -format "\"localUser=%s\"\n"  Owner  > $OUTPUT_FILE
+ -format "\"jobID=%v_${CE_HOST}\" " ClusterId \
+ -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
+ -format "\"localUser=%s\"\n"  Owner  # > $OUTPUT_FILE
+
+TZ=GMT condor_ce_q   -const "$CONSTR" \
+ -format "\"timestamp=%s\" " 'formatTime(CompletionDate, "%Y-%m-%d %H:%M:%S")' \
+ -format "\"userDN=%s\" " x509userproxysubject \
+ -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
+ -format "\"ceID=${CE_ID}\" " EMPTY \
+ -format "\"jobID=%v_${CE_HOST}\" " ClusterId \
+ -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
+ -format "\"localUser=%s\"\n"  Owner  # > $OUTPUT_FILE
 
