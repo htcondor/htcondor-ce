@@ -137,7 +137,7 @@ def generate_queue_ad(resource_catalog, ce):
 
 def agis_data(environ):
     ads = get_schedd_ads(environ)
-    results = {"ce_services": {}, "queues": {}, "failed_ces": [], "resource_groups": {}}
+    results = {"ce_services": {}, "queues": {}, "failed_ces": {}, "resource_groups": {}}
     for ad in ads:
         if 'Name' not in ad:
             continue
@@ -173,7 +173,7 @@ def agis_data(environ):
         except KeyError as e:
             # No way to log an error, stderr doesn't work, stdout, or logging module
             # So, just add it to the json as "failed_ces"
-            results['failed_ces'].append(ad['Name'])
+            results['failed_ces'][ad['Name']] = ad
 
     return results
 
