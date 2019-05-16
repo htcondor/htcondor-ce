@@ -127,7 +127,7 @@ def generate_queue_ad(resource_catalog, ce):
                          'entry': entry.get('Name', ''),
                          'name': queue,
                          'status': 'Production',
-                         'memory': int(entry.get('Memory', 0)),
+                         'memory': int(entry.get('Memory')),
                          'cpus': int(entry.get('CPUs', 1)),
                          'votag': entry.get('VOTag', ''),
                          'subclusters': entry.get('Subclusters', [])
