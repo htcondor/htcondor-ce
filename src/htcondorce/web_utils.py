@@ -127,7 +127,7 @@ def generate_queue_ad(resource_catalog, ce):
                          'entry': entry.get('Name', ''),
                          'name': queue,
                          'status': 'Production',
-                         'memory': int(entry.get('Memory', 0)),
+                         'memory': int(entry.get('Memory')),
                          'cpus': int(entry.get('CPUs', 1)),
                          'votag': entry.get('VOTag', ''),
                          'subclusters': entry.get('Subclusters', [])
@@ -137,7 +137,7 @@ def generate_queue_ad(resource_catalog, ce):
 
 def agis_data(environ):
     ads = get_schedd_ads(environ)
-    results = {"ce_services": {}, "queues": {}, "failed_ces": [], "resource_groups": {}}
+    results = {"ce_services": {}, "queues": {}, "failed_ces": {}, "resource_groups": {}}
     for ad in ads:
         if 'Name' not in ad:
             continue
@@ -170,10 +170,10 @@ def agis_data(environ):
             queue_ad = generate_queue_ad(ad['OSG_ResourceCatalog'], ad['OSG_Resource'])
             if queue_ad:
                 results['queues'][ad['OSG_Resource']] = queue_ad
-        except KeyError as e:
+        except (KeyError, TypeError):
             # No way to log an error, stderr doesn't work, stdout, or logging module
             # So, just add it to the json as "failed_ces"
-            results['failed_ces'].append(ad['Name'])
+            results['failed_ces'][ad['Name']] = ad
 
     return results
 
