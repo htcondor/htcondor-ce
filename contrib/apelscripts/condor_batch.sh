@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Create a temporary accounting file name
 today=$(date -u --date='00:00:00 today' +%s)
