@@ -77,6 +77,20 @@ Requires: %{name} = %{version}-%{release}, bdii
 %{summary}
 %endif
 
+%if ! 0%{?osg}
+%package apel
+Group: Applications/Internet
+Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
+
+Requires: %{name} = %{version}-%{release}
+Requires: apel-client >= 1.8.0
+Requires: apel-parsers >= 1.8.0
+Requires: apel-ssm
+
+%description apel
+%{summary}
+%endif
+
 %package view
 Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
@@ -214,10 +228,16 @@ rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/apel
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_blah.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/accountingRun.sh
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/apel/
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 %endif
 
 # Gratia accounting cleanup
@@ -347,6 +367,18 @@ fi
 
 %{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor/config.d/99-ce-bdii.conf
+%endif
+
+
+%if ! 0%{?osg}
+%files apel
+%{_sysconfdir}/condor-ce/apel/README.md
+%{_datadir}/condor-ce/condor_ce_blah.sh
+%{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/accountingRun.sh
+%config(noreplace) %{_sysconfdir}/condor-ce/apel/htcondorce.cfg
+%attr(-,root,root) %dir %{_sysconfdir}/condor-ce/apel/
+%attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
 %endif
 
 %files view

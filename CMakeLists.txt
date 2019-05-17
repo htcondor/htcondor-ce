@@ -38,6 +38,7 @@ configure_file (
 )
 
 install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
+
 install(PROGRAMS
   src/condor_ce_startup
   src/verify_ce_config.py
@@ -50,8 +51,12 @@ install(PROGRAMS
   src/condor_ce_metric
   src/condor_ce_view
   src/gratia_cleanup.py
+  contrib/apelscripts/condor_ce_blah.sh
+  contrib/apelscripts/condor_batch.sh
+  contrib/apelscripts/accountingRun.sh
   contrib/bdii/htcondor-ce-provider
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
+
 install(PROGRAMS
   src/condor_ce_config_generator
   src/condor_ce_config_val
@@ -88,6 +93,12 @@ install(FILES
   DESTINATION ${PYTHON_SITELIB}/htcondorce)
 
 install(FILES config/condor_config config/condor_mapfile config/condor_mapfile.osg DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+
+install(FILES
+  contrib/apelscripts/htcondorce.cfg
+  contrib/apelscripts/README.md
+  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/apel)
+
 install(FILES
   config/metrics.d/00-metrics-defaults.conf
   config/metrics.d/00-example-metrics.conf
