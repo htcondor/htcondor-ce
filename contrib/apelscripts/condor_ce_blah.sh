@@ -9,19 +9,10 @@ output=blah-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)
 # Build the filter for the history command
 CONSTR="CompletionDate >= $yesterday && CompletionDate < $today "
 
-function die() { echo "$0 aborted when reading config"; exit 1; }
-trap die ERR;
-if [ $# -gt 0 ]; then
-  source $1
-fi
-trap '' ERR
-
-[[ -z "$CE_HOST" ]] && CE_HOST=`hostname`
-[[ -z "$BATCH_HOST" ]] && BATCH_HOST=`hostname`
-[[ -z "$CE_ID" ]] && CE_ID=${CE_HOST}:9619/${BATCH_HOST}-condor
-[[ -z "$OUTPUT_LOCATION" ]] && OUTPUT_LOCATION=/var/lib/condor-ce/apel/
-
-OUTPUT_FILE=$OUTPUT_LOCATION/$output
+CE_HOST=$(condor_ce_config_val APEL_CE_HOST)
+BATCH_HOST=$(condor_ce_config_val APEL_BATCH_HOST)
+CE_ID=$(condor_ce_config_val APEL_CE_ID)
+OUTPUT_FILE=$(condor_ce_config_val APEL_OUTPUT_DIR)/$output
 
 TZ=GMT condor_ce_history -const "$CONSTR" \
  -format "\"timestamp=%s\" " 'formatTime(CompletionDate, "%Y-%m-%d %H:%M:%S")' \

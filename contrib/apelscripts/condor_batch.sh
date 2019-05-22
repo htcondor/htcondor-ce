@@ -8,21 +8,12 @@ output=batch-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)
 # Build the filter for the history command
 CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
 
-function die() { echo "$0 aborted when reading config"; exit 1; }
-trap die ERR;
-if [ $# -gt 0 ]; then
-  source $1
-fi
-trap '' ERR
-
-[[ -z "$SCALING_ATTR" ]] && SCALING_ATTR=MachineAttrRalScaling0
-[[ -z "$BATCH_HOST" ]] && BATCH_HOST=`hostname`
-[[ -z "$OUTPUT_LOCATION" ]] && OUTPUT_LOCATION=/var/lib/condor-ce/apel/
-
-OUTPUT_FILE=$OUTPUT_LOCATION/$output
+HISTORY_SUFFIX='-format "\n" EMPTY'
+SCALING_ATTR=$(condor_ce_config_val APEL_SCALING_ATTR)
+[ $? -eq 0] && HISTORY_SUFFIX="-format "%v|" ${SCALING_ATTR} ${HISTORY_SUFFIX}"
 
 TZ=GMT condor_history -constraint "$CONSTR" \
-    -format "%s_${BATCH_HOST}|" ClusterId \
+    -format "%s_$(condor_ce_config_val APEL_BATCH_HOST)|" ClusterId \
     -format "%s|" Owner \
     -format "%d|" RemoteWallClockTime \
     -format "%d|" RemoteUserCpu \
@@ -32,6 +23,5 @@ TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%d|" ResidentSetSize_RAW \
     -format "%d|" ImageSize_RAW \
     -format "%d|" RequestCpus \
-    -format "%v|" ${SCALING_ATTR} \
-    -format "\n" EMPTY  | sed -e "s/undefined|$/1.0|/" > $OUTPUT_FILE
+    ${HISTORY_SUFFIX} > $(condor_ce_config_val APEL_OUTPUT_DIR)/$output
 
