@@ -4,7 +4,14 @@
 
 today=$(date -u --date='00:00:00 today' +%s)
 yesterday=$(date -u --date='00:00:00 yesterday' +%s)
-output=blah-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)
+
+OUTPUT_DIR="$(condor_ce_config_val APEL_OUTPUT_DIR)"
+OUTPUT_FILE="$OUTPUT_DIR/blah-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)"
+
+if [ ! -d $OUTPUT_DIR ] || [ ! -w $OUTPUT_DIR ]; then
+    echo "Cannot write to $OUTPUT_DIR"
+    exit 1
+fi
 
 # Build the filter for the history command
 CONSTR="CompletionDate >= $yesterday && CompletionDate < $today "
@@ -12,7 +19,6 @@ CONSTR="CompletionDate >= $yesterday && CompletionDate < $today "
 CE_HOST=$(condor_ce_config_val APEL_CE_HOST)
 BATCH_HOST=$(condor_ce_config_val APEL_BATCH_HOST)
 CE_ID=$(condor_ce_config_val APEL_CE_ID)
-OUTPUT_FILE=$(condor_ce_config_val APEL_OUTPUT_DIR)/$output
 
 TZ=GMT condor_ce_history -const "$CONSTR" \
  -format "\"timestamp=%s\" " 'formatTime(CompletionDate, "%Y-%m-%d %H:%M:%S")' \
