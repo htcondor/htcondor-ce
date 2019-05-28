@@ -23,5 +23,5 @@ TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%d|" ResidentSetSize_RAW \
     -format "%d|" ImageSize_RAW \
     -format "%d|" RequestCpus \
-    ${HISTORY_SUFFIX} > $(condor_ce_config_val APEL_OUTPUT_DIR)/$output
+    "${HISTORY_SUFFIX}" > "$(condor_ce_config_val APEL_OUTPUT_DIR)/$output"
 
