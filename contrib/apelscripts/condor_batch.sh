@@ -15,9 +15,9 @@ fi
 # Build the filter for the history command
 CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
 
-HISTORY_SUFFIX='-format "\n" EMPTY'
+HISTORY_EXTRA_ARGS='-format "\n" EMPTY'
 SCALING_ATTR=$(condor_ce_config_val APEL_SCALING_ATTR)
-[ $? -eq 0 ] && HISTORY_SUFFIX="-format \"%v|\" ${SCALING_ATTR} ${HISTORY_SUFFIX}"
+[ $? -eq 0 ] && HISTORY_EXTRA_ARGS="-format \"%v|\" ${SCALING_ATTR} ${HISTORY_EXTRA_ARGS}"
 
 TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%s_$(condor_ce_config_val APEL_BATCH_HOST)|" ClusterId \
@@ -30,4 +30,4 @@ TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%d|" ResidentSetSize_RAW \
     -format "%d|" ImageSize_RAW \
     -format "%d|" RequestCpus \
-    "${HISTORY_SUFFIX}" > $OUTPUT_FILE
+    ${HISTORY_EXTRA_ARGS} > $OUTPUT_FILE
