@@ -17,7 +17,7 @@ CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && R
 
 HISTORY_SUFFIX='-format "\n" EMPTY'
 SCALING_ATTR=$(condor_ce_config_val APEL_SCALING_ATTR)
-[ $? -eq 0 ] && HISTORY_SUFFIX="-format "%v|" ${SCALING_ATTR} ${HISTORY_SUFFIX}"
+[ $? -eq 0 ] && HISTORY_SUFFIX="-format \"%v|\" ${SCALING_ATTR} ${HISTORY_SUFFIX}"
 
 TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%s_$(condor_ce_config_val APEL_BATCH_HOST)|" ClusterId \
