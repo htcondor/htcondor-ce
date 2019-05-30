@@ -16,10 +16,7 @@ yesterday=$(date -u --date='00:00:00 yesterday' +%s)
 OUTPUT_DIR="$(condor_ce_config_val APEL_OUTPUT_DIR)"
 OUTPUT_FILE="$OUTPUT_DIR/batch-$(date -u --date='yesterday' +%Y%m%d )-$(hostname -s)"
 
-if [ ! -d $OUTPUT_DIR ] || [ ! -w $OUTPUT_DIR ]; then
-    echo "Cannot write to $OUTPUT_DIR"
-    exit 1
-fi
+[[ -d $OUTPUT_DIR && -w $OUTPUT_DIR ]] || fail "Cannot write to $OUTPUT_DIR"
 
 # Build the filter for the history command
 CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
