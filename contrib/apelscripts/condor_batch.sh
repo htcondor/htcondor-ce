@@ -25,9 +25,9 @@ OUTPUT_FILE="$OUTPUT_DIR/batch-$(date -u --date='yesterday' +%Y%m%d )-$(hostname
 # Build the filter for the history command
 CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
 
-HISTORY_EXTRA_ARGS='-format "\n" EMPTY'
+HISTORY_EXTRA_ARGS=(-format "\n" EMPTY)
 safe_config_val SCALING_ATTR APEL_SCALING_ATTR
-[[ -z $SCALING_ATTR ]] || HISTORY_EXTRA_ARGS="-format \"%v|\" ${SCALING_ATTR} ${HISTORY_EXTRA_ARGS}"
+[[ -z $SCALING_ATTR ]] || HISTORY_EXTRA_ARGS=(-format "%v|" "${SCALING_ATTR}" "${HISTORY_EXTRA_ARGS[@]}")
 
 safe_config_val BATCH_HOST APEL_BATCH_HOST
 
@@ -42,4 +42,4 @@ TZ=GMT condor_history -constraint "$CONSTR" \
     -format "%d|" ResidentSetSize_RAW \
     -format "%d|" ImageSize_RAW \
     -format "%d|" RequestCpus \
-    ${HISTORY_EXTRA_ARGS} > $OUTPUT_FILE
+    "${HISTORY_EXTRA_ARGS[@]}" > $OUTPUT_FILE
