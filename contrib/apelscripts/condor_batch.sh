@@ -6,7 +6,11 @@ fail () {
 }
 
 safe_config_val () {
-    condor_ce_config_val $1 || fail "Failed to retrieve CE configuration value '$1'"
+    var=$1
+    attr=$2
+    val=$(condor_ce_config_val $attr) ||
+    fail "Failed to retrieve CE configuration value '$attr'"
+    eval "$var"='$val'
 }
 
 # Create a temporary accounting file name
@@ -22,11 +26,13 @@ OUTPUT_FILE="$OUTPUT_DIR/batch-$(date -u --date='yesterday' +%Y%m%d )-$(hostname
 CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
 
 HISTORY_EXTRA_ARGS='-format "\n" EMPTY'
-SCALING_ATTR=$(safe_config_val APEL_SCALING_ATTR)
+safe_config_val SCALING_ATTR APEL_SCALING_ATTR
 [[ -z $SCALING_ATTR ]] || HISTORY_EXTRA_ARGS="-format \"%v|\" ${SCALING_ATTR} ${HISTORY_EXTRA_ARGS}"
 
+safe_config_val BATCH_HOST APEL_BATCH_HOST
+
 TZ=GMT condor_history -constraint "$CONSTR" \
-    -format "%s_$(safe_config_val APEL_BATCH_HOST)|" ClusterId \
+    -format "%s_${BATCH_HOST}|" ClusterId \
     -format "%s|" Owner \
     -format "%d|" RemoteWallClockTime \
     -format "%d|" RemoteUserCpu \
