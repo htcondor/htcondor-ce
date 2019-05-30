@@ -1,7 +1,12 @@
 #!/bin/bash
 
+fail () {
+    echo "$@" >&2
+    exit 1
+}
+
 safe_config_val () {
-    condor_ce_config_val $1 || echo "Failed to retrieve CE configuration value '$1'" && exit 1
+    condor_ce_config_val $1 || fail "Failed to retrieve CE configuration value '$1'"
 }
 
 # Create a temporary accounting file name
