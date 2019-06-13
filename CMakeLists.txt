@@ -53,7 +53,6 @@ install(PROGRAMS
   src/gratia_cleanup.py
   contrib/apelscripts/condor_ce_blah.sh
   contrib/apelscripts/condor_batch.sh
-  contrib/apelscripts/accountingRun.sh
   contrib/bdii/htcondor-ce-provider
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
@@ -95,9 +94,8 @@ install(FILES
 install(FILES config/condor_config config/condor_mapfile config/condor_mapfile.osg DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 
 install(FILES
-  contrib/apelscripts/htcondorce.cfg
   contrib/apelscripts/README.md
-  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/apel)
+  DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/apel)
 
 install(FILES
   config/metrics.d/00-metrics-defaults.conf
@@ -121,6 +119,7 @@ install(FILES
   config/04-ce-collector-auth.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
+  contrib/apelscripts/50-ce-apel.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES
   config/01-blahp-location.conf
@@ -142,6 +141,7 @@ install(FILES
   config/03-gratia-cleanup.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
+  contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES
   config/99-condor-ce.conf
