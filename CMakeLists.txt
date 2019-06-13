@@ -53,7 +53,6 @@ install(PROGRAMS
   src/gratia_cleanup.py
   contrib/apelscripts/condor_ce_blah.sh
   contrib/apelscripts/condor_batch.sh
-  contrib/apelscripts/accountingRun.sh
   contrib/bdii/htcondor-ce-provider
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
