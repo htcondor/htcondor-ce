@@ -1,7 +1,7 @@
 HTCondor-CE
 ===========
 
-[![Build Status](https://travis-ci.org/opensciencegrid/htcondor-ce.svg?branch=master)](https://travis-ci.org/opensciencegrid/htcondor-ce)
+[![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=master)](https://travis-ci.org/htcondor/htcondor-ce)
 
 ---
 
