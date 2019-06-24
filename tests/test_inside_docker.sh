@@ -2,7 +2,7 @@
 
 function run_osg_tests {
     # Source repo version
-    git clone https://github.com/opensciencegrid/osg-test.git
+    git clone -q https://github.com/opensciencegrid/osg-test.git
     pushd osg-test
     git rev-parse HEAD
     make install
@@ -85,12 +85,11 @@ BUILD_ENV=$2
 ls -l /home
 
 # Clean the yum cache
-yum -y clean all
-yum -y clean expire-cache
+yum clean all
 yum -y update  # Update the OS packages
 
 # First, install all the needed packages.
-rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
+rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
 
 # Broken mirror?
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
@@ -98,7 +97,7 @@ echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.c
 yum -y install yum-plugin-priorities rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools
 
 if [ "$BUILD_ENV" == 'osg' ]; then
-    rpm -Uvh https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
+    rpm -U https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
 else
     pushd /etc/yum.repos.d
     yum install -y wget
@@ -158,7 +157,7 @@ sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 /bin/cp -f /etc/hosts.new /etc/hosts
 
 # Install tooling for creating test certificates
-git clone https://github.com/opensciencegrid/osg-ca-generator.git
+git clone -q https://github.com/opensciencegrid/osg-ca-generator.git
 pushd osg-ca-generator
 git rev-parse HEAD
 make install
