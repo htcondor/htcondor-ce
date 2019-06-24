@@ -66,9 +66,9 @@ function debug_info {
             cat $abs_logdir/$logfile
         done
 
-        if [ $logdir == 'condor-ce' ]; then
+        if [[ $logdir == condor-ce ]]; then
             cat $abs_logdir/JobRouterLog
-            if [ "$BUILD_ENV" == 'osg' ]; then
+            if [[ $BUILD_ENV == osg ]]; then
                 cat $abs_logdir/CEViewLog
             fi
         fi
@@ -96,7 +96,7 @@ echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.c
 
 yum -y install yum-plugin-priorities rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools
 
-if [ "$BUILD_ENV" == 'osg' ]; then
+if [[ $BUILD_ENV == osg ]]; then
     rpm -U https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
 else
     pushd /etc/yum.repos.d
@@ -130,7 +130,7 @@ rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.sp
 mkdir -p /var/run/lock
 
 RPM_LOCATION=/tmp/rpmbuild/RPMS/noarch
-if [ "$BUILD_ENV" == 'osg' ]; then
+if [[ $BUILD_ENV == osg ]]; then
     extra_repos='--enablerepo=osg-development'
 else
     # UW build tests run against HTCondor 8.8.0, which does not automatically configure a personal condor
@@ -176,7 +176,7 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
-if [ "$BUILD_ENV" == 'osg' ]; then
+if [[ $BUILD_ENV == osg ]]; then
     run_osg_tests
 else
     run_integration_tests
