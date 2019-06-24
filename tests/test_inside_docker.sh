@@ -79,8 +79,11 @@ function debug_info {
     condor_config_val -dump
 }
 
+
+# --------- EXECUTION BEGINS HERE ---------
 OS_VERSION=$1
 BUILD_ENV=$2
+DEPLOY_STAGE=$3
 
 ls -l /home
 
@@ -124,6 +127,21 @@ popd
 
 # Build the RPM
 rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
+
+if $DEPLOY_STAGE; then
+    # dir needs to be inside htcondor-ce so it's visible outside the container
+    mkdir -p htcondor-ce/travis_deploy
+    cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/travis_deploy/
+    # HACK: only deploy the common file(s) (SRPM) on one env set
+    # to avoid attempting to overwrite the GitHub build products
+    # (which would raise an error).
+    # `overwrite: true` in .travis.yml ought to fix that but doesn't
+    # appear to.
+    if [[ $OS_VERSION == 6 ]]; then
+        cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/travis_deploy/
+    fi
+    exit 0
+fi
 
 # After building the RPM, try to install it
 # Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
