@@ -48,8 +48,6 @@ jobs:
       deploy:
         on:
           tags: true
-          all_branches: true
-          draft: true
           repo: matyasselmeci/htcondor-ce
         skip_cleanup: true
         file_glob: true
