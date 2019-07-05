@@ -113,8 +113,9 @@ fi
 # Prepare the RPM environment
 mkdir -p /tmp/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
+# ${BUILD_ENV%_build} strips the '_build' from 'uw_build' to make the dist tag shorter.
 cat >> /etc/rpm/macros.dist << EOF
-%dist .${BUILD_ENV}.el${OS_VERSION}
+%dist .${BUILD_ENV%_build}.el${OS_VERSION}
 %${BUILD_ENV} 1
 EOF
 
