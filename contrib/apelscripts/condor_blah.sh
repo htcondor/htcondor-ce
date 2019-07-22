@@ -27,7 +27,7 @@ if [ ! -d $OUTPUT_DIR ] || [ ! -w $OUTPUT_DIR ]; then
 fi
 
 # Build the filter for the history command
-CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
+CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime =!=0"
 
 safe_config_val CE_HOST APEL_CE_HOST
 safe_config_val BATCH_HOST APEL_BATCH_HOST
@@ -39,6 +39,7 @@ TZ=GMT condor_history -const "$CONSTR" \
  -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
  -format "\"ceID=${CE_ID}\" " EMPTY \
  -format "\"jobID=%v_${CE_HOST}\" " RoutedFromJobId \
- -format "\"lrmsID=%v_${BATCH_HOST}\" " clusterId \
+ -format "\"lrmsID=%v" clusterId \
+ -format ".%v_${BATCH_HOST}\" " ProcId \
  -format "\"localUser=%s\"\n"  Owner  > $OUTPUT_FILE
 

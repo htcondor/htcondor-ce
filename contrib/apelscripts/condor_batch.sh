@@ -23,7 +23,7 @@ OUTPUT_FILE="$OUTPUT_DIR/batch-$(date -u --date='yesterday' +%Y%m%d )-$(hostname
 [[ -d $OUTPUT_DIR && -w $OUTPUT_DIR ]] || fail "Cannot write to $OUTPUT_DIR"
 
 # Build the filter for the history command
-CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime !=0"
+CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime =!=0"
 
 HISTORY_EXTRA_ARGS=(-format "\n" EMPTY)
 safe_config_val SCALING_ATTR APEL_SCALING_ATTR
@@ -32,7 +32,8 @@ safe_config_val SCALING_ATTR APEL_SCALING_ATTR
 safe_config_val BATCH_HOST APEL_BATCH_HOST
 
 TZ=GMT condor_history -constraint "$CONSTR" \
-    -format "%s_${BATCH_HOST}|" ClusterId \
+    -format "%s" clusterId \
+    -format ".%s_${BATCH_HOST}|" ProcId \
     -format "%s|" Owner \
     -format "%d|" RemoteWallClockTime \
     -format "%d|" RemoteUserCpu \
