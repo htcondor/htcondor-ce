@@ -27,27 +27,19 @@ if [ ! -d $OUTPUT_DIR ] || [ ! -w $OUTPUT_DIR ]; then
 fi
 
 # Build the filter for the history command
-CONSTR="CompletionDate >= $yesterday && CompletionDate < $today "
+CONSTR="EnteredCurrentStatus >= $yesterday && EnteredCurrentStatus < $today && RemoteWallclockTime =!= 0"
 
 safe_config_val CE_HOST APEL_CE_HOST
 safe_config_val BATCH_HOST APEL_BATCH_HOST
 safe_config_val CE_ID APEL_CE_ID
 
-TZ=GMT condor_ce_history -const "$CONSTR" \
- -format "\"timestamp=%s\" " 'formatTime(CompletionDate, "%Y-%m-%d %H:%M:%S")' \
+TZ=GMT condor_history -const "$CONSTR" \
+ -format "\"timestamp=%s\" " 'formatTime(EnteredCurrentStatus, "%Y-%m-%d %H:%M:%S")' \
  -format "\"userDN=%s\" " x509userproxysubject \
  -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
  -format "\"ceID=${CE_ID}\" " EMPTY \
- -format "\"jobID=%v_${CE_HOST}\" " 'split(GlobalJobId,"\#")[1]' \
- -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
+ -format "\"jobID=%v_${CE_HOST}\" " RoutedFromJobId \
+ -format "\"lrmsID=%v" clusterId \
+ -format ".%v_${BATCH_HOST}\" " ProcId \
  -format "\"localUser=%s\"\n"  Owner  > $OUTPUT_FILE
-
-TZ=GMT condor_ce_q   -const "$CONSTR" \
- -format "\"timestamp=%s\" " 'formatTime(CompletionDate, "%Y-%m-%d %H:%M:%S")' \
- -format "\"userDN=%s\" " x509userproxysubject \
- -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
- -format "\"ceID=${CE_ID}\" " EMPTY \
- -format "\"jobID=%v_${CE_HOST}\" " 'split(GlobalJobId,"\#")[1]' \
- -format "\"lrmsID=%v_${BATCH_HOST}\" " 'split(RoutedToJobId,"\.")[0]' \
- -format "\"localUser=%s\"\n"  Owner  >> $OUTPUT_FILE
 
