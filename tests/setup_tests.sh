@@ -9,6 +9,10 @@ env_file=`pwd`/tests/env.sh
 cat >"$env_file" <<__END__
 encrypted_e14a22ad945b_key=$encrypted_e14a22ad945b_key
 encrypted_e14a22ad945b_iv=$encrypted_e14a22ad945b_iv
+TRAVIS_REPO_SLUG=$TRAVIS_REPO_SLUG
+TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER
+TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+TRAVIS_TAG=$TRAVIS_TAG
 __END__
 trap "rm -f \"$env_file\"" EXIT
 set -x
@@ -24,7 +28,7 @@ if [ "${OS_VERSION}" -eq 6 ]; then
          --volume /sys/fs/cgroup:/sys/fs/cgroup \
          --volume `pwd`:/htcondor-ce:rw \
          centos:centos${OS_VERSION} \
-         /bin/bash -c "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV} ${DEPLOY_STAGE} ${REPO_OWNER}"
+         /bin/bash -c "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV} ${DEPLOY_STAGE}"
 
 elif [ "${OS_VERSION}" -eq 7 ]; then
 
@@ -37,7 +41,7 @@ elif [ "${OS_VERSION}" -eq 7 ]; then
     DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
     docker logs $DOCKER_CONTAINER_ID
     docker exec --tty --interactive $DOCKER_CONTAINER_ID \
-           /bin/bash -xec "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV} ${DEPLOY_STAGE} ${REPO_OWNER};
+           /bin/bash -xec "bash -xe /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV} ${DEPLOY_STAGE};
            echo -ne \"------\nEND HTCONDOR-CE TESTS\n\";"
 
         docker ps -a

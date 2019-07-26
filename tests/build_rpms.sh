@@ -9,16 +9,20 @@ set -u
 OS_VERSION=$1
 BUILD_ENV=$2
 DEPLOY_STAGE=$3
-REPO_OWNER=${4-}
 
 
-if $DEPLOY_STAGE && [[ -z $REPO_OWNER ]]; then
-    echo >&2 "Deploying requires a REPO_OWNER"
-    exit 1
+mydir=$(dirname "$0")
+
+if [[ -r $mydir/env.sh ]]; then
+    set +x
+    source $mydir/env.sh
+    set -x
 fi
 
+PROJECT=${TRAVIS_REPO_SLUG#*/}
+REPO_OWNER=${TRAVIS_REPO_SLUG%/*}
 
-keyfile=$(dirname "$0")/id_rsa_cibot2
+keyfile=$mydir/id_rsa_cibot2
 upload_server=ci-xfer.chtc.wisc.edu
 # from "ssh-keyscan -t rsa ci-xfer.chtc.wisc.edu"
 hostsig="ci-xfer.chtc.wisc.edu ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDyrceRMLPsOmdtDHxXpfI82snDF0Q9/Z1Mick5zsQK1RyOtNgkyvXM50AJSPPSl0I9JmIxSBxhqcNDcbDz0Kc8tKcA1iGQxp4Ll9z9ZCl60AUq72WwkS1A4z11JjRoYvw1CL8bvoJhk55dcgAz+bXWx/eTwcBsmW80/okNDkdYmtv+QgfUmRP6TjMtIkzvCsXi5x+B4j66yQcLDDYb36EcGyHZqoyLuxkxX0OwS7LuzDfnKxpsV9jlnu3PuJnZOizalqKUpTYc2b83XnfsIYTqoiclmFr89+WuQJG6e/596y/9aVtNacCphdS7u3D+tSoME6OG7xQtZiQfkWvKPicv"
@@ -32,11 +36,6 @@ function setup_ssh {
         return 1
     fi
     (
-        if [[ -r "$(dirname "$0")/env.sh" ]]; then
-            set +x
-            source "$(dirname "$0")/env.sh"
-            set -x
-        fi
         umask 077
         mkdir -p ~/.ssh
         openssl aes-256-cbc \
@@ -59,14 +58,21 @@ __END__
     )
 }
 
-remote_dir=/var/tmp/travis/htcondor-ce/${REPO_OWNER}-${TRAVIS_JOB_NUMBER:-0.0}
+remote_dir=/var/tmp/travis/$REPO_OWNER/$PROJECT
+if [[ -n ${TRAVIS_TAG-} ]]; then
+    # .../htcondor-ce-v2.3.4
+    remote_dir=${remote_dir}-$(tr / _ <<<"$TRAVIS_TAG")
+else
+    # .../htcondor-ce-88
+    remote_dir=${remote_dir}-${TRAVIS_BUILD_NUMBER}
+fi
 function sftp_to_chtc {
     local ret=0
     set +x
     script=$(mktemp -t build_rpms.$$.XXXXXX)
     cat >>"$script" <<__END__
 -MKDIR /var/tmp/travis
--MKDIR /var/tmp/travis/htcondor-ce
+-MKDIR /var/tmp/travis/$REPO_OWNER
 -MKDIR $remote_dir
 CD $remote_dir
 __END__

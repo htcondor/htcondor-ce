@@ -30,7 +30,7 @@ jobs:
     - &deploy_rpm
       # Template; subsequent uses modify 'env'
       env:
-        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build DEPLOY_STAGE=true REPO_OWNER=matyasselmeci
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build DEPLOY_STAGE=true
       stage: deploy
       sudo: required
       skip_cleanup: true
@@ -66,5 +66,4 @@ jobs:
           script: bash travis-ci/build_rpms.sh
     - <<: *deploy_rpm
       env:
-        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build DEPLOY_STAGE=true REPO_OWNER=matyasselmeci
-
+        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build DEPLOY_STAGE=true
