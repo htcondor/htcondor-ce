@@ -1,13 +1,15 @@
 #!/bin/bash -xe
 
+set -u
+
 # Build source and binary RPMs.
 # SRPMs will be /tmp/rpmbuild/SRPMS/*.rpm.
 # Binary RPMs will be /tmp/rpmbuild/RPMS/*/*.rpm.
 
-export OS_VERSION=${1:-$OS_VERSION}
-export BUILD_ENV=${2:-$BUILD_ENV}
-export DEPLOY_STAGE=${3:-$DEPLOY_STAGE}
-export REPO_OWNER=${4:-$REPO_OWNER}
+OS_VERSION=$1
+BUILD_ENV=$2
+DEPLOY_STAGE=$3
+REPO_OWNER=${4-}
 
 
 if $DEPLOY_STAGE && [[ -z $REPO_OWNER ]]; then
@@ -30,6 +32,11 @@ function setup_ssh {
         return 1
     fi
     (
+        if [[ -r "$(dirname "$0")/env.sh" ]]; then
+            set +x
+            source "$(dirname "$0")/env.sh"
+            set -x
+        fi
         umask 077
         mkdir -p ~/.ssh
         openssl aes-256-cbc \

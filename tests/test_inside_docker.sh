@@ -84,10 +84,11 @@ function debug_info {
 OS_VERSION=$1
 BUILD_ENV=$2
 DEPLOY_STAGE=$3
+REPO_OWNER=$4
 
 ls -l /home
 
-"$(dirname "$0")"/build_rpms.sh "$OS_VERSION" "$BUILD_ENV" "$DEPLOY_STAGE"; ret=$?
+"$(dirname "$0")"/build_rpms.sh "$OS_VERSION" "$BUILD_ENV" "$DEPLOY_STAGE" "$REPO_OWNER"; ret=$?
 if $DEPLOY_STAGE; then
     exit $ret
 fi
