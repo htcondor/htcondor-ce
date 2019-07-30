@@ -35,11 +35,12 @@ fi
 # Prepare the RPM environment
 mkdir -p /tmp/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
-# ${BUILD_ENV%_build} strips the '_build' from 'uw_build' to make the dist tag shorter.
-cat >> /etc/rpm/macros.dist << EOF
-%dist .${BUILD_ENV%_build}.el${OS_VERSION}
-%${BUILD_ENV} 1
-EOF
+if [[ $BUILD_ENV == uw_build ]]; then
+    printf "%s\n" "%dist .el${OS_VERSION}" >> /etc/rpm/macros.dist
+else
+    printf "%s\n" "%dist .${BUILD_ENV}.el${OS_VERSION}" >> /etc/rpm/macros.dist
+fi
+printf "%s\n" "%${BUILD_ENV} 1" >> /etc/rpm/macros.dist
 
 cp htcondor-ce/rpm/htcondor-ce.spec /tmp/rpmbuild/SPECS
 package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
