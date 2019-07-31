@@ -22,8 +22,8 @@ set -x
 
 # n.b. $TRAVIS_BUILD_STAGE_NAME is always title case regardless of how it's written in the YAML
 if [[ $TRAVIS_BUILD_STAGE_NAME == Deploy ]]; then
-    if [[ $TRAVIS_PULL_REQUEST != false ]]; then
-        echo "Not running deploy on a PR"
+    if [[ -z $TRAVIS_TAG ]]; then
+        echo "Not deploying - not a tag."
         exit 0
     fi
     sudo docker run --privileged --rm=false \

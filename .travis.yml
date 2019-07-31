@@ -49,6 +49,8 @@ jobs:
         - provider: script
           skip_cleanup: true
           script: tests/sftp_upload.sh
+          on:
+            tags: true
     - <<: *deploy_rpm
       env:
         - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
