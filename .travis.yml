@@ -46,9 +46,7 @@ jobs:
       deploy:
         - provider: script
           on:
-            repo: matyasselmeci/htcondor-ce
-            #            branch: master
-            #            condition: $TRAVIS_PULL_REQUEST == "false"
+            repo: htcondor/htcondor-ce
           skip_cleanup: true
           script: tests/sftp_upload.sh
     - <<: *deploy_rpm
