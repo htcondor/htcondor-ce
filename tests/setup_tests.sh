@@ -14,6 +14,7 @@ encrypted_e14a22ad945b_iv=$encrypted_e14a22ad945b_iv
 TRAVIS_REPO_SLUG=$TRAVIS_REPO_SLUG
 TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER
 TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST
 TRAVIS_TAG=$TRAVIS_TAG
 __END__
 trap "rm -f \"$env_file\"" EXIT
@@ -21,6 +22,10 @@ set -x
 
 # n.b. $TRAVIS_BUILD_STAGE_NAME is always title case regardless of how it's written in the YAML
 if [[ $TRAVIS_BUILD_STAGE_NAME == Deploy ]]; then
+    if [[ $TRAVIS_PULL_REQUEST != false ]]; then
+        echo "Not running deploy on a PR"
+        exit 0
+    fi
     sudo docker run --privileged --rm=false \
         --volume `pwd`:/htcondor-ce:rw \
         centos:centos${OS_VERSION} \

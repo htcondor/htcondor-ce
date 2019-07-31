@@ -33,7 +33,6 @@ jobs:
         - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
       on:
         repo: htcondor/htcondor-ce
-        tags: true
       stage: Deploy
       sudo: required
       skip_cleanup: true

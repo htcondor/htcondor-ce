@@ -14,6 +14,11 @@ if [[ -r $progdir/env.sh ]]; then
     set $_old_x
 fi
 
+if [[ $TRAVIS_PULL_REQUEST != false ]]; then
+    echo "Not running deploy on a PR"
+    exit 0
+fi
+
 project=${TRAVIS_REPO_SLUG#*/}
 repo_owner=${TRAVIS_REPO_SLUG%/*}
 
