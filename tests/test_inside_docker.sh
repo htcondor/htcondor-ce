@@ -145,6 +145,10 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
 if [[ $BUILD_ENV == osg ]]; then
+    if [[ $OS_VERSION == 6 ]]; then
+        echo "*** Skipping OSG integration tests on EL 6 due to excessive random failures ***"
+        exit 0
+    fi
     run_osg_tests
 else
     run_integration_tests
