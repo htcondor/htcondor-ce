@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 
 function run_osg_tests {
     # Source repo version
@@ -81,18 +81,16 @@ function debug_info {
 
 
 # --------- EXECUTION BEGINS HERE ---------
+set -xe
+
 OS_VERSION=$1
 BUILD_ENV=$2
-DEPLOY_STAGE=$3
 
 mydir=$(dirname "$0")
 
 ls -l /home
 
-$mydir/build_rpms.sh "$OS_VERSION" "$BUILD_ENV" "$DEPLOY_STAGE"; ret=$?
-if $DEPLOY_STAGE; then
-    exit $ret
-fi
+$mydir/build_rpms.sh "$OS_VERSION" "$BUILD_ENV"; ret=$?
 
 # After building the RPM, try to install it
 # Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
