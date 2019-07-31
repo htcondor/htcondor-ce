@@ -46,18 +46,6 @@ jobs:
       script:
         - tests/setup_tests.sh
       deploy:
-        - provider: releases
-          on:
-            tags: true
-            repo: matyasselmeci/htcondor-ce
-          skip_cleanup: true
-          file_glob: true
-          overwrite: true
-          # ^ this doesn't actually work but I'm leaving it in there in
-          #   case it gets fixed later
-          api_key:
-            secure: HUc5eo0CTVIRkTRcCwpG00bRmP49OJzwUJ1vcPh1YZJW7M5xrkbEsygPnN+6RQZ396Y8hhPpgfPOvyuq7fyb0qh2DyuzXAPFWFiBM07GicmKvEARFYoYTCmRkpi/UMSJ7dRB5mMNHCHsO6rz1Ak1LFwGQYA6NYa4AY1wwkr3RnsVQqhF6BClvq+KILWCiSoVVLPHCURARXOf+mg2nluK+Rk0DqCcr4q76tFyV2kY+lCDzTXwL4Gg5I84ovTTVXmUEG7DOFQjX49u9vGnpF2ZWPpgsQqbbSeX1/ZCkpqM6UyD30S4uMyTlgqrNwpWzvKQ6rCwvXIb7VweI8uno1TWwFIVd92rqtg1r11XfhYkGBT1aeHiCj8IA2LkR9HSyffXD0rl/26hK4D/8+ITr90guYgCIRoJWGAIaIbs8rpavhmYAVbIIUSkvl25j7+4cpfjizGGta4u/UG6TCl671ClPeycBo2VD102yCCnaObKG2AF6w8zGkhhg5HWblsMHM1uOn06w6Foc0OavBK/Feo/7ueAGmIcgeP5KrvYAS2hBuA+uy3dGVq5ZoNSTTFP2Lf3T9KUQgeKm3QN67LosJ3Iz9PWMRwPnkhMwkiBMC5yg7b+9S12nlR5dhB4ax/kSH43rHFljxDGMXrUu58WiyZofpCiSQ/vooTEhAIRNrSQnrM=
-          file: travis_deploy/*
         - provider: script
           on:
             tags: true
