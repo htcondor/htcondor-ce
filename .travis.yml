@@ -31,6 +31,8 @@ jobs:
       # Template; subsequent uses modify 'env'
       env:
         - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
+      on:
+        repo: htcondor/htcondor-ce
       stage: Deploy
       sudo: required
       skip_cleanup: true
@@ -45,8 +47,6 @@ jobs:
       script: tests/setup_tests.sh
       deploy:
         - provider: script
-          on:
-            repo: htcondor/htcondor-ce
           skip_cleanup: true
           script: tests/sftp_upload.sh
     - <<: *deploy_rpm
