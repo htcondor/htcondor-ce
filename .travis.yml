@@ -4,7 +4,7 @@ jobs:
     - &run_tests
       # Template; subsequent uses modify 'env'
       env:
-        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=osg
       sudo: required
       services:
         - docker
@@ -18,7 +18,7 @@ jobs:
         - tests/setup_tests.sh
     - <<: *run_tests
       env:
-        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
       deploy:
         - provider: script
           skip_cleanup: true
@@ -28,7 +28,14 @@ jobs:
             tags: true
     - <<: *run_tests
       env:
-        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=osg
+        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: tests/sftp_upload.sh
+          on:
+            repo: htcondor/htcondor-ce
+            tags: true
     - <<: *run_tests
       env:
         - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=osg
