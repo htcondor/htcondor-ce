@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.2.2
+Version: 3.3.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -528,6 +528,10 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
+- Add APEL support for HTCondor-CE and HTCondor backends
+- Store malformed ads reporting to htcondor-ce-collector
+
 * Tue Mar 26 2019 Brian Lin <blin@cs.wisc.edu> - 3.2.2-1
 - Make blahp requirement binary package specific (SOFTWARE-3623)
 - Added condor_ce_store_cred for PASSWORD authentication
