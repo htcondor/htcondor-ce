@@ -4,8 +4,7 @@ jobs:
     - &run_tests
       # Template; subsequent uses modify 'env'
       env:
-        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
-      stage: Test
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=osg
       sudo: required
       services:
         - docker
@@ -19,38 +18,24 @@ jobs:
         - tests/setup_tests.sh
     - <<: *run_tests
       env:
-        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
-    - <<: *run_tests
-      env:
-        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=osg
-    - <<: *run_tests
-      env:
-        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=osg
-
-    - &deploy_rpm
-      # Template; subsequent uses modify 'env'
-      env:
         - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
-      on:
-        repo: htcondor/htcondor-ce
-      stage: Deploy
-      sudo: required
-      skip_cleanup: true
-      services:
-        - docker
-      before_install:
-        - sudo apt-get update
-        - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
-        - sudo service docker restart
-        - sleep 5
-        - sudo docker pull centos:centos${OS_VERSION}
-      script: tests/setup_tests.sh
       deploy:
         - provider: script
           skip_cleanup: true
           script: tests/sftp_upload.sh
           on:
+            repo: htcondor/htcondor-ce
             tags: true
-    - <<: *deploy_rpm
+    - <<: *run_tests
       env:
         - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: tests/sftp_upload.sh
+          on:
+            repo: htcondor/htcondor-ce
+            tags: true
+    - <<: *run_tests
+      env:
+        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=osg

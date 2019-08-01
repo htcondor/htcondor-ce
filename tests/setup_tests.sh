@@ -20,17 +20,7 @@ __END__
 trap "rm -f \"$env_file\"" EXIT
 set -x
 
-# n.b. $TRAVIS_BUILD_STAGE_NAME is always title case regardless of how it's written in the YAML
-if [[ $TRAVIS_BUILD_STAGE_NAME == Deploy ]]; then
-    if [[ -z $TRAVIS_TAG ]]; then
-        echo "Not deploying - not a tag."
-        exit 0
-    fi
-    sudo docker run --privileged --rm=false \
-        --volume `pwd`:/htcondor-ce:rw \
-        centos:centos${OS_VERSION} \
-        /bin/bash -c "exec bash -x /htcondor-ce/tests/build_rpms.sh ${OS_VERSION} ${BUILD_ENV}"
-elif [[ $OS_VERSION -eq 6 ]]; then
+if [[ $OS_VERSION -eq 6 ]]; then
     sudo docker run --privileged --rm=true \
          --volume /sys/fs/cgroup:/sys/fs/cgroup \
          --volume `pwd`:/htcondor-ce:rw \
