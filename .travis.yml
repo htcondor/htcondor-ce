@@ -1,24 +1,56 @@
 language: minimal
-sudo: required
-env:
-  matrix:
-  - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
-  - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
-  - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=osg
-  - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=osg
+jobs:
+  include:
+    - &run_tests
+      # Template; subsequent uses modify 'env'
+      env:
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
+      stage: Test
+      sudo: required
+      services:
+        - docker
+      before_install:
+        - sudo apt-get update
+        - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
+        - sudo service docker restart
+        - sleep 5
+        - sudo docker pull centos:centos${OS_VERSION}
+      script:
+        - tests/setup_tests.sh
+    - <<: *run_tests
+      env:
+        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build
+    - <<: *run_tests
+      env:
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=osg
+    - <<: *run_tests
+      env:
+        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=osg
 
-services:
-  - docker
-  
-before_install:
-  - sudo apt-get update
-  - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
-  - sudo service docker restart
-  - sleep 5
-  - sudo docker pull centos:centos${OS_VERSION}
-
-  
-script:
- # Run tests in Container
-- tests/setup_tests.sh
-
+    - &deploy_rpm
+      # Template; subsequent uses modify 'env'
+      env:
+        - OS_TYPE=centos OS_VERSION=6 BUILD_ENV=uw_build
+      on:
+        repo: htcondor/htcondor-ce
+      stage: Deploy
+      sudo: required
+      skip_cleanup: true
+      services:
+        - docker
+      before_install:
+        - sudo apt-get update
+        - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
+        - sudo service docker restart
+        - sleep 5
+        - sudo docker pull centos:centos${OS_VERSION}
+      script: tests/setup_tests.sh
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: tests/sftp_upload.sh
+          on:
+            tags: true
+    - <<: *deploy_rpm
+      env:
+        - OS_TYPE=centos OS_VERSION=7 BUILD_ENV=uw_build

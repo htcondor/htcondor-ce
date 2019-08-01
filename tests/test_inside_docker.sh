@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 
 function run_osg_tests {
     # Source repo version
@@ -79,51 +79,18 @@ function debug_info {
     condor_config_val -dump
 }
 
+
+# --------- EXECUTION BEGINS HERE ---------
+set -xe
+
 OS_VERSION=$1
 BUILD_ENV=$2
 
+mydir=$(dirname "$0")
+
 ls -l /home
 
-# Clean the yum cache
-yum clean all
-yum -y update  # Update the OS packages
-
-# First, install all the needed packages.
-rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
-
-# Broken mirror?
-echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
-
-yum -y install yum-plugin-priorities rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools
-
-if [[ $BUILD_ENV == osg ]]; then
-    rpm -U https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
-else
-    pushd /etc/yum.repos.d
-    yum install -y wget
-    wget http://htcondor.org/yum/repo.d/htcondor-stable-rhel${OS_VERSION}.repo
-    wget http://htcondor.org/yum/RPM-GPG-KEY-HTCondor
-    rpm --import RPM-GPG-KEY-HTCondor
-    popd
-fi
-
-# Prepare the RPM environment
-mkdir -p /tmp/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-
-cat >> /etc/rpm/macros.dist << EOF
-%dist .${BUILD_ENV}.el${OS_VERSION}
-%${BUILD_ENV} 1
-EOF
-
-cp htcondor-ce/rpm/htcondor-ce.spec /tmp/rpmbuild/SPECS
-package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
-pushd htcondor-ce
-git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD | \
-    gzip > /tmp/rpmbuild/SOURCES/htcondor-ce-${package_version}.tar.gz
-popd
-
-# Build the RPM
-rpmbuild --define '_topdir /tmp/rpmbuild' -ba /tmp/rpmbuild/SPECS/htcondor-ce.spec
+$mydir/build_rpms.sh "$OS_VERSION" "$BUILD_ENV"; ret=$?
 
 # After building the RPM, try to install it
 # Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
@@ -138,6 +105,7 @@ else
     extra_packages='minicondor'
 fi
 
+package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
 yum localinstall -y $RPM_LOCATION/htcondor-ce-${package_version}* \
     $RPM_LOCATION/htcondor-ce-client-* \
     $RPM_LOCATION/htcondor-ce-condor-* \
@@ -177,6 +145,10 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
 if [[ $BUILD_ENV == osg ]]; then
+    if [[ $OS_VERSION == 6 ]]; then
+        echo "*** Skipping OSG integration tests on EL 6 due to excessive random failures ***"
+        exit 0
+    fi
     run_osg_tests
 else
     run_integration_tests
