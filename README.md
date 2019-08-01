@@ -16,3 +16,11 @@ code - from OSGs condor-cron package.
 
 Sites are encouraged to install the sub-package `htcondor-ce-condor` or
 `htcondor-ce-pbs`, depending on which batch manager they run.
+
+Download
+--------
+
+HTCondor-CE RPMs are available from the following locations:
+
+- HTCondor Yum repositories: https://research.cs.wisc.edu/htcondor/yum/
+- OSG Yum repositories: https://opensciencegrid.org/docs/common/yum/
