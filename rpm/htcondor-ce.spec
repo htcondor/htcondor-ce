@@ -1,9 +1,9 @@
 # Have gitrev be the short hash or branch name if doing a prerelease build
-#define gitrev osg
+%define gitrev osg
 
 Name: htcondor-ce
-Version: 3.3.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 4.0.0
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -260,11 +260,9 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defa
 # OSG and CERN have entries in the original mapfile/authz for *cern.ch and
 # *opensciencegrid.org so we use original config non-UW builds
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
-rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf.osg
 rm -rf ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf.osg
 %else
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
-mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf{.osg,}
 mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg,}
 %endif
 
@@ -336,7 +334,6 @@ fi
 %{_initrddir}/condor-ce
 %endif
 
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
@@ -511,7 +508,6 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
@@ -528,6 +524,9 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-2.osggit
+- Add support for SciTokens.
+
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
 - Add APEL support for HTCondor-CE and HTCondor backends
 - Store malformed ads reporting to htcondor-ce-collector
