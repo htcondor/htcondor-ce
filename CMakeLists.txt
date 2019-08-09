@@ -105,9 +105,6 @@ install(FILES
   config/01-ce-collector.conf
   config/01-ce-collector-requirements.conf
   config/02-ce-auth-generated.conf
-  config/01-ce-auth.conf
-  config/01-ce-auth.conf.osg
-  config/01-common-auth.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
