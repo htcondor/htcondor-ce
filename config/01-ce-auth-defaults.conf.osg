@@ -16,7 +16,7 @@ DENY_DAEMON = anonymous@*, unmapped@*
 DENY_OWNER = anonymous@*, unmapped@*
 
 # Defaults authorizations
-SUPERUSERS = condor@fs.htcondor.org/$(FULL_HOSTNAME), root@fs.htcondor.org/$(FULL_HOSTNAME)
+SUPERUSERS = condor@daemon.htcondor.org/$(FULL_HOSTNAME), root@daemon.htcondor.org/$(FULL_HOSTNAME)
 FRIENDLY_DAEMONS = condor@users.opensciencegrid.org/$(FULL_HOSTNAME) condor@child/$(FULL_HOSTNAME)
 # Setting the UID_DOMAIN appends @users.opensciencegrid.org to GUMS mappings.
 UID_DOMAIN = users.opensciencegrid.org
@@ -29,7 +29,7 @@ UNMAPPED_USERS = *@unmapped.opensciencegrid.org
 # Authz settings for each daemon.  Preferably, change the templates above
 ALLOW_READ = *
 ALLOW_WRITE = $(FRIENDLY_DAEMONS)
-SCHEDD.ALLOW_WRITE = $(USERS), condor@fs.htcondor.org/$(FULL_HOSTNAME)
+SCHEDD.ALLOW_WRITE = $(USERS), condor@daemon.htcondor.org/$(FULL_HOSTNAME)
 COLLECTOR.ALLOW_ADVERTISE_MASTER = $(FRIENDLY_DAEMONS)
 COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(FRIENDLY_DAEMONS)
 COLLECTOR.ALLOW_ADVERTISE_STARTD =  $(UNMAPPED_USERS), $(USERS)
