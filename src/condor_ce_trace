@@ -197,9 +197,11 @@ def check_job_submit(job_info, schedd_ad):
         job_ad[key.lstrip('+').strip()] = set_classad_value_type(value.strip())
     proxy = os.environ.setdefault("X509_USER_PROXY", "/tmp/x509up_u%d" % os.geteuid())
     if not os.path.exists(proxy):
-        raise ce.CondorUserException("Could not find an X509 proxy in %s" % proxy)
-    job_ad['x509userproxy'] = proxy
-    add_job_proxy_info(job_ad)
+        if 'SCITOKENS_FILE' not in htcondor.param:
+            raise ce.CondorUserException("Could not find an X509 proxy in %s" % proxy)
+    else:
+        job_ad['x509userproxy'] = proxy
+        add_job_proxy_info(job_ad)
 
     try:
         schedd = htcondor.Schedd(schedd_ad)
