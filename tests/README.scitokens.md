@@ -43,11 +43,15 @@ the following claims in the token:
 ```
   "scope": "condor:/READ condor:/WRITE condor:/ALLOW",
   "aud": "my-ce.example.com:9619",
+  "sub": "condor",
 ```
 
 The `aud` claim, if set, must match the value of `SCITOKENS_SERVER_AUDIENCE` configuration
 variable in the HTCondor-CE configuration.  If the `aud` claim is not set, then the token
 will be valid at any CE.
+
+As the authorizations depend only on the scopes set on the token, any value for the subject (`sub`)
+is acceptable.
 
 Testing the CE Endpoint
 =======================
@@ -68,3 +72,50 @@ New setups often require some amount of debugging.  A few helpful hints:
   and add the `-debug` flag to the command line tool.
 - Switch to using `condor_ce_ping` to debug authentication issues if `condor_ce_trace` fails.
 
+Setup your own SciTokens issuer
+===============================
+
+To make a URL a valid SciTokens issuer, three things are needed:
+
+- A webserver capable of serving static files at the URL.
+- A list of valid public keys for the issuer
+- A "auto-discovery" file describing where to find the public key URL.
+
+We will not cover the webserver step here.
+
+
+If your issuer is named `https://scitokens.example.com`, then create a file at
+
+```
+https://scitokens.example.com/.well-known/openid-configuration
+```
+
+with the following contents:
+
+```
+{
+ "issuer":"https://scitokens.example.com",
+ "jwks_uri":"https://scitokens.example.com/oauth2/certs"}
+```
+
+The `jwks_uri` key can point to any URL, but will need to be used below.
+
+To create a keypair, first install the `python2-scitokens` RPM from the OSG via yum:
+
+```
+yum install python2-scitokens
+```
+
+Next, use `scitokens-admin-create-key` to create a new keyfile:
+
+```
+scitokens-admin-create-key --create-keys --pem-private > /tmp/test.scitoken.private.pem
+scitokens-admin-create-key --private-keyfile /tmp/test.scitoken.private.pem --jwks-private > /tmp/test.scitoken.private.jwks
+scitokens-admin-create-key --private-keyfile /tmp/test.scitoken.private.pem --jwks-public > /tmp/test.scitoken.public.jwks
+```
+
+Now, copy the public key (`/tmp/test.scitoken.public.jwks`) to the URL specified by `jwks_uri` above
+(such as `https://scitokens.example.com/oauth2/certs`).
+
+With these two files in place, we have a valid SciTokens issuer at `https://scitokens.example.com` and can
+use the generated private key to start issuing tokens!
