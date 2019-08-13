@@ -260,10 +260,8 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defa
 # OSG and CERN have entries in the original mapfile/authz for *cern.ch and
 # *opensciencegrid.org so we use original config non-UW builds
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
-rm -rf ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf.osg
 %else
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
-mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d

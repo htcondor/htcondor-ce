@@ -123,7 +123,6 @@ install(FILES
   config/01-ce-collector-defaults.conf
   config/01-ce-audit-payloads-defaults.conf
   config/01-ce-auth-defaults.conf
-  config/01-ce-auth-defaults.conf.osg
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
   config/01-ce-info-services-defaults.conf
