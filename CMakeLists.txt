@@ -102,6 +102,7 @@ install(FILES
   config/metrics.d/00-example-metrics.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/metrics.d)
 install(FILES
+  config/01-ce-auth.conf
   config/01-ce-collector.conf
   config/01-ce-collector-requirements.conf
   config/02-ce-auth-generated.conf
