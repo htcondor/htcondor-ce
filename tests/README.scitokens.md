@@ -115,7 +115,33 @@ scitokens-admin-create-key --private-keyfile /tmp/test.scitoken.private.pem --jw
 ```
 
 Now, copy the public key (`/tmp/test.scitoken.public.jwks`) to the URL specified by `jwks_uri` above
-(such as `https://scitokens.example.com/oauth2/certs`).
+(such as `https://scitokens.example.com/oauth2/certs`).  Note the `kid` claim in the generate public key.  For example, in
+the following public key, the `kid` is `b270`:
+
+```
+{
+    "keys": [
+        {
+            "alg": "RS256",
+            "e": "AQAB",
+            "kid": "b270",
+            "kty": "RSA",
+            "n": "rnX434cLF7I70ckfpi1lbcNSBXhP0fToMw_RaOlE2zER5aFddHnRkBUBQIAgrM29MDYVjJdXJ_9xLwls0Gm6SSz9IWuobT81HOAeoqepLdcJ5EIaSLDBoRmDsfW0h7g_6m6yJ8aIL5vtJPyiTWjrYiv-VyE8AEPEY_-0KRpuwqr9MXIRYj4pPC7ZhXEyjph1ZETdOF215aWr-Zf-KNw6iF3KRrL4t0cdrdX1AvVduBCQ6JIytW6EwNbKlfTTEGGkzes9fbDdjAcO94qoVZD3E5W3CbZrEN23jXW4cdhAEOJbAufcL3Mi7KF294iwzAXfw0LSQwlpUpV4hB4ZLdQ0gw==",
+            "use": "sig"
+        }
+    ]
+}
+```
 
 With these two files in place, we have a valid SciTokens issuer at `https://scitokens.example.com` and can
 use the generated private key to start issuing tokens!
+
+To generate a token, simply use `scitokens-admin-create-token`:
+
+```
+scitokens-admin-create-token --kid b270 --keyfile /tmp/test.scitoken.private.pem --issuer https://scitokens.example.com sub=htcondor aud=https://my-ce.example.com 'scope=condor:/READ condor:/WRITE condor:/ALLOW'
+```
+
+For the `kid` argument, utilize the `kid` generated above.
+
+This will output an encoded token that should be usable to submit jobs to the HTCondor-CE.
