@@ -14,6 +14,26 @@ def error(msg):
 def warn(msg):
     print "WARNING: " + msg
 
+def condorpp(param):
+    syntax = [';','[',']']
+    out = "".join(param.split()) # strip all whitespace
+    for elem in syntax: 
+      out = out.replace(elem, elem+'\n') # re-print 
+    return out
+
+def malformedQueues(parsedAds, unparsedAds):
+
+    allqueues = []
+    for line in condorpp(unparsedAds).split('\n'):
+        if 'name' in line:
+            allqueues.append(line.split('=')[1].split(';')[0].strip('\"'))
+
+    goodqueues = []
+    for ad in parsedAds:
+        goodqueues.append(ad['name'])
+
+    return list(set(allqueues) - set(goodqueues))
+
 # Verify that the HTCondor Python bindings are in the PYTHONPATH
 try:
     import classad
@@ -30,14 +50,15 @@ for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
     try:
         ads = classad.parseAds(htcondor.param[attr])
     except KeyError:
-        error("Missing required configuration: %s" % attr)
+        continue
     JOB_ROUTER_CONFIG[attr] = list(ads) # store the ads (iterating through ClassAdStringIterator consumes them)
 
 # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare the unparsed string to the
 # parsed string, counting the number of ads by proxy: the number of opening square brackets, "["
 for attr, ads in JOB_ROUTER_CONFIG.items():
     if htcondor.param[attr].count('[') != len(ads):
-        error("Could not read %s in the HTCondor CE configuration. Please verify syntax correctness" % attr)
+        print "Could not read %s in the HTCondor CE configuration. Please verify syntax correctness" % attr
+        error("The following appear to be malformed: %s" % ", ".join(malformedQueues(ads, htcondor.param[attr])))
 
 # Find all eval_set_ attributes in the JOB_ROUTER_DEFAULTS
 EVAL_SET_DEFAULTS = set([x.lstrip('eval_') for x in JOB_ROUTER_CONFIG['JOB_ROUTER_DEFAULTS'][0].keys()
