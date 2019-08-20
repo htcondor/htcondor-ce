@@ -5,12 +5,6 @@
 # authenticate VOMS attributes, *.lsc files should be installed in
 # /etc/grid-security/vomsdir/
 
-# To configure authorization between HTCondor-CE daemons, uncomment and replace
-# <HOST CERT DISTINGUISHED NAME> and <HOSTNAME>, (escaping any '/' with '\/')
-# in the following line:
-#
-# GSI "^<HOST CERT DISTINGUISHED NAME>$" <HOSTNAME>@daemon.htcondor.org
-
 # To configure authorization for users submitting jobs to your HTCondor-CE,
 # uncomment and replace <DISTINGUISHED NAME> and <USERNAME> (escaping any '/'
 # with '\/') with the distinguished name of the incoming user certificate and

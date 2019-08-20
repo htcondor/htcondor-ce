@@ -332,6 +332,7 @@ fi
 %{_initrddir}/condor-ce
 %endif
 
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
