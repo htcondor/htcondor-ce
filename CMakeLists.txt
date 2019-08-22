@@ -102,12 +102,10 @@ install(FILES
   config/metrics.d/00-example-metrics.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/metrics.d)
 install(FILES
+  config/01-ce-auth.conf
   config/01-ce-collector.conf
   config/01-ce-collector-requirements.conf
   config/02-ce-auth-generated.conf
-  config/01-ce-auth.conf
-  config/01-ce-auth.conf.osg
-  config/01-common-auth.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
@@ -126,7 +124,6 @@ install(FILES
   config/01-ce-collector-defaults.conf
   config/01-ce-audit-payloads-defaults.conf
   config/01-ce-auth-defaults.conf
-  config/01-ce-auth-defaults.conf.osg
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
   config/01-ce-info-services-defaults.conf
