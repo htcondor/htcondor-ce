@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.0.0
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -522,7 +522,7 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-2.osggit
+* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-0.1
 - Add support for SciTokens.
 
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
