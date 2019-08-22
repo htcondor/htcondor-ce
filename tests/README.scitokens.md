@@ -25,7 +25,7 @@ to the Unix identity for that issuer.  At the top of the `/etc/condor-ce/condor_
 add a line along the following:
 
 ```
-SCITOKENS https://demo.scitokens.org demo@users.opensciencegrid.org
+SCITOKENS https://demo.scitokens.org demo@users.htcondor.org
 ```
 
 This maps the demo issuer (`https://demo.scitokens.org`) to the Unix account `demo`.
