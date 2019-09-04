@@ -171,5 +171,12 @@ install(FILES templates/index.html templates/vos.html templates/metrics.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
-install(FILES config/condor-ce.service config/condor-ce-collector.service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+
+install(FILES
+  config/condor-ce.service
+  config/condor-ce-collector.service
+  config/condor-ce-collector-config.service
+  config/condor-ce-collector-config.timer
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)

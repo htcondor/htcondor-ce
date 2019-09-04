@@ -266,7 +266,9 @@ fi
 
 %preun collector
 if [ $1 -eq 0 ]; then
-    %remove_service condor-ce-collector
+    for service in condor-ce-collector condor-ce-collector-config; do
+        %remove_service $service
+    done
 fi
 
 %postun
@@ -276,7 +278,9 @@ fi
 
 %postun collector
 if [ $1 -ge 1 ]; then
-    /bin/systemctl condrestart condor-ce-collector %1 >/dev/null 2>&1 || :
+    for service in condor-ce-collector condor-ce-collector-config; do
+        /bin/systemctl condrestart $service %1 >/dev/null 2>&1 || :
+    done
 fi
 
 %files
@@ -469,6 +473,8 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %{_unitdir}/condor-ce-collector.service
+%{_unitdir}/condor-ce-collector-config.service
+%{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
 
 %config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf

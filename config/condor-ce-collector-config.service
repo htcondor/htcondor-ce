@@ -1,18 +1,13 @@
 [Unit]
-Description=HTCondor CE Collector
+Description=HTCondor CE Central Collector configuration generator
 After=syslog.target network.target condor-ce-collector-config.service
 Wants=network.target condor-ce-collector-config.service condor-ce-collector-config.service
 
 [Service]
-Type=forking
-ExecStart=/usr/share/condor-ce/condor_ce_startup collector
-ExecStop=/usr/bin/condor_ce_off
-ExecReload=/usr/bin/condor_ce_restart
-Restart=always
-RestartSec=5
+Type=oneshot
+ExecStart=/usr/bin/condor_ce_config_generator
 StandardOutput=syslog+console
 LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
-
