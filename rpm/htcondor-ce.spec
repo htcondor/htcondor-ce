@@ -295,7 +295,9 @@ fi
 
 %preun collector
 if [ $1 -eq 0 ]; then
-    %remove_service condor-ce-collector
+    for service in condor-ce-collector condor-ce-collector-config; do
+        %remove_service $service
+    done
 fi
 
 %postun
@@ -503,6 +505,8 @@ fi
 
 %if %systemd
 %{_unitdir}/condor-ce-collector.service
+%{_unitdir}/condor-ce-collector-config.service
+%{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
 %else
 %{_initrddir}/condor-ce-collector

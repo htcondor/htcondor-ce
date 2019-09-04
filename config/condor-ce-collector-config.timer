@@ -1,0 +1,13 @@
+[Unit]
+Description=HTCondor CE Central Collector configuration generator
+After=network-online.target
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=10min
+RandomizedDelaySec=2min
+Unit=condor-ce-collector-config.service
+
+[Install]
+WantedBy=timers.target
+
