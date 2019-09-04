@@ -503,11 +503,12 @@ fi
 %{_initrddir}/condor-ce-collector
 %endif
 
+%config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-collector-auth.conf
+%config %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
