@@ -11,7 +11,7 @@ fail() {
 # Source condor-ce environment
 [ -f /usr/share/condor-ce/condor_ce_env_bootstrap ] && . /usr/share/condor-ce/condor_ce_env_bootstrap
 
-# Verify that required dirs are owned by condor:condor (SOFTWARE-2806``)
+# Verify that required dirs are owned by condor:condor (SOFTWARE-2806)
 required_dirs="/var/run/condor-ce /var/log/condor-ce /var/log/condor-ce/user /var/lib/condor-ce /var/lib/condor-ce/spool
 /var/lib/condor-ce/execute /var/lock/condor-ce /var/lock/condor-ce/user"
 bad_dirs=$(stat --format "%n (%U:%G)" $required_dirs | awk '$2 != "(condor:condor)" {print $0}')

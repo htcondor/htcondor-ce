@@ -48,17 +48,8 @@ Requires: %{name}-client = %{version}-%{release}
 
 Provides:  %{name}-master = %{version}-%{release}
 
-%if 0%{?rhel} >= 7
 Requires(post): systemd
 Requires(preun): systemd
-%define systemd 1
-%else
-Requires(post): chkconfig
-Requires(preun): chkconfig
-# This is for /sbin/service
-Requires(preun): initscripts
-%define systemd 0
-%endif
 
 # We use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
@@ -217,13 +208,6 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if %systemd
-rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
-%else
-rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
-rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
-%endif
-
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
@@ -266,23 +250,14 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
-%if %systemd
-%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
 %define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
                           /bin/systemctl disable %1 > /dev/null 2>&1 || :)
-%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
-%else
-%define add_service() (/sbin/chkconfig --add %1 || :)
-%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
-                                       /sbin/chkconfig --del %1 || :)
-%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
-%endif
 
 %post
-%add_service condor-ce
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %post collector
-%add_service condor-ce-collector
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -296,12 +271,12 @@ fi
 
 %postun
 if [ $1 -ge 1 ]; then
-    %restart_service condor-ce
+    /bin/systemctl condrestart condor-ce %1 >/dev/null 2>&1 || :
 fi
 
 %postun collector
 if [ $1 -ge 1 ]; then
-    %restart_service condor-ce-collector
+    /bin/systemctl condrestart condor-ce-collector %1 >/dev/null 2>&1 || :
 fi
 
 %files
@@ -325,12 +300,9 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%if %systemd
 %{_unitdir}/condor-ce.service
 %{_tmpfilesdir}/condor-ce.conf
-%else
-%{_initrddir}/condor-ce
-%endif
+
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
@@ -496,12 +468,8 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
-%if %systemd
 %{_unitdir}/condor-ce-collector.service
 %{_tmpfilesdir}/condor-ce-collector.conf
-%else
-%{_initrddir}/condor-ce-collector
-%endif
 
 %config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
@@ -509,7 +477,6 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-collector-auth.conf
 %config %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
-%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
