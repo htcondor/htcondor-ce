@@ -216,19 +216,19 @@ CONFIG_TEMPLATE = """\
 
 # To BAN a host, add a line of the form:
 #
-#   DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), ce.example.com@users.opensciencegrid.org
+#   DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), ce.example.com@users.htcondor.org
 #
 # You can have multiple comma-separated hosts in the DENY listing.
 
 # To ADD a custom host, add a line of the form:
 #
-#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), ce.example.com@users.opensciencegrid.org/ce.example.com
+#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), ce.example.com@users.htcondor.org/ce.example.com
 #
 # You can have multiple comma-separated hosts in the ALLOW listing.
 
 # The generated ALLOW_ADVERTISE_SCHEDD should be of the form:
 #
-#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = foo.example.com@users.opensciencegrid.org/foo.example.com, bar.example.com@users.opensciencegrid.org/bar.example.com
+#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = foo.example.com@users.htcondor.org/foo.example.com, bar.example.com@users.htcondor.org/bar.example.com
 #
 # There will be one entry per enabled service found in MyOSG.  This file is updated
 # atomically; MyOSG outages will not result in partial or incorrect updates.
@@ -267,7 +267,7 @@ def write_config(config_line):
     # this is still periodically updated, this should be OK.
 
 def generate_config(hosts):
-    authz = ["%s@users.opensciencegrid.org/%s" % (i, i) for i in hosts]
+    authz = ["%s@users.htcondor.org/%s" % (i, i) for i in hosts]
     return "COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), %s" % ", \\\n\t\t".join(authz)
 
 def parse_config():
