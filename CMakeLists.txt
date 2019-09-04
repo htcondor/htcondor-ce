@@ -3,7 +3,7 @@ project(condor-ce)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( HTCONDORCE_VERSION "3.3.0" CACHE INTERNAL "Version of the HTCondor-CE" )
+set( HTCONDORCE_VERSION "4.0.0" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
@@ -105,7 +105,7 @@ install(FILES
   config/01-ce-auth.conf
   config/01-ce-collector.conf
   config/01-ce-collector-requirements.conf
-  config/02-ce-auth-generated.conf
+  config/02-ce-collector-auth.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
@@ -128,6 +128,7 @@ install(FILES
   config/01-common-collector-defaults.conf
   config/01-ce-info-services-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
+  config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
   config/02-ce-lsf-defaults.conf
