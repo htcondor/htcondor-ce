@@ -209,7 +209,7 @@ CONFIG_TEMPLATE = """\
 #
 #  condor_ce_config_generator
 #
-# There will be one entry per active, registered CE in OSG Topology.
+# There is one entry per active, registered CE in OSG Topology.
 
 %s
 
