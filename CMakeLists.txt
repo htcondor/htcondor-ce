@@ -102,8 +102,6 @@ install(FILES
 install(FILES
   config/01-ce-auth.conf
   config/01-ce-collector.conf
-  config/01-ce-collector-requirements.conf
-  config/02-ce-collector-auth.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
@@ -120,6 +118,7 @@ install(FILES
 install(FILES
   config/01-blahp-location.conf
   config/01-ce-collector-defaults.conf
+  config/01-ce-collector-requirements.conf
   config/01-ce-audit-payloads-defaults.conf
   config/01-ce-auth-defaults.conf
   config/01-common-auth-defaults.conf

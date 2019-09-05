@@ -457,11 +457,10 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
 
+%config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-collector-auth.conf
 %config %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
