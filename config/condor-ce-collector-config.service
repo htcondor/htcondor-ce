@@ -1,7 +1,7 @@
 [Unit]
 Description=HTCondor CE Central Collector configuration generator
-After=syslog.target network.target condor-ce-collector-config.service
-Wants=network.target condor-ce-collector-config.service condor-ce-collector-config.service
+After=syslog.target network.target
+Wants=network.target
 
 [Service]
 Type=oneshot
