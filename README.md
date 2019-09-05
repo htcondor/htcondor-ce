@@ -24,3 +24,14 @@ HTCondor-CE RPMs are available from the following locations:
 
 - HTCondor Yum repositories: https://research.cs.wisc.edu/htcondor/yum/
 - OSG Yum repositories: https://opensciencegrid.org/docs/common/yum/
+
+Versioning
+----------
+
+The `master` branch contains the latest version of HTCondor-CE.
+Previous major versions can be found in `vN` branches where `N` is the HTCondor-CE major version
+
+As of September 2019, we maintain two different versions of HTCondor-CE:
+
+- [master](https://github.com/htcondor/htcondor-ce/tree/master): HTCondor-CE 4.y.z
+- [v3](https://github.com/htcondor/htcondor-ce/tree/v3): HTCondor-CE 3.y.z
