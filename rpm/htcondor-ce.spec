@@ -48,8 +48,7 @@ Requires: %{name}-client = %{version}-%{release}
 
 Provides:  %{name}-master = %{version}-%{release}
 
-Requires(post): systemd
-Requires(preun): systemd
+%systemd_requires
 
 # We use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
@@ -250,38 +249,23 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
-%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
-                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
-
 %post
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+%systemd_post condor-ce.service
 
 %post collector
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+%systemd_post condor-ce-collector.service condor-ce-collector-config.service
 
 %preun
-if [ $1 -eq 0 ]; then
-    %remove_service condor-ce
-fi
+%systemd_preun condor-ce.service
 
 %preun collector
-if [ $1 -eq 0 ]; then
-    for service in condor-ce-collector condor-ce-collector-config; do
-        %remove_service $service
-    done
-fi
+%systemd_preun condor-ce-collector.service condor-ce-collector-config.service
 
 %postun
-if [ $1 -ge 1 ]; then
-    /bin/systemctl condrestart condor-ce %1 >/dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart condor-ce.service
 
 %postun collector
-if [ $1 -ge 1 ]; then
-    for service in condor-ce-collector condor-ce-collector-config; do
-        /bin/systemctl condrestart $service %1 >/dev/null 2>&1 || :
-    done
-fi
+%systemd_postun_with_restart condor-ce-collector.service condor-ce-collector-config.service
 
 %files
 %defattr(-,root,root,-)
