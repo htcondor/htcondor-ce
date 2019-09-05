@@ -1,9 +1,5 @@
-HTCondor-CE
+HTCondor-CE [![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=v3)](https://travis-ci.org/htcondor/htcondor-ce)
 ===========
-
-[![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=master)](https://travis-ci.org/htcondor/htcondor-ce)
-
----
 
 A site grid gatekeeper technology based solely on HTCondor components.
 
