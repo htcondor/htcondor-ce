@@ -1,1 +1,0 @@
-*/10 * * * * root [[ ! -f /var/lock/subsys/condor-ce-collector ]] || PATH="$PATH:/usr/sbin" /usr/bin/condor_ce_config_generator
