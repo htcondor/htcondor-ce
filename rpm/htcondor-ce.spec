@@ -11,10 +11,6 @@ Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/opensciencegrid/htcondor-ce
 
-# _unitdir,_tmpfilesdir not defined on el6 build hosts
-%{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
-%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
-
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
 #
