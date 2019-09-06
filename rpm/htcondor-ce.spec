@@ -25,12 +25,6 @@ BuildRequires: cmake
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
-# OSG builds of HTCondor-CE use the Globus-lcmaps plugin architecture
-# for authz
-%if 0%{?osg}
-Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
-
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
 
@@ -57,9 +51,7 @@ Requires: %{name} = %{version}-%{release}, bdii
 
 %description bdii
 %{summary}
-%endif
 
-%if ! 0%{?osg}
 %package apel
 Group: Applications/Internet
 Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
@@ -304,10 +296,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor/config.d/99-ce-bdii.conf
-%endif
 
-
-%if ! 0%{?osg}
 %files apel
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_blah.sh
