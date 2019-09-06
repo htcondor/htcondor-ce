@@ -122,7 +122,6 @@ install(FILES
   config/01-ce-auth-defaults.conf
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
-  config/01-ce-info-services-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
   config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
