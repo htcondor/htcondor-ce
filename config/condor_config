@@ -73,9 +73,8 @@ USER_JOB_WRAPPER = $(DATA_DIR)/local-wrapper
 # Disable mail on service restart
 SCHEDD_RESTART_REPORT=
 
-# This file is just the base configuration
-# Several other mandatory tasks remain, and are done in /etc/condor-ce/config.d:
-# - Security configuration: /etc/condor-ce/config.d/01-ce-auth.conf
-# - JobRouter base configuration: /etc/condor-ce/config.d/01-ce-router.conf
-# - JobRouter batch-system-specific configuration: /etc/condor-ce/config.d/02-ce-{condor,pbs}.conf
-
+# Only forward scheduler ClassAds to the HTCondor-CE Central
+# Collector. Configure your Central Collector host(s) by
+# setting 'CONDOR_VIEW_HOST' to a comma and/or space delimited
+# list of hosts
+CONDOR_VIEW_CLASSAD_TYPES = Scheduler
