@@ -28,11 +28,7 @@ Requires:  condor >= 8.6.5
 # OSG builds of HTCondor-CE use the Globus-lcmaps plugin architecture
 # for authz
 %if 0%{?osg}
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
 %endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
