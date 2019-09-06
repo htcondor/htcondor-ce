@@ -223,9 +223,6 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
 %if 0%{?uw_build}
-# Remove BATCH_GAHP location override
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
-
 # Remove central collector tools
 rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
 rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
@@ -262,9 +259,6 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %defattr(-,root,root,-)
 
 %if ! 0%{?uw_build}
-# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
-%{_datadir}/condor-ce/config.d/01-blahp-location.conf
 %{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %endif
 

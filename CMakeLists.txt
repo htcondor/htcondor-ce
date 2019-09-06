@@ -116,7 +116,6 @@ install(FILES
   contrib/apelscripts/50-ce-apel.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES
-  config/01-blahp-location.conf
   config/01-ce-collector-defaults.conf
   config/01-ce-collector-requirements.conf
   config/01-ce-audit-payloads-defaults.conf
