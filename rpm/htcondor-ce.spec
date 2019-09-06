@@ -231,9 +231,8 @@ rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
 rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 
-# Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
-# OSG and CERN have entries in the original mapfile/authz for *cern.ch and
-# *opensciencegrid.org so we use original config non-UW builds
+# Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
+# GSI auth lines since they don't necessarily use GT callouts
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
 %else
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
