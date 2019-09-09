@@ -50,9 +50,6 @@ SYSTEM_PERIODIC_REMOVE_REASON = \
 # This attribute limits the max time of any job to 48 hours.
 ROUTED_JOB_MAX_TIME = 2880
 
-# More aggressive polling period for testing purposes
-JOB_ROUTER_POLLING_PERIOD = 10
-
 # Give the job router a unique name to distinguish the HTCondor-CE jobs from
 # the site JobRouter jobs.
 JOB_ROUTER_NAME = htcondor-ce
