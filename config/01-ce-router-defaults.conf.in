@@ -9,19 +9,6 @@
 #
 ###############################################################################
 
-###############################################################################
-# Job Router Config
-###############################################################################
-
-# Uncomment this line to help with debugging errors.
-#JOB_ROUTER_DEBUG = D_FULLDEBUG
-
-# Automatically add these to the submit file
-# TODO: Doesn't seem to work with Condor-C ?
-# APPEND_REQ_VANILLA = LastClientContact - time() < 30*$(MINUTE)
-# LastClientContact = time()
-# SUBMIT_EXPRS = LastClientContact
-
 # The below script generates proper settings for JOB_ROUTER_DEFAULTS, merged
 # with OSG environment variables (if present).  Anytime you reconfig the OSG,
 # you will need to reconfig HTCondor-CE
