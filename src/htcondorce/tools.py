@@ -7,7 +7,7 @@ import textwrap
 import time
 from subprocess import Popen, PIPE
 
-HELP_EMAIL = 'help@opensciencegrid.org'
+HELP_EMAIL = 'htcondor-users@cs.wisc.edu'
 
 # Excluding submit file so the respective scripts
 # can generate it as they see fit
