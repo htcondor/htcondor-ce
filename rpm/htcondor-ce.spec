@@ -210,7 +210,6 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 
 # Gratia accounting cleanup
 %if ! 0%{?osg}
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
@@ -251,7 +250,6 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %if 0%{?osg}
 %{_datadir}/condor-ce/gratia_cleanup.py*
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 %endif
 

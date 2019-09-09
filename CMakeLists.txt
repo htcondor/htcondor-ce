@@ -131,7 +131,6 @@ install(FILES
   config/02-ce-slurm-defaults.conf
   config/02-ce-bosco-defaults.conf
   config/03-managed-fork-defaults.conf
-  config/03-gratia-cleanup.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
