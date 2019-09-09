@@ -48,8 +48,8 @@ SYSTEM_PERIODIC_REMOVE_REASON = \
      ) \
    )
 
-# This attribute limits the max time of any job to 48 hours.
-ROUTED_JOB_MAX_TIME = 2880
+# This attribute limits the max time of any job to 72 hours.
+ROUTED_JOB_MAX_TIME = 4320
 
 # Give the job router a unique name to distinguish the HTCondor-CE jobs from
 # the site JobRouter jobs.
