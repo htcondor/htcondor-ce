@@ -32,7 +32,7 @@ LOCAL_CONFIG_FILE = /usr/share/condor-ce/condor_ce_router_defaults|
 CONDORCE_MAX_JOBS = 10000
 GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE = $(CONDORCE_MAX_JOBS)
 
-# Only route jobs with a valid, non-expired proxy for either the vanilla or standard universe.
+# Only route jobs for either the vanilla or standard universe.
 JOB_ROUTER_SOURCE_JOB_CONSTRAINT = target.JobUniverse =?= 5 || target.JobUniverse =?= 1
 
 # Put jobs on hold if they meet any of the following requirements
