@@ -341,7 +341,6 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
 %{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
-%config(noreplace) %{_sysconfdir}/condor/config.d/99-condor-ce.conf
 %{_sysconfdir}/condor/config.d/50-condor-ce-defaults.conf
 
 %files pbs

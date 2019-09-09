@@ -137,7 +137,6 @@ install(FILES
   contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES
-  config/99-condor-ce.conf
   config/50-condor-ce-defaults.conf
   contrib/bdii/99-ce-bdii.conf
   contrib/bdii/50-ce-bdii-defaults.conf
