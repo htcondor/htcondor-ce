@@ -8,7 +8,7 @@
 # Set the maximum number of jobs the CE is willing to run.
 CONDORCE_MAX_JOBS = 10000
 
-# This attribute limits the max time of any job to 72 hours.
+# Set the max time, in minutes, of routed jobs (default 72 hours)
 ROUTED_JOB_MAX_TIME = 4320
 
 # The amount of time, in seconds, that the job router will wait before considering
