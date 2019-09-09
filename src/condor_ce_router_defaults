@@ -97,7 +97,7 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                               60*maxWallTime,
                               ifThenElse(default_maxWallTime isnt undefined,
                                          60*default_maxWallTime,
-                                         $(ROUTED_JOB_MAX_TIME));
+                                         $(ROUTED_JOB_MAX_TIME)));
     set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
                                     strcat(default_CERequirements, ",Walltime,CondorCE"),
                                     "Walltime,CondorCE");
