@@ -250,11 +250,6 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 # Remove BATCH_GAHP location override
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
 
-# Remove central collector tools
-rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
-rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-
 # Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
 # OSG and CERN have entries in the original mapfile/authz for *cern.ch and
 # *opensciencegrid.org so we use original config non-UW builds
@@ -453,10 +448,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %files client
 
-%if ! 0%{?uw_build}
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
-%endif
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
