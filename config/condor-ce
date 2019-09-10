@@ -1,13 +1,13 @@
 
 ##############################################################################
 #
-# Condor-CE environment configuration.
+# HTCondor-CE environment configuration.
 # 
-# This file is sourced prior to starting the Condor-CE daemons.  Add any
+# This file is sourced prior to starting the HTCondor-CE daemons.  Add any
 # special configurations you might deem necessary.  Prior to sourcing this
 # file, /usr/libexec/condor-ce/condor_ce_env_bootstrap is sourced.
 #
-# Condor-CE upgrades will not change this file.
+# This file will NOT be overwritten upon RPM upgrade.
 #
 ##############################################################################
 

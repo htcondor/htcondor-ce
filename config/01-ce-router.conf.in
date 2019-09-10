@@ -1,7 +1,9 @@
 
 ###############################################################################
 #
-# HTCondor-CE JobRouter configuration file
+# HTCondor-CE JobRouter configuration
+#
+# This file will NOT be overwritten upon RPM upgrade.
 #
 ###############################################################################
 

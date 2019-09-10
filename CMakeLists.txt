@@ -116,14 +116,12 @@ install(FILES
   contrib/apelscripts/50-ce-apel.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES
-  config/01-blahp-location.conf
   config/01-ce-collector-defaults.conf
   config/01-ce-collector-requirements.conf
   config/01-ce-audit-payloads-defaults.conf
   config/01-ce-auth-defaults.conf
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
-  config/01-ce-info-services-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
   config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
@@ -133,13 +131,11 @@ install(FILES
   config/02-ce-slurm-defaults.conf
   config/02-ce-bosco-defaults.conf
   config/03-managed-fork-defaults.conf
-  config/03-gratia-cleanup.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES
-  config/99-condor-ce.conf
   config/50-condor-ce-defaults.conf
   contrib/bdii/99-ce-bdii.conf
   contrib/bdii/50-ce-bdii-defaults.conf
