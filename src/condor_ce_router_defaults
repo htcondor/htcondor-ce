@@ -98,9 +98,9 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                               ifThenElse(default_maxWallTime isnt undefined,
                                          60*default_maxWallTime,
                                          $(ROUTED_JOB_MAX_TIME)));
-    set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
-                                    strcat(default_CERequirements, ",Walltime,CondorCE"),
-                                    "Walltime,CondorCE");
+    eval_set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
+                                         strcat(default_CERequirements, ",Walltime,CondorCE"),
+                                         "Walltime,CondorCE");
 
     copy_OnExitHold = "orig_OnExitHold";
     set_OnExitHold = ifThenElse(orig_OnExitHold isnt undefined,
