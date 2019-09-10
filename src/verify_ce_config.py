@@ -90,7 +90,7 @@ else:
     htcondor.reload_config()
     su_attr = 'QUEUE_SUPER_USER_MAY_IMPERSONATE'
     if htcondor.param.get(su_attr, '') != '.*':
-        err_exit("HTCondor batch system is improperly configured for use with HTCondor CE. "
-                 + "Please verify that '%s = .*' is set in your HTCondor configuration." % su_attr)
+        error("HTCondor batch system is improperly configured for use with HTCondor CE. "
+              + "Please verify that '%s = .*' is set in your HTCondor configuration." % su_attr)
 finally:
     os.environ['CONDOR_CONFIG'] = '/etc/condor-ce/condor_config'
