@@ -214,10 +214,6 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
 %if 0%{?uw_build}
-# Remove central collector tools
-rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
-rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
-
 # Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
 # GSI auth lines since they don't necessarily use GT callouts
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
@@ -373,10 +369,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %files client
 
-%if ! 0%{?uw_build}
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
-%endif
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
