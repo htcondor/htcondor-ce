@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.0.0
-Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 0.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -439,7 +439,16 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-0.1
+* Tue Sep 10 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-0.2
+- Use simplified CERequirements format:
+https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=6133,86
+- Reorganize HTCondor-CE configuration: configuration that admins are
+expected to change is in /etc, other configuration is in /usr
+- Remove most OSG-specific configuration into the OSG CE metapackage
+(SOFTWARE-3813)
+- Increase the default maximum walltime to 72 hours
+
+* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-0.2
 - Add support for SciTokens.
 
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
