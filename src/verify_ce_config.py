@@ -17,26 +17,22 @@ def warn(msg):
     print "WARNING: " + msg
 
 
-def condorpp(param):
-    syntax = [';', '[', ']']
-    out = "".join(param.split())  # strip all whitespace
-    for elem in syntax:
-        out = out.replace(elem, elem+'\n')  # re-print
-    return out
+def parsed_route_names(entries_config):
+    """Return names of job routes that can be parsed as proper ClassAds
+    """
+    return [x['Name'] for x in classad.parseAds(entries_config)]
 
 
-def malformedQueues(parsedAds, unparsedAds):
-    allqueues = []
-    for line in condorpp(unparsedAds).split('\n'):
-        if 'name' in line:
-            allqueues.append(line.split('=')[1].split(';')[0].strip('\"'))
+def malformed_entries(entries_config):
+    """Find all unparseable router entries based on the raw JOB_ROUTER_ENTRIES configuration
+    """
+    unparsed_names = [x.replace('"', '')
+                      for x in re.findall(r'name\s*=\s*["\'](\w+)["\']',
+                                          entries_config,
+                                          re.IGNORECASE)]
+    parsed_names = parsed_route_names(entries_config)
 
-    goodqueues = []
-    for ad in parsedAds:
-        goodqueues.append(ad['name'])
-
-    return list(set(allqueues) - set(goodqueues))
-
+    return set(unparsed_names) - set(parsed_names)
 
 
 # Verify that the HTCondor Python bindings are in the PYTHONPATH
@@ -47,23 +43,51 @@ except ImportError:
     error("Could not load HTCondor Python bindings. "
           + "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
 
+
 is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
 
 # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
 JOB_ROUTER_CONFIG = {}
 for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
     try:
-        ads = classad.parseAds(htcondor.param[attr])
+        config_val = htcondor.param[attr]
     except KeyError:
         error("Missing required %s configuration value" % attr)
-    JOB_ROUTER_CONFIG[attr] = list(ads)  # store the ads (iterating through ClassAdStringIterator consumes them)
 
-# Verify job routes. classad.parseAds() ignores malformed ads so we have to compare the unparsed string to the
-# parsed string, counting the number of ads by proxy: the number of opening square brackets, "["
-for attr, ads in JOB_ROUTER_CONFIG.items():
-    if htcondor.param[attr].count('[') != len(ads):
-        print "Could not read %s in the HTCondor CE configuration. Please verify syntax correctness" % attr
-        error("The following appear to be malformed: %s" % ", ".join(malformedQueues(ads, htcondor.param[attr])))
+    # store the ads (iterating through ClassAdStringIterator consumes them)
+    JOB_ROUTER_CONFIG[attr] = list(classad.parseAds(config_val))
+
+    # If JRD or JRE can't be parsed, the job router can't function
+    if not JOB_ROUTER_CONFIG[attr]:
+        error("Could not read %s in the HTCondor-CE configuration." % attr)
+
+    if attr == "JOB_ROUTER_ENTRIES":
+        # Warn about routes we can find in the config that don't result in valid ads
+        malformed_entry_names = malformed_entries(config_val)
+        if malformed_entry_names:
+            warn("Could not read JOB_ROUTER_ENTRIES in the HTCondor-CE configuration. " +
+                 "Failed to parse the following routes: %s"
+                 % ', '.join(malformed_entry_names))
+
+        # Warn about routes specified by JOB_ROUTER_ROUTE_NAMES that don't appear in the parsed JRE.
+        # The job router can function this way but it's likely a config error
+        route_order = htcondor.param.get('JOB_ROUTER_ROUTE_NAMES', '')
+        if route_order:
+            missing_route_def = set(route_order).difference(set(parsed_route_names(config_val)))
+            if missing_route_def:
+                warn("The following are specified in JOB_ROUTER_ROUTE_NAMES "
+                     "but cannot be found in JOB_ROUTER_ENTRIES: %s"
+                     % ', '.join(missing_route_def))
+
+# Warn about routes specified by JOB_ROUTER_ROUTE_NAMES that don't appear in the parsed JRE.
+# The job router can function this way but it's likely a config error
+route_order = htcondor.param.get('JOB_ROUTER_ROUTE_NAMES', '')
+route_names = parsed_route_names(JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES'])
+if route_order and set(route_order):
+    missing_route_def = set(route_order).difference(set(route_names))
+    if missing_route_def:
+        warn("The following are specified in JOB_ROUTER_ROUTE_NAMES but cannot be found in JOB_ROUTER_ENTRIES: %s"
+             % ', '.join(missing_route_def))
 
 # Find all eval_set_ attributes in the JOB_ROUTER_DEFAULTS
 EVAL_SET_DEFAULTS = set([x.lstrip('eval_') for x in JOB_ROUTER_CONFIG['JOB_ROUTER_DEFAULTS'][0].keys()
