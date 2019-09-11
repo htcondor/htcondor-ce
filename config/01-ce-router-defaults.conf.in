@@ -51,8 +51,8 @@ SYSTEM_PERIODIC_HOLD_REASON = \
 # Remove jobs that have been on hold for longer than 24 hrs or held jobs that have already started once
 ENABLE_JOB_RETRIES = False
 SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && CurrentTime - EnteredCurrentStatus > 3600*24) || \
-                         (JobStatus == 1 && NumJobStarts == 1 && $(ENABLE_JOB_RETRIES) || \
-                         (NumJobStarts > 1 && $(ENABLE_JOB_RETRIES) =!= True)
+                         (JobStatus == 1 && NumJobStarts == 1 && !isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) || \
+                         (NumJobStarts > 1 && !isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) =!= True)
 
 SYSTEM_PERIODIC_REMOVE_REASON = \
    strcat("CE job removed by SYSTEM_PERIODIC_REMOVE due to ", \
