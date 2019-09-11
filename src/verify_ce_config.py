@@ -55,7 +55,7 @@ for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
     try:
         ads = classad.parseAds(htcondor.param[attr])
     except KeyError:
-        continue
+        error("Missing required %s configuration value" % attr)
     JOB_ROUTER_CONFIG[attr] = list(ads)  # store the ads (iterating through ClassAdStringIterator consumes them)
 
 # Verify job routes. classad.parseAds() ignores malformed ads so we have to compare the unparsed string to the
