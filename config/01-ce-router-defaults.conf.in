@@ -48,7 +48,8 @@ SYSTEM_PERIODIC_HOLD_REASON = \
      ) \
    )
 
-# Remove jobs that have been on hold for longer than 24 hrs or held jobs that have already started once
+# Remove jobs that have been on hold for longer than 24 hrs or routed jobs that have already started once
+# Users can allow jobs to try more than once on the batch side by setting "ENABLE_JOB_RETRIES = True"
 ENABLE_JOB_RETRIES = False
 SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && CurrentTime - EnteredCurrentStatus > 3600*24) || \
                          (JobStatus == 1 && NumJobStarts == 1 && !isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) =!= True || \
