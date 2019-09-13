@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.0.0
-Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 0.2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -24,16 +24,6 @@ BuildRequires: cmake
 
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
-
-# OSG builds of HTCondor-CE use the Globus-lcmaps plugin architecture
-# for authz
-%if 0%{?osg}
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
-Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
-%endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -61,9 +51,7 @@ Requires: %{name} = %{version}-%{release}, bdii
 
 %description bdii
 %{summary}
-%endif
 
-%if ! 0%{?osg}
 %package apel
 Group: Applications/Internet
 Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
@@ -222,22 +210,12 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 
 # Gratia accounting cleanup
 %if ! 0%{?osg}
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
 %if 0%{?uw_build}
-# Remove BATCH_GAHP location override
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
-
-# Remove central collector tools
-rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
-rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-
-# Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
-# OSG and CERN have entries in the original mapfile/authz for *cern.ch and
-# *opensciencegrid.org so we use original config non-UW builds
+# Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
+# GSI auth lines since they don't necessarily use GT callouts
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
 %else
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
@@ -266,16 +244,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %files
 %defattr(-,root,root,-)
 
-%if ! 0%{?uw_build}
-# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
-%{_datadir}/condor-ce/config.d/01-blahp-location.conf
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-%endif
-
 %if 0%{?osg}
 %{_datadir}/condor-ce/gratia_cleanup.py*
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 %endif
 
@@ -320,10 +290,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor/config.d/99-ce-bdii.conf
-%endif
 
-
-%if ! 0%{?osg}
 %files apel
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_blah.sh
@@ -368,7 +335,6 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
 %{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
-%config(noreplace) %{_sysconfdir}/condor/config.d/99-condor-ce.conf
 %{_sysconfdir}/condor/config.d/50-condor-ce-defaults.conf
 
 %files pbs
@@ -403,10 +369,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %files client
 
-%if ! 0%{?uw_build}
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
-%endif
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
@@ -475,7 +439,16 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-0.1
+* Tue Sep 10 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-0.2
+- Use simplified CERequirements format:
+https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=6133,86
+- Reorganize HTCondor-CE configuration: configuration that admins are
+expected to change is in /etc, other configuration is in /usr
+- Remove most OSG-specific configuration into the OSG CE metapackage
+(SOFTWARE-3813)
+- Increase the default maximum walltime to 72 hours
+
+* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-0.2
 - Add support for SciTokens.
 
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1

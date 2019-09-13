@@ -1,12 +1,22 @@
 
 ###############################################################################
 #
-# HTCondor-CE JobRouter configuration file
+# HTCondor-CE JobRouter configuration
+#
+# This file will NOT be overwritten upon RPM upgrade.
 #
 ###############################################################################
 
-# This attribute limits the max time of any job to 48 hours.
-ROUTED_JOB_MAX_TIME = 2880
+# Set the maximum number of jobs the CE is willing to run.
+CONDORCE_MAX_JOBS = 10000
+
+# Set the max time, in minutes, of routed jobs (default 72 hours)
+ROUTED_JOB_MAX_TIME = 4320
+
+# The amount of time, in seconds, that the job router will wait before considering
+# new candidate jobs for routing. If you are seeing heavy CPU usage from the job
+# router, increase the polling period to a few hundred seconds.
+# JOB_ROUTER_POLLING_PERIOD = 10
 
 # Set this to True to allow HTCondor-CE jobs to run more than once
 # (default: False)

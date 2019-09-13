@@ -92,19 +92,15 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                                                        default_xcount,
                                                        1));
 
-    /* If remote_cerequirements is a string, BLAH will parse it as an expression before examining it */
-    eval_set_remote_cerequirements = strcat(ifThenElse(default_remote_cerequirements isnt undefined,
-                                                       strcat(string(default_remote_cerequirements), " && "),
-                                                       ""),
-                                            ifThenElse(maxWallTime isnt undefined,
-                                                       strcat("Walltime == ",
-                                                              string(60*maxWallTime),
-                                                              " && CondorCE == 1"),
-                                                       ifThenElse(default_maxWallTime isnt undefined,
-                                                                  strcat("Walltime == ",
-                                                                         string(60*default_maxWallTime),
-                                                                         " && CondorCE == 1"),
-                                                                  "CondorCE == 1")));
+    set_CondorCE = 1;
+    set_WallTime = ifThenElse(maxWallTime isnt undefined,
+                              60*maxWallTime,
+                              ifThenElse(default_maxWallTime isnt undefined,
+                                         60*default_maxWallTime,
+                                         $(ROUTED_JOB_MAX_TIME)));
+    eval_set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
+                                         strcat(default_CERequirements, ",Walltime,CondorCE"),
+                                         "Walltime,CondorCE");
 
     copy_OnExitHold = "orig_OnExitHold";
     set_OnExitHold = ifThenElse(orig_OnExitHold isnt undefined,
