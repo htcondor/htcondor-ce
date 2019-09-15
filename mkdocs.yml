@@ -1,5 +1,5 @@
 site_name: HTCondor-CE Documentation
-site_url: https://htcondor-ce.readthedocs.io
+site_url: https://htcondor-ce.org
 repo_url: https://github.com/htcondor/htcondor-ce/
 
 theme:
@@ -7,10 +7,21 @@ theme:
 
 pages:
 - Home: 'index.md'
-- Installation: 'installation.md'
-- Job Router Recipes: 'job-router-recipes.md'
-- Troubleshooting: 'troubleshooting.md'
-- Job Submission: 'job-submission.md'
+- Overview: 'overview.md'
+- Installation: 'installation/htcondor-ce.md'
+- Batch System Integration: 'batch-system-integration.md'
+- Verification: 'verification.md'
+- Troubleshooting: 'troubleshooting/troubleshooting.md'
+# - Troubleshooting:
+#   - Common Issues: 'troubleshooting/common-issues.md'
+#   - Debugging Tools: 'troubleshooting/debugging-tools.md'
+#   - Helpful Logs: 'troubleshooting/logs.md'
+- Releases: 'releases.md'
+# - Central Grid Operations:
+#   - Job Submission: 'job-submission.md'
+#   - Install a Central Collector: 'installation/central-collector.md'
+#   - Install a Hosted CE: 'installation/hosted-ce.md'
+- Reference: 'reference.md'
 
 markdown_extensions:
   - admonition
