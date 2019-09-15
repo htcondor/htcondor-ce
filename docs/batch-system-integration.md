@@ -17,7 +17,6 @@ Quirks and Pitfalls
 
 -   If a value is set in [JOB\_ROUTER\_DEFAULTS](#job_router_defaults) with `eval_set_<variable>`, override it by using `eval_set_<variable>` in the `JOB_ROUTER_ENTRIES`. Do this at your own risk as it may cause the CE to break.
 -   Make sure to run `condor_ce_reconfig` after changing your routes, otherwise they will not take effect.
--   Do **not** set the job environment through the JobRouter. Instead, add any changes to the `[Local Settings]` section in `/etc/osg/config.d/40-localsettings.ini` and run osg-configure, as documented [here](/other/configuration-with-osg-configure#local-settings).
 -   HTCondor batch system only: Local universe jobs are excluded from any routing.
 
 How Job Routes are Constructed
@@ -73,15 +72,24 @@ JOB_ROUTER_ROUND_ROBIN_SELECTION = True
 Generic Routes
 --------------
 
-This section contains general information about job routes that can be used regardless of the type of batch system at your site. New routes should be placed in `/etc/condor-ce/config.d/99-local.conf`, not the original `02-ce-*.conf`.
+This section contains general information about job routes that can be used regardless of the type of batch system at
+your site.
+New routes should be placed in `/etc/condor-ce/config.d/99-local.conf`, not the original `02-ce-*.conf`.
 
 ### Required fields
 
-The minimum requirements for a route are that you specify the type of batch system that jobs should be routed to and a name for each route. Default routes can be found in `/usr/share/condor-ce/config.d/02-ce-<batch system>-defaults.conf`, provided by the `osg-ce-<batch system>` packages.
+The minimum requirements for a route are that you specify the type of batch system that jobs should be routed to and a
+name for each route.
+Default routes can be found in `/usr/share/condor-ce/config.d/02-ce-<batch system>-defaults.conf`, provided by the
+`htcondor-ce-<batch system>` packages.
 
 #### Batch system
 
-Each route needs to indicate the type of batch system that jobs should be routed to. For HTCondor batch systems, the `TargetUniverse` attribute needs to be set to `5` or `"vanilla"`. For all other batch systems, the `TargetUniverse` attribute needs to be set to `9` or `"grid"` and the `GridResource` attribute needs to be set to `"batch <batch system>"` (where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or `sge`).
+Each route needs to indicate the type of batch system that jobs should be routed to.
+For HTCondor batch systems, the `TargetUniverse` attribute needs to be set to `5` or `"vanilla"`.
+For all other batch systems, the `TargetUniverse` attribute needs to be set to `9` or `"grid"` and the `GridResource`
+attribute needs to be set to `"batch <batch system>"` (where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or
+`sge`).
 
 ```hl_lines="3 7 8"
 JOB_ROUTER_ENTRIES @=jre
@@ -557,19 +565,17 @@ This results in the following being appended to the script that gets submitted t
 #PBS -A <CE job's x509UserProxyFirstFQAN attribute>
 ```
 
+Getting Help
+------------
+
+If you have any questions or issues with configuring job routes, please [contact us](/#contact-us) for assistance.
+
 Reference
 ---------
 
-Here are some other HTCondor-CE documents that might be helpful:
+Here are some example HTCondor-CE job routes:
 
--   [HTCondor-CE overview and architecture](htcondor-ce-overview)
--   [Installing HTCondor-CE](install-htcondor-ce)
--   [The HTCondor-CE troubleshooting guide](troubleshoot-htcondor-ce)
--   [Submitting jobs to HTCondor-CE](submit-htcondor-ce)
-
-### Example Configurations ###
-
-#### AGLT2's job routes ####
+### AGLT2's job routes ###
 
 Atlas AGLT2 is using an HTCondor batch system. Here are some things to note about their routes.
 
@@ -757,13 +763,17 @@ JOB_ROUTER_ENTRIES @=jre
   @jre
 ```
 
-#### BNL's job routes ####
+### BNL's job routes ###
 
-Atlas BNL T1, they are using an HTCondor batch system. Here are some things to note about their routes:
+ATLAS BNL T1, they are using an HTCondor batch system. Here are some things to note about their routes:
 
--   Setting various HTCondor-specific attributes like `JobLeaseDuration`, `Requirements` and `Periodic_Hold` (see the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/12_Appendix_A.html) for more). Some of these are site-specific like `RACF_Group`, `Experiment`, `Job_Type` and `VO`.
+-   Setting various HTCondor-specific attributes like `JobLeaseDuration`, `Requirements` and `Periodic_Hold` (see the
+    [HTCondor manual](https://htcondor.readthedocs.io/en/stable/classad-attributes/job-classad-attributes.html)).
+    Some of these are site-specific like `RACF_Group`, `Experiment`, `Job_Type` and `VO`.
 -   Jobs are split into different routes based on the [GlideIn](#glidein-queue) queue that they're in.
--   There is a difference between `Requirements` and `set_requirements`. The `Requirements` attribute matches *incoming* jobs to specific routes while the `set_requirements` sets the `Requirements` attribute on the *routed* job, which confines which machines that the routed job can land on.
+-   There is a difference between `Requirements` and `set_requirements`.
+    The `Requirements` attribute matches *incoming* jobs to specific routes while the `set_requirements` sets the
+    `Requirements` attribute on the *routed* job, which confines which machines that the routed job can land on.
 
 Source: <http://www.usatlas.bnl.gov/twiki/bin/view/Admins/HTCondorCE.html>
 
