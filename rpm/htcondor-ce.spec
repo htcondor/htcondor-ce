@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.0.0
+Version: 4.0.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -439,6 +439,9 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
+- Fix call to error() (#245)
+
 * Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-1
 - Disable job retries (SOFTWARE-3407)
 
