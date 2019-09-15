@@ -1,0 +1,20 @@
+site_name: HTCondor-CE Documentation
+site_url: https://htcondor-ce.readthedocs.io
+repo_url: https://github.com/htcondor/htcondor-ce/
+
+theme:
+  name: material
+
+pages:
+- Home: 'index.md'
+- Installation: 'installation.md'
+- Job Router Recipes: 'job-router-recipes.md'
+- Troubleshooting: 'troubleshooting.md'
+- Job Submission: 'job-submission.md'
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: False
+  - toc:
+      permalink: True
