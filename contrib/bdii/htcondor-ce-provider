@@ -209,7 +209,9 @@ def main():
         except RuntimeError:
             sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
             continue
-
+        except IOError:
+            sys.stderr.write("Failed communication with CE collector on %s" % ce_host)
+            continue
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(time_out)
         try:
