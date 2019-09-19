@@ -39,7 +39,7 @@ As such, upgrades from older versions of HTCondor-CE may require manual interven
         set_AccountingGroup = x509UserProxyFirstFQAN;
         set_default_CERequirements = "Walltime,AccountingGroup";
 
-- **Reorganize HTCondor-CE configuration:** configuration that admins are expected to change is in
+- **Reorganized HTCondor-CE configuration:** configuration that admins are expected to change is in
   `/etc/condor-ce/config.d/`, other configuration is in `/usr`.
   Watch out for `*.rpmnew` files and merge changes into your existing configuration, especially
   `/etc/condor-ce/condor_mapfile.rpmnew`.
