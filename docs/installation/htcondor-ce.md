@@ -251,7 +251,7 @@ NETWORK_INTERFACE = 127.0.0.1
 Replacing `condorce.example.com` text with your public interface’s hostname and `127.0.0.1` with your public interface’s
 IP address.
 
-#### Enable the monitoring web interface
+#### Enabling the monitoring web interface
 
 The HTCondor-CE View is an optional web interface to the status of your CE.
 To run the HTCondor-CE View, install the appropriate package and set the relevant configuration.
@@ -272,7 +272,7 @@ To run the HTCondor-CE View, install the appropriate package and set the relevan
 The website is served on port 80 by default.
 To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor-ce/config.d/05-ce-view.conf`.
 
-#### Upload accounting records to APEL ####
+#### Uploading accounting records to APEL ####
 
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
 blah APEL records for HTCondor batch systems:
