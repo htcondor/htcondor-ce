@@ -316,7 +316,22 @@ blah APEL records for HTCondor batch systems:
         /usr/bin/apelclient                       # Join blah and batch records to make job records
         /usr/bin/ssmsend                          # Send job records into APEL system
 
+#### Enabling BDII integration ####
 
+HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
+batch system.
+To make this information available, perform the following instructions on your site BDII host.
+
+1. Install the HTCondor-CE BDII package:
+
+        :::console
+        root@host # yum install htcondor-ce-bdii
+
+1. Configure HTCondor (`/etc/condor/config.d/`) on your site BDII host to point to your central manager:
+
+        CONDOR_HOST = <CENTRAL MANAGER>
+
+    Replacing `<CENTRAL MANAGER>` with the hostname of your HTCondor central manager
 
 Next Steps
 ----------
