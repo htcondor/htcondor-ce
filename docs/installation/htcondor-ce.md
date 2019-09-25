@@ -333,6 +333,8 @@ To make this information available, perform the following instructions on your s
 
     Replacing `<CENTRAL MANAGER>` with the hostname of your HTCondor central manager
 
+1. Configure BDII static information by modifying `/etc/condor-ce/config.d/99-ce-bdii.conf`
+
 Next Steps
 ----------
 
