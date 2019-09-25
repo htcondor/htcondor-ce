@@ -12,7 +12,7 @@ Supported batch systems include:
 - [Grid Engine](http://www.univa.com/products/)
 - [HTCondor](http://htcondor.org)
 - [LSF](https://www.ibm.com/us-en/marketplace/hpc-workload-management)
-- [PBS/Torque](http://www.adaptivecomputing.com/products/torque/)
+- [PBS Pro](https://www.pbsworks.com/PBSProduct.aspx?n=Altair-PBS-Professional&c=Overview-and-Capabilities)/[Torque](http://www.adaptivecomputing.com/products/torque/)
 - [Slurm](https://slurm.schedmd.com/)
 
 See the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
