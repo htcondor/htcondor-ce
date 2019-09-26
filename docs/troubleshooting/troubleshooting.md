@@ -7,13 +7,13 @@ common issues with suggested troubleshooting steps.
 Known Issues
 ------------
 
-### SUBMIT_EXPRS are not applied to jobs on the local HTCondor ###
+### SUBMIT_ATTRS are not applied to jobs on the local HTCondor ###
 
-If you are adding attributes to jobs submitted to your HTCondor pool with `SUBMIT_EXPRS`, these will *not* be applied to
+If you are adding attributes to jobs submitted to your HTCondor pool with `SUBMIT_ATTRS`, these will *not* be applied to
 jobs that are entering your pool from the HTCondor-CE. 
 To get around this, you will want to add the attributes to your [job routes](job-router-recipes). 
-If the CE is the only entry point for jobs into your pool, you can get rid of `SUBMIT_EXPRS` on your backend. Otherwise,
-you will have to maintain your list of attributes both in your list of routes and in your `SUBMIT_EXPRS`.
+If the CE is the only entry point for jobs into your pool, you can get rid of `SUBMIT_ATTRS` on your backend. Otherwise,
+you will have to maintain your list of attributes both in your list of routes and in your `SUBMIT_ATTRS`.
 
 General Troubleshooting Items
 -----------------------------
