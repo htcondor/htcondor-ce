@@ -251,7 +251,7 @@ NETWORK_INTERFACE = 127.0.0.1
 Replacing `condorce.example.com` text with your public interface’s hostname and `127.0.0.1` with your public interface’s
 IP address.
 
-#### Enable the monitoring web interface
+#### Enabling the monitoring web interface
 
 The HTCondor-CE View is an optional web interface to the status of your CE.
 To run the HTCondor-CE View, install the appropriate package and set the relevant configuration.
@@ -272,6 +272,68 @@ To run the HTCondor-CE View, install the appropriate package and set the relevan
 The website is served on port 80 by default.
 To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor-ce/config.d/05-ce-view.conf`.
 
+#### Uploading accounting records to APEL ####
+
+For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
+blah APEL records for HTCondor batch systems:
+
+1. Install the HTCondor-CE APEL package:
+
+        :::console
+        root@host # yum install htcondor-ce-apel
+
+1. On each worker node, set the appropriate scaling factor in the HTCondor configuration (i.e. `/etc/condor/config.d/`)
+   and advertise it in the startd ad:
+
+        ApelScaling = <SCALING FACTOR>  # For example, 1.062
+        STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
+
+1. On the CE host, configure batch jobs (i.e. `/etc/condor/config.d/`) to pick up the scaling factor from the worker
+   node:
+
+        SYSTEM_JOB_MACHINE_ATTRS = ApelScaling
+
+1. Configure HTCondor-CE (`/etc/condor-ce/config.d/`) to use the worker node scaling attribute
+
+        APEL_SCALING_ATTR = ApelScaling
+
+1. Configure the APEL parser, client, and SSM
+
+    - Records are written to `APEL_OUTPUT_DIR` in the HTCondor-CE configuration (default: `/var/lib/condor-ce/apel/`)
+    - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
+
+1. Create a script and run it daily in a cron job:
+
+        :::bash
+        #!/bin/bash
+        # accountingRun.sh
+        # sjones@hep.ph.liv.ac.uk, 2019
+        # Run the processes of a HTCondor accounting run
+
+        /usr/share/condor-ce/condor_blah.sh       # Make the blah file (CE/Security data)
+        /usr/share/condor-ce/condor_batch.sh      # Make the batch file (batch system job run times)
+        /usr/bin/apelparser                       # Read the blah and batch files in
+        /usr/bin/apelclient                       # Join blah and batch records to make job records
+        /usr/bin/ssmsend                          # Send job records into APEL system
+
+#### Enabling BDII integration ####
+
+HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
+batch system.
+To make this information available, perform the following instructions on your site BDII host.
+
+1. Install the HTCondor-CE BDII package:
+
+        :::console
+        root@host # yum install htcondor-ce-bdii
+
+1. Configure HTCondor (`/etc/condor/config.d/`) on your site BDII host to point to your central manager:
+
+        CONDOR_HOST = <CENTRAL MANAGER>
+
+    Replacing `<CENTRAL MANAGER>` with the hostname of your HTCondor central manager
+
+1. Configure BDII static information by modifying `/etc/condor-ce/config.d/99-ce-bdii.conf`
 
 Next Steps
 ----------
