@@ -287,21 +287,30 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %post collector
 %add_service condor-ce-collector
+# On EL6, we provide the config generator via cron
+%if %systemd
 %add_service condor-ce-collector-config
+%endif
 
 %preun
 %remove_service condor-ce
 
 %preun collector
 %remove_service condor-ce-collector
+# On EL6, we provide the config generator via cron
+%if %systemd
 %remove_service condor-ce-collector-config
+%endif
 
 %postun
 %restart_service condor-ce
 
 %postun collector
 %restart_service condor-ce-collector
+# On EL6, we provide the config generator via cron
+%if %systemd
 %restart_service condor-ce-collector-config
+%endif
 
 %files
 %defattr(-,root,root,-)
