@@ -49,8 +49,7 @@ Requires: %{name}-client = %{version}-%{release}
 Provides:  %{name}-master = %{version}-%{release}
 
 %if 0%{?rhel} >= 7
-Requires(post): systemd
-Requires(preun): systemd
+%systemd_requires
 %define systemd 1
 %else
 Requires(post): chkconfig
@@ -271,15 +270,14 @@ mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %if %systemd
-%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
-%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
-                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
-%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
+%define add_service() (%{expand:%systemd_post %%{?*}})
+%define remove_service() (%{expand:%systemd_preun %%{?*}})
+%define restart_service() (%{expand:%systemd_postun_with_restart %%{?*}})
 %else
 %define add_service() (/sbin/chkconfig --add %1 || :)
-%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
-                                       /sbin/chkconfig --del %1 || :)
-%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
+%define remove_service() (if [ $1 -eq 0 ]; then /sbin/service %1 stop >/dev/null 2>&1 || :; \
+                                                 /sbin/chkconfig --del %1 || :; fi)
+%define restart_service() (if [ $1 -ge 1 ]; then /sbin/service %1 condrestart >/dev/null 2>&1 || :; fi)
 %endif
 
 %post
@@ -287,28 +285,21 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %post collector
 %add_service condor-ce-collector
+%add_service condor-ce-collector-config
 
 %preun
-if [ $1 -eq 0 ]; then
-    %remove_service condor-ce
-fi
+%remove_service condor-ce
 
 %preun collector
-if [ $1 -eq 0 ]; then
-    for service in condor-ce-collector condor-ce-collector-config; do
-        %remove_service $service
-    done
-fi
+%remove_service condor-ce-collector
+%remove_service condor-ce-collector-config
 
 %postun
-if [ $1 -ge 1 ]; then
-    %restart_service condor-ce
-fi
+%restart_service condor-ce
 
 %postun collector
-if [ $1 -ge 1 ]; then
-    %restart_service condor-ce-collector
-fi
+%restart_service condor-ce-collector
+%restart_service condor-ce-collector-config
 
 %files
 %defattr(-,root,root,-)
