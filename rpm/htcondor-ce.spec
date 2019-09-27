@@ -220,6 +220,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
 %else
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.service
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.timer
 rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 %endif
 
