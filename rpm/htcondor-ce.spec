@@ -218,6 +218,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
 rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
+rm $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+
 %else
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.service
@@ -512,6 +514,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %{_tmpfilesdir}/condor-ce-collector.conf
 %else
 %{_initrddir}/condor-ce-collector
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %endif
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
@@ -520,7 +523,6 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
-%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
