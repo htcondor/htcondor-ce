@@ -49,6 +49,7 @@ install(PROGRAMS
   src/condor_ce_metric
   src/condor_ce_view
   src/gratia_cleanup.py
+  contrib/apelscripts/condor_ce_apel.sh
   contrib/apelscripts/condor_blah.sh
   contrib/apelscripts/condor_batch.sh
   contrib/bdii/htcondor-ce-provider
