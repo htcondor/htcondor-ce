@@ -145,6 +145,7 @@ install(FILES
 install(FILES
   config/99-condor-ce.conf
   config/50-condor-ce-defaults.conf
+  contrib/apelscripts/50-condor-apel.conf
   contrib/bdii/99-ce-bdii.conf
   contrib/bdii/50-ce-bdii-defaults.conf
   DESTINATION
