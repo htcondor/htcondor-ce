@@ -277,7 +277,7 @@ To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
 blah APEL records for HTCondor batch systems:
 
-1. Install the HTCondor-CE APEL package:
+1. Install the HTCondor-CE APEL package on your CE host:
 
         :::console
         root@host # yum install htcondor-ce-apel
@@ -287,15 +287,6 @@ blah APEL records for HTCondor batch systems:
 
         ApelScaling = <SCALING FACTOR>  # For example, 1.062
         STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
-
-1. On the CE host, configure batch jobs (i.e. `/etc/condor/config.d/`) to pick up the scaling factor from the worker
-   node:
-
-        SYSTEM_JOB_MACHINE_ATTRS = ApelScaling
-
-1. Configure HTCondor-CE (`/etc/condor-ce/config.d/`) to use the worker node scaling attribute
-
-        APEL_SCALING_ATTR = ApelScaling
 
 1. Configure the APEL parser, client, and SSM
 
