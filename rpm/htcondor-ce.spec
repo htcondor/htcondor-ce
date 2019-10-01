@@ -196,10 +196,12 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/README.md
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -295,7 +297,9 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_blah.sh
 %{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/condor_ce_apel.sh
 %{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
+%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
 %endif

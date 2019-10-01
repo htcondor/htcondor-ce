@@ -277,7 +277,7 @@ To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
 blah APEL records for HTCondor batch systems:
 
-1. Install the HTCondor-CE APEL package:
+1. Install the HTCondor-CE APEL package on your CE host:
 
         :::console
         root@host # yum install htcondor-ce-apel
@@ -288,33 +288,10 @@ blah APEL records for HTCondor batch systems:
         ApelScaling = <SCALING FACTOR>  # For example, 1.062
         STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
 
-1. On the CE host, configure batch jobs (i.e. `/etc/condor/config.d/`) to pick up the scaling factor from the worker
-   node:
-
-        SYSTEM_JOB_MACHINE_ATTRS = ApelScaling
-
-1. Configure HTCondor-CE (`/etc/condor-ce/config.d/`) to use the worker node scaling attribute
-
-        APEL_SCALING_ATTR = ApelScaling
-
 1. Configure the APEL parser, client, and SSM
 
     - Records are written to `APEL_OUTPUT_DIR` in the HTCondor-CE configuration (default: `/var/lib/condor-ce/apel/`)
     - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
-
-1. Create a script and run it daily in a cron job:
-
-        :::bash
-        #!/bin/bash
-        # accountingRun.sh
-        # sjones@hep.ph.liv.ac.uk, 2019
-        # Run the processes of a HTCondor accounting run
-
-        /usr/share/condor-ce/condor_blah.sh       # Make the blah file (CE/Security data)
-        /usr/share/condor-ce/condor_batch.sh      # Make the batch file (batch system job run times)
-        /usr/bin/apelparser                       # Read the blah and batch files in
-        /usr/bin/apelclient                       # Join blah and batch records to make job records
-        /usr/bin/ssmsend                          # Send job records into APEL system
 
 #### Enabling BDII integration ####
 
