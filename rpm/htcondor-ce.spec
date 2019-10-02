@@ -226,9 +226,11 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %post
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 %systemd_post condor-ce.service
 
 %post collector
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 %systemd_post condor-ce-collector.service condor-ce-collector-config.service
 
 %preun
