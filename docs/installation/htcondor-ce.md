@@ -159,6 +159,22 @@ as the following HTCondor-CE configuration:
 
             globus_mapping /usr/lib64/libgsi_pep_callout.so argus_pep_callout
 
+#### (Optional) Use grid certificates for SSL authentication ####
+
+By default, HTCondor-CE uses system certificates for authenticating SSL connections and expects a host certificate and
+key in `/etc/grid-security/condor/hostcert.pem` and `/etc/grid-security/condor/hostkey.pem`, respectively.
+If you or your clients are using [IGTF-accredited certificates](https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in),
+set the following configuration in `/etc/condor-ce/config.d/01-ce-auth.conf`:
+
+```
+AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
+AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
+AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
+AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+AUTH_SSL_SERVER_CAFILE =
+AUTH_SSL_CLIENT_CAFILE =
+```
+
 ### Configuring the batch system ###
 
 Before HTCondor-CE can submit jobs to your local batch system, it has to be configured to do so.
