@@ -206,7 +206,7 @@ def main():
         ce_collector = htcondor.Collector(ce_host + ':9619')  # find the CE using the default CE port
         try:
             ce_schedd_ad = ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(ce_host))[0]
-        except RuntimeError:
+        except (RuntimeError, IndexError):
             sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
             continue
         except EnvironmentError:
