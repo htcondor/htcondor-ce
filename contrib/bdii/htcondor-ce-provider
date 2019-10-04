@@ -225,7 +225,7 @@ def main():
             state = 'critical'
             state_info = 'Authorization ping failed'
         except TimeoutError, e:
-            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n" % ce_host, time_out )
+            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n" % (ce_host, time_out) )
             continue
         
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
