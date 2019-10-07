@@ -91,8 +91,9 @@ For more advanced configuration, see the section on [optional configurations](#o
 
 To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
 [built-in mapfile](#built-in-mapping) or to make [Globus callouts](#globus-callouts) to an external service like Argus
-or LCMAPS. THe former option is simpler but the latter option may be preferred if your grid supports it or your site
-already runs such a service.
+or LCMAPS.
+The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
+such a service.
 
 #### Built-in mapfile ####
 
