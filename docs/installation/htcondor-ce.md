@@ -140,7 +140,7 @@ GSI ".*,\/GLOW\/Role=htpc.*" glow@users.htcondor.org
         CLAIMTOBE .* anonymous@claimtobe
         FS (.*) \1
 
-#### Globus Callout ####
+#### Globus callout ####
 
 To use a Globus callout to a service like LCMAPS or Argus, you will need to have the relevant library installed as well
 as the following HTCondor-CE configuration:
