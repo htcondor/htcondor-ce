@@ -22,8 +22,7 @@ Before starting the installation process, consider the following points
 (consulting [the reference page](/reference) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
--   **SSL certificate:** The HTCondor-CE service uses a host certificate at `/etc/grid-security/hostcert.pem` and an
-    accompanying key at `/etc/grid-security/hostkey.pem`
+-   **SSL certificate:** The HTCondor-CE service uses a host certificate and key for SSL and GSI authentication
 -   **DNS entries:** Forward and reverse DNS must resolve for the HTCondor-CE host
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
@@ -95,6 +94,8 @@ or LCMAPS.
 The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
 such a service.
 
+Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SSL and GSI authentication.
+
 #### Built-in mapfile ####
 
 The built-in mapfile is a
@@ -160,21 +161,49 @@ as the following HTCondor-CE configuration:
 
             globus_mapping /usr/lib64/libgsi_pep_callout.so argus_pep_callout
 
-#### (Optional) Use grid certificates for SSL authentication ####
+#### Configuring certificates ####
 
-By default, HTCondor-CE uses system certificates for authenticating SSL connections and expects a host certificate and
-key in `/etc/grid-security/condor/hostcert.pem` and `/etc/grid-security/condor/hostkey.pem`, respectively.
-If you or your clients are using [IGTF-accredited certificates](https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in),
-set the following configuration in `/etc/condor-ce/config.d/01-ce-auth.conf`:
+HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SSL and GSI connections.
+By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating SSL connections.
+But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
+certificates issued by [IGTF CAs](https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in)) located
+in `/etc/grid-security/`.
 
-```
-AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
-AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
-AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
-AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
-AUTH_SSL_SERVER_CAFILE =
-AUTH_SSL_CLIENT_CAFILE =
-```
+Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:
+
+- If your clients will be interacting with your CE using grid certificates or you are using a grid certificate as your
+  host certificate:
+
+    1. Set the following configuration in `/etc/condor-ce/config.d/01-ce-auth.conf`:
+
+            AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
+            AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
+            AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
+            AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+            AUTH_SSL_SERVER_CAFILE =
+            AUTH_SSL_CLIENT_CAFILE =
+
+    1. Install your host certificate and key into `/etc/grid-security/hostcert.pem` and `/etc/grid-security/hostkey.pem`,
+       respectively
+
+    1. Set the ownership and Unix permissions of the host certificate and key
+
+            :::console
+            root@host # chown root:root /etc/grid-security/hostcert.pem /etc/grid-security/hostkey.pem
+            root@host # chmod 644 /etc/grid-security/hostcert.pem
+            root@host # chmod 600 /etc/grid-security/hostkey.pem
+
+- Otherwise, use the default system locations:
+
+    1. Install your host certificate and key into `/etc/pki/tls/certs/localhost.crt` and
+       `/etc/pki/tls/private/localhost.key`, respectively
+
+    1. Set the ownership and Unix permissions of the host certificate and key
+
+            :::console
+            root@host # chown root:root /etc/pki/tls/certs/localhost.crt /etc/pki/tls/private/localhost.key
+            root@host # chmod 644 /etc/pki/tls/certs/localhost.crt
+            root@host # chmod 600 /etc/pki/tls/private/localhost.key
 
 ### Configuring the batch system ###
 
