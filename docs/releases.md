@@ -25,8 +25,8 @@ As such, upgrades from older versions of HTCondor-CE may require manual interven
         ENABLE_JOB_RETRIES = True
 
 - **Simplified remote CE requirements format:**
-  [Remote CE requirements](https://opensciencegrid.org/docs/compute-element/job-router-recipes/#setting-batch-system-directives)
-  are a way to specify batch system directives that aren't directly supported in the job router for non-HTCondor batch systems.
+  [remote CE requirements](/batch-system-integration#setting-batch-system-directives) are a way to specify batch system
+  directives that aren't directly supported in the job router for non-HTCondor batch systems.
   In the past, specifying these directives were often quite complicated. For example, a snippet from an example job
   route:
 
