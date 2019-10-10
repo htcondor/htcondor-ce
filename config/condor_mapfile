@@ -28,3 +28,4 @@ GSI (.*) GSS_ASSIST_GRIDMAP
 GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
 CLAIMTOBE .* anonymous@claimtobe
 FS "^(root|condor)$" \1@daemon.htcondor.org
+FS "(.*)" \1
