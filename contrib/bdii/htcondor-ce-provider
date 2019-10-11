@@ -207,10 +207,10 @@ def main():
         try:
             ce_schedd_ad = ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(ce_host))[0]
         except (RuntimeError, IndexError):
-            sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
+            sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_host)
             continue
         except EnvironmentError:
-            sys.stderr.write("Failed communication with CE collector on %s" % ce_host)
+            sys.stderr.write("Failed communication with CE collector on %s\n" % ce_host)
             continue
         
         signal.signal(signal.SIGALRM, handler)
