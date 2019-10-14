@@ -4,6 +4,11 @@
 # Condor and HTCondor CE(SOFTWARE-1583)
 export _condor_CLASSAD_USER_LIBS=
 
+# By default, condor_q attempts to authN a user to only show them their jobs
+# Since read access is optional, this can cause unexpected authN failures
+# (SOFTWARE-3860)
+export _condor_CONDOR_Q_ONLY_MY_JOBS=False
+
 # Instead of changing the default in 01-common-auth.conf, we set client auth methods
 # with an env variable. This way, only condor_ce_* tools are affected.
 if [ "$_condor_SEC_CLIENT_AUTHENTICATION_METHODS" = "" ]; then
