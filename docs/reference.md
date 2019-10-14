@@ -34,7 +34,7 @@ Certificates
 | File             | User that owns certificate | Path to certificate               |
 |:-----------------|:---------------------------|:----------------------------------|
 | Host certificate | `root`                     | `/etc/grid-security/hostcert.pem` |
-| Host key         | `root`                     | `/grid-security/hostkey.pem`  |
+| Host key         | `root`                     | `/etc/grid-security/hostkey.pem`  |
 
 Networking
 ----------
@@ -43,5 +43,5 @@ Networking
 | :----------- | :------: | :---------: | :-----: | :------: | :---------------------- |
 | Htcondor-CE  | tcp      | 9619        | X       |          | HTCondor-CE shared port |
 
-Allow inbound and outbound network connection to all internal site servers, such as the batch system head-node only
+Allow inbound and outbound network connection to all internal site servers, such as the batch system head-node. Only
 ephemeral outgoing ports are necessary.
