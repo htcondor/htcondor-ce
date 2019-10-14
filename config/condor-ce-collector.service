@@ -1,7 +1,7 @@
 [Unit]
 Description=HTCondor CE Collector
-After=syslog.target network.target
-Wants=network.target
+After=syslog.target network-online.target condor-ce-collector-config.service
+Wants=network-online.target condor-ce-collector-config.service
 
 [Service]
 Type=forking
