@@ -129,7 +129,6 @@ install(FILES
   config/01-ce-auth-defaults.conf.osg
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
-  config/01-ce-info-services-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
@@ -176,5 +175,12 @@ install(FILES templates/index.html templates/vos.html templates/metrics.html
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 install(FILES config/condor-ce-collector-generator.cron DESTINATION ${SYSCONF_INSTALL_DIR}/cron.d)
 install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
-install(FILES config/condor-ce.service config/condor-ce-collector.service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+
+install(FILES
+  config/condor-ce.service
+  config/condor-ce-collector.service
+  config/condor-ce-collector-config.service
+  config/condor-ce-collector-config.timer
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)
