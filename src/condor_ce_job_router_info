@@ -7,7 +7,6 @@ missing_tool()
 }
 
 . /usr/share/condor-ce/condor_ce_env_bootstrap
-. /usr/share/condor-ce/condor_ce_client_env_bootstrap
 export GSI_AUTHZ_CONF=/dev/null
 CONDOR_BIN_DIR=$(/usr/bin/dirname $(/usr/bin/which condor_version 2> /dev/null ) 2> /dev/null ) 
 if [ -z "$CONDOR_BIN_DIR" ]; then
