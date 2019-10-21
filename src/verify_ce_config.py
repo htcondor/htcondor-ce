@@ -56,8 +56,7 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
     overriden_attr = EVAL_SET_DEFAULTS.intersection(set(entry.keys()))
     if overriden_attr:
         warn("%s in JOB_ROUTER_ENTRIES will be overriden by the JOB_ROUTER_DEFAULTS."
-             % ', '.join(overriden_attr)
-             + " Use the 'eval_set_' prefix instead.")
+             " Use the 'eval_set_' prefix instead." % ', '.join(overriden_attr))
 
     # Ensure that users don't set the job environment in the Job Router
     if is_osg and any(x.endswith('environment') for x in entry.keys()):
@@ -69,8 +68,8 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
     # JOB_ROUTER_DEFAULTS
     no_effect_attr = DEFAULT_ATTR.intersection(set([x for x in entry.keys() if x.startswith('eval_set_')]))
     if no_effect_attr:
-        warn("%s in JOB_ROUTER_ENTRIES " % ', '.join(no_effect_attr)
-             + "may not have any effect. Use the 'set_' prefix instead.")
+        warn("%s in JOB_ROUTER_ENTRIES may not have any effect. Use the 'set_ prefix instead."
+             % ', '.join(no_effect_attr))
 
 # Warn users on OSG CEs if osg-configure has not been run
 if is_osg:
