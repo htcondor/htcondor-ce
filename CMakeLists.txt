@@ -42,7 +42,6 @@ install(PROGRAMS
   src/verify_ce_config.py
   src/condor_ce_startup_internal
   src/condor_ce_env_bootstrap
-  src/condor_ce_client_env_bootstrap
   src/condor_ce_router_defaults
   src/local-wrapper
   src/condor_ce_jobmetrics
