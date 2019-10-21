@@ -94,7 +94,7 @@ This release fixes a stacktrace that can occur on `condor-ce` service startup wh
   If you've made changes to the default HTCondor-CE configuration, you may need to update any configuration to use
   `*.htcondor.org`.
 - **Moved most OSG-specific configuration** into the OSG CE metapackage
-  ([SOFTWARE-3813](https://opensciencegrid.atlassian.net/browse/SOFTWARE-3813))
+  ([SOFTWARE-3813](https://jira.opensciencegrid.org/browse/SOFTWARE-3813))
 - **Increased the default maximum walltime** to 72 hours
 
 Getting Help
