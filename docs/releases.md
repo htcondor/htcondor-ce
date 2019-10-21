@@ -6,7 +6,7 @@ HTCondor-CE is distributed via RPM and is available from the following Yum repos
 - [HTCondor](https://research.cs.wisc.edu/htcondor/yum/)
 - [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
 
-HTCondor-CE 3 Version Histroy
+HTCondor-CE 3 Version History
 -----------------------------
 
 This section contains release notes for each version of HTCondor-CE 3.
