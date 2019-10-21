@@ -23,7 +23,7 @@ try:
     import htcondor
 except ImportError:
     error("Could not load HTCondor Python bindings. "
-          + "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
+          "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
 
 is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
 
@@ -62,7 +62,7 @@ for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
     # Ensure that users don't set the job environment in the Job Router
     if is_osg and any(x.endswith('environment') for x in entry.keys()):
         error("Do not use the Job Router to set the environment. Place variables under "
-              + "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
+              "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
 
     # Warn users about eval_set_ default attributes in the ENTRIES since their
     # evaluation may occur after the eval_set_ expressions containg them in the
@@ -78,7 +78,7 @@ if is_osg:
         htcondor.param['OSG_CONFIGURED']
     except KeyError:
         warn("osg-configure has not been run, degrading the functionality "
-             + "of the CE. Please run 'osg-configure -c' and restart condor-ce.")
+             "of the CE. Please run 'osg-configure -c' and restart condor-ce.")
 
 # Ensure that HTCondor back-ends have QUEUE_SUPER_USER_MAY_IMPERSONATE set correctly
 try:
@@ -91,6 +91,6 @@ else:
     su_attr = 'QUEUE_SUPER_USER_MAY_IMPERSONATE'
     if htcondor.param.get(su_attr, '') != '.*':
         error("HTCondor batch system is improperly configured for use with HTCondor CE. "
-              + "Please verify that '%s = .*' is set in your HTCondor configuration." % su_attr)
+              "Please verify that '%s = .*' is set in your HTCondor configuration." % su_attr)
 finally:
     os.environ['CONDOR_CONFIG'] = '/etc/condor-ce/condor_config'
