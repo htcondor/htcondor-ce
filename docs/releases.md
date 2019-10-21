@@ -51,13 +51,13 @@ HTCondor-CE 4 Version History
 This section contains release notes for each version of HTCondor-CE 4.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
-### HTCondor-CE 4.0.1 ###
+### 4.0.1 ###
 
 This release fixes a stacktrace that can occur on `condor-ce` service startup when the required
 `QUEUE_SUPER_USER_MAY_IMPERSONATE = .*` configuration is not set for HTCondor batch systems
 ([#245](https://github.com/htcondor/htcondor-ce/issues/245)).
 
-### HTCondor-CE 4.0.0 ###
+### 4.0.0 ###
 
 - **SciTokens support** if using an HTCondor version that supports SciTokens (e.g. the OSG-distributed HTCondor 8.9.2).
 - **Disabled job retries by default** since most jobs submitted through HTCondor-CEs are actually resource requests
