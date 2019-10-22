@@ -4,7 +4,6 @@ import os
 import re
 import pwd
 import classad
-import htcondor
 
 JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
@@ -154,12 +153,12 @@ def advertise_pilots_value():
     """Allow admins to prevent pilots from advertising back to the site CE collector
     """
     try:
-        if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true' or htcondor.param['DISABLE_PILOT_ADS']:
+        if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true':
             return ' '
     except KeyError:
         pass
 
-    return 'strcat(" CONDORCE_COLLECTOR_HOST=", $(COLLECTOR_HOST), " ")'
+    return 'ifThenElse($(DISABLE_PILOT_ADS) =?= True, \' \', strcat(" CONDORCE_COLLECTOR_HOST=", $(COLLECTOR_HOST), " "))'
 
 
 def parse_extattr(extattr_file):
