@@ -164,15 +164,16 @@ as the following HTCondor-CE configuration:
 #### Configuring certificates ####
 
 HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SSL and GSI connections.
-By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating SSL connections.
+By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating SSL
+connections, i.e. for SciTokens or SSL authentication methods.
 But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
 certificates issued by [IGTF CAs](https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in)) located
 in `/etc/grid-security/`.
 
 Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:
 
-- If your clients will be interacting with your CE using grid certificates or you are using a grid certificate as your
-  host certificate:
+- If your SSL or SciTokens clients will be interacting with your CE using grid certificates or you are using a grid
+  certificate as your host certificate:
 
     1. Set the following configuration in `/etc/condor-ce/config.d/01-ce-auth.conf`:
 
