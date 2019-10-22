@@ -112,7 +112,7 @@ To configure authorization for users submitting jobs with an X.509 proxy certifi
 of the following format:
 
 ```
-GSI "^<DISTINGUISHED NAME>$" <USERNAME>@users.htcondor.org
+GSI "^<DISTINGUISHED NAME>$" <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME`> (escaping any '/' with '\/') and `<USERNAME`> with the distinguished name of the
@@ -121,7 +121,7 @@ incoming certificate and the unix account under which the job should run, respec
 VOMS attributes of incoming X.509 proxy certificates can also be used for mapping:
 
 ```
-GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>@users.htcondor.org
+GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME`> (escaping any '/' with '\/'), `<VOMSFQAN`> fields, and `<USERNAME`> with the
@@ -132,7 +132,7 @@ Additionally, you can use regular expressions for mapping certificate and VOMS a
 For example, to map any certificate from the `GLOW` VO with the `htpc` role to the `glow` user, add the following line:
 
 ```
-GSI ".*,\/GLOW\/Role=htpc.*" glow@users.htcondor.org
+GSI ".*,\/GLOW\/Role=htpc.*" glow
 ```
 
 !!! warning

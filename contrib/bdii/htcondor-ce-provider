@@ -206,11 +206,11 @@ def main():
         ce_collector = htcondor.Collector(ce_host + ':9619')  # find the CE using the default CE port
         try:
             ce_schedd_ad = ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(ce_host))[0]
-        except RuntimeError:
-            sys.stderr.write("Unable to locate CE schedd on %s" % ce_host)
+        except (RuntimeError, IndexError):
+            sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_host)
             continue
         except EnvironmentError:
-            sys.stderr.write("Failed communication with CE collector on %s" % ce_host)
+            sys.stderr.write("Failed communication with CE collector on %s\n" % ce_host)
             continue
         
         signal.signal(signal.SIGALRM, handler)
@@ -225,7 +225,7 @@ def main():
             state = 'critical'
             state_info = 'Authorization ping failed'
         except TimeoutError, e:
-            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n" % ce_host, time_out )
+            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n" % (ce_host, time_out) )
             continue
         
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
