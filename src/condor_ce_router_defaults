@@ -20,12 +20,15 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     delete_CondorCE = true;
     delete_TotalSubmitProcs = true;
     set_RoutedJob = true;
+
+    /* Set the environment*/
     copy_environment = "orig_environment";
     set_osg_environment = "@osg_environment@";
-    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), @advertise_pilots@,
-                           ifThenElse(orig_environment is undefined,
-                                      osg_environment,
-                                      strcat(osg_environment, " ", orig_environment))));
+    eval_set_environment = mergeEnvironment(strcat("HOME=", userHome(Owner, "/"), @advertise_pilots@),
+                                            osg_environment,
+                                            orig_environment,
+                                            $(CONDORCE_PILOT_JOB_ENV),
+                                            default_pilot_job_env);
 
     /* Set new requirements */
     /* set_requirements = LastClientContact - time() < 30*60; */
