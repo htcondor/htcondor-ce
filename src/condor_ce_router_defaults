@@ -4,6 +4,7 @@ import os
 import re
 import pwd
 import classad
+import htcondor
 
 JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
@@ -21,8 +22,7 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     set_RoutedJob = true;
     copy_environment = "orig_environment";
     set_osg_environment = "@osg_environment@";
-    set_CondorCECollectorHost = "$(COLLECTOR_HOST)";
-    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), %s" ",
+    eval_set_environment = debug(strcat("HOME=", userHome(Owner, "/"), @advertise_pilots@,
                            ifThenElse(orig_environment is undefined,
                                       osg_environment,
                                       strcat(osg_environment, " ", orig_environment))));
@@ -143,19 +143,20 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   @jrd
 """
 
-# Allow admins to prevent pilots from advertising back to the CE.
-# https://ticket.grid.iu.edu/26666
-advertise_pilots = '" CONDORCE_COLLECTOR_HOST=", CondorCECollectorHost, '
-try:
-    if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true':
-        advertise_pilots = ''
-except KeyError:
-    pass
-
-JOB_ROUTER_DEFAULTS = JOB_ROUTER_DEFAULTS % advertise_pilots
-
 osg_environment_files = ["/var/lib/osg/osg-job-environment.conf",
                          "/var/lib/osg/osg-local-job-environment.conf"]
+
+
+def advertise_pilots_value():
+    """Allow admins to prevent pilots from advertising back to the site CE collector
+    """
+    try:
+        if os.environ['DISABLE_GLIDEIN_ADS'].lower() == 'true' or htcondor.param['DISABLE_PILOT_ADS']:
+            return ' '
+    except KeyError:
+        pass
+
+    return 'strcat(" CONDORCE_COLLECTOR_HOST=", $(COLLECTOR_HOST), " ")'
 
 
 def parse_extattr(extattr_file):
@@ -297,12 +298,13 @@ def main():
 
     accounting_group_str = set_accounting_group()
 
-    defaults_with_env = JOB_ROUTER_DEFAULTS.replace("@osg_environment@", env_string)
+    defaults = JOB_ROUTER_DEFAULTS.replace("@osg_environment@", env_string)
+    defaults = defaults.replace("@advertise_pilots@", advertise_pilots_value())
 
     try:
-        print defaults_with_env.replace("@accounting_group@", accounting_group_str)
+        print defaults.replace("@accounting_group@", accounting_group_str)
     except TypeError:  # if no accounting group mappings, remove them from the classad
-        print re.sub(r'.*AccountingGroupOSG.*\n', '', defaults_with_env)
+        print re.sub(r'.*AccountingGroupOSG.*\n', '', defaults)
 
 
 if __name__ == "__main__":
