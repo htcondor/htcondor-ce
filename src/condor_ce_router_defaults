@@ -20,7 +20,7 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     delete_TotalSubmitProcs = true;
     set_RoutedJob = true;
 
-    /* Set the environment*/
+    /* Set the environment */
     copy_environment = "orig_environment";
     set_osg_environment = "@osg_environment@";
     eval_set_environment = mergeEnvironment(strcat("HOME=", userHome(Owner, "/"), @advertise_pilots@),
@@ -156,7 +156,7 @@ def advertise_pilots_value():
     except KeyError:
         pass
 
-    return 'ifThenElse($(DISABLE_PILOT_ADS) =?= True, \' \', strcat(" CONDORCE_COLLECTOR_HOST=", $(COLLECTOR_HOST), " "))'
+    return 'ifThenElse($(DISABLE_PILOT_ADS) =?= True, " ", strcat(" CONDORCE_COLLECTOR_HOST=", $(COLLECTOR_HOST), " "))'
 
 
 def parse_extattr(extattr_file):
