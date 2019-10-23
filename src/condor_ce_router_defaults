@@ -93,11 +93,13 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                                                        1));
 
     set_CondorCE = 1;
+
+    /* WallTime is in seconds but users configure default_maxWallTime and ROUTED_JOB_MAX_TIME in minutes */
     set_WallTime = ifThenElse(maxWallTime isnt undefined,
                               60*maxWallTime,
                               ifThenElse(default_maxWallTime isnt undefined,
                                          60*default_maxWallTime,
-                                         $(ROUTED_JOB_MAX_TIME)));
+                                         60*$(ROUTED_JOB_MAX_TIME)));
     eval_set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
                                          strcat(default_CERequirements, ",Walltime,CondorCE"),
                                          "Walltime,CondorCE");
