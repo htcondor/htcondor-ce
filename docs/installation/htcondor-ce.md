@@ -22,8 +22,7 @@ Before starting the installation process, consider the following points
 (consulting [the reference page](/reference) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
--   **SSL certificate:** The HTCondor-CE service uses a host certificate at `/etc/grid-security/hostcert.pem` and an
-    accompanying key at `/etc/grid-security/hostkey.pem`
+-   **SSL certificate:** The HTCondor-CE service uses a host certificate and key for SSL and GSI authentication
 -   **DNS entries:** Forward and reverse DNS must resolve for the HTCondor-CE host
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
@@ -91,8 +90,11 @@ For more advanced configuration, see the section on [optional configurations](#o
 
 To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
 [built-in mapfile](#built-in-mapping) or to make [Globus callouts](#globus-callouts) to an external service like Argus
-or LCMAPS. THe former option is simpler but the latter option may be preferred if your grid supports it or your site
-already runs such a service.
+or LCMAPS.
+The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
+such a service.
+
+Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SSL and GSI authentication.
 
 #### Built-in mapfile ####
 
@@ -140,7 +142,7 @@ GSI ".*,\/GLOW\/Role=htpc.*" glow
         CLAIMTOBE .* anonymous@claimtobe
         FS (.*) \1
 
-#### Globus Callout ####
+#### Globus callout ####
 
 To use a Globus callout to a service like LCMAPS or Argus, you will need to have the relevant library installed as well
 as the following HTCondor-CE configuration:
@@ -158,6 +160,51 @@ as the following HTCondor-CE configuration:
     - For Argus:
 
             globus_mapping /usr/lib64/libgsi_pep_callout.so argus_pep_callout
+
+#### Configuring certificates ####
+
+HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SSL and GSI connections.
+By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating SSL
+connections, i.e. for SciTokens or SSL authentication methods.
+But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
+certificates issued by [IGTF CAs](https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in)) located
+in `/etc/grid-security/`.
+
+Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:
+
+- If your SSL or SciTokens clients will be interacting with your CE using grid certificates or you are using a grid
+  certificate as your host certificate:
+
+    1. Set the following configuration in `/etc/condor-ce/config.d/01-ce-auth.conf`:
+
+            AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
+            AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
+            AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
+            AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+            AUTH_SSL_SERVER_CAFILE =
+            AUTH_SSL_CLIENT_CAFILE =
+
+    1. Install your host certificate and key into `/etc/grid-security/hostcert.pem` and `/etc/grid-security/hostkey.pem`,
+       respectively
+
+    1. Set the ownership and Unix permissions of the host certificate and key
+
+            :::console
+            root@host # chown root:root /etc/grid-security/hostcert.pem /etc/grid-security/hostkey.pem
+            root@host # chmod 644 /etc/grid-security/hostcert.pem
+            root@host # chmod 600 /etc/grid-security/hostkey.pem
+
+- Otherwise, use the default system locations:
+
+    1. Install your host certificate and key into `/etc/pki/tls/certs/localhost.crt` and
+       `/etc/pki/tls/private/localhost.key`, respectively
+
+    1. Set the ownership and Unix permissions of the host certificate and key
+
+            :::console
+            root@host # chown root:root /etc/pki/tls/certs/localhost.crt /etc/pki/tls/private/localhost.key
+            root@host # chmod 644 /etc/pki/tls/certs/localhost.crt
+            root@host # chmod 600 /etc/pki/tls/private/localhost.key
 
 ### Configuring the batch system ###
 
