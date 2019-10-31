@@ -103,6 +103,7 @@ install(FILES
   config/01-ce-auth.conf
   config/01-ce-collector.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
+  config/01-pilot-env.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
   config/02-ce-lsf.conf
@@ -123,6 +124,7 @@ install(FILES
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
+  config/01-pilot-env-defaults.conf
   config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
