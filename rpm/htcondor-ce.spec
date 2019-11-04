@@ -267,7 +267,8 @@ mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %if %systemd
-%define add_service() (%{expand:%systemd_post %%{?*}})
+%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
+                       %{expand:%systemd_post %%{?*}})
 %define remove_service() (%{expand:%systemd_preun %%{?*}})
 %define restart_service() (%{expand:%systemd_postun_with_restart %%{?*}})
 %else
