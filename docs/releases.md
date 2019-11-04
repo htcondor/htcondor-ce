@@ -51,6 +51,25 @@ HTCondor-CE 4 Version History
 This section contains release notes for each version of HTCondor-CE 4.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 4.1.0 ###
+
+This release includes the following new features:
+
+- **Add the ability to configure the environment of routed jobs:** Administrators may now add or override environment
+  variables for resultant batch system jobs.
+- **Simplified APEL configuration**: HTCondor-CE provides appropriate default configuration for its APEL scripts so
+  administrators only need to configure their HTCondor worker nodes as well as the APEL parser, client, and SSM.
+  Details can be found in the [documentation](/installation/htcondor-ce#uploading-accounting-records-to-apel).
+
+This release also includes the following bug-fixes:
+
+- Fixed the ability to specify grid certificate locations for SSL authentication
+- Refined the APEL record filter to ignore jobs that have not yet started
+- Fixed an issue where `condor_ce_q` required authentication
+- Re-enabled the ability for local users to submit jobs to the CE queue
+- Fixed an issue where some jobs were capped at 72 minutes instead of 72 hours
+- Improved BDII provider error handling
+
 ### 4.0.1 ###
 
 This release fixes a stacktrace that can occur on `condor-ce` service startup when the required
