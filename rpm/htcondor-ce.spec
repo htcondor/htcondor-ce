@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.0.1
+Version: 4.1.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -446,6 +446,17 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Nov 4 2019 Brian Lin <blin@cs.wisc.edu> - 4.1.0-1
+- Add non-OSG method for modifying the job environment (SOFTWARE-3871)
+- Do not require authentication for queue reads (SOFTWARE-3860)
+- Allow local CE users to submit jobs without a proxy or token (SOFTWARE-3856)
+- Fix the ability to specify grid certificate locations for SSL authentication
+- Refine the APEL record filter to ignore jobs that have not yet started
+- Fix an issue where `condor_ce_q` required authentication
+- Re-enable the ability for local users to submit jobs to the CE queue
+- Fix an issue where some jobs were capped at 72 minutes instead of 72 hours
+
+
 * Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
 - Fix call to error() (#245)
 
