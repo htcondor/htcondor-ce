@@ -448,6 +448,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %changelog
 * Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 4.1.0-1
 - Add non-OSG method for modifying the job environment (SOFTWARE-3871)
+- Simplify configuration of APEL scripts
 - Do not require authentication for queue reads (SOFTWARE-3860)
 - Allow local CE users to submit jobs without a proxy or token (SOFTWARE-3856)
 - Fix the ability to specify grid certificate locations for SSL authentication
@@ -455,7 +456,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 - Fix an issue where `condor_ce_q` required authentication
 - Re-enable the ability for local users to submit jobs to the CE queue
 - Fix an issue where some jobs were capped at 72 minutes instead of 72 hours
-
+- Add `systemctl daemon-reload` to packaging for initial installations
+- Improve robustness of BDII provider
 
 * Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
 - Fix call to error() (#245)
