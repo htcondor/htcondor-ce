@@ -446,7 +446,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Mon Nov 4 2019 Brian Lin <blin@cs.wisc.edu> - 4.1.0-1
+* Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 4.1.0-1
 - Add non-OSG method for modifying the job environment (SOFTWARE-3871)
 - Do not require authentication for queue reads (SOFTWARE-3860)
 - Allow local CE users to submit jobs without a proxy or token (SOFTWARE-3856)
