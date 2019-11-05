@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.3.0
+Version: 3.4.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -531,6 +531,14 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 3.4.0-1
+- Add non-OSG method for modifying the job environment (SOFTWARE-3871)
+- Simplify configuration of APEL scripts
+- Refine the APEL record filter to ignore jobs that have not yet started
+- Add `systemctl daemon-reload` to packaging for initial installations
+- Fix call to error() (#245)
+- Improve robustness of BDII provider
+
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
 - Add APEL support for HTCondor-CE and HTCondor backends
 - Store malformed ads reporting to htcondor-ce-collector
