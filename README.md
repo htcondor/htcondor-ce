@@ -30,4 +30,4 @@ previous version.
 As of September 2019, we maintain two different versions of HTCondor-CE:
 
 - [master](https://github.com/htcondor/htcondor-ce/tree/master): HTCondor-CE 4 ([documentation](https://htcondor-ce.readthedocs.io/en/latest/))
-- [stable](https://github.com/htcondor/htcondor-ce/tree/v3): HTCondor-CE 3 ([documentation](https://htcondor-ce.readthedocs.io/en/stable/))
+- [stable](https://github.com/htcondor/htcondor-ce/tree/stable): HTCondor-CE 3 ([documentation](https://htcondor-ce.readthedocs.io/en/stable/))
