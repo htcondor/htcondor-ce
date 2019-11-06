@@ -24,10 +24,10 @@ HTCondor-CE RPMs are available from the following locations:
 Versioning
 ----------
 
-HTCondor-CE follows the same stable/development release series model as [HTCondor](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html).
-The `master` branch contains the latest version of HTCondor-CE (i.e. development) while the `stable` branch contains the
-previous version.
+At any given time, two versions of HTCondor-CE are maintained, a stable and a development version.
+In this repository, the `master` branch contains the latest version of HTCondor-CE (i.e. development) while the `stable`
+branch contains the previous version.
 As of September 2019, we maintain two different versions of HTCondor-CE:
 
-- [master](https://github.com/htcondor/htcondor-ce/tree/master): HTCondor-CE 4 ([documentation](https://htcondor-ce.readthedocs.io/en/latest/))
-- [stable](https://github.com/htcondor/htcondor-ce/tree/stable): HTCondor-CE 3 ([documentation](https://htcondor-ce.readthedocs.io/en/stable/))
+- [Development](https://htcondor-ce.readthedocs.io/en/latest/): HTCondor-CE 4
+- [Stable](https://htcondor-ce.readthedocs.io/en/stable/): HTCondor-CE 3
