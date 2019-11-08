@@ -5,6 +5,7 @@ import json
 import time
 import types
 import socket
+import traceback
 
 import classad
 htcondor = None
@@ -173,7 +174,8 @@ def agis_data(environ):
         except (KeyError, TypeError):
             # No way to log an error, stderr doesn't work, stdout, or logging module
             # So, just add it to the json as "failed_ces"
-            results['failed_ces'][ad['Name']] = ad
+            error = traceback.format_exc()
+            results['failed_ces'][ad['Name']] = error
 
     return results
 
