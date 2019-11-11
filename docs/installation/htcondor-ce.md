@@ -325,7 +325,7 @@ Next Steps
 At this point, you should have an installation of HTCondor-CE that will forward grid jobs into your site's batch system
 unchanged.
 If you need to transform incoming grid jobs (e.g. by setting a partition, queue, or accounting group), configure the
-[HTCondor-CE Job Router](/configuration/batch-system-integration).
+[HTCondor-CE Job Router](/batch-system-integration).
 Otherwise, continue to the [this document](/verification) to start the relevant services and verify your installation.
 
 Getting Help

@@ -202,7 +202,7 @@ This is because when evaluating the route requirement, the job route will compar
 
 #### Glidein queue
 
-To filter jobs based on their glidein queue attribute, your routes will need a `Requirements` expression using the incoming job's `queue` attribute. The following entry routes jobs to PBS if the incoming job (specified by `TARGET`) is an `analy` (Analysis) glidein:
+To filter jobs based on their glidein queue attribute, your routes will need a `Requirements` expression using the incoming job's `queue` attribute. The following entry routes jobs to HTCondor if the incoming job (specified by `TARGET`) is an `analy` (Analysis) glidein:
 
 ```hl_lines="5"
 JOB_ROUTER_ENTRIES @=jre
