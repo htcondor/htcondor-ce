@@ -1,11 +1,11 @@
-site_name: HTCondor-CE Documentation
+site_name: HTCondor-CE 4 Documentation
 site_url: https://htcondor-ce.org
 repo_url: https://github.com/htcondor/htcondor-ce/
 
 theme:
   name: material
 
-pages:
+nav:
 - Home: 'index.md'
 - Overview: 'overview.md'
 - Installation: 'installation/htcondor-ce.md'

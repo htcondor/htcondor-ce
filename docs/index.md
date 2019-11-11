@@ -1,6 +1,10 @@
 HTCondor-CE
 ===========
 
+!!! info "HTCondor-CE 4 Documentation"
+    This documentation is for HTCondor-CE 4.
+    If you need documentation for HTCondor-CE 3, please consult <https://htcondor-ce.readthedocs.io/en/stable/> instead.
+
 The [HTCondor-CE](overview) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Elements
 (CE) belonging to a computing grid
 (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).

@@ -1,9 +1,9 @@
 Releases
 ========
 
-HTCondor-CE is distributed via RPM and is available from the following Yum repositories:
+HTCondor-CE 4 is distributed via RPM and is available from the following Yum repositories:
 
-- [HTCondor](https://research.cs.wisc.edu/htcondor/yum/)
+- [HTCondor development](https://research.cs.wisc.edu/htcondor/yum/)
 - [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
 
 Updating to HTCondor-CE 4
