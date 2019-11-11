@@ -62,6 +62,11 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 | < 8.7.1                           | **Round-robin** between all matching routes. In this case, we recommend making each route's requirements mutually exclusive. |
 | >= 8.7.1                          | **First matching route** where routes are considered in the same order that they are configured                              |
 
+!!! bug "Job Route Order"
+    For HTCondor versions < 8.8.7, as well as versions > 8.9.0 and < 8.9.5, the order of job routes does not match the
+    order in which they are configured.
+    As a result, we recommend making each route's requirements mutually exclusive.
+
 If you're using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
 `/etc/condor-ce/config.d/`:
 
