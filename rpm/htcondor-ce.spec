@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.3.0
+Version: 4.1.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -10,10 +10,6 @@ BuildArch: noarch
 Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/opensciencegrid/htcondor-ce
-
-# _unitdir,_tmpfilesdir not defined on el6 build hosts
-%{!?_unitdir: %global _unitdir %{_prefix}/lib/systemd/system}
-%{!?_tmpfilesdir: %global _tmpfilesdir %{_prefix}/lib/tmpfiles.d}
 
 # Generated with:
 # git archive --prefix=%{name}-%{version}/ v%{version} | gzip > %{name}-%{version}.tar.gz
@@ -29,16 +25,6 @@ BuildRequires: cmake
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
 
-# OSG builds of HTCondor-CE use the Globus-lcmaps plugin architecture
-# for authz
-%if 0%{?osg}
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
-Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
-%endif
-
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
 
@@ -48,17 +34,7 @@ Requires: %{name}-client = %{version}-%{release}
 
 Provides:  %{name}-master = %{version}-%{release}
 
-%if 0%{?rhel} >= 7
-Requires(post): systemd
-Requires(preun): systemd
-%define systemd 1
-%else
-Requires(post): chkconfig
-Requires(preun): chkconfig
-# This is for /sbin/service
-Requires(preun): initscripts
-%define systemd 0
-%endif
+%systemd_requires
 
 # We use this utility to setup a custom hostname.
 Requires: /usr/bin/unshare
@@ -75,9 +51,7 @@ Requires: %{name} = %{version}-%{release}, bdii
 
 %description bdii
 %{summary}
-%endif
 
-%if ! 0%{?osg}
 %package apel
 Group: Applications/Internet
 Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
@@ -217,22 +191,17 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if %systemd
-rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
-%else
-rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
-rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
-%endif
-
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/README.md
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -243,84 +212,44 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 
 # Gratia accounting cleanup
 %if ! 0%{?osg}
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
 %if 0%{?uw_build}
-# Remove BATCH_GAHP location override
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
-
-# Remove central collector tools
-rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
-rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-
-# Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
-# OSG and CERN have entries in the original mapfile/authz for *cern.ch and
-# *opensciencegrid.org so we use original config non-UW builds
+# Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
+# GSI auth lines since they don't necessarily use GT callouts
 rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
-rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf.osg
-rm -rf ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf.osg
 %else
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
-mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf{.osg,}
-mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
-%if %systemd
-%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
-%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
-                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
-%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
-%else
-%define add_service() (/sbin/chkconfig --add %1 || :)
-%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
-                                       /sbin/chkconfig --del %1 || :)
-%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
-%endif
-
 %post
-%add_service condor-ce
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+%systemd_post condor-ce.service
 
 %post collector
-%add_service condor-ce-collector
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+%systemd_post condor-ce-collector.service condor-ce-collector-config.service
 
 %preun
-if [ $1 -eq 0 ]; then
-    %remove_service condor-ce
-fi
+%systemd_preun condor-ce.service
 
 %preun collector
-if [ $1 -eq 0 ]; then
-    %remove_service condor-ce-collector
-fi
+%systemd_preun condor-ce-collector.service condor-ce-collector-config.service
 
 %postun
-if [ $1 -ge 1 ]; then
-    %restart_service condor-ce
-fi
+%systemd_postun_with_restart condor-ce.service
 
 %postun collector
-if [ $1 -ge 1 ]; then
-    %restart_service condor-ce-collector
-fi
+%systemd_postun_with_restart condor-ce-collector.service condor-ce-collector-config.service
 
 %files
 %defattr(-,root,root,-)
 
-%if ! 0%{?uw_build}
-# TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
-# https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
-%{_datadir}/condor-ce/config.d/01-blahp-location.conf
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-%endif
-
 %if 0%{?osg}
 %{_datadir}/condor-ce/gratia_cleanup.py*
-%{_datadir}/condor-ce/config.d/03-gratia-cleanup.conf
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 %endif
 
@@ -329,21 +258,20 @@ fi
 
 %{_datadir}/condor-ce/condor_ce_router_defaults
 
-%if %systemd
 %{_unitdir}/condor-ce.service
 %{_tmpfilesdir}/condor-ce.conf
-%else
-%{_initrddir}/condor-ce
-%endif
+
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-pilot-env.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
+%{_datadir}/condor-ce/config.d/01-pilot-env-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
@@ -368,15 +296,14 @@ fi
 
 %{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor/config.d/99-ce-bdii.conf
-%endif
 
-
-%if ! 0%{?osg}
 %files apel
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_blah.sh
 %{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/condor_ce_apel.sh
 %{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
+%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
 %endif
@@ -416,7 +343,6 @@ fi
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
 %{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
-%config(noreplace) %{_sysconfdir}/condor/config.d/99-condor-ce.conf
 %{_sysconfdir}/condor/config.d/50-condor-ce-defaults.conf
 
 %files pbs
@@ -452,15 +378,12 @@ fi
 
 %files client
 
-%if ! 0%{?uw_build}
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
-%endif
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-common-auth.conf
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
@@ -468,7 +391,6 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
-%{_datadir}/condor-ce/condor_ce_client_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
 %{_datadir}/condor-ce/verify_ce_config.py*
@@ -502,20 +424,16 @@ fi
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
-%if %systemd
 %{_unitdir}/condor-ce-collector.service
+%{_unitdir}/condor-ce-collector-config.service
+%{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
-%else
-%{_initrddir}/condor-ce-collector
-%endif
 
+%config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
+%config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector-requirements.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
-%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+%config %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
@@ -529,6 +447,37 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 4.1.0-1
+- Add non-OSG method for modifying the job environment (SOFTWARE-3871)
+- Simplify configuration of APEL scripts
+- Do not require authentication for queue reads (SOFTWARE-3860)
+- Allow local CE users to submit jobs without a proxy or token (SOFTWARE-3856)
+- Fix the ability to specify grid certificate locations for SSL authentication
+- Refine the APEL record filter to ignore jobs that have not yet started
+- Fix an issue where `condor_ce_q` required authentication
+- Re-enable the ability for local users to submit jobs to the CE queue
+- Fix an issue where some jobs were capped at 72 minutes instead of 72 hours
+- Add `systemctl daemon-reload` to packaging for initial installations
+- Improve robustness of BDII provider
+
+* Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
+- Fix call to error() (#245)
+
+* Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-1
+- Disable job retries (SOFTWARE-3407)
+
+* Tue Sep 10 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-0.2
+- Use simplified CERequirements format:
+https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=6133,86
+- Reorganize HTCondor-CE configuration: configuration that admins are
+expected to change is in /etc, other configuration is in /usr
+- Remove most OSG-specific configuration into the OSG CE metapackage
+(SOFTWARE-3813)
+- Increase the default maximum walltime to 72 hours
+
+* Fri Aug 09 2019 Brian Bockelman <brian.bockelman@cern.ch> - 4.0.0-0.2
+- Add support for SciTokens.
+
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
 - Add APEL support for HTCondor-CE and HTCondor backends
 - Store malformed ads reporting to htcondor-ce-collector

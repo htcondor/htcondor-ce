@@ -209,29 +209,7 @@ CONFIG_TEMPLATE = """\
 #
 #  condor_ce_config_generator
 #
-
-#
-# The following customizations can be made in a SEPARATE file:
-#
-
-# To BAN a host, add a line of the form:
-#
-#   DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org
-#
-# You can have multiple comma-separated hosts in the DENY listing.
-
-# To ADD a custom host, add a line of the form:
-#
-#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), ce.example.com@daemon.opensciencegrid.org/ce.example.com
-#
-# You can have multiple comma-separated hosts in the ALLOW listing.
-
-# The generated ALLOW_ADVERTISE_SCHEDD should be of the form:
-#
-#   COLLECTOR.ALLOW_ADVERTISE_SCHEDD = foo.example.com@daemon.opensciencegrid.org/foo.example.com, bar.example.com@daemon.opensciencegrid.org/bar.example.com
-#
-# There will be one entry per enabled service found in MyOSG.  This file is updated
-# atomically; MyOSG outages will not result in partial or incorrect updates.
+# There is one entry per active, registered CE in OSG Topology.
 
 %s
 
@@ -243,9 +221,9 @@ COLLECTOR_ATTRS = $(COLLECTOR_ATTRS), LastCEConfigGenerateTime
 
 def write_config(config_line):
 
-    config_dir = htcondor.param['LOCAL_CONFIG_DIR'].split(",")[-1]
-    config_file = os.path.join(config_dir, "02-ce-auth-generated.conf")
-    tmp_config_file = os.path.join(config_dir, "#02-ce-auth-generated.conf")
+    config_dir = htcondor.param['LOCAL_CONFIG_DIR'].split(",")[1]
+    config_file = os.path.join(config_dir, "02-ce-collector-auth-generated.conf")
+    tmp_config_file = os.path.join(config_dir, "#02-ce-collector-auth-generated.conf")
     logging.info("Will write configuration to %s" % config_file)
 
     try:
@@ -267,7 +245,7 @@ def write_config(config_line):
     # this is still periodically updated, this should be OK.
 
 def generate_config(hosts):
-    authz = ["%s@daemon.opensciencegrid.org/%s" % (i, i) for i in hosts]
+    authz = ["%s@users.htcondor.org/%s" % (i, i) for i in hosts]
     return "COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(COLLECTOR.ALLOW_ADVERTISE_SCHEDD), %s" % ", \\\n\t\t".join(authz)
 
 def parse_config():

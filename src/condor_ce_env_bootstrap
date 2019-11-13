@@ -16,7 +16,7 @@ if [ -e /var/lib/osg/globus-firewall ]; then
     . /var/lib/osg/globus-firewall
 fi
 
-# Pick up any configuration for condor-ce from /etc/sysconfig.
+# Pick up any configuration for HTCondor-CE from /etc/sysconfig.
 # The big thing we are looking for is that Condor can sometimes be installed
 # into a non-standard location and we need to set it up in the PATH
 if [ -f /etc/sysconfig/condor-ce-collector ] && [ -f /etc/init.d/condor-ce-collector ]; then

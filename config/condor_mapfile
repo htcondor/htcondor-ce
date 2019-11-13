@@ -5,29 +5,27 @@
 # authenticate VOMS attributes, *.lsc files should be installed in
 # /etc/grid-security/vomsdir/
 
-# To configure authorization between HTCondor-CE daemons, uncomment and replace
-# <HOST CERT DISTINGUISHED NAME> and <HOSTNAME>, (escaping any '/' with '\/')
-# in the following line:
-#
-# GSI "^<HOST CERT DISTINGUISHED NAME>$" <HOSTNAME>@daemon.htcondor.org
-
 # To configure authorization for users submitting jobs to your HTCondor-CE,
 # uncomment and replace <DISTINGUISHED NAME> and <USERNAME> (escaping any '/'
 # with '\/') with the distinguished name of the incoming user certificate and
 # the unix account under which the job should run, respectively:
 #
-# GSI "^<DISTINGUISHED NAME>$" <USERNAME>@users.htcondor.org
+# GSI "^<DISTINGUISHED NAME>$" <USERNAME>
 
 # VOMS attributes can also be used for mapping:
 #
-# GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>@users.htcondor.org
+# GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>
 
 # You can use regular expressions for mapping certificate and VOMS attribute
 # credentials.  For example, to map any GLOW certificate with the 'htpc' role to
 # the 'glow' user, add a line that looks like the following:
 #
-# GSI ".*,\/GLOW\/Role=htpc.*" glow@users.htcondor.org
-
+# GSI ".*,\/GLOW\/Role=htpc.*" glow
+#
+# The special token GSS_ASSIST_GRIDMAP indicates one should use the Globus Toolkit
+# callout mechanism (which may involve plugins such as LCMAPS or Argus).
+GSI (.*) GSS_ASSIST_GRIDMAP
 GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
 CLAIMTOBE .* anonymous@claimtobe
-FS (.*) \1
+FS "^(root|condor)$" \1@daemon.htcondor.org
+FS "(.*)" \1
