@@ -1,0 +1,31 @@
+site_name: HTCondor-CE 3 Documentation
+site_url: https://htcondor-ce.org
+repo_url: https://github.com/htcondor/htcondor-ce/
+
+theme:
+  name: material
+
+pages:
+- Home: 'index.md'
+- Overview: 'overview.md'
+- Installation: 'installation/htcondor-ce.md'
+- Batch System Integration: 'batch-system-integration.md'
+- Verification: 'verification.md'
+- Troubleshooting: 'troubleshooting/troubleshooting.md'
+# - Troubleshooting:
+#   - Common Issues: 'troubleshooting/common-issues.md'
+#   - Debugging Tools: 'troubleshooting/debugging-tools.md'
+#   - Helpful Logs: 'troubleshooting/logs.md'
+- Releases: 'releases.md'
+# - Central Grid Operations:
+#   - Job Submission: 'job-submission.md'
+#   - Install a Central Collector: 'installation/central-collector.md'
+#   - Install a Hosted CE: 'installation/hosted-ce.md'
+- Reference: 'reference.md'
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: False
+  - toc:
+      permalink: True

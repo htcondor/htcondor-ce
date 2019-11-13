@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.3.0
+Version: 3.4.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -32,11 +32,7 @@ Requires:  condor >= 8.6.5
 # OSG builds of HTCondor-CE use the Globus-lcmaps plugin architecture
 # for authz
 %if 0%{?osg}
-%ifarch %{ix86}
-Requires: liblcas_lcmaps_gt4_mapping.so.0
-%else
 Requires: liblcas_lcmaps_gt4_mapping.so.0()(64bit)
-%endif
 %endif
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
@@ -49,8 +45,7 @@ Requires: %{name}-client = %{version}-%{release}
 Provides:  %{name}-master = %{version}-%{release}
 
 %if 0%{?rhel} >= 7
-Requires(post): systemd
-Requires(preun): systemd
+%systemd_requires
 %define systemd 1
 %else
 Requires(post): chkconfig
@@ -219,8 +214,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
 rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
+rm $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+
 %else
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.service
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.timer
 rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
 %endif
 
@@ -229,10 +228,12 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/README.md
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -251,11 +252,6 @@ rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 # Remove BATCH_GAHP location override
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-blahp-location.conf
 
-# Remove central collector tools
-rm -rf ${RPM_BUILD_ROOT%}%{_bindir}/condor_ce_info_status
-rm -rf ${RPM_BUILD_ROOT%}%{python_sitelib}/htcondorce/info_query.py*
-rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
-
 # Use simplified CERTIFICATE_MAPFILE for UW builds with *htcondor.org domain
 # OSG and CERN have entries in the original mapfile/authz for *cern.ch and
 # *opensciencegrid.org so we use original config non-UW builds
@@ -271,15 +267,15 @@ mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %if %systemd
-%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :)
-%define remove_service() (/bin/systemctl stop %1 > /dev/null 2>&1 || :; \
-                          /bin/systemctl disable %1 > /dev/null 2>&1 || :)
-%define restart_service() (/bin/systemctl condrestart %1 >/dev/null 2>&1 || :)
+%define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
+                       %{expand:%systemd_post %%{?*}})
+%define remove_service() (%{expand:%systemd_preun %%{?*}})
+%define restart_service() (%{expand:%systemd_postun_with_restart %%{?*}})
 %else
 %define add_service() (/sbin/chkconfig --add %1 || :)
-%define remove_service() (/sbin/service %1 stop >/dev/null 2>&1 || :; \
-                                       /sbin/chkconfig --del %1 || :)
-%define restart_service() (/sbin/service %1 condrestart >/dev/null 2>&1 || :)
+%define remove_service() (if [ $1 -eq 0 ]; then /sbin/service %1 stop >/dev/null 2>&1 || :; \
+                                                 /sbin/chkconfig --del %1 || :; fi)
+%define restart_service() (if [ $1 -ge 1 ]; then /sbin/service %1 condrestart >/dev/null 2>&1 || :; fi)
 %endif
 
 %post
@@ -287,26 +283,30 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %post collector
 %add_service condor-ce-collector
+# On EL6, we provide the config generator via cron
+%if %systemd
+%add_service condor-ce-collector-config
+%endif
 
 %preun
-if [ $1 -eq 0 ]; then
-    %remove_service condor-ce
-fi
+%remove_service condor-ce
 
 %preun collector
-if [ $1 -eq 0 ]; then
-    %remove_service condor-ce-collector
-fi
+%remove_service condor-ce-collector
+# On EL6, we provide the config generator via cron
+%if %systemd
+%remove_service condor-ce-collector-config
+%endif
 
 %postun
-if [ $1 -ge 1 ]; then
-    %restart_service condor-ce
-fi
+%restart_service condor-ce
 
 %postun collector
-if [ $1 -ge 1 ]; then
-    %restart_service condor-ce-collector
-fi
+%restart_service condor-ce-collector
+# On EL6, we provide the config generator via cron
+%if %systemd
+%restart_service condor-ce-collector-config
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -315,7 +315,6 @@ fi
 # TODO: Drop the OSG-blahp config when the OSG and HTCondor blahps are merged
 # https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=5102,86
 %{_datadir}/condor-ce/config.d/01-blahp-location.conf
-%{_datadir}/condor-ce/config.d/01-ce-info-services-defaults.conf
 %endif
 
 %if 0%{?osg}
@@ -338,12 +337,14 @@ fi
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-pilot-env.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
+%{_datadir}/condor-ce/config.d/01-pilot-env-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
@@ -376,7 +377,9 @@ fi
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_blah.sh
 %{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/condor_ce_apel.sh
 %{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
+%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
 %endif
@@ -452,10 +455,8 @@ fi
 
 %files client
 
-%if ! 0%{?uw_build}
 %{_bindir}/condor_ce_info_status
 %{python_sitelib}/htcondorce/info_query.py*
-%endif
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
@@ -504,9 +505,12 @@ fi
 
 %if %systemd
 %{_unitdir}/condor-ce-collector.service
+%{_unitdir}/condor-ce-collector-config.service
+%{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
 %else
 %{_initrddir}/condor-ce-collector
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %endif
 
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
@@ -515,7 +519,6 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
-%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
@@ -529,6 +532,14 @@ fi
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 3.4.0-1
+- Add non-OSG method for modifying the job environment (SOFTWARE-3871)
+- Simplify configuration of APEL scripts
+- Refine the APEL record filter to ignore jobs that have not yet started
+- Add `systemctl daemon-reload` to packaging for initial installations
+- Fix call to error() (#245)
+- Improve robustness of BDII provider
+
 * Thu Aug 01 2019 Brian Lin <blin@cs.wisc.edu> - 3.3.0-1
 - Add APEL support for HTCondor-CE and HTCondor backends
 - Store malformed ads reporting to htcondor-ce-collector

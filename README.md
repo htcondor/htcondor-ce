@@ -1,9 +1,5 @@
-HTCondor-CE
+HTCondor-CE [![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=v3)](https://travis-ci.org/htcondor/htcondor-ce)
 ===========
-
-[![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=master)](https://travis-ci.org/htcondor/htcondor-ce)
-
----
 
 A site grid gatekeeper technology based solely on HTCondor components.
 
@@ -24,3 +20,13 @@ HTCondor-CE RPMs are available from the following locations:
 
 - HTCondor Yum repositories: https://research.cs.wisc.edu/htcondor/yum/
 - OSG Yum repositories: https://opensciencegrid.org/docs/common/yum/
+
+Versioning
+----------
+
+At any given time, two versions of HTCondor-CE are maintained, a stable and a development version.
+In this repository, the `master` branch contains the latest version of HTCondor-CE (i.e. development) while the `stable`
+branch contains the previous version.
+
+- [Development](https://htcondor-ce.readthedocs.io/en/latest/): HTCondor-CE 4
+- [Stable](https://htcondor-ce.readthedocs.io/en/stable/): HTCondor-CE 3

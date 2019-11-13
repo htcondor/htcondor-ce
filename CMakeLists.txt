@@ -3,7 +3,7 @@ project(condor-ce)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( HTCONDORCE_VERSION "3.3.0" CACHE INTERNAL "Version of the HTCondor-CE" )
+set( HTCONDORCE_VERSION "3.4.0" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
@@ -51,6 +51,7 @@ install(PROGRAMS
   src/condor_ce_metric
   src/condor_ce_view
   src/gratia_cleanup.py
+  contrib/apelscripts/condor_ce_apel.sh
   contrib/apelscripts/condor_blah.sh
   contrib/apelscripts/condor_batch.sh
   contrib/bdii/htcondor-ce-provider
@@ -109,6 +110,7 @@ install(FILES
   config/01-ce-auth.conf.osg
   config/01-common-auth.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
+  config/01-pilot-env.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
   config/02-ce-lsf.conf
@@ -129,8 +131,8 @@ install(FILES
   config/01-ce-auth-defaults.conf.osg
   config/01-common-auth-defaults.conf
   config/01-common-collector-defaults.conf
-  config/01-ce-info-services-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
+  config/01-pilot-env-defaults.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
   config/02-ce-lsf-defaults.conf
@@ -147,6 +149,7 @@ install(FILES
 install(FILES
   config/99-condor-ce.conf
   config/50-condor-ce-defaults.conf
+  contrib/apelscripts/50-condor-apel.conf
   contrib/bdii/99-ce-bdii.conf
   contrib/bdii/50-ce-bdii-defaults.conf
   DESTINATION
@@ -177,5 +180,12 @@ install(FILES templates/index.html templates/vos.html templates/metrics.html
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 install(FILES config/condor-ce-collector-generator.cron DESTINATION ${SYSCONF_INSTALL_DIR}/cron.d)
 install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
-install(FILES config/condor-ce.service config/condor-ce-collector.service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+
+install(FILES
+  config/condor-ce.service
+  config/condor-ce-collector.service
+  config/condor-ce-collector-config.service
+  config/condor-ce-collector-config.timer
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)
