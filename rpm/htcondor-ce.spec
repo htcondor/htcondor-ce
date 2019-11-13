@@ -374,6 +374,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
+%config %{_datadir}/condor-ce/config.d/51-gratia.conf
 
 %files client
 
