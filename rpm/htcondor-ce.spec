@@ -224,6 +224,7 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %post
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
