@@ -265,6 +265,7 @@ mv ${RPM_BUILD_ROOT}%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf{.osg
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %if %systemd
 %define add_service() (/bin/systemctl daemon-reload >/dev/null 2>&1 || :; \
