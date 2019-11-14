@@ -224,6 +224,7 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
+install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %post
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
@@ -374,7 +375,9 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
+%{_datadir}/condor-ce/bosco-cluster-remote-hosts.*
 %config %{_datadir}/condor-ce/config.d/51-gratia.conf
+%dir %{_sysconfdir}/condor-ce/bosco_override
 
 %files client
 
