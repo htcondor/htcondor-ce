@@ -52,6 +52,8 @@ install(PROGRAMS
   contrib/apelscripts/condor_blah.sh
   contrib/apelscripts/condor_batch.sh
   contrib/bdii/htcondor-ce-provider
+  contrib/bosco/bosco-cluster-remote-hosts.py
+  contrib/bosco/bosco-cluster-remote-hosts.sh
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
 install(PROGRAMS
