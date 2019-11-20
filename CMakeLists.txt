@@ -137,7 +137,6 @@ install(FILES
   config/03-managed-fork-defaults.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
-  config/51-gratia.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES
