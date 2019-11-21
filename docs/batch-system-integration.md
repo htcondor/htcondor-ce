@@ -512,6 +512,17 @@ JOB_ROUTER_ENTRIES @=jre
 ]
 @jre
 ```
+#### Preserving original job requirements
+
+To preserve and include the original job requirements, rather than just setting new requirements, you can use
+`copy_Requirements` to store the current value of `Requirements` to another variable, which we'll call
+`original_requirements`.
+To do this, replace the above `set_Requirements` line with:
+
+```
+copy_Requirements = "original_requirements";
+set_Requirements = original_requirements && ...;
+```
 
 ### Setting accounting groups
 
