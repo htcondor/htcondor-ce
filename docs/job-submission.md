@@ -246,7 +246,7 @@ a transformed job to your batch system.
 
 ### Matching
 
-See [this section](/compute-element/job-router-recipes#how-jobs-match-to-job-routes) for details on how jobs are matched
+See [this section](/batch-system-integration#how-jobs-match-to-job-routes) for details on how jobs are matched
 to job routes.
 
 **Examples**
