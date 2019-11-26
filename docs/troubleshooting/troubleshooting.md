@@ -310,9 +310,9 @@ The most common cases for this behavior are as follows:
 
 - **The job does not match any job routes:**
   use [condor\_ce\_job\_router\_info](#condor_ce_job_router_info) to see why your idle job does not match any
-  [routes](/compute-element/job-router-recipes#how-job-routes-are-constructed).
+  [routes](/batch-system-integration#how-job-routes-are-constructed).
 - **The route(s) that the job matches to are full:**
-  See [limiting the number of jobs](/compute-element/job-router-recipes#limiting-the-number-of-jobs).
+  See [limiting the number of jobs](/batch-system-integration#limiting-the-number-of-jobs).
 - **The job router is throttling submission to your batch system due to submission failures:**
   See the HTCondor manual for [FailureRateThreshold](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958).
   Check for errors in the [JobRouterLog](#jobrouterlog) or [GridmanagerLog](#gridmanagerlog) for HTCondor and
@@ -746,8 +746,8 @@ If the output of `condor_ce_status -any` does not show at least the following da
 - DaemonMaster
 - Job_Router
 
-Increase the [debug level](/compute-element/troubleshoot-htcondor-ce/#htcondor-ce-troubleshooting-items) and consult the
-[HTCondor-CE logs](/compute-element/troubleshoot-htcondor-ce/#htcondor-ce-troubleshooting-data) for errors.
+Increase the [debug level](#htcondor-ce-troubleshooting-items) and consult the
+[HTCondor-CE logs](#htcondor-ce-troubleshooting-data) for errors.
 
 ### condor_ce_config_val
 
