@@ -14,7 +14,7 @@ HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor
 
 ### 3.4.0 ###
 
-This release includes the following new features:
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.0) includes the following new features:
 
 - **Add the ability to configure the environment of routed jobs:** Administrators may now add or override environment
   variables for resultant batch system jobs.
