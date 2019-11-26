@@ -53,7 +53,7 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 
 ### 4.1.0 ###
 
-This release includes the following new features:
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.1.0) includes the following new features:
 
 - **Add the ability to configure the environment of routed jobs:** Administrators may now add or override environment
   variables for resultant batch system jobs.
@@ -72,11 +72,13 @@ This release also includes the following bug-fixes:
 
 ### 4.0.1 ###
 
-This release fixes a stacktrace that can occur on `condor-ce` service startup when the required
-`QUEUE_SUPER_USER_MAY_IMPERSONATE = .*` configuration is not set for HTCondor batch systems
-([#245](https://github.com/htcondor/htcondor-ce/issues/245)).
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.0.1) fixes a stacktrace that can occur on
+`condor-ce` service startup when the required `QUEUE_SUPER_USER_MAY_IMPERSONATE = .*` configuration is not set for
+HTCondor batch systems ([#245](https://github.com/htcondor/htcondor-ce/issues/245)).
 
 ### 4.0.0 ###
+
+[This release]((https://github.com/htcondor/htcondor-ce/releases/tag/v4.0.0)) includes the following new features:
 
 - **SciTokens support** if using an HTCondor version that supports SciTokens (e.g. the OSG-distributed HTCondor 8.9.2).
 - **Disabled job retries by default** since most jobs submitted through HTCondor-CEs are actually resource requests
