@@ -360,11 +360,11 @@ Both of these methods use the new HTCondor format of the
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
-``` tab="Configuration"
+``` tab="HTCondor-CE Configuration"
 CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
 ```
 
-```bash tab="Result"
+```bash tab="Resulting Environment"
 WN_SCRATCH_DIR=/nobackup/
 http_proxy=proxy.wisc.edu
 ```
@@ -373,12 +373,12 @@ Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configurati
 [$() macro expansion](https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros).
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
-``` tab="Configuration"
+``` tab="HTCondor-CE Configuration"
 LOCAL_PROXY = proxy.wisc.edu
 CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
 ```
 
-```bash tab="Result"
+```bash tab="Resulting Environment"
 WN_SCRATCH_DIR=/nobackup/
 http_proxy=proxy.wisc.edu
 ```
@@ -387,7 +387,7 @@ To set environment variables per job route, based on incoming job attributes, or
 `set_default_pilot_job_env` to your job route configuration.
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:
 
-``` tab="Configuration" hl_lines="5 6 7" 
+``` tab="HTCondor-CE Configuration" hl_lines="5 6 7" 
 JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -399,12 +399,12 @@ JOB_ROUTER_ENTRIES @=jre
 @jre
 ```
 
-``` tab="Job"
+``` tab="Incoming Job Attributes"
 JOB_COLLECTOR = "collector.wisc.edu"
 JOB_VO = "GLOW"
 ```
 
-``` bash tab="Result"
+``` bash tab="Resulting Environment"
 WN_SCRATCH_DIR=/nobackup/
 PILOT_COLLECTOR=collector.wisc.edu
 ACCOUNTING_GROUP=glow
