@@ -417,6 +417,7 @@ fi
 %{_bindir}/condor_ce_run
 %{_bindir}/condor_ce_release
 %{_bindir}/condor_ce_submit
+%{_bindir}/condor_ce_scitoken_exchange
 %{_bindir}/condor_ce_reconfig
 %{_bindir}/condor_ce_reschedule
 %{_bindir}/condor_ce_status

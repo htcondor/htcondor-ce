@@ -81,6 +81,7 @@ install(PROGRAMS
   src/condor_ce_restart
   src/condor_ce_job_router_info
   src/condor_ce_host_network_check
+  src/condor_ce_scitoken_exchange
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES
   src/htcondorce/__init__.py
