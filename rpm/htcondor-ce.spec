@@ -228,6 +228,11 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %post
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+
+if [ ! -e /etc/condor-ce/passwords.d/POOL ]; then
+    %{_datadir}/condor-ce/condor_ce_create_password >/dev/null 2>&1 || ::
+fi
+
 %systemd_post condor-ce.service
 
 %post collector
@@ -290,6 +295,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
+%attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
+%attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
 
 %if ! 0%{?osg}
 %files bdii
@@ -396,6 +403,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
 %{_datadir}/condor-ce/verify_ce_config.py*
+%{_datadir}/condor-ce/condor_ce_create_password
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
