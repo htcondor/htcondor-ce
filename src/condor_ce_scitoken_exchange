@@ -125,14 +125,18 @@ def main():
         if args.debug:
             print("No pre-existing token found -- will acquire a new one from %s.\n" % pool, file=sys.stderr)
         contents = acquire_ce_token(pool, args.name, token_dir, debug=args.debug)
+        if not contents:
+            print("Failed to acquire a token from collector %s to authenticate with CE %s" % (pool, args.name), file=sys.stderr)
+            sys.exit(2)
         with open(exchange_token_name, "w") as fp:
             fp.write(contents.decode('ascii') + "\n")
 
     result = exchange_scitoken(pool, args.name, args.scitoken, token_dir, debug=args.debug)
     if result:
         print(result.decode('ascii'), end="")
-
-    sys.exit(1)
+    else:
+        print("Failed to exchange SciToken in %s with CE at %s" % (args.scitoken, args.name), file=sys.stderr)
+        sys.exit(3)
 
 if __name__ == '__main__':
     main()
