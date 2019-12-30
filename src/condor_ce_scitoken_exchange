@@ -2,6 +2,7 @@
 
 import argparse
 import base64
+import binascii
 import json
 import os
 import subprocess
@@ -66,8 +67,14 @@ def token_is_valid(contents):
     while len(payload) % 4 != 0:
         payload += "="
 
-    payload_contents = base64.b64decode(payload)
-    payload_obj = json.loads(payload_contents)
+    try:
+        payload_contents = base64.b64decode(payload)
+    except binascii.Error:
+        return False
+    try:
+        payload_obj = json.loads(payload_contents)
+    except json.JSONDecodeError:
+        return False
     if not isinstance(payload_obj, dict):
         return False
 
@@ -94,7 +101,7 @@ def main():
     try:
         os.makedirs(token_dir)
     except FileExistsError:
-            pass
+        pass
 
     if args.debug:
         print("Will acquire a token from pool=%s name=%s from scitoken in %s" %
@@ -129,4 +136,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

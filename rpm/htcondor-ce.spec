@@ -230,7 +230,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 if [ ! -e /etc/condor-ce/passwords.d/POOL ]; then
-    %{_datadir}/condor-ce/condor_ce_create_password >/dev/null 2>&1 || ::
+    %{_datadir}/condor-ce/condor_ce_create_password >/dev/null 2>&1 || :
 fi
 
 %systemd_post condor-ce.service
@@ -918,5 +918,4 @@ expected to change is in /etc, other configuration is in /usr
 
 * Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
 - Release after a day of testing with PBS and HTCondor.
-
 
