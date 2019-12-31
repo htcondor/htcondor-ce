@@ -74,6 +74,7 @@ Requires: python-cherrypy
 Requires: python-genshi
 Requires: ganglia-gmond
 Requires: rrdtool-python
+Requires: python-flask
 
 %description view
 %{summary}
@@ -226,6 +227,13 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
+%pre collector
+
+getent group condorce_webapp >/dev/null || groupadd -r condorce_webapp
+getent passwd condorce_webapp >/dev/null || \
+  useradd -r -g condorce_webapp -d %_var/lib/condor-ce/webapp -s /sbin/nologin \
+    -c "Webapp user for HTCondor-CE collector" condorce_webapp
+
 %post
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
@@ -238,6 +246,12 @@ fi
 %post collector
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 %systemd_post condor-ce-collector.service condor-ce-collector-config.service
+
+if [ ! -e /etc/condor-ce/passwords.d/POOL ]; then
+    %{_datadir}/condor-ce/condor_ce_create_password >/dev/null 2>&1 || :
+fi
+
+CONDOR_CONFIG=/etc/condor-ce/condor_config condor_token_create -authz ADMINISTRATOR -identity condorce_webapp@htcondor.org > /etc/condor-ce/webapp.tokens.d/50-webapp 2>&1 || :
 
 %preun
 %systemd_preun condor-ce.service
@@ -323,6 +337,9 @@ fi
 %{python_sitelib}/htcondorce/web.py*
 %{python_sitelib}/htcondorce/web_utils.py*
 %{python_sitelib}/htcondorce/rrd.py*
+%{python_sitelib}/htcondorce/registry.py*
+%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.js
+%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -330,6 +347,9 @@ fi
 %{_datadir}/condor-ce/templates/health.html
 %{_datadir}/condor-ce/templates/header.html
 %{_datadir}/condor-ce/templates/pilots.html
+%{_datadir}/condor-ce/templates/code.html
+%{_datadir}/condor-ce/templates/code_submit.html
+%{_datadir}/condor-ce/templates/code_submit_failure.html
 
 %{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
@@ -434,6 +454,7 @@ fi
 %{_bindir}/condor_ce_config_generator
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/condor_ce_create_password
 
 %{_unitdir}/condor-ce-collector.service
 %{_unitdir}/condor-ce-collector-config.service
@@ -446,6 +467,8 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %config %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
+%attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d
+%attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
