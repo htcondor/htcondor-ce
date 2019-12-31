@@ -72,6 +72,7 @@ install(PROGRAMS
   src/condor_ce_reconfig
   src/condor_ce_router_q
   src/condor_ce_status
+  src/condor_ce_register
   src/condor_ce_reschedule
   src/condor_ce_run
   src/condor_ce_trace

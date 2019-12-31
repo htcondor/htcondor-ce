@@ -300,6 +300,7 @@ CONDOR_CONFIG=/etc/condor-ce/condor_config condor_token_create -authz ADMINISTRA
 %{python_sitelib}/htcondorce/audit_payloads.py*
 
 %{_bindir}/condor_ce_host_network_check
+%{_bindir}/condor_ce_register
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
