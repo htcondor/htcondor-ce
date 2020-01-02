@@ -177,6 +177,14 @@ Summary: Central HTCondor-CE information services collector
 Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: libxml2-python
+
+# Various requirements for the CE registry application
+# for registering the CE with this collector.
+Requires: mod_auth_openidc
+Requires: mod_wsgi
+Requires: python-flask
+Requires: python-genshi
+
 Conflicts: %{name}
 
 %description collector
@@ -471,6 +479,8 @@ CONDOR_CONFIG=/etc/condor-ce/condor_config condor_token_create -authz ADMINISTRA
 %attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d
 %attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
 
+%attr(0700,root,root) %{_sysconfdir}/httpd/conf.d/htcondorce_registry.conf
+
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/log/condor-ce/user
@@ -480,6 +490,7 @@ CONDOR_CONFIG=/etc/condor-ce/condor_config condor_token_create -authz ADMINISTRA
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
+%{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
 * Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 4.1.0-1
