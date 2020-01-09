@@ -55,7 +55,7 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.1.0) includes the following new features:
 
-- **Add the ability to configure the environment of routed jobs:** Administrators may now add or override environment
+- **Added the ability to configure the environment of routed jobs:** Administrators may now add or override environment
   variables for resultant batch system jobs.
 - **Simplified APEL configuration**: HTCondor-CE provides appropriate default configuration for its APEL scripts so
   administrators only need to configure their HTCondor worker nodes as well as the APEL parser, client, and SSM.
