@@ -26,7 +26,7 @@ JOB_ROUTER_SOURCE_JOB_CONSTRAINT = target.JobUniverse =?= 5 || target.JobUnivers
 # Put jobs on hold if they meet any of the following requirements
 # 1. It has not been routed by the CE and is not a standard, vanilla, scheduler, or local job.
 # 2. It has not been routed by the CE and has been idle for 30+ min
-SYSTEM_PERIODIC_HOLD = (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && CurrentTime - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
+SYSTEM_PERIODIC_HOLD = (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && time() - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
 
 SYSTEM_PERIODIC_HOLD_REASON = \
    strcat("HTCondor-CE held job due to ", \
@@ -45,7 +45,7 @@ SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && time() - EnteredCurrentStatus > 3600
 
 SYSTEM_PERIODIC_REMOVE_REASON = \
    strcat("CE job removed by SYSTEM_PERIODIC_REMOVE due to ", \
-     ifThenElse((JobStatus == 5 && CurrentTime - EnteredCurrentStatus > 3600*24), "being in the hold state for 24 hours.", \
+     ifThenElse((JobStatus == 5 && time() - EnteredCurrentStatus > 3600*24), "being in the hold state for 24 hours.", \
        ifThenElse((JobStatus == 5 && isUndefined(RoutedToJobId)), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
          ifThenElse(NumJobStarts > 0, "disabled job retries", \
            "input files missing." \
