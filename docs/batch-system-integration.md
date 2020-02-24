@@ -1,16 +1,20 @@
 Writing Routes For HTCondor-CE
 ==============================
 
-The [JobRouter](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html) is at the heart of HTCondor-CE and allows admins to transform and direct jobs to specific batch systems. Customizations are made in the form of job routes where each route corresponds to a separate job transformation: If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed job') that is then submitted to the batch system. The CE package comes with default routes located in `/etc/condor-ce/config.d/02-ce-*.conf` that provide enough basic functionality for a small site.
+The [JobRouter](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html) is at the heart of HTCondor-CE
+and allows admins to transform and direct jobs to specific batch systems.
+Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
+If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
+job') that is then submitted to the batch system.
+The CE package comes with default routes located in `/etc/condor-ce/config.d/02-ce-*.conf` that provide enough basic
+functionality for a small site.
 
-If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples of common job routes and job route problems.
+If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples
+of common job routes and job route problems.
 
 !!! note "Definitions"
-    - **Incoming Job**: A job which was submitted to the CE from an outside source, such as a GlideinWMS Factory.
-
-    - **Routed Job**: A job which was transformed by the JobRouter.
-
-    - **Batch System**: The underlying batch system that the HTCondor-CE will submit.  This can be Slurm, PBS, HTCondor, SGE, LSF,...
+    - **Incoming Job**: A job which was submitted to the CE from an external source.
+    - **Routed Job**: A job that has been transformed by the JobRouter.
 
 Quirks and Pitfalls
 -------------------
