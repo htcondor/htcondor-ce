@@ -64,14 +64,16 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 | If your version of HTCondor is... | Then the route is chosen by...                                                                                               |
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
 | < 8.7.1                           | **Round-robin** between all matching routes. In this case, we recommend making each route's requirements mutually exclusive. |
-| >= 8.7.1                          | **First matching route** where routes are considered in the same order that they are configured                              |
+| >= 8.7.1, < 8.9.5                 | **First matching route** where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive. |
+| >= 8.9.5                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES) |
 
 !!! bug "Job Route Order"
-    For HTCondor versions < 8.8.7, as well as versions > 8.9.0 and < 8.9.5, the order of job routes does not match the
+    For HTCondor versions < 8.9.5 (as well as versions >= 8.7.1 and < 8.8.7) the order of job routes does not match the
     order in which they are configured.
-    As a result, we recommend making each route's requirements mutually exclusive.
+    As a result, we recommend updating to at least HTCondor 8.9.5 (or 8.8.7) and specifying the names of your routes in
+    `JOB_ROUTER_ROUTE_NAMES` in the order that you'd like them considered.
 
-If you're using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
+If you are using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
 `/etc/condor-ce/config.d/`:
 
 ```
