@@ -1,16 +1,20 @@
 Writing Routes For HTCondor-CE
 ==============================
 
-The [JobRouter](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html) is at the heart of HTCondor-CE and allows admins to transform and direct jobs to specific batch systems. Customizations are made in the form of job routes where each route corresponds to a separate job transformation: If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed job') that is then submitted to the batch system. The CE package comes with default routes located in `/etc/condor-ce/config.d/02-ce-*.conf` that provide enough basic functionality for a small site.
+The [JobRouter](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html) is at the heart of HTCondor-CE
+and allows admins to transform and direct jobs to specific batch systems.
+Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
+If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
+job') that is then submitted to the batch system.
+The CE package comes with default routes located in `/etc/condor-ce/config.d/02-ce-*.conf` that provide enough basic
+functionality for a small site.
 
-If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples of common job routes and job route problems.
+If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples
+of common job routes and job route problems.
 
 !!! note "Definitions"
-    - **Incoming Job**: A job which was submitted to the CE from an outside source, such as a GlideinWMS Factory.
-
-    - **Routed Job**: A job which was transformed by the JobRouter.
-
-    - **Batch System**: The underlying batch system that the HTCondor-CE will submit.  This can be Slurm, PBS, HTCondor, SGE, LSF,...
+    - **Incoming Job**: A job which was submitted to the CE from an external source.
+    - **Routed Job**: A job that has been transformed by the JobRouter.
 
 Quirks and Pitfalls
 -------------------
@@ -60,14 +64,16 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 | If your version of HTCondor is... | Then the route is chosen by...                                                                                               |
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
 | < 8.7.1                           | **Round-robin** between all matching routes. In this case, we recommend making each route's requirements mutually exclusive. |
-| >= 8.7.1                          | **First matching route** where routes are considered in the same order that they are configured                              |
+| >= 8.7.1, < 8.8.7                 | **First matching route** where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive. |
+| >= 8.8.7                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/stable/admin-manual/configuration-macros.html#index-863) |
 
 !!! bug "Job Route Order"
-    For HTCondor versions < 8.8.7, as well as versions > 8.9.0 and < 8.9.5, the order of job routes does not match the
+    For HTCondor versions < 8.8.7 (as well as versions >= 8.9.0 and < 8.9.5) the order of job routes does not match the
     order in which they are configured.
-    As a result, we recommend making each route's requirements mutually exclusive.
+    As a result, we recommend updating to HTCondor 8.8.7 (or 8.9.5) and specifying the names of your routes in
+    `JOB_ROUTER_ROUTE_NAMES` in the order that you'd like them considered.
 
-If you're using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
+If you are using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
 `/etc/condor-ce/config.d/`:
 
 ```
