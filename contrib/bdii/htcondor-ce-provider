@@ -98,6 +98,16 @@ GLUE2PolicyID: {policyid}
 GLUE2PolicyScheme: org.glite.standard
 GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
+
+
+dn: GLUE2PolicyID={policyid}_access,GLUE2ShareID={shareid},{bind_dn}
+objectClass: GLUE2Entity
+objectClass: GLUE2Policy
+objectClass: GLUE2AccessPolicy
+GLUE2PolicyID: {policyid}_access
+GLUE2PolicyScheme: org.glite.standard
+GLUE2PolicyRule: vo:{vo}
+GLUE2AccessPolicyEndpointForeignKey: {endpointid}
 """
 
 class TimeoutError(Exception):
@@ -146,8 +156,8 @@ def main():
             if ad['Machine'] not in total_cores:
                 total_cores[ad['Machine']] = ad['DetectedCpus']
 
-            k = (ad['Arch'],
-                 ad['OpSys'],
+            k = (ad['Arch'].lower(),
+                 ad['OpSys'].lower(),
                  ad['OpSysName'],
                  ad['OpSysMajorVer'],
                  ad['DetectedCpus'],
@@ -173,8 +183,8 @@ def main():
             os=tup[1],
             name=tup[2],
             version=tup[3],
-            memory=tup[4],
-            cpu=tup[5],
+            memory=tup[5],
+            cpu=tup[4],
             bind_dn=bind_dn,
             instances=instances,
         ))
@@ -306,6 +316,7 @@ def main():
                 shareid=shareid,
                 bind_dn=bind_dn,
                 vo=vo,
+                endpointid=endpointid
                 ))
 
 if __name__ == '__main__':
