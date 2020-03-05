@@ -146,7 +146,7 @@ def main():
     """
 
     # Get hostname of the batch system central manager
-    central_manager = htcondor.param.get('COLLECTOR_HOST')
+    central_manager = htcondor.param.get('COLLECTOR_HOST').split(' ')[0]
 
 
     # Get VO Names
