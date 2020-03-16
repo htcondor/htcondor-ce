@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.4.0
+Version: 3.4.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -534,6 +534,9 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Mar 16 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.1-1
+- GLUE2 validation improvements for the BDII provider (#308, #309)
+
 * Mon Nov 04 2019 Brian Lin <blin@cs.wisc.edu> - 3.4.0-1
 - Add non-OSG method for modifying the job environment (SOFTWARE-3871)
 - Simplify configuration of APEL scripts
