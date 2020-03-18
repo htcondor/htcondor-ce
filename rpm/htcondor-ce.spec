@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.2.0
+Version: 4.2.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -443,6 +443,10 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Mar 18 2020 Brian Lin <blin@cs.wisc.edu> - 4.2.1-1
+- Drop vestigial central collector config generator
+- Fix unmapped GSI/SSL regexps and allow unmapped enttities to advertise to the central ceollector (SOFTWARE-3939)
+
 * Thu Mar 12 2020 Brian Lin <blin@cs.wisc.edu> - 4.2.0-1
 - Add SSL support for reporting to central collectors (SOFTWARE-3939)
 - GLUE2 validation improvements for the BDII provider (#308)
