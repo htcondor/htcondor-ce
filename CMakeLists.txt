@@ -113,7 +113,6 @@ install(FILES
   config/02-ce-slurm.conf
   config/02-ce-bosco.conf
   config/03-managed-fork.conf
-  config/04-ce-collector-auth.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
   contrib/apelscripts/50-ce-apel.conf
