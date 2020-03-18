@@ -57,7 +57,6 @@ install(PROGRAMS
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
 install(PROGRAMS
-  src/condor_ce_config_generator
   src/condor_ce_config_val
   src/condor_ce_history
   src/condor_ce_hold
@@ -126,7 +125,6 @@ install(FILES
   config/01-common-collector-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
   config/01-pilot-env-defaults.conf
-  config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
   config/02-ce-lsf-defaults.conf
@@ -169,13 +167,10 @@ install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_I
 install(FILES templates/index.html templates/vos.html templates/metrics.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
-install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
 
 install(FILES
   config/condor-ce.service
   config/condor-ce-collector.service
-  config/condor-ce-collector-config.service
-  config/condor-ce-collector-config.timer
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
 
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)

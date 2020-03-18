@@ -422,20 +422,15 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %files collector
 
-%{_bindir}/condor_ce_config_generator
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %{_unitdir}/condor-ce-collector.service
-%{_unitdir}/condor-ce-collector-config.service
-%{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
 
 %config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
-%config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
