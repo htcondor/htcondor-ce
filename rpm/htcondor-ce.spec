@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.2.0
+Version: 4.2.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -422,21 +422,15 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %files collector
 
-%{_bindir}/condor_ce_config_generator
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 
 %{_unitdir}/condor-ce-collector.service
-%{_unitdir}/condor-ce-collector-config.service
-%{_unitdir}/condor-ce-collector-config.timer
 %{_tmpfilesdir}/condor-ce-collector.conf
 
 %config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
-%config(noreplace) %{_datadir}/condor-ce/config.d/02-ce-collector-auth-generated.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
-%config %{_sysconfdir}/condor-ce/config.d/04-ce-collector-auth.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/condor-ce-collector
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
@@ -449,6 +443,10 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Wed Mar 18 2020 Brian Lin <blin@cs.wisc.edu> - 4.2.1-1
+- Drop vestigial central collector config generator
+- Fix unmapped GSI/SSL regexps and allow unmapped enttities to advertise to the central ceollector (SOFTWARE-3939)
+
 * Thu Mar 12 2020 Brian Lin <blin@cs.wisc.edu> - 4.2.0-1
 - Add SSL support for reporting to central collectors (SOFTWARE-3939)
 - GLUE2 validation improvements for the BDII provider (#308)
