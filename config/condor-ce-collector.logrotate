@@ -1,5 +1,0 @@
-/var/log/condor-ce/GeneratorLog {
-    rotate 1
-    size 10M
-    missingok
-}

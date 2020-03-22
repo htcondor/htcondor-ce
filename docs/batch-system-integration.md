@@ -1,16 +1,20 @@
 Writing Routes For HTCondor-CE
 ==============================
 
-The [JobRouter](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html) is at the heart of HTCondor-CE and allows admins to transform and direct jobs to specific batch systems. Customizations are made in the form of job routes where each route corresponds to a separate job transformation: If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed job') that is then submitted to the batch system. The CE package comes with default routes located in `/etc/condor-ce/config.d/02-ce-*.conf` that provide enough basic functionality for a small site.
+The [JobRouter](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html) is at the heart of HTCondor-CE
+and allows admins to transform and direct jobs to specific batch systems.
+Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
+If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
+job') that is then submitted to the batch system.
+The CE package comes with default routes located in `/etc/condor-ce/config.d/02-ce-*.conf` that provide enough basic
+functionality for a small site.
 
-If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples of common job routes and job route problems.
+If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples
+of common job routes and job route problems.
 
 !!! note "Definitions"
-    - **Incoming Job**: A job which was submitted to the CE from an outside source, such as a GlideinWMS Factory.
-
-    - **Routed Job**: A job which was transformed by the JobRouter.
-
-    - **Batch System**: The underlying batch system that the HTCondor-CE will submit.  This can be Slurm, PBS, HTCondor, SGE, LSF,...
+    - **Incoming Job**: A job which was submitted to the CE from an external source.
+    - **Routed Job**: A job that has been transformed by the JobRouter.
 
 Quirks and Pitfalls
 -------------------
@@ -60,14 +64,16 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 | If your version of HTCondor is... | Then the route is chosen by...                                                                                               |
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
 | < 8.7.1                           | **Round-robin** between all matching routes. In this case, we recommend making each route's requirements mutually exclusive. |
-| >= 8.7.1                          | **First matching route** where routes are considered in the same order that they are configured                              |
+| >= 8.7.1, < 8.9.5                 | **First matching route** where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive. |
+| >= 8.9.5                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES) |
 
 !!! bug "Job Route Order"
-    For HTCondor versions < 8.8.7, as well as versions > 8.9.0 and < 8.9.5, the order of job routes does not match the
+    For HTCondor versions < 8.9.5 (as well as versions >= 8.7.1 and < 8.8.7) the order of job routes does not match the
     order in which they are configured.
-    As a result, we recommend making each route's requirements mutually exclusive.
+    As a result, we recommend updating to at least HTCondor 8.9.5 (or 8.8.7) and specifying the names of your routes in
+    `JOB_ROUTER_ROUTE_NAMES` in the order that you'd like them considered.
 
-If you're using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
+If you are using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
 `/etc/condor-ce/config.d/`:
 
 ```
@@ -343,6 +349,77 @@ JOB_ROUTER_ENTRIES @=jre
 ]
 @jre
 ```
+
+### Setting job environments ###
+
+HTCondor-CE offers two different methods for setting environment variables of routed jobs:
+
+- `CONDORCE_PILOT_JOB_ENV` configuration, which should be used for setting environment variables for all routed jobs to
+  static strings.
+- `set_default_pilot_job_env` job route configuration, which should be used for setting environment variables:
+    - Per job route
+    - To values based on incoming job attributes
+    - Using [ClassAd functions](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#predefined-functions)
+
+Both of these methods use the new HTCondor format of the
+[environment command]((https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14)), which is
+described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
+For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
+
+``` tab="HTCondor-CE Configuration"
+CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
+```
+
+```bash tab="Resulting Environment"
+WN_SCRATCH_DIR=/nobackup/
+http_proxy=proxy.wisc.edu
+```
+
+Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
+[$() macro expansion](https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros).
+For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
+
+``` tab="HTCondor-CE Configuration"
+LOCAL_PROXY = proxy.wisc.edu
+CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
+```
+
+```bash tab="Resulting Environment"
+WN_SCRATCH_DIR=/nobackup/
+http_proxy=proxy.wisc.edu
+```
+
+To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
+`set_default_pilot_job_env` to your job route configuration.
+For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:
+
+``` tab="HTCondor-CE Configuration" hl_lines="5 6 7" 
+JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = "Local_Condor";
+  set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                     " ACCOUNTING_GROUP=", toLower(JOB_VO));
+]
+@jre
+```
+
+``` tab="Incoming Job Attributes"
+JOB_COLLECTOR = "collector.wisc.edu"
+JOB_VO = "GLOW"
+```
+
+``` bash tab="Resulting Environment"
+WN_SCRATCH_DIR=/nobackup/
+PILOT_COLLECTOR=collector.wisc.edu
+ACCOUNTING_GROUP=glow
+```
+
+!!!tip "Debugging job route environment expressions"
+    While constructing `set_default_pilot_job_env` expressions, try wrapping your expression in
+    [debug()](#debugging-routes) to help with any issues that may arise.
+    Make sure to remove `debug()` after you're done!
 
 ### Editing attributes…
 

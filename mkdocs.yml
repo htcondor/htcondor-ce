@@ -4,6 +4,12 @@ repo_url: https://github.com/htcondor/htcondor-ce/
 
 theme:
   name: material
+  custom_dir: overwrite_theme
+  static_templates:
+    - main.html
+
+extra_css:
+  - css/superfences.css
 
 pages:
 - Home: 'index.md'
@@ -29,3 +35,4 @@ markdown_extensions:
       guess_lang: False
   - toc:
       permalink: True
+  - pymdownx.superfences
