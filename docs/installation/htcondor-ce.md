@@ -180,8 +180,10 @@ Choose one of the following options to configure your HTCondor-CE to use grid or
             AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
             AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
             AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
-            AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
             AUTH_SSL_SERVER_CAFILE =
+            AUTH_SSL_CLIENT_CERTFILE = /etc/grid-security/hostcert.pem
+            AUTH_SSL_CLIENT_KEYFILE = /etc/grid-security/hostkey.pem
+            AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
             AUTH_SSL_CLIENT_CAFILE =
 
     1. Install your host certificate and key into `/etc/grid-security/hostcert.pem` and `/etc/grid-security/hostkey.pem`,

@@ -3,7 +3,7 @@ project(condor-ce)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( HTCONDORCE_VERSION "4.1.0" CACHE INTERNAL "Version of the HTCondor-CE" )
+set( HTCONDORCE_VERSION "4.2.1" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
@@ -58,7 +58,6 @@ install(PROGRAMS
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
 install(PROGRAMS
-  src/condor_ce_config_generator
   src/condor_ce_config_val
   src/condor_ce_history
   src/condor_ce_hold
@@ -128,7 +127,6 @@ install(FILES
   config/02-ce-slurm.conf
   config/02-ce-bosco.conf
   config/03-managed-fork.conf
-  config/04-ce-collector-auth.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
   contrib/apelscripts/50-ce-apel.conf
@@ -142,7 +140,6 @@ install(FILES
   config/01-common-collector-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
   config/01-pilot-env-defaults.conf
-  config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
   config/02-ce-lsf-defaults.conf
@@ -209,13 +206,10 @@ install(FILES templates/index.html templates/vos.html templates/metrics.html
         templates/code.html templates/code_submit.html templates/code_submit_failure.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
-install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
 
 install(FILES
   config/condor-ce.service
   config/condor-ce-collector.service
-  config/condor-ce-collector-config.service
-  config/condor-ce-collector-config.timer
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
 
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)
