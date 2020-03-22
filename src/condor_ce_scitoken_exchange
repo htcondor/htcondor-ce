@@ -18,13 +18,13 @@ DEFAULT_COLLECTOR_PORT="9619"
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Create a token based off of a SciToken for authentication with a remote CE")
-    parser.add_argument("--pool", help="Remote collector to query", metavar="coll",
+    parser.add_argument("-p", "--pool", help="Remote collector to query", metavar="coll",
         default="collector.opensciencegrid.org")
-    parser.add_argument("--name", help="CE name to exchange SciToken with", metavar="name",
+    parser.add_argument("-n", "--name", help="CE name to exchange SciToken with", metavar="name",
         required=True)
-    parser.add_argument("--scitoken", help="File containing SciToken to exchange", metavar="token_file",
+    parser.add_argument("-s", "--scitoken", help="File containing SciToken to exchange", metavar="token_file",
         required=True)
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug mode")
     return parser.parse_args()
 
 
