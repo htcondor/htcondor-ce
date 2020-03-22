@@ -295,8 +295,6 @@ fi
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/execute
 %attr(-,condor,condor) %dir %{_localstatedir}/lock/condor-ce
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
-%attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
-%attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
 
 %if ! 0%{?osg}
 %files bdii
@@ -393,6 +391,8 @@ fi
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
+%attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
+%attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
