@@ -48,6 +48,7 @@ install(PROGRAMS
   src/condor_ce_metric
   src/condor_ce_view
   src/gratia_cleanup.py
+  src/condor_ce_create_password
   contrib/apelscripts/condor_ce_apel.sh
   contrib/apelscripts/condor_blah.sh
   contrib/apelscripts/condor_batch.sh
@@ -79,6 +80,7 @@ install(PROGRAMS
   src/condor_ce_restart
   src/condor_ce_job_router_info
   src/condor_ce_host_network_check
+  src/condor_ce_scitoken_exchange
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES
   src/htcondorce/__init__.py
@@ -149,12 +151,20 @@ set(HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/run/condor-ce ${STATE_INSTALL_DIR}/log/
   ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview/vos
   ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview/metrics ${STATE_INSTALL_DIR}/lib/condor-ce/execute
   ${STATE_INSTALL_DIR}/lock/condor-ce ${STATE_INSTALL_DIR}/lock/condor-ce/user
-  ${STATE_INSTALL_DIR}/lib/gratia/condorce_data ${SYSCONF_INSTALL_DIR}/logrotate.d)
+  ${STATE_INSTALL_DIR}/lib/gratia/condorce_data ${SYSCONF_INSTALL_DIR}/logrotate.d
+  ${SYSCONF_INSTALL_DIR}/condor-ce/tokens.d)
 
 foreach(dir IN ITEMS ${HTCONDORCE_DIRS})
   install(DIRECTORY DESTINATION ${dir})
   install(CODE "execute_process(COMMAND chown condor:condor ${dir})")
 endforeach(dir)
+
+set(HTCONDORCE_ROOT_DIRS ${SYSCONF_INSTALL_DIR}/condor-ce/passwords.d)
+
+foreach(root_dir IN ITEMS ${HTCONDORCE_ROOT_DIRS})
+  install(DIRECTORY DESTINATION ${root_dir})
+  install(CODE "execute_process(COMMAND chown root:root ${root_dir})")
+endforeach(root_dir)
 
 set(STICKY_HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/log/condor-ce/user ${STATE_INSTALL_DIR}/lock/condor-ce/user
   ${SYSCONF_INSTALL_DIR}/logrotate.d)
@@ -162,6 +172,13 @@ set(STICKY_HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/log/condor-ce/user ${STATE_INSTA
 foreach(sticky_dir IN ITEMS ${STICKY_HTCONDORCE_DIRS})
   install(CODE "execute_process(COMMAND chmod 1777 ${sticky_dir})")
 endforeach(sticky_dir)
+
+set(PRIVATE_HTCONDORCE_DIRS ${SYSCONF_INSTALL_DIR}/condor-ce/passwords.d
+  ${SYSCONF_INSTALL_DIR}/condor-ce/tokens.d)
+
+foreach(private_dir IN ITEMS ${PRIVATE_HTCONDORCE_DIRS})
+  install(CODE "execute_process(COMMAND chmod 0700 ${private_dir})")
+endforeach(private_dir)
 
 install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(FILES templates/index.html templates/vos.html templates/metrics.html

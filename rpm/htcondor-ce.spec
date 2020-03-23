@@ -228,6 +228,11 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
 %post
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+
+if [ ! -e /etc/condor-ce/passwords.d/POOL ]; then
+    %{_datadir}/condor-ce/condor_ce_create_password >/dev/null 2>&1 || :
+fi
+
 %systemd_post condor-ce.service
 
 %post collector
@@ -386,6 +391,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
+%attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
+%attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
@@ -396,6 +403,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
 %{_datadir}/condor-ce/verify_ce_config.py*
+%{_datadir}/condor-ce/condor_ce_create_password
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
@@ -409,6 +417,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %{_bindir}/condor_ce_run
 %{_bindir}/condor_ce_release
 %{_bindir}/condor_ce_submit
+%{_bindir}/condor_ce_scitoken_exchange
 %{_bindir}/condor_ce_reconfig
 %{_bindir}/condor_ce_reschedule
 %{_bindir}/condor_ce_status
@@ -911,5 +920,4 @@ expected to change is in /etc, other configuration is in /usr
 
 * Thu May 31 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 0.2-1
 - Release after a day of testing with PBS and HTCondor.
-
 
