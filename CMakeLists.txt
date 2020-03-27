@@ -92,7 +92,11 @@ install(FILES
   src/audit_payloads.py
   DESTINATION ${PYTHON_SITELIB}/htcondorce)
 
-install(FILES config/condor_config config/condor_mapfile config/condor_mapfile.osg DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+install(FILES
+  config/condor_config
+  config/condor_mapfile
+  config/condor_mapfile.osg
+  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 
 install(FILES
   contrib/apelscripts/README.md
