@@ -25,6 +25,7 @@
 # The special token GSS_ASSIST_GRIDMAP indicates one should use the Globus Toolkit
 # callout mechanism (which may involve plugins such as LCMAPS or Argus).
 GSI (.*) GSS_ASSIST_GRIDMAP
+GSI "/CN=([-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
 SSL "/CN=([-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
 CLAIMTOBE .* anonymous@claimtobe
 FS "^(root|condor)$" \1@daemon.htcondor.org
