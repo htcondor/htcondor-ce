@@ -3,7 +3,7 @@ project(condor-ce)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( HTCONDORCE_VERSION "4.1.0" CACHE INTERNAL "Version of the HTCondor-CE" )
+set( HTCONDORCE_VERSION "4.2.1" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
@@ -48,6 +48,7 @@ install(PROGRAMS
   src/condor_ce_metric
   src/condor_ce_view
   src/gratia_cleanup.py
+  src/condor_ce_create_password
   contrib/apelscripts/condor_ce_apel.sh
   contrib/apelscripts/condor_blah.sh
   contrib/apelscripts/condor_batch.sh
@@ -57,7 +58,6 @@ install(PROGRAMS
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
 install(PROGRAMS
-  src/condor_ce_config_generator
   src/condor_ce_config_val
   src/condor_ce_history
   src/condor_ce_hold
@@ -80,6 +80,7 @@ install(PROGRAMS
   src/condor_ce_restart
   src/condor_ce_job_router_info
   src/condor_ce_host_network_check
+  src/condor_ce_scitoken_exchange
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES
   src/htcondorce/__init__.py
@@ -113,7 +114,6 @@ install(FILES
   config/02-ce-slurm.conf
   config/02-ce-bosco.conf
   config/03-managed-fork.conf
-  config/04-ce-collector-auth.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
   contrib/apelscripts/50-ce-apel.conf
@@ -127,7 +127,6 @@ install(FILES
   config/01-common-collector-defaults.conf
   ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf
   config/01-pilot-env-defaults.conf
-  config/02-ce-collector-auth-generated.conf
   config/02-ce-condor-defaults.conf
   config/02-ce-pbs-defaults.conf
   config/02-ce-lsf-defaults.conf
@@ -152,12 +151,20 @@ set(HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/run/condor-ce ${STATE_INSTALL_DIR}/log/
   ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview/vos
   ${STATE_INSTALL_DIR}/lib/condor-ce/spool/ceview/metrics ${STATE_INSTALL_DIR}/lib/condor-ce/execute
   ${STATE_INSTALL_DIR}/lock/condor-ce ${STATE_INSTALL_DIR}/lock/condor-ce/user
-  ${STATE_INSTALL_DIR}/lib/gratia/condorce_data ${SYSCONF_INSTALL_DIR}/logrotate.d)
+  ${STATE_INSTALL_DIR}/lib/gratia/condorce_data ${SYSCONF_INSTALL_DIR}/logrotate.d
+  ${SYSCONF_INSTALL_DIR}/condor-ce/tokens.d)
 
 foreach(dir IN ITEMS ${HTCONDORCE_DIRS})
   install(DIRECTORY DESTINATION ${dir})
   install(CODE "execute_process(COMMAND chown condor:condor ${dir})")
 endforeach(dir)
+
+set(HTCONDORCE_ROOT_DIRS ${SYSCONF_INSTALL_DIR}/condor-ce/passwords.d)
+
+foreach(root_dir IN ITEMS ${HTCONDORCE_ROOT_DIRS})
+  install(DIRECTORY DESTINATION ${root_dir})
+  install(CODE "execute_process(COMMAND chown root:root ${root_dir})")
+endforeach(root_dir)
 
 set(STICKY_HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/log/condor-ce/user ${STATE_INSTALL_DIR}/lock/condor-ce/user
   ${SYSCONF_INSTALL_DIR}/logrotate.d)
@@ -166,17 +173,21 @@ foreach(sticky_dir IN ITEMS ${STICKY_HTCONDORCE_DIRS})
   install(CODE "execute_process(COMMAND chmod 1777 ${sticky_dir})")
 endforeach(sticky_dir)
 
+set(PRIVATE_HTCONDORCE_DIRS ${SYSCONF_INSTALL_DIR}/condor-ce/passwords.d
+  ${SYSCONF_INSTALL_DIR}/condor-ce/tokens.d)
+
+foreach(private_dir IN ITEMS ${PRIVATE_HTCONDORCE_DIRS})
+  install(CODE "execute_process(COMMAND chmod 0700 ${private_dir})")
+endforeach(private_dir)
+
 install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(FILES templates/index.html templates/vos.html templates/metrics.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
-install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
 
 install(FILES
   config/condor-ce.service
   config/condor-ce-collector.service
-  config/condor-ce-collector-config.service
-  config/condor-ce-collector-config.timer
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
 
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)
