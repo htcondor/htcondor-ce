@@ -15,7 +15,7 @@ import subprocess
 from collections import defaultdict
 import signal
 import htcondor
-
+import classad as ca
 
 SERVICE_LDIF = """dn: {bind_dn}
 GLUE2ServiceID: {central_manager}
@@ -87,6 +87,16 @@ GLUE2EndpointServiceForeignKey: {central_manager}
 GLUE2ComputingEndpointComputingServiceForeignKey: {central_manager}
 """
 
+SPEC_LDIF = """dn: GLUE2BenchmarkID={central_manager}_{spec_type},GLUE2ResourceID={central_manager}_{resource},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
+GLUE2BenchmarkExecutionEnvironmentForeignKey: {central_manager}_{resource}
+GLUE2BenchmarkID: {central_manager}_{spec_type}
+GLUE2BenchmarkType: {spec_type}
+objectClass: GLUE2Entity
+objectClass: GLUE2Benchmark
+GLUE2BenchmarkValue: {spec_value}
+GLUE2BenchmarkComputingManagerForeignKey: {central_manager}_Manager
+GLUE2EntityName: Benchmark {spec_type}
+"""
 
 SHARE_LDIF = """dn: GLUE2ShareID={shareid},{bind_dn}
 objectClass: GLUE2Entity
@@ -138,7 +148,6 @@ def handler(signum, frame):
     Handler for timeout signal.
     """
     raise TimeoutError("TimeoutError")
-
 
 def main():
     """
@@ -221,11 +230,26 @@ def main():
             os=tup[1],
             name=tup[2],
             version=tup[3],
-            cpu=tup[4],
             memory=tup[5],
+            cpu=tup[4],
             bind_dn=bind_dn,
             instances=instances,
         ))
+
+
+        # Get from the configuration types and values of the benchmarks
+        specs = ca.ClassAd(htcondor.param.get('HTCONDORCE_SPEC')) or []
+        for spec_type, spec_value in specs.items():
+            spec_type = spec_type.strip().replace('_', '-')
+            print(SPEC_LDIF.format(
+                central_manager=central_manager,
+                resource=resource,
+                spec_type=spec_type,
+                spec_value=spec_value
+            ))
+
+
+
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
 
@@ -339,6 +363,7 @@ def main():
             issuer=issuer,
             central_manager=central_manager,
             ))
+
 
         for voname in vonames:
             voname = voname.strip()
