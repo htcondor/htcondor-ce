@@ -92,7 +92,12 @@ install(FILES
   src/audit_payloads.py
   DESTINATION ${PYTHON_SITELIB}/htcondorce)
 
-install(FILES config/condor_config config/condor_mapfile config/condor_mapfile.osg DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+install(FILES
+  config/condor_config
+  config/condor_mapfile
+  config/condor_mapfile.central_collector
+  config/condor_mapfile.osg
+  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 
 install(FILES
   contrib/apelscripts/README.md
@@ -134,6 +139,7 @@ install(FILES
   config/02-ce-slurm-defaults.conf
   config/02-ce-bosco-defaults.conf
   config/03-managed-fork-defaults.conf
+  config/05-ce-collector-auth.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
