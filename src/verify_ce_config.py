@@ -10,10 +10,14 @@ import sys
 
 
 def error(msg):
+    """Exit with error 'msg'
+    """
     sys.exit("ERROR: " + msg)
 
 
 def warn(msg):
+    """Print warning 'msg'
+    """
     print "WARNING: " + msg
 
 
@@ -45,10 +49,12 @@ except ImportError:
 
 
 def main():
+    """Main function
+    """
     is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
 
     # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
-    JOB_ROUTER_CONFIG = {}
+    parsed_jr_ads = {}
     for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
         try:
             config_val = htcondor.param[attr]
@@ -56,10 +62,10 @@ def main():
             error("Missing required %s configuration value" % attr)
 
         # store the ads (iterating through ClassAdStringIterator consumes them)
-        JOB_ROUTER_CONFIG[attr] = list(classad.parseAds(config_val))
+        parsed_jr_ads[attr] = list(classad.parseAds(config_val))
 
         # If JRD or JRE can't be parsed, the job router can't function
-        if not JOB_ROUTER_CONFIG[attr]:
+        if not parsed_jr_ads[attr]:
             error("Could not read %s in the HTCondor-CE configuration." % attr)
 
         if attr == "JOB_ROUTER_ENTRIES":
@@ -81,17 +87,17 @@ def main():
                          % ', '.join(missing_route_def))
 
     # Find all eval_set_ attributes in the JOB_ROUTER_DEFAULTS
-    EVAL_SET_DEFAULTS = set([x.lstrip('eval_') for x in JOB_ROUTER_CONFIG['JOB_ROUTER_DEFAULTS'][0].keys()
+    eval_set_defaults = set([x.lstrip('eval_') for x in parsed_jr_ads['JOB_ROUTER_DEFAULTS'][0].keys()
                              if x.startswith('eval_set_')])
 
     # Find all default_ attributes used in expressions in the JOB_ROUTER_DEFAULTS
-    DEFAULT_ATTR = set([re.sub(r'.*(default_\w*).*', 'eval_set_\\1', str(x))
-                        for x in JOB_ROUTER_CONFIG['JOB_ROUTER_DEFAULTS'][0].values()
+    default_attr = set([re.sub(r'.*(default_\w*).*', 'eval_set_\\1', str(x))
+                        for x in parsed_jr_ads['JOB_ROUTER_DEFAULTS'][0].values()
                         if isinstance(x, classad.ExprTree) and str(x).find('default_') != -1])
 
-    for entry in JOB_ROUTER_CONFIG['JOB_ROUTER_ENTRIES']:
+    for entry in parsed_jr_ads['JOB_ROUTER_ENTRIES']:
         # Warn users if they've set_ attributes that would be overriden by eval_set in the JOB_ROUTER_DEFAULTS
-        overriden_attr = EVAL_SET_DEFAULTS.intersection(set(entry.keys()))
+        overriden_attr = eval_set_defaults.intersection(set(entry.keys()))
         if overriden_attr:
             warn("%s in JOB_ROUTER_ENTRIES will be overriden by the JOB_ROUTER_DEFAULTS."
                  % ', '.join(overriden_attr)
@@ -105,7 +111,7 @@ def main():
         # Warn users about eval_set_ default attributes in the ENTRIES since their
         # evaluation may occur after the eval_set_ expressions containg them in the
         # JOB_ROUTER_DEFAULTS
-        no_effect_attr = DEFAULT_ATTR.intersection(set([x for x in entry.keys() if x.startswith('eval_set_')]))
+        no_effect_attr = default_attr.intersection(set([x for x in entry.keys() if x.startswith('eval_set_')]))
         if no_effect_attr:
             warn("%s in JOB_ROUTER_ENTRIES " % ', '.join(no_effect_attr)
                  + "may not have any effect. Use the 'set_' prefix instead.")
