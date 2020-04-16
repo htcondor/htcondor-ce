@@ -62,7 +62,12 @@ def main():
             error("Missing required %s configuration value" % attr)
 
         # store the ads (iterating through ClassAdStringIterator consumes them)
-        parsed_jr_ads[attr] = list(classad.parseAds(config_val))
+        try:
+            parsed_jr_ads[attr] = list(classad.parseAds(config_val))
+        except ValueError:
+            # We shouldn't ever get here since classad.parseAds() only raises ValueError when it's given
+            # non-string/non-file output and htcondor.param shouldn't contain such values
+            error("Failed to parse %s configuration value" % attr)
 
         # If JRD or JRE can't be parsed, the job router can't function
         if not parsed_jr_ads[attr]:
