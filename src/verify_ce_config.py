@@ -18,7 +18,7 @@ def error(msg):
 def warn(msg):
     """Print warning 'msg'
     """
-    print "WARNING: " + msg
+    print("WARNING: " + msg)
 
 
 def parsed_route_names(entries_config):
