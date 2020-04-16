@@ -31,7 +31,7 @@ def malformed_entries(entries_config):
     """Find all unparseable router entries based on the raw JOB_ROUTER_ENTRIES configuration
     """
     unparsed_names = [x.replace('"', '')
-                      for x in re.findall(r'name\s*=\s*["\'](\w+)["\']',
+                      for x in re.findall(r'''name\s*=\s*["'](\w+)["']''',
                                           entries_config,
                                           re.IGNORECASE)]
     parsed_names = parsed_route_names(entries_config)
