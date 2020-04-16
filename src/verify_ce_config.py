@@ -21,20 +21,20 @@ def warn(msg):
     print("WARNING: " + msg)
 
 
-def parsed_route_names(entries_config):
+def parse_route_names(entries_config):
     """Return names of job routes that can be parsed as proper ClassAds
     """
     return [x['Name'] for x in classad.parseAds(entries_config)]
 
 
-def malformed_entries(entries_config):
+def find_malformed_entries(entries_config):
     """Find all unparseable router entries based on the raw JOB_ROUTER_ENTRIES configuration
     """
     unparsed_names = [x.replace('"', '')
                       for x in re.findall(r'''name\s*=\s*["'](\w+)["']''',
                                           entries_config,
                                           re.IGNORECASE)]
-    parsed_names = parsed_route_names(entries_config)
+    parsed_names = parse_route_names(entries_config)
 
     return set(unparsed_names) - set(parsed_names)
 
@@ -70,7 +70,7 @@ def main():
 
         if attr == "JOB_ROUTER_ENTRIES":
             # Warn about routes we can find in the config that don't result in valid ads
-            malformed_entry_names = malformed_entries(config_val)
+            malformed_entry_names = find_malformed_entries(config_val)
             if malformed_entry_names:
                 warn("Could not read JOB_ROUTER_ENTRIES in the HTCondor-CE configuration. " +
                      "Failed to parse the following routes: %s"
@@ -80,7 +80,7 @@ def main():
             # The job router can function this way but it's likely a config error
             route_order = htcondor.param.get('JOB_ROUTER_ROUTE_NAMES', '')
             if route_order:
-                missing_route_def = set(route_order).difference(set(parsed_route_names(config_val)))
+                missing_route_def = set(route_order).difference(set(parse_route_names(config_val)))
                 if missing_route_def:
                     warn("The following are specified in JOB_ROUTER_ROUTE_NAMES "
                          "but cannot be found in JOB_ROUTER_ENTRIES: %s"
