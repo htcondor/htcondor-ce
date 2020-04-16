@@ -93,7 +93,7 @@ def main():
     # Find all default_ attributes used in expressions in the JOB_ROUTER_DEFAULTS
     default_attr = set([re.sub(r'.*(default_\w*).*', 'eval_set_\\1', str(x))
                         for x in parsed_jr_ads['JOB_ROUTER_DEFAULTS'][0].values()
-                        if isinstance(x, classad.ExprTree) and str(x).find('default_') != -1])
+                        if isinstance(x, classad.ExprTree) and "default_" in str(x)])
 
     for entry in parsed_jr_ads['JOB_ROUTER_ENTRIES']:
         # Warn users if they've set_ attributes that would be overriden by eval_set in the JOB_ROUTER_DEFAULTS
