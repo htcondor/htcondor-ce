@@ -98,7 +98,12 @@ install(FILES
   src/htcondorce/static/bootstrap-pincode-input.js
   DESTINATION ${PYTHON_SITELIB}/htcondorce/static)
 
-install(FILES config/condor_config config/condor_mapfile config/condor_mapfile.osg DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+install(FILES
+  config/condor_config
+  config/condor_mapfile
+  config/condor_mapfile.central_collector
+  config/condor_mapfile.osg
+  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 
 install(FILES config/htcondorce_registry.conf DESTINATION ${SYSCONF_INSTALL_DIR}/httpd/conf.d)
 # This file should contain various OIDC secrets; should not be world-readable.
@@ -147,6 +152,7 @@ install(FILES
   config/02-ce-slurm-defaults.conf
   config/02-ce-bosco-defaults.conf
   config/03-managed-fork-defaults.conf
+  config/05-ce-collector-auth.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
   contrib/apelscripts/50-ce-apel-defaults.conf

@@ -472,6 +472,8 @@ fi
 %{_tmpfilesdir}/condor-ce-collector.conf
 
 %config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
+%config %{_datadir}/condor-ce/config.d/05-ce-collector-auth.conf
+%config %{_sysconfdir}/condor-ce/condor_mapfile.central_collector
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d
