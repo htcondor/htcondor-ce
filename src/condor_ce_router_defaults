@@ -287,8 +287,10 @@ def main():
     env_file_contents = []
     # Read in the environment files.
     for filename in osg_environment_files:
-        if os.path.exists(filename) and os.access(filename, os.R_OK):
+        try:
             env_file_contents.append(read_osg_environment_file(filename))
+        except IOError:
+            pass
     # Merge the file contents, in order
     for contents in env_file_contents:
         for key, val in contents.items():
