@@ -4,6 +4,7 @@ import os
 import re
 import pwd
 import classad
+from collections import OrderedDict
 
 JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
@@ -283,20 +284,15 @@ def read_osg_environment_file(filename):
 
 
 def main():
-    master_env = {}
-    env_file_contents = []
-    # Read in the environment files.
+    # Read environment files, preferring the local env
+    osg_env = OrderedDict()
     for filename in osg_environment_files:
         try:
-            env_file_contents.append(read_osg_environment_file(filename))
+            osg_env.update(OrderedDict(read_osg_environment_file(filename)))
         except IOError:
             pass
-    # Merge the file contents, in order
-    for contents in env_file_contents:
-        for key, val in contents.items():
-            master_env[key] = val
-    # Mangle environment string
-    env_string = " ".join(["%s=%s" % (i[0], i[1]) for i in master_env.items()])
+    # Construct HTCondor-formatted environment string
+    env_string = " ".join(["%s=%s" % (i[0], i[1]) for i in osg_env.items()])
 
     accounting_group_str = set_accounting_group()
 
