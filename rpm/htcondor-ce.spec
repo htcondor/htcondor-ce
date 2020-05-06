@@ -177,6 +177,7 @@ Summary: Central HTCondor-CE information services collector
 Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 Requires: libxml2-python
+Requires: python-six
 
 # Various requirements for the CE registry application
 # for registering the CE with this collector.

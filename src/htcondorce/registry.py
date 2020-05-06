@@ -2,6 +2,11 @@
 
 import json
 import os
+import xml.etree.ElementTree as ET
+
+from six.moves.http_client import HTTPException
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.error import URLError
 
 from flask import Flask, url_for, make_response, request
 import genshi.template
@@ -9,17 +14,65 @@ import subprocess
 
 _loader = None
 
+TOPOLOGY_RG = "https://topology.opensciencegrid.org/rgsummary/xml"
+
+
 class CondorToolException(Exception):
     pass
+
+
+class TopologyError(Exception):
+    pass
+
 
 def osgid_to_ce(osgid):
     """
     Map a given OSG ID to a list of authorized CEs they can
     register
     """
-    # TODO: Here, we need to create a mapping from CILogon IDs to authorized CEs.
-    if osgid == 'OSG1000001':
-        return ['hcc-briantest7.unl.edu']
+    # URL for all Production CE resources
+    topology_url = TOPOLOGY_RG + '?gridtype=on&gridtype_1=on&service_on&service_1=on'
+    try:
+        response = urlopen(topology_url)
+        topology_xml = response.read()
+    except (URLError, HTTPException):
+        raise TopologyError('Error retrieving OSG Topology registrations')
+
+    try:
+        topology_et = ET.fromstring(topology_xml)
+    except ET.ParseError:
+        if not topology_xml:
+            msg = 'OSG Topology query returned empty response'
+        else:
+            msg = 'OSG Topology query returned malformed XML'
+        raise TopologyError(msg)
+
+    ces = []
+    resources = topology_et.findall('./ResourceGroup/Resources/Resource')
+    if not resources:
+        raise TopologyError('Failed to find any OSG Topology resources')
+
+    for resource in resources:
+        try:
+            fqdn = resource.find('./FQDN').text.strip()
+        except AttributeError:
+            # skip malformed resource missing an FQDN
+            continue
+
+        try:
+            admin_contacts = [contact_list.find('./Contacts')
+                              for contact_list in resource.findall('./ContactLists/ContactList')
+                              if contact_list.findtext('./ContactType', '').strip() == 'Administrative Contact']
+        except AttributeError:
+            # skip malformed resource missing contacts
+            continue
+
+        for contact in admin_contacts:
+            if contact.findtext('./Contact/CILogonID', '').strip() == osgid:
+                ces.append(fqdn)
+
+    return ces
+
 
 def fetch_tokens(reqid, config):
     binary = config.get('CONDOR_TOKEN_REQUEST_LIST', 'condor_token_request_list')
@@ -118,9 +171,14 @@ def create_app(test_config = None):
             info = {'info': "Token must be limited to the ADVERTISE_SCHEDD authorization"}
             return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
 
-        allowed_identity = osgid_to_ce(osgid)
+        tmpl = _loader.load('code_submit_failure.html')
+        try:
+            allowed_identity = osgid_to_ce(osgid)
+        except TopologyError as exc:
+            info = {'info': exc}
+            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+
         if not allowed_identity:
-            tmpl = _loader.load('code_submit_failure.html')
             info = {'info': "OSG registration not associated with any CE"}
             return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
 
