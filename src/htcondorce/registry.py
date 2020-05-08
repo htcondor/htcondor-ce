@@ -182,13 +182,7 @@ def create_app(test_config = None):
             info = {'info': "OSG registration not associated with any CE"}
             return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
 
-        found_requested_identity = False
-        for hostname in allowed_identity:
-            identity = hostname + "@users.htcondor.org"
-            if identity == result.get("RequestedIdentity"):
-                found_requested_identity = True
-                break
-        if not found_requested_identity:
+        if result.get("RequestedIdentity") not in [hostname + "@users.htcondor.org" for hostname in allowed_identity]:
             tmpl = _loader.load('code_submit_failure.html')
             info = {'info': "Requested identity (%s) not in the list of allowed CEs (%s)" % \
                 (result.get("RequestedIdentity"), ", ".join(allowed_identity))}
