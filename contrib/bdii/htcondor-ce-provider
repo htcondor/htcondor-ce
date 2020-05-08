@@ -167,9 +167,9 @@ def main():
 
 
     # Get Site Name
-    site_name = htcondor.param.get('GLUE2DomainID')
+    site_name = htcondor.param.get('HTCONDORCE_SiteName')
     if not site_name:
-        sys.stderr.write("Error: GLUE2DomainID: not set\n")
+        sys.stderr.write("Error: HTCONDORCE_SiteName: not set\n")
         sys.exit(1)
 
 

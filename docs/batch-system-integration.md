@@ -641,25 +641,31 @@ JOB_ROUTER_ENTRIES @=jre
 
 ### Setting batch system directives
 
-To write batch system directives that are not supported in the route examples above, you will need to edit the job submit script for your local batch system in `/etc/blahp/` (e.g., if your local batch system is PBS, edit `/etc/blahp/pbs_local_submit_attributes.sh`). This file is sourced during submit time and anything printed to stdout is appended to the batch system job submit script. ClassAd attributes can be passed from the routed job to the local submit attributes script via the `default_remote_cerequirements` attribute, which can take the following form:
+To write batch system directives that are not supported in the route examples above, you will need to edit the job submit script for your local batch system in `/etc/blahp/` (e.g., if your local batch system is PBS, edit `/etc/blahp/pbs_local_submit_attributes.sh`). This file is sourced during submit time and anything printed to stdout is appended to the batch system job submit script. ClassAd attributes can be passed from the routed job to the local submit attributes script via `set_default_CERequirements`, which takes a comma-separated list of other attributes:
 
 ```
-default_remote_cerequirements = "foo == X && bar == \"Y\" && ..."
+set_foo = X;
+set_bar = "Y";
+set_default_CERequirements = "foo,bar";
 ```
 
-This sets `foo` to value `X` and `bar` to the string `Y` (escaped double-quotes are required for string values) in the environment of the local submit attributes script. The following example sets the maximum walltime to 1 hour and the accounting group to the `x509UserProxyFirstFQAN` attribute of the job submitted to a PBS batch system
+This sets `foo` to value `X` and `bar` to the string `Y` in the environment of the local submit attributes script.
+
+The following example sets the maximum walltime to 1 hour and the accounting group to the `x509UserProxyFirstFQAN` attribute of the job submitted to a PBS batch system:
 
 ```hl_lines="5"
 JOB_ROUTER_ENTRIES @=jre [
      GridResource = "batch pbs";
      TargetUniverse = 9;
      name = "Setting job submit variables";
-     set_default_remote_cerequirements = strcat("Walltime == 3600 && AccountingGroup =="", x509UserProxyFirstFQAN, "\"");
+     set_Walltime = 3600;
+     set_AccountingGroup = x509UserProxyFirstFQAN;
+     set_default_CERequirements = "WallTime,AccountingGroup";
 ]
 @jre
 ```
 
-With `/etc/blahp/pbs_local_submit_attributes.sh` containing.
+With `/etc/blahp/pbs_local_submit_attributes.sh` containing:
 
 ```
 #!/bin/bash
