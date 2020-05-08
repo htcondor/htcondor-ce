@@ -71,6 +71,7 @@ install(PROGRAMS
   src/condor_ce_reconfig
   src/condor_ce_router_q
   src/condor_ce_status
+  src/condor_ce_register
   src/condor_ce_reschedule
   src/condor_ce_run
   src/condor_ce_trace
@@ -89,8 +90,13 @@ install(FILES
   src/htcondorce/rrd.py
   src/htcondorce/tools.py
   src/htcondorce/info_query.py
+  src/htcondorce/registry.py
   src/audit_payloads.py
   DESTINATION ${PYTHON_SITELIB}/htcondorce)
+install(FILES
+  src/htcondorce/static/bootstrap-pincode-input.css
+  src/htcondorce/static/bootstrap-pincode-input.js
+  DESTINATION ${PYTHON_SITELIB}/htcondorce/static)
 
 install(FILES
   config/condor_config
@@ -98,6 +104,13 @@ install(FILES
   config/condor_mapfile.central_collector
   config/condor_mapfile.osg
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+
+install(FILES config/htcondorce_registry.conf DESTINATION ${SYSCONF_INSTALL_DIR}/httpd/conf.d)
+# This file should contain various OIDC secrets; should not be world-readable.
+install(CODE "execute_process(COMMAND chmod 0700 ${SYSCONF_INSTALL_DIR}/httpd/conf.d/htcondorce_registry.conf)")
+install(CODE "execute_process(COMMAND chown root:root ${SYSCONF_INSTALL_DIR}/httpd/conf.d/htcondorce_registry.conf)")
+
+install(FILES src/htcondor-ce-registry.wsgi DESTINATION ${STATE_INSTALL_DIR}/www/wsgi-scripts/htcondor-ce)
 
 install(FILES
   contrib/apelscripts/README.md
@@ -172,6 +185,14 @@ foreach(root_dir IN ITEMS ${HTCONDORCE_ROOT_DIRS})
   install(CODE "execute_process(COMMAND chown root:root ${root_dir})")
 endforeach(root_dir)
 
+# These are the tokens for use by the CE registry webapp
+set(HTCONDORCE_WEBAPP_DIRS ${SYSCONF_INSTALL_DIR}/condor-ce/webapp.tokens.d
+  ${STATE_INSTALL_DIR}/lib/condor-ce/webapp)
+foreach(webapp_dir IN ITEMS ${HTCONDORCE_WEBAPP_DIRS})
+  install(DIRECTORY DESTINATION ${webapp_dir})
+  install(CODE "execute_process(COMMAND chown condorce_webapp:condorce_webapp ${webapp_dir})")
+endforeach(webapp_dir)
+
 set(STICKY_HTCONDORCE_DIRS ${STATE_INSTALL_DIR}/log/condor-ce/user ${STATE_INSTALL_DIR}/lock/condor-ce/user
   ${SYSCONF_INSTALL_DIR}/logrotate.d)
 
@@ -188,6 +209,7 @@ endforeach(private_dir)
 
 install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 install(FILES templates/index.html templates/vos.html templates/metrics.html
+        templates/code.html templates/code_submit.html templates/code_submit_failure.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 

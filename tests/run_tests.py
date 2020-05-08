@@ -5,7 +5,7 @@ import glob
 import unittest
 import sys
 
-TESTS = [test.strip('.py') for test in glob.glob('test*.py')]
+TESTS = [test[:-3] for test in glob.glob('test*.py')]
 SUITE = unittest.TestLoader().loadTestsFromNames(TESTS)
 RESULTS = unittest.TextTestRunner(verbosity=2).run(SUITE)
 
