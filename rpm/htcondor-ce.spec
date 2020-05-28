@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.3.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -494,6 +494,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed May 27 2020 Brian Lin <blin@cs.wisc.edu> - 4.3.0-2
+- Update the packaging for 4.3.0
+
 * Wed May 27 2020 Brian Lin <blin@cs.wisc.edu> - 4.3.0-1
 - Add the CE registry web application to the central collector. The
   registry provides an interface to OSG site administrators of
