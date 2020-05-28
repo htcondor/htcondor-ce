@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.2.1
+Version: 4.3.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -494,6 +494,18 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed May 27 2020 Brian Lin <blin@cs.wisc.edu> - 4.3.0-1
+- Add the CE registry web application to the central collector. The
+  registry provides an interface to OSG site administrators of
+  HTCondor-CEs to retrieve an HTCondor IDTOKEN for authenticating
+  pilot job submissions (#298, #299)
+- Identify broken job routes upon startup (#319)
+- Add benchmarking parameters to the BDII provider via HTCONDORCE_SPEC
+  in the configuration. See /etc/condor-ce/config.d/99-ce-bdii.conf
+  for examples (#311)
+- Fix handling of unmapped GSI users in the central collector (#317)
+- Fix reference to old BDII configuration values (#322)
+
 * Wed Mar 18 2020 Brian Lin <blin@cs.wisc.edu> - 4.2.1-1
 - Drop vestigial central collector config generator
 - Fix unmapped GSI/SSL regexps and allow unmapped enttities to advertise to the central ceollector (SOFTWARE-3939)
