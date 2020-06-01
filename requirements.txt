@@ -1,7 +1,7 @@
 htcondor
 # Requirement for CEView
 # Newer versions of CherryPy do not include cherrypy.wsgiserver
-CherryPy~=3.2
+CherryPy >= 3.2, == 3.*
 # Requirements for registry
 flask
 genshi
