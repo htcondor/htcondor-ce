@@ -54,61 +54,61 @@
 
           $('#info_table_inner').detach();
           info_table = $("<table></table>");
-	  info_table.addClass("table");
-	  info_table.addClass("tablesorter");
+          info_table.addClass("table");
+          info_table.addClass("tablesorter");
           info_table.attr("id", "info_table_inner");
-	  info_table.append("<thead><th>CE</th><th>OSG Resource</th><th>OSG Resource Group</th><th>Batch System</th><th>HTCondor-CE Version</th><th>HTCondor Version</th></thead>");
-	  info_table.append("<tbody>");
+          info_table.append("<thead><th>CE</th><th>OSG Resource</th><th>OSG Resource Group</th><th>Batch System</th><th>HTCondor-CE Version</th><th>HTCondor Version</th></thead>");
+          info_table.append("<tbody>");
           for (name in data) {
               key = data[name]
               info_table.append("<tr><td>" + name + "</td><td>" + key.OSG_Resource + "</td><td>" + key.OSG_ResourceGroup + "</td><td>" + key.OSG_BatchSystems + "</td><td>" + key.HTCondorCEVersion + "</td><td>" + key.CondorVersion + "</td></tr>");
-	  }
-	  info_table.append("</tbody>");
-	  $("#info_table").append(info_table);
+          }
+          info_table.append("</tbody>");
+          $("#info_table").append(info_table);
 
-          $("#info_table_inner").tablesorter({ 
+          $("#info_table_inner").tablesorter({
               debug: true,
-	      theme: "bootstrap",
-	      headerTemplate : '{content} {icon}',
+              theme: "bootstrap",
+              headerTemplate : '{content} {icon}',
               widgets: ["filter", "uitheme", "zebra"],
-	      widgetOptions : {
+              widgetOptions : {
                 filter_external : '#infoSearch',
-		filter_columnFilters: false,
-		zebra : ["even", "odd"],
-	      }
-	    });
+                filter_columnFilters: false,
+                zebra : ["even", "odd"],
+              }
+            });
 
         }
 
         function got_pilots(data) {
             $("#pilots_table_inner").detach();
             pilots_table = $("<table></table>");
-	    pilots_table.addClass("table");
-	    pilots_table.addClass("table-striped");
-	    pilots_table.addClass("table-hover");
-	    pilots_table.addClass("table-condensed");
-	    pilots_table.addClass("tablesorter");
+            pilots_table.addClass("table");
+            pilots_table.addClass("table-striped");
+            pilots_table.addClass("table-hover");
+            pilots_table.addClass("table-condensed");
+            pilots_table.addClass("tablesorter");
             pilots_table.attr("id", "pilots_table_inner");
-	    pilots_table.append("<thead><tr><th>VO</th><th>VOMS</th><th>Jobs</th><th>Running</th><th>Idle</th><th>Held</th><th>DN</th></tr></thead>");
-	    pilots_table.append("<tbody>");
+            pilots_table.append("<thead><tr><th>VO</th><th>VOMS</th><th>Jobs</th><th>Running</th><th>Idle</th><th>Held</th><th>DN</th></tr></thead>");
+            pilots_table.append("<tbody>");
             for (idx in data) {
                 pilot = data[idx];
                 pilots_table.append("<tr><td>" + pilot.VO + "</td><td>" + pilot.VOMS + "</td><td>" + pilot.Jobs + "</td><td>" + pilot.Running + "</td><td>" + pilot.Idle + "</td><td>" + pilot.Held + "</td><td>" + pilot.DN + "</td></tr>");
-	    }
+            }
             pilots_table.append("</tbody>");
-	    $("#pilots_table").append(pilots_table);
-	    
-	    $("#pilots_table_inner").tablesorter({ 
+            $("#pilots_table").append(pilots_table);
+
+            $("#pilots_table_inner").tablesorter({
               debug: true,
-	      theme: "bootstrap",
-	      headerTemplate : '{content} {icon}',
+              theme: "bootstrap",
+              headerTemplate : '{content} {icon}',
               widgets: ["filter", "uitheme", "zebra"],
-	      widgetOptions : {
+              widgetOptions : {
                 filter_external : '#pilotSearch',
-		filter_columnFilters: false,
-		zebra : ["even", "odd"],
-	      }
-	    });
+                filter_columnFilters: false,
+                zebra : ["even", "odd"],
+              }
+            });
 
         }
 //]]>
@@ -118,8 +118,8 @@
     <div class="container" style="padding-top:60px">
       <div class="row" id="top_summary">
         <div class="col-sm-12">
-	  <div class="row">	
-	  <div class="col-sm-3" style="padding-top:40px">
+          <div class="row">
+          <div class="col-sm-3" style="padding-top:40px">
             <div id="schedd_stats_table"></div>
           </div>
           <div class="col-sm-3">
@@ -151,14 +151,14 @@
       </div>
       <div class="row">
         <div class="col-sm-12">
-	<h2>Pilots</h2>
-	<div class="row">	
-	  <div class="col-sm-3">
-	    <p>
-	      <input class="form-control" id="pilotSearch" placeholder="Search Table" type="search" data-column="all"></input>
-	   </p>
-	  </div>
-	</div>
+        <h2>Pilots</h2>
+        <div class="row">
+          <div class="col-sm-3">
+            <p>
+              <input class="form-control" id="pilotSearch" placeholder="Search Table" type="search" data-column="all"></input>
+           </p>
+          </div>
+        </div>
           <div class="table-responsive">
             <div id="pilots_table"/>
           </div>
@@ -167,16 +167,16 @@
       <div class="row">
         <div class="col-sm-12">
           <h2>Info</h2>
-          <div class="row">	
-	    <div class="col-sm-3">
-	      <p>
-	        <input class="form-control" id="infoSearch" placeholder="Search Table" type="search" data-column="all"></input>
-	     </p>
-	    </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <p>
+                <input class="form-control" id="infoSearch" placeholder="Search Table" type="search" data-column="all"></input>
+             </p>
+            </div>
           </div>
           <div class="table-responsive">
-	    <div id="info_table"/>
-	  </div>
+            <div id="info_table"/>
+          </div>
         </div>
       </div>
     </div>
