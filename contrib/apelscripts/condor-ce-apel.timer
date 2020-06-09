@@ -1,0 +1,12 @@
+[Unit]
+Description=Upload HTCondor-CE APEL records periodically
+After=network-online.target
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=24h
+RandomizedDelaySec=3min
+Unit=condor-ce-apel.service
+
+[Install]
+WantedBy=timers.target
