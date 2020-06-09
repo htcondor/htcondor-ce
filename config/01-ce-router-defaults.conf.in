@@ -51,7 +51,7 @@ REMOVE_REASON_1 = "being in the hold state for 24 hours."
 ENABLE_JOB_RETRIES = False
 REMOVE_CLAUSE_2 = ((!isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) =!= True) && \
                     ((JobStatus == 1 && NumJobStarts == 1) || (NumJobStarts > 1)))
-REMOVE_REASON_2 =
+REMOVE_REASON_2 = "disabled job retries"
 
 # Remove completed jobs that have been in that state for over 30 days
 COMPLETED_JOB_EXPIRATION = 30
