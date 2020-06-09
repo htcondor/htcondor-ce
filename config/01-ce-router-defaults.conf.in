@@ -36,12 +36,18 @@ SYSTEM_PERIODIC_HOLD_REASON = \
      ) \
    )
 
-# Remove jobs that have been on hold for longer than 24 hrs or routed jobs that have already started once
+# Remove jobs that have been on hold for longer than 24 hrs,
+# routed jobs that have already started once,
+# or completed jobs that have been in that state for over 30 days
+
 # Users can allow jobs to try more than once on the batch side by setting "ENABLE_JOB_RETRIES = True"
 ENABLE_JOB_RETRIES = False
+# Allow completed jobs to remain in queue for up to 30 days
+COMPLETED_JOB_EXPIRATION = 30
 SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && time() - EnteredCurrentStatus > 3600*24) || \
                          ((!isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) =!= True) && \
-                             ((JobStatus == 1 && NumJobStarts == 1) || (NumJobStarts > 1)))
+                             ((JobStatus == 1 && NumJobStarts == 1) || (NumJobStarts > 1)) || \
+                         (JobStatus == 4 && time() - EnteredCurrentStatus > $(COMPLETED_JOB_EXPIRATION)*3600*24))
 
 SYSTEM_PERIODIC_REMOVE_REASON = \
    strcat("CE job removed by SYSTEM_PERIODIC_REMOVE due to ", \
