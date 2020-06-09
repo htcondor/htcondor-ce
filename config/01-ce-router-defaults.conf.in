@@ -54,7 +54,9 @@ SYSTEM_PERIODIC_REMOVE_REASON = \
      ifThenElse((JobStatus == 5 && time() - EnteredCurrentStatus > 3600*24), "being in the hold state for 24 hours.", \
        ifThenElse((JobStatus == 5 && isUndefined(RoutedToJobId)), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
          ifThenElse(NumJobStarts > 0, "disabled job retries", \
-           "input files missing." \
+           ifThenElse((JobStatus == 4 time() - EnteredCurrentStatus > $(COMPLETED_JOB_EXPIRATION)*3600*24)), strcat("job completed over ", $(COMPLETED_JOB_EXPIRATION), " days ago."), \
+             "input files missing." \
+           ) \
          ) \
        ) \
      ) \
