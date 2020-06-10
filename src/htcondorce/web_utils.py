@@ -71,7 +71,13 @@ def get_schedd_ads(environ):
             return [coll.query(htcondor.AdTypes.Schedd, "Name=?=%s" % classad.quote(name))[0]]
         else:
             return coll.query(htcondor.AdTypes.Schedd, "true")
-    return [coll.locate(htcondor.DaemonTypes.Schedd)]
+
+    local_schedd_minimal_ad = coll.locate(htcondor.DaemonTypes.Schedd)
+    if not local_schedd_minimal_ad or "Name" not in local_schedd_minimal_ad:
+        return []
+
+    local_schedd_ads = coll.query(htcondor.AdTypes.Schedd, "Name=?=%s" % classad.quote(local_schedd_minimal_ad["Name"]))
+    return local_schedd_ads
 
 
 def get_schedd_statuses(environ={}):
