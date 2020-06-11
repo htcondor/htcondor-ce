@@ -37,7 +37,10 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf"
 )
 
-install(PROGRAMS src/condor-ce src/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
+install(PROGRAMS
+  src/condor-ce
+  src/condor-ce-collector
+  DESTINATION ${SYSCONF_INSTALL_DIR}/rc.d/init.d)
 
 install(PROGRAMS
   src/condor_ce_startup
@@ -179,7 +182,9 @@ install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_I
 install(FILES templates/index.html templates/vos.html templates/metrics.html
 	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
-install(FILES config/condor-ce-collector-generator.cron DESTINATION ${SYSCONF_INSTALL_DIR}/cron.d)
+install(FILES
+  config/condor-ce-collector-generator.cron
+  DESTINATION ${SYSCONF_INSTALL_DIR}/cron.d)
 install(FILES config/condor-ce-collector.logrotate  RENAME condor-ce-collector  DESTINATION ${SYSCONF_INSTALL_DIR}/logrotate.d)
 
 install(FILES

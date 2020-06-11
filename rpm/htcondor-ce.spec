@@ -213,7 +213,8 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
-rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce-collector
 rm $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
 
 %else
