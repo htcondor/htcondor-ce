@@ -212,6 +212,8 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
+rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
+rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -340,6 +342,9 @@ fi
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
+
+%{_unitdir}/condor-ce-apel.service
+%{_unitdir}/condor-ce-apel.timer
 %endif
 
 %files view

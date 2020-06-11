@@ -216,6 +216,8 @@ install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_
 install(FILES
   config/condor-ce.service
   config/condor-ce-collector.service
+  contrib/apelscripts/condor-ce-apel.service
+  contrib/apelscripts/condor-ce-apel.timer
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
 
 install(FILES config/condor-ce.conf config/condor-ce-collector.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/tmpfiles.d)

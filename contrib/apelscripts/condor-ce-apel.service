@@ -1,0 +1,10 @@
+[Unit]
+Description=Upload HTCondor-CE APEL records
+After=syslog.target network-online.target
+Wants=network-online.target condor-ce.service condor.service
+
+[Service]
+ExecStart=/usr/share/condor-ce/condor_ce_apel.sh
+
+[Install]
+WantedBy=multi-user.target
