@@ -213,14 +213,19 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %systemd
-rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce{,-collector}
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce-collector
+rm $RPM_BUILD_ROOT%{_initrddir}/condor-ce-apel
 rm $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/condor-ce-collector-generator.cron
+rm $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/condor-ce-apel.cron
 
 %else
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce{,-collector}.service
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.service
 rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-collector-config.timer
 rm $RPM_BUILD_ROOT%{_tmpfilesdir}/condor-ce{,-collector}.conf
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
+rm $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
 %endif
 
 %if 0%{?osg}
@@ -234,6 +239,10 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
+rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
+rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
+rm -f $RPM_BUILD_ROOT%{_initrddir}/condor-ce-apel
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/condor-ce-apel.cron
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -383,6 +392,14 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
+
+%if %systemd
+%{_unitdir}/condor-ce-apel.service
+%{_unitdir}/condor-ce-apel.timer
+%else
+%{_initrddir}/condor-ce-apel
+%config(noreplace) %{_sysconfdir}/cron.d/condor-ce-apel.cron
+%endif
 %endif
 
 %files view
