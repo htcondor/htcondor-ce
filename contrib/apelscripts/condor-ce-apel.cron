@@ -1,0 +1,1 @@
+23 4 * * * root [[ ! -f /var/lock/subsys/condor-ce-apel ]] || /usr/share/condor-ce/condor_ce_apel.sh

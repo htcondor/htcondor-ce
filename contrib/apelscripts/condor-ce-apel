@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# condor	This script allows for starting and stopping a HTCondor-CE collector.
+#
+# chkconfig: 2345 98 10
+# description: The HTCondor-CE collector is a central component for collecting data
+#              about deployed HTCondor-CEs.
+# processname: condor_master
+# config: /etc/condor-ce/condor_config
+# pidfile: /var/run/condor-ce/condor_master.pid
+
+### BEGIN INIT INFO
+# Provides: condor
+# Required-Start: $local_fs $network
+# Required-Stop: $local_fs $network
+# Default-Stop: 1 2 3 4 5 6
+# Short-Description: start and stop Condor
+# Description: Condor HTC computing platform
+### END INIT INFO
+
+lockfile=/var/lock/subsys/condor-ce-apel
+
+# Source function library
+. /etc/init.d/functions
+
+# Source condor-ce environment
+[ -f /usr/share/condor-ce/condor_ce_env_bootstrap ] && . /usr/share/condor-ce/condor_ce_env_bootstrap
+
+start() {
+    echo -n $"Enabling HTCondor-CE APEL cron: "
+    touch $lockfile
+    return $?
+}
+
+stop() {
+    echo -n $"Disabling HTCondor-CE APEL cron: "
+    rm -f "$lockfile"
+    return $?
+}
+
+restart() {
+    stop
+    start
+}
+
+status() {
+    if [ -f $lockfile ]; then
+        echo "HTCondor-CE APEL cron is enabled."
+        return 0
+    else
+        echo "HTCondor-CE APEL cron is disabled."
+        return 3
+    fi
+}
+
+case "$1" in
+    start)
+	start
+        RETVAL=$?
+	;;
+    stop)
+	[ $running -eq 0 ] || exit 0
+	stop
+	RETVAL=$?
+	;;
+    restart)
+        restart
+        RETVAL=$?
+        ;;
+    status)
+	status
+	RETVAL=$?
+	;;
+    *)
+	echo $"Usage: $0 {start|stop|restart|status}"
+	RETVAL=2
+esac
+
+echo $RETVAL
