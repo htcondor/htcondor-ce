@@ -1,10 +1,12 @@
 
 import os
 import re
+import imp
 import json
 import time
 import types
 import socket
+import logging
 import xml.sax.saxutils
 import urlparse
 
@@ -19,14 +21,37 @@ import htcondorce.web_utils
 _initialized = None
 _loader = None
 _view = None
+_plugins = []
 g_is_multice = False
 OK_STATUS = '200 OK'
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/tmp/ceview.log"))  # XXX for debugging
+
+def validate_plugin(name, plugin):
+    try:
+        for regex, callback in plugin.urls:
+            if not hasattr(regex, "match"):
+                log.warn("plugin %s: %r is not a compiled regex (real type: %s)" % (name, regex, type(regex)))
+                return False
+            if not callable(callback):
+                log.warn("plugin %s: regex %r does not have a valid callback (real type: %s)"
+                      % (name, regex.pattern, type(callback)))
+                return False
+    except (ValueError, AttributeError) as err:
+        log.warn("plugin %s: %s" % (name, err))
+        return False
+    return True
+
 
 def check_initialized(environ):
     global _initialized
     global _loader
     global _cp
+    global _plugins
     global htcondor
+
     if not _initialized:
         if 'htcondorce.templates' in environ:
             _loader = genshi.template.TemplateLoader(environ['htcondorce.templates'], auto_reload=True)
@@ -34,6 +59,17 @@ def check_initialized(environ):
             _loader = genshi.template.TemplateLoader('/usr/share/condor-ce/templates', auto_reload=True)
         ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
         htcondor = htcondorce.web_utils.check_htcondor()
+
+        plugins_dir = htcondor.param.get("HTCONDORCE_VIEW_PLUGINS_DIR", "/usr/share/condor-ce/ceview-plugins")
+        if os.path.isdir(plugins_dir):
+            for filename in sorted(os.listdir(plugins_dir)):
+                if not filename.endswith(".py"):
+                    continue
+                name = filename[:-3]
+                plugin = imp.load_source(name, os.path.join(plugins_dir, filename))
+                if validate_plugin(name, plugin):
+                    _plugins.append(plugin)
+
         _initialized = True
 
 
@@ -351,10 +387,18 @@ def application(environ, start_response):
     check_initialized(environ)
 
     path = environ.get('PATH_INFO', '').lstrip('/')
-    
+
+    for plugin in _plugins:
+        for regex, callback in plugin.urls:
+            match = regex.match(path)
+            if match:
+                environ['htcondorce.url_args'] = match.groups()
+                return callback(environ, start_response)
+
     for regex, callback in urls:
         match = regex.match(path)
         if match:
             environ['htcondorce.url_args'] = match.groups()
             return callback(environ, start_response)
+
     return not_found(environ, start_response)
