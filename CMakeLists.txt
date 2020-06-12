@@ -57,6 +57,10 @@ install(PROGRAMS
   contrib/bosco/bosco-cluster-remote-hosts.sh
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
+install(FILES
+  src/htcondorce/plugins/agis_json.py
+  DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/ceview-plugins)
+
 install(PROGRAMS
   src/condor_ce_config_val
   src/condor_ce_history

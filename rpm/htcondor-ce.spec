@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.3.0
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -191,6 +191,10 @@ Conflicts: %{name}
 %description collector
 %{summary}
 
+
+%define plugins_dir %{_datadir}/condor-ce/ceview-plugins
+
+
 %prep
 %setup -q
 
@@ -200,6 +204,7 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/%{plugins_dir}
 
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
@@ -220,6 +225,7 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
+rm -f $RPM_BUILD_ROOT%{plugins_dir}/agis_json.py
 %endif
 
 # Gratia accounting cleanup
@@ -379,6 +385,12 @@ fi
 %{_datadir}/condor-ce/condor_ce_metric
 %{_datadir}/condor-ce/condor_ce_jobmetrics
 
+%dir %{plugins_dir}
+
+%if 0%{?osg}
+%{plugins_dir}/agis_json.py*
+%endif
+
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/vos
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/metrics
@@ -499,6 +511,10 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Jun 11 2020 Matyas Selmeci <matyas@cs.wisc.edu> - 4.3.0-3
+- Add plugin architecture to CEView; move OSG-specific agis-json endpoint to a plugin
+  (SOFTWARE-3963)
+
 * Wed May 27 2020 Brian Lin <blin@cs.wisc.edu> - 4.3.0-2
 - Update the packaging for 4.3.0
 

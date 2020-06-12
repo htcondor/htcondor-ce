@@ -105,15 +105,6 @@ def schedds(environ, start_response):
 
     return [ json.dumps(results) ]
 
-def agis_json(environ, start_response):
-
-    results = htcondorce.web_utils.agis_data(environ)
-
-    start_response(OK_STATUS, _headers('application/json'))
-
-    return [ json.dumps(results) ]
-
-
 
 def schedd(environ, start_response):
     ads = htcondorce.web_utils.get_schedd_ads(environ)
@@ -375,7 +366,6 @@ urls = [
     (re.compile(r'^json/+statuses$'), statuses_json),
     (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^json/+jobs*$'), jobs_json),
-    (re.compile(r'^json/+agis-compat$'), agis_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),
