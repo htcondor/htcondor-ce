@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.FileHandler("/tmp/ceview.log"))  # XXX for debugging
 
+
 def validate_plugin(name, plugin):
     try:
         for regex, callback in plugin.urls:
@@ -343,6 +344,27 @@ def metrics_graph(environ, start_response):
     return [ htcondorce.rrd.graph(environ, None, "metrics", interval) ]
 
 
+def get_tableattribs(environ):
+    idx = 1
+    attribs = []
+    while True:
+        try:
+            attribs.append(
+                dict(label=htcondor.param["HTCONDORCE_VIEW_INFO_TABLE_LABEL_%d" % idx],
+                     attrib=htcondor.param["HTCONDORCE_VIEW_INFO_TABLE_ATTRIB_%d" % idx])
+            )
+        except KeyError:
+            break
+        idx += 1
+    return [dict(label="Condor Platform", attrib="CondorPlatform")]  # XXX TESTING
+    return attribs
+
+
+def tableattribs_json(environ, start_response):
+    start_response(OK_STATUS, _headers('application/json'))
+    return [ json.dumps(get_tableattribs(environ)) ]
+
+
 def not_found(environ, start_response):
     status = '404 Not Found'
     headers = _headers('text/html') + [('Location', '/')]
@@ -366,6 +388,7 @@ urls = [
     (re.compile(r'^json/+statuses$'), statuses_json),
     (re.compile(r'^json/+status$'), status_json),
     (re.compile(r'^json/+jobs*$'), jobs_json),
+    (re.compile(r'^json/+tableattribs*$'), tableattribs_json),
     (re.compile(r'^graphs/ce/?'), ce_graph),
     (vo_graph_re, vo_graph),
     (metrics_graph_re, metrics_graph),
