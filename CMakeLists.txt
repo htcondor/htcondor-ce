@@ -138,6 +138,8 @@ install(FILES
   config/03-managed-fork.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
+  config/05-ce-view-table.osg.conf
+  config/05-ce-view-table.nonosg.conf
   contrib/apelscripts/50-ce-apel.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES

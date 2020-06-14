@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.3.0
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 9%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -219,6 +219,9 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
 rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
 rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.osg.conf \
+      $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -226,6 +229,9 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 rm -f $RPM_BUILD_ROOT%{plugins_dir}/agis_json.py
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf \
+      $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.osg.conf
 %endif
 
 # Gratia accounting cleanup
@@ -378,6 +384,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
 %dir %{_sysconfdir}/condor-ce/metrics.d
 %{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 

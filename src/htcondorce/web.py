@@ -356,7 +356,6 @@ def get_tableattribs(environ):
         except KeyError:
             break
         idx += 1
-    return [dict(label="Condor Platform", attrib="CondorPlatform")]  # XXX TESTING
     return attribs
 
 
