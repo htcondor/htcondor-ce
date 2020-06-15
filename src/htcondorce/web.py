@@ -345,17 +345,18 @@ def metrics_graph(environ, start_response):
 
 
 def get_tableattribs(environ):
-    idx = 1
     attribs = []
-    while True:
+    label_params = sorted(it for it in htcondor.param.keys() if it.upper().startswith("HTCONDORCE_VIEW_INFO_TABLE_LABEL_"))
+    for label_param in label_params:
+        attrib_param = label_param.upper().replace("LABEL", "ATTRIB", 1)
         try:
             attribs.append(
-                dict(label=htcondor.param["HTCONDORCE_VIEW_INFO_TABLE_LABEL_%d" % idx],
-                     attrib=htcondor.param["HTCONDORCE_VIEW_INFO_TABLE_ATTRIB_%d" % idx])
+                dict(label=htcondor.param[label_param],
+                     attrib=htcondor.param[attrib_param])
             )
         except KeyError:
-            break
-        idx += 1
+            log.warn("%s has no corresponding %s", label_param, attrib_param)
+            continue
     return attribs
 
 
