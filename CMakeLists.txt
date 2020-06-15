@@ -162,6 +162,7 @@ install(FILES
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
   config/05-ce-view-defaults.conf
+  config/05-ce-view-table-defaults.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES
