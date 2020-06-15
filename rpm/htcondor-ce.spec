@@ -191,6 +191,10 @@ Conflicts: %{name}
 %description collector
 %{summary}
 
+
+%define plugins_dir %{_datadir}/condor-ce/ceview-plugins
+
+
 %prep
 %setup -q
 
@@ -200,6 +204,7 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/%{plugins_dir}
 
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
@@ -212,12 +217,27 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
+rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
+rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.osg.conf \
+      $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf
+mv -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.osg.conf \
+      $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.nonosg.conf
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
+rm -f $RPM_BUILD_ROOT%{plugins_dir}/agis_json.py
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf \
+      $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.osg.conf
+mv -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.nonosg.conf \
+      $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.osg.conf
 %endif
 
 # Gratia accounting cleanup
@@ -340,6 +360,9 @@ fi
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
+
+%{_unitdir}/condor-ce-apel.service
+%{_unitdir}/condor-ce-apel.timer
 %endif
 
 %files view
@@ -364,15 +387,23 @@ fi
 %{_datadir}/condor-ce/templates/code_submit_failure.html
 
 %{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
+%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
 %dir %{_sysconfdir}/condor-ce/metrics.d
 %{_sysconfdir}/condor-ce/metrics.d/00-metrics-defaults.conf
 
 %{_datadir}/condor-ce/condor_ce_view
 %{_datadir}/condor-ce/condor_ce_metric
 %{_datadir}/condor-ce/condor_ce_jobmetrics
+
+%dir %{plugins_dir}
+
+%if 0%{?osg}
+%{plugins_dir}/agis_json.py*
+%endif
 
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview/vos

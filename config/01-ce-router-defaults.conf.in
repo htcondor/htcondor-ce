@@ -25,33 +25,51 @@ JOB_ROUTER_SOURCE_JOB_CONSTRAINT = target.JobUniverse =?= 5 || target.JobUnivers
 
 # Put jobs on hold if they meet any of the following requirements
 # 1. It has not been routed by the CE and is not a standard, vanilla, scheduler, or local job.
+HOLD_CLAUSE_1 = (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12)
+HOLD_REASON_1 = "invalid job universe."
+
 # 2. It has not been routed by the CE and has been idle for 30+ min
-SYSTEM_PERIODIC_HOLD = (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && time() - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
+HOLD_CLAUSE_2 = ((JobStatus =?= 1 && time() - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
+HOLD_REASON_2 = "no matching routes, route job limit, or route failure threshold; see 'HTCondor-CE Troubleshooting Guide'"
+
+SYSTEM_PERIODIC_HOLD = $(HOLD_CLAUSE_1) || \
+                       $(HOLD_CLAUSE_2)
 
 SYSTEM_PERIODIC_HOLD_REASON = \
    strcat("HTCondor-CE held job due to ", \
-     ifThenElse(RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12, \
-       "invalid job universe.", \
-       "no matching routes, route job limit, or route failure threshold; see 'HTCondor-CE Troubleshooting Guide'" \
-     ) \
-   )
+            $(HOLD_CLAUSE_1) ? $(HOLD_REASON_1) : \
+                               $(HOLD_REASON_2) \
+          )
 
-# Remove jobs that have been on hold for longer than 24 hrs or routed jobs that have already started once
+
+# Remove jobs that have been on hold for longer than 24 hrs
+REMOVE_CLAUSE_1 = (JobStatus == 5 && time() - EnteredCurrentStatus > 3600*24)
+REMOVE_REASON_1 = "being in the hold state for 24 hours."
+
+# Remove routed jobs that have already started once,
 # Users can allow jobs to try more than once on the batch side by setting "ENABLE_JOB_RETRIES = True"
 ENABLE_JOB_RETRIES = False
-SYSTEM_PERIODIC_REMOVE = (JobStatus == 5 && time() - EnteredCurrentStatus > 3600*24) || \
-                         ((!isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) =!= True) && \
-                         ((JobStatus == 1 && NumJobStarts == 1) || (NumJobStarts > 1)))
+REMOVE_CLAUSE_2 = ((!isUndefined(RoutedtoJobId) && $(ENABLE_JOB_RETRIES) =!= True) && \
+                    ((JobStatus == 1 && NumJobStarts == 1) || (NumJobStarts > 1)))
+REMOVE_REASON_2 = "disabled job retries"
+
+# Remove completed jobs that have been in that state for over 30 days
+COMPLETED_JOB_EXPIRATION = 30
+REMOVE_CLAUSE_3 = (JobStatus == 4 && time() - EnteredCurrentStatus > $(COMPLETED_JOB_EXPIRATION)*3600*24)
+REMOVE_REASON_3 = strcat("job completed over ", $(COMPLETED_JOB_EXPIRATION), " days ago.")
+
+SYSTEM_PERIODIC_REMOVE =  $(REMOVE_CLAUSE_1) || \
+                          $(REMOVE_CLAUSE_2) || \
+                          $(REMOVE_CLAUSE_3)
+
+DEFAULT_REMOVE_REASON = "input files missing."
 
 SYSTEM_PERIODIC_REMOVE_REASON = \
    strcat("CE job removed by SYSTEM_PERIODIC_REMOVE due to ", \
-     ifThenElse((JobStatus == 5 && time() - EnteredCurrentStatus > 3600*24), "being in the hold state for 24 hours.", \
-       ifThenElse((JobStatus == 5 && isUndefined(RoutedToJobId)), "non-existent route or entry in JOB_ROUTER_ENTRIES.", \
-         ifThenElse(NumJobStarts > 0, "disabled job retries", \
-           "input files missing." \
-         ) \
-       ) \
-     ) \
+          $(REMOVE_CLAUSE_1) ? $(REMOVE_REASON_1) : \
+          $(REMOVE_CLAUSE_2) ? $(REMOVE_REASON_2) : \
+          $(REMOVE_CLAUSE_3) ? $(REMOVE_REASON_3) : \
+                               $(DEFAULT_REMOVE_REASON) \
    )
 
 # This attribute limits the max time of any job to 72 hours.
@@ -73,4 +91,3 @@ SCHEDD_ATTRS = $(SCHEDD_ATTRS) HTCondorCEVersion grid_resource
 #
 MERGE_JOB_ROUTER_DEFAULT_ADS=True
 JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS_GENERATED)
-
