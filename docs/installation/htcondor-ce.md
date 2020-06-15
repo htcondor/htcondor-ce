@@ -380,4 +380,4 @@ Otherwise, continue to the [this document](/verification) to start the relevant 
 Getting Help
 ------------
 
-If you have any questions or issues with the installation process, please [contact us](/#contact-us) for assistance,
+If you have any questions or issues with the installation process, please [contact us](/#contact-us) for assistance.
