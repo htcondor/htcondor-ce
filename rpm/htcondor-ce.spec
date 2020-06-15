@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.3.0
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 4.4.0
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -525,6 +525,14 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.0-1
+- Add plug-in interface to HTCondor-CE View and separate out
+  OSG-specific code and configuration (SOFTWARE-3963)
+- Add configuration option (COMPLETED_JOB_EXPIRATION) for how many days (SOFTWARE-4108)
+- Replace APEL uploader SchedD cron with init and systemd services
+  (#323)
+- Fix HTCondor-CE View SchedD query that caused "Info" tables to be blank
+
 * Wed May 27 2020 Brian Lin <blin@cs.wisc.edu> - 4.3.0-2
 - Update the packaging for 4.3.0
 
