@@ -293,6 +293,9 @@ blah APEL records for HTCondor batch systems:
     - Records are written to `APEL_OUTPUT_DIR` in the HTCondor-CE configuration (default: `/var/lib/condor-ce/apel/`)
     - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
 
+1. Start and enable the `condor-ce-apel` and `condor-ce-apel.timer`
+   [services](/verification#managing-htcondor-ce-services)
+
 #### Enabling BDII integration ####
 
 HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
