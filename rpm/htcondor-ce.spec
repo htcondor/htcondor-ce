@@ -528,7 +528,8 @@ fi
 * Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.0-1
 - Add plug-in interface to HTCondor-CE View and separate out
   OSG-specific code and configuration (SOFTWARE-3963)
-- Add configuration option (COMPLETED_JOB_EXPIRATION) for how many days (SOFTWARE-4108)
+- Add configuration option (COMPLETED_JOB_EXPIRATION) for how many
+  days completed jobs may stay in the queue (SOFTWARE-4108)
 - Replace APEL uploader SchedD cron with init and systemd services
   (#323)
 - Fix HTCondor-CE View SchedD query that caused "Info" tables to be blank
