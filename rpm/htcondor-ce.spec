@@ -222,6 +222,9 @@ rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.osg.conf \
       $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf
+mv -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.osg.conf \
+      $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.nonosg.conf
 %else
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
@@ -232,6 +235,9 @@ rm -f $RPM_BUILD_ROOT%{plugins_dir}/agis_json.py
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf \
       $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.osg.conf
+mv -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.nonosg.conf \
+      $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.osg.conf
 %endif
 
 # Gratia accounting cleanup
