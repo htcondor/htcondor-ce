@@ -57,6 +57,10 @@ install(PROGRAMS
   contrib/bosco/bosco-cluster-remote-hosts.sh
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
 
+install(FILES
+  src/htcondorce/plugins/agis_json.py
+  DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/ceview-plugins)
+
 install(PROGRAMS
   src/condor_ce_config_val
   src/condor_ce_history
@@ -134,6 +138,8 @@ install(FILES
   config/03-managed-fork.conf
   config/05-ce-view.conf
   config/05-ce-health.conf
+  config/05-ce-view-table.osg.conf
+  config/05-ce-view-table.nonosg.conf
   contrib/apelscripts/50-ce-apel.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/config.d)
 install(FILES
@@ -155,6 +161,9 @@ install(FILES
   config/05-ce-collector-auth.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
+  config/05-ce-view-defaults.conf
+  config/05-ce-view-table-defaults.osg.conf
+  config/05-ce-view-table-defaults.nonosg.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES

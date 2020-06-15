@@ -41,29 +41,42 @@
           info_table = $("<table></table>");
           info_table.addClass("table");
           info_table.attr("id", "info_table_inner");
-          info_table.append("<tr><td>OSG Resource</td><td>" + data.OSG_Resource + "</td></tr>");
-          info_table.append("<tr><td>OSG Resource Group</td><td>" + data.OSG_ResourceGroup + "</td></tr>");
-          info_table.append("<tr><td>Batch System</td><td>" + data.OSG_BatchSystems + "</td></tr>");
-          info_table.append("<tr><td>HTCondor-CE version</td><td>" + data.HTCondorCEVersion + "</td></tr>");
-          info_table.append("<tr><td>HTCondor version</td><td>" + data.CondorVersion + "</td></tr>");
+          $.getJSON("/json/tableattribs", function(attribs) {
+              console.log(attribs);
+              attribs.forEach(function(it) {
+                  info_table.append("<tr><td>" + it.label + "</td><td>" + data[it.attrib] + "</td></tr>");
+              });
+          });
           $("#info_table").append(info_table);
 
         }
 
         function got_schedds(data) {
-
           $('#info_table_inner').detach();
           info_table = $("<table></table>");
           info_table.addClass("table");
           info_table.addClass("tablesorter");
           info_table.attr("id", "info_table_inner");
-          info_table.append("<thead><th>CE</th><th>OSG Resource</th><th>OSG Resource Group</th><th>Batch System</th><th>HTCondor-CE Version</th><th>HTCondor Version</th></thead>");
-          info_table.append("<tbody>");
-          for (name in data) {
-              key = data[name]
-              info_table.append("<tr><td>" + name + "</td><td>" + key.OSG_Resource + "</td><td>" + key.OSG_ResourceGroup + "</td><td>" + key.OSG_BatchSystems + "</td><td>" + key.HTCondorCEVersion + "</td><td>" + key.CondorVersion + "</td></tr>");
-          }
-          info_table.append("</tbody>");
+          $.getJSON("/json/tableattribs", function(attribs) {
+            info_table.append("<thead>");
+            info_table.append("<th>CE</th>");
+            attribs.forEach(function(it) {
+                info_table.append("<th>" + it.label + "</th>");
+            });
+            info_table.append("</thead>");
+
+            info_table.append("<tbody>");
+            for (name in data) {
+                key = data[name]
+                info_table.append("<tr>");
+                info_table.append("<td>" + name + "</td>");
+                attribs.forEach(function(it) {
+                    info_table.append("<td>" + key[it.attrib] + "</td>");
+                });
+                info_table.append("</tr>");
+            }
+            info_table.append("</tbody>");
+          });
           $("#info_table").append(info_table);
 
           $("#info_table_inner").tablesorter({
