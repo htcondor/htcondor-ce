@@ -310,13 +310,9 @@ To run the HTCondor-CE View, install the appropriate package and set the relevan
         :::console
         root@host # yum install htcondor-ce-view
 
-2.  Next, uncomment the `DAEMON_LIST` configuration located at `/etc/condor-ce/config.d/05-ce-view.conf`:
+1.  Restart the `condor-ce` service
 
-        DAEMON_LIST = $(DAEMON_LIST), CEVIEW, GANGLIAD, SCHEDD
-
-3.  Restart the `condor-ce` service
-
-4.  Verify the service by entering your CE's hostname into your web browser
+1.  Verify the service by entering your CE's hostname into your web browser
 
 The website is served on port 80 by default.
 To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor-ce/config.d/05-ce-view.conf`.

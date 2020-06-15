@@ -65,11 +65,6 @@ Installing a Central Collector
         :::console
         root@host # yum install htcondor-ce-collector
 
-1.  **(Optional)** Install the HTCondor-CE View web server:
-
-        :::console
-        root@host # yum install htcondor-ce-view
-
 Configuring a Central Collector
 -------------------------------
 
@@ -139,7 +134,8 @@ DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), misbehaving-ce-1.bad-domain.co
 
 #### Configuring HTCondor-CE View ####
 
-The HTCondor-CE View is an optional web interface to the status of your CE.
+The HTCondor-CE View is an optional web interface to the status of all HTCondor-CEs advertising to your Central
+Collector.
 To run the HTCondor-CE View, install the appropriate package and set the relevant configuration.
 
 1.  Begin by installing the `htcondor-ce-view` package:
@@ -147,13 +143,9 @@ To run the HTCondor-CE View, install the appropriate package and set the relevan
         :::console
         root@host # yum install htcondor-ce-view
 
-2.  Next, uncomment the `DAEMON_LIST` configuration located at `/etc/condor-ce/config.d/05-ce-view.conf`:
+1.  Restart the `condor-ce-collector` service
 
-        DAEMON_LIST = $(DAEMON_LIST), CEVIEW, GANGLIAD, SCHEDD
-
-3.  Restart the `condor-ce-collector` service
-
-4.  Verify the service by entering your CE's hostname into your web browser
+1.  Verify the service by entering your Central Collector's hostname into your web browser
 
 The website is served on port 80 by default.
 To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor-ce/config.d/05-ce-view.conf`.
