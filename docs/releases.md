@@ -12,6 +12,24 @@ HTCondor-CE 3 Version History
 This section contains release notes for each version of HTCondor-CE 3.
 HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 3.4.2 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.2) includes the following new features:
+
+- Identify broken job routes upon startup
+- Add benchmarking parameters to the BDII provider via `HTCONDORCE_SPEC` in the configuration.
+  See `/etc/condor-ce/config.d/99-ce-bdii.conf` for examples.
+
+This release also includes the following bug-fixes:
+
+- Replace APEL uploader SchedD cron with init and systemd services
+- Fix reference to old BDII configuration values
+
+### 3.4.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.1) includes improvements to the GLUE2
+validation for the BDII provider.
+
 ### 3.4.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.0) includes the following new features:
