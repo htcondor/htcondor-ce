@@ -381,6 +381,7 @@ fi
 %{_datadir}/condor-ce/templates/code_submit_failure.html
 
 %{_datadir}/condor-ce/config.d/05-ce-view-defaults.conf
+%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-view.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/metrics.d/00-example-metrics.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/05-ce-health.conf

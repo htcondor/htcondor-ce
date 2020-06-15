@@ -350,10 +350,11 @@ def get_tableattribs(environ):
     for label_param in label_params:
         attrib_param = label_param.upper().replace("LABEL", "ATTRIB", 1)
         try:
-            attribs.append(
-                dict(label=htcondor.param[label_param],
-                     attrib=htcondor.param[attrib_param])
-            )
+            if htcondor.param[label_param] and htcondor.param[attrib_param]:
+                attribs.append(
+                    dict(label=htcondor.param[label_param],
+                         attrib=htcondor.param[attrib_param])
+                )
         except KeyError:
             log.warn("%s has no corresponding %s", label_param, attrib_param)
             continue

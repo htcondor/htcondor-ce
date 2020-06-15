@@ -161,6 +161,7 @@ install(FILES
   config/05-ce-collector-auth.conf
   config/05-ce-view-defaults.conf
   config/05-ce-health-defaults.conf
+  config/05-ce-view-defaults.conf
   contrib/apelscripts/50-ce-apel-defaults.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 install(FILES
