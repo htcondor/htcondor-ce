@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.4.1
+Version: 3.4.2
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -551,6 +551,15 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.2-2
+- Replace APEL uploader SchedD cron with init and systemd services
+  (#323)
+- Identify broken job routes upon startup (#319)
+- Add benchmarking parameters to the BDII provider via HTCONDORCE_SPEC
+  in the configuration. See /etc/condor-ce/config.d/99-ce-bdii.conf
+  for examples (#311)
+- Fix reference to old BDII configuration values (#320)
+
 * Mon Mar 16 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.1-1
 - GLUE2 validation improvements for the BDII provider (#308, #309)
 
