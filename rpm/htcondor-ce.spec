@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.3.0
-Release: 9%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -518,10 +518,6 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Thu Jun 11 2020 Matyas Selmeci <matyas@cs.wisc.edu> - 4.3.0-3
-- Add plugin architecture to CEView; move OSG-specific agis-json endpoint to a plugin
-  (SOFTWARE-3963)
-
 * Wed May 27 2020 Brian Lin <blin@cs.wisc.edu> - 4.3.0-2
 - Update the packaging for 4.3.0
 
