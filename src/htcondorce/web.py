@@ -27,7 +27,6 @@ OK_STATUS = '200 OK'
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-log.addHandler(logging.FileHandler("/tmp/ceview.log"))  # XXX for debugging
 
 
 def validate_plugin(name, plugin):
@@ -69,6 +68,7 @@ def check_initialized(environ):
                 name = filename[:-3]
                 plugin = imp.load_source(name, os.path.join(plugins_dir, filename))
                 if validate_plugin(name, plugin):
+                    log.debug("plugin %s: loaded ok", name)
                     _plugins.append(plugin)
 
         _initialized = True
