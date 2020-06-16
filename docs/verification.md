@@ -10,11 +10,12 @@ Managing HTCondor-CE services
 In addition to the HTCondor-CE job gateway service itself, there are a number of supporting services in your installation.
 The specific services are:
 
-| Software          | Service name                          |
-|:------------------|:--------------------------------------|
-| Fetch CRL         | `fetch-crl-boot` and `fetch-crl-cron` |
-| Your batch system | `condor` or `pbs_server` or …         |
-| HTCondor-CE       | `condor-ce`                           |
+| Software                     | Service name                                |
+|:-----------------------------|:--------------------------------------------|
+| Fetch CRL                    | `fetch-crl-boot` and `fetch-crl-cron`       |
+| Your batch system            | `condor` or `pbs_server` or …               |
+| HTCondor-CE                  | `condor-ce`                                 |
+| **(Optional)** APEL uploader | `condor-ce-apel` and `condor-ce-apel.timer` |
 
 Start and enable the services in the order listed and stop them in reverse order.
 As a reminder, here are common service commands (all run as `root`):

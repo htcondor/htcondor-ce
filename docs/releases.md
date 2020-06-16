@@ -51,6 +51,48 @@ HTCondor-CE 4 Version History
 This section contains release notes for each version of HTCondor-CE 4.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 4.4.0 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.4.0) includes the following new features:
+
+- Add plug-in interface to HTCondor-CE View and separate out OSG-specific code and configuration
+- Add configuration option (COMPLETED_JOB_EXPIRATION) for how many days completed jobs may stay in the queue
+
+This release also includes the following bug-fixes:
+
+- Replace APEL uploader SchedD cron with init and systemd services
+- Fix HTCondor-CE View SchedD query that caused "Info" tables to be blank
+
+### 4.3.0 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.3.0) includes the following new features:
+
+- Add the CE registry web application to the Central Collector.
+  The registry provides an interface to OSG site administrators of HTCondor-CEs to retrieve an HTCondor IDTOKEN for
+  authenticating pilot job submissions.
+- Identify broken job routes upon startup
+- Add benchmarking parameters to the BDII provider via `HTCONDORCE_SPEC` in the configuration.
+  See `/etc/condor-ce/config.d/99-ce-bdii.conf`
+
+This release also includes the following bug-fixes:
+
+- Fix handling of unmapped GSI users in the Central Collector
+- Fix reference to old BDII configuration values
+
+### 4.2.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.2.1) includes the following bug fixes:
+
+- Drop vestigial Central Collector configuration generator script and service
+- Fix unmapped GSI/SSL regular expressions and allow unmapped entities to advertise to the Central Collector
+
+### 4.2.0 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.2.0) includes the following new features:
+
+- Add SSL support for reporting to Central Collectors
+- GLUE2 validation improvements for the BDII provider
+
 ### 4.1.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.1.0) includes the following new features:
