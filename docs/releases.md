@@ -84,7 +84,7 @@ This release also includes the following bug-fixes:
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.2.1) includes the following bug fixes:
 
 - Drop vestigial Central Collector configuration generator script and service
-- Fix unmapped GSI/SSL regular expressions and allow unmapped enttities to advertise to the Central Ceollector
+- Fix unmapped GSI/SSL regular expressions and allow unmapped entities to advertise to the Central Collector
 
 ### 4.2.0 ###
 
