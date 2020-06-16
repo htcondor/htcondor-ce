@@ -551,7 +551,7 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
-* Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.2-2
+* Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.2-1
 - Replace APEL uploader SchedD cron with init and systemd services
   (#323)
 - Identify broken job routes upon startup (#319)
