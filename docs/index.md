@@ -1,21 +1,25 @@
 HTCondor-CE
 ===========
 
-The [HTCondor-CE](overview) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Elements
-(CE) belonging to a computing grid
+The [HTCondor-CE](overview) software is a *Compute Entrypoint* (CE) based on [HTCondor](http://htcondor.org) for sites
+that are part of a larger computing grid
 (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-As such, HTCondor-CE serves as an entry point for incoming grid jobs — it handles authorization and delegation of jobs
-to a grid site's local batch system.
+As such, HTCondor-CE serves as a "door" for incoming resource allocation requests — it handles authorization and
+delegation of these requests to a grid site's local batch system.
+Supported batch systems include
+[Grid Engine](http://www.univa.com/products/),
+[HTCondor](http://htcondor.org),
+[LSF](https://www.ibm.com/us-en/marketplace/hpc-workload-management),
+[PBS Pro](https://www.pbsworks.com/PBSProduct.aspx?n=Altair-PBS-Professional&c=Overview-and-Capabilities)/[Torque](http://www.adaptivecomputing.com/products/torque/),
+and [Slurm](https://slurm.schedmd.com/).
 
-Supported batch systems include:
+For an introduction to HTCondor-CE, watch our [recorded webinar](https://www.youtube.com/embed/6IWaMbofG7M) from the EGI
+Community Webinar Programme:
 
-- [Grid Engine](http://www.univa.com/products/)
-- [HTCondor](http://htcondor.org)
-- [LSF](https://www.ibm.com/us-en/marketplace/hpc-workload-management)
-- [PBS Pro](https://www.pbsworks.com/PBSProduct.aspx?n=Altair-PBS-Professional&c=Overview-and-Capabilities)/[Torque](http://www.adaptivecomputing.com/products/torque/)
-- [Slurm](https://slurm.schedmd.com/)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6IWaMbofG7M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
 
-See the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
+Or visit the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
 
 Contact Us
 ----------
