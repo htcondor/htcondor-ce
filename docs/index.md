@@ -13,7 +13,12 @@ Supported batch systems include
 [PBS Pro](https://www.pbsworks.com/PBSProduct.aspx?n=Altair-PBS-Professional&c=Overview-and-Capabilities)/[Torque](http://www.adaptivecomputing.com/products/torque/),
 and [Slurm](https://slurm.schedmd.com/).
 
-See the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
+For an introduction to HTCondor-CE, watch our recorded webinar from the EGI Community Webinar Programme:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6IWaMbofG7M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+
+Or visit the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
 
 Contact Us
 ----------
