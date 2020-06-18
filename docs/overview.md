@@ -4,8 +4,12 @@ Overview
 This document serves as an introduction to HTCondor-CE and how it works.
 Before continuing with the overview, make sure that you are familiar with the following concepts:
 
--   What is a batch system and which one will you use ([HTCondor](http://htcondor.org/), PBS, LSF, SGE, or
-    [Slurm](https://slurm.schedmd.com/))?
+-   What is a batch system and which one will you use
+    ([HTCondor](http://htcondor.org),
+    [Grid Engine](http://www.univa.com/products/),
+    [LSF](https://www.ibm.com/us-en/marketplace/hpc-workload-management),
+    [PBS Pro](https://www.pbsworks.com/PBSProduct.aspx?n=Altair-PBS-Professional&c=Overview-and-Capabilities)/[Torque](http://www.adaptivecomputing.com/products/torque/),
+    and [Slurm](https://slurm.schedmd.com/))?
 -   Pilot jobs and factories (e.g., [GlideinWMS](http://glideinwms.fnal.gov/doc.prd/index.html),
     [PanDA](http://news.pandawms.org/), [DIRAC](https://dirac.readthedocs.io/en/latest/index.html))
 
