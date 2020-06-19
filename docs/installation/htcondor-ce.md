@@ -5,11 +5,10 @@ Installing an HTCondor-CE
     If you are installing an HTCondor-CE for the Open Science Grid (OSG), consult the
     [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
-The [HTCondor-CE](overview) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Elements
-(CE) belonging to a computing grid
-(e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-As such, HTCondor-CE serves as an entry point for incoming grid jobs — it handles authorization and delegation of jobs
-to a grid site's local batch system.
+HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
+grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
+It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
+to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
 
 Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
@@ -370,9 +369,9 @@ root@host # yum install htcondor-ce-bdii
 Next Steps
 ----------
 
-At this point, you should have an installation of HTCondor-CE that will forward grid jobs into your site's batch system
+At this point, you should have an installation of HTCondor-CE that will forward pilot jobs into your site's batch system
 unchanged.
-If you need to transform incoming grid jobs (e.g. by setting a partition, queue, or accounting group), configure the
+If you need to transform incoming pilot jobs (e.g. by setting a partition, queue, or accounting group), configure the
 [HTCondor-CE Job Router](/batch-system-integration).
 Otherwise, continue to the [this document](/verification) to start the relevant services and verify your installation.
 
