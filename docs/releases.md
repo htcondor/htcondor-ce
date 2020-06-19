@@ -56,7 +56,7 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.4.0) includes the following new features:
 
 - Add plug-in interface to HTCondor-CE View and separate out OSG-specific code and configuration
-- Add configuration option (COMPLETED_JOB_EXPIRATION) for how many days completed jobs may stay in the queue
+- Add configuration option (`COMPLETED_JOB_EXPIRATION`) for how many days completed jobs may stay in the queue
 
 This release also includes the following bug-fixes:
 
