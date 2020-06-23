@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 3.4.2
+Version: 3.4.3
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -551,6 +551,10 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 
 %changelog
+* Tue Jun 23 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.3-1
+- Fix a stacktrace with the BDII provider when `HTCONDORCE_SPEC` isn't
+  defined in the local HTCondor configuration
+
 * Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.2-1
 - Replace APEL uploader SchedD cron with init and systemd services
   (#323)
