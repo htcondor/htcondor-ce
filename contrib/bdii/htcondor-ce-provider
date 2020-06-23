@@ -238,7 +238,7 @@ def main():
 
 
         # Get from the configuration types and values of the benchmarks
-        specs = ca.ClassAd(htcondor.param.get('HTCONDORCE_SPEC')) or []
+        specs = ca.ClassAd(htcondor.param.get('HTCONDORCE_SPEC', "[]"))
         for spec_type, spec_value in specs.items():
             spec_type = spec_type.strip().replace('_', '-')
             print(SPEC_LDIF.format(
