@@ -310,13 +310,13 @@ def main():
         coll_ad = coll.locate(htcondor.DaemonTypes.Collector)
     except IOError:
         raise ce.CondorRunException("ERROR: Could not contact CE collector at '%s'. " % collector_hostname + \
-                                    "Verify that the collector daemon is up with `condor_ce_status`.")
+                                    "Verify that the Collector daemon is up with `condor_ce_status -any`.")
 
     try:
         schedd_ad = coll.locate(htcondor.DaemonTypes.Schedd, job_info['schedd_name'])
     except ValueError:
         raise ce.CondorRunException('ERROR: Could not find CE schedd at %s.\n' % job_info['schedd_name'] + \
-                                    'Verify that the schedd daemon is up with `condor_ce_status`.')
+                                    'Verify that the Scheduler daemon is up with `condor_ce_status -any`.')
 
     configure_auth()
     check_authz(coll_ad, schedd_ad)
