@@ -734,7 +734,7 @@ user@host $ condor_ce_status -any
 !!! note ""Missing" Worker Nodes"
     An HTCondor-CE will not show any worker nodes (e.g. `Machine` entries in the `condor_ce_status -any` output) if
     it does not have any running GlideinWMS pilot jobs.
-    This is expected since HTCondor-CE only forwards incoming grid jobs to your batch system and does not match jobs to
+    This is expected since HTCondor-CE only forwards incoming pilot jobs to your batch system and does not match jobs to
     worker nodes.
 
 #### Troubleshooting
