@@ -554,6 +554,8 @@ install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 * Tue Jun 23 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.3-1
 - Fix a stacktrace with the BDII provider when `HTCONDORCE_SPEC` isn't
   defined in the local HTCondor configuration
+- Fixed a race condition that could result in removed jobs being put
+  on hold
 
 * Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 3.4.2-1
 - Replace APEL uploader SchedD cron with init and systemd services
