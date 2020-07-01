@@ -35,12 +35,12 @@ GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE = $(CONDORCE_MAX_JOBS)
 # Only route jobs with a valid, non-expired proxy for either the vanilla or standard universe.
 JOB_ROUTER_SOURCE_JOB_CONSTRAINT = (target.x509userproxysubject =!= UNDEFINED) && (target.x509UserProxyExpiration =!= UNDEFINED) && (time() < target.x509UserProxyExpiration) && (target.JobUniverse =?= 5 || target.JobUniverse =?= 1)
 
-# Put jobs on hold if they meet any of the following requirements
+# Put jobs on hold if they are not in the removed state and meet any of the following requirements:
 # 1. Is missing a proxy subject or proxy expiration date.
 # 2. Has an expired proxy and is not running
 # 3. It has not been routed by the CE and is not a standard, vanilla, scheduler, or local job.
 # 4. It has not been routed by the CE and has been idle for 30+ min
-SYSTEM_PERIODIC_HOLD = (x509userproxysubject =?= UNDEFINED) || (x509UserProxyExpiration =?= UNDEFINED) || (time() > x509UserProxyExpiration && JobStatus =!= 2) || (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && time() - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
+SYSTEM_PERIODIC_HOLD = (JobStatus != 3) && ((x509userproxysubject =?= UNDEFINED) || (x509UserProxyExpiration =?= UNDEFINED) || (time() > x509UserProxyExpiration && JobStatus =!= 2) || (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12) || ((JobStatus =?= 1 && time() - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true))
 
 SYSTEM_PERIODIC_HOLD_REASON = \
    strcat("HTCondor-CE held job due to ", \
