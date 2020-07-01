@@ -23,7 +23,7 @@ GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE = $(CONDORCE_MAX_JOBS)
 # Only route jobs for either the vanilla or standard universe.
 JOB_ROUTER_SOURCE_JOB_CONSTRAINT = target.JobUniverse =?= 5 || target.JobUniverse =?= 1
 
-# Put jobs on hold if they meet any of the following requirements
+# Put jobs on hold if they are not in the removed state and meet any of the following requirements:
 # 1. It has not been routed by the CE and is not a standard, vanilla, scheduler, or local job.
 HOLD_CLAUSE_1 = (RoutedBy is null && JobUniverse =!= 1 && JobUniverse =!= 5 && JobUniverse =!= 7 && JobUniverse =!= 12)
 HOLD_REASON_1 = "invalid job universe."
@@ -32,8 +32,9 @@ HOLD_REASON_1 = "invalid job universe."
 HOLD_CLAUSE_2 = ((JobStatus =?= 1 && time() - EnteredCurrentStatus > 1800) && RoutedToJobId is null && RoutedJob =!= true)
 HOLD_REASON_2 = "no matching routes, route job limit, or route failure threshold; see 'HTCondor-CE Troubleshooting Guide'"
 
-SYSTEM_PERIODIC_HOLD = $(HOLD_CLAUSE_1) || \
-                       $(HOLD_CLAUSE_2)
+SYSTEM_PERIODIC_HOLD = $(JobStatus != 3) && \
+                           ($(HOLD_CLAUSE_1) || \
+                            $(HOLD_CLAUSE_2))
 
 SYSTEM_PERIODIC_HOLD_REASON = \
    strcat("HTCondor-CE held job due to ", \
