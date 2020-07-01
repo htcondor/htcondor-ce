@@ -85,13 +85,6 @@ def list_vos(environ):
     return results
 
 
-def clean_and_return(fd, pngpath):
-    try:
-        os.unlink(pngpath)
-    finally:
-        return os.fdopen(fd).read()
-
-
 def get_rrd_interval(interval):
     if interval == "hourly":
         rrd_interval = "h"
@@ -113,10 +106,9 @@ def graph(environ, host, plot, interval):
     if plot not in ['jobs', 'vos', 'metrics']:
         raise ValueError("Unknown plot type requested.")
 
-    fd, pngpath = tempfile.mkstemp(".png")
     if plot == "jobs":
         fname = check_rrd(environ, host, plot)
-        rrdtool.graph(pngpath,
+        graph = rrdtool.graphv('-',
             "--imgformat", "PNG",
             "--width", "400",
             "--start", "-1%s" % get_rrd_interval(interval),
@@ -149,7 +141,7 @@ def graph(environ, host, plot, interval):
     elif plot == 'vos':
         vo = environ.get('vo', 'Unknown')
         fname = check_rrd(environ, host, plot, vo)
-        rrdtool.graph(pngpath,
+        graph = rrdtool.graphv('-',
             "--imgformat", "PNG",
             "--width", "400",
             "--start", "-1%s" % get_rrd_interval(interval),
@@ -183,7 +175,7 @@ def graph(environ, host, plot, interval):
         group = environ.get('group', 'Unknown')
         name = environ.get('name', 'Unknown')
         fname = check_rrd(environ, host, plot, group, name)
-        rrdtool.graph(pngpath,
+        graph = rrdtool.graphv('-',
             "--imgformat", "PNG",
             "--width", "400",
             "--start", "-1%s" % get_rrd_interval(interval),
@@ -200,5 +192,5 @@ def graph(environ, host, plot, interval):
             )
 
 
-    return clean_and_return(fd, pngpath)
+    return graph['image']
 
