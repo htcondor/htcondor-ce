@@ -79,18 +79,22 @@ def _headers(content_type):
             ('Cache-Control', 'max-age=60, public')]
 
 
+class ClassadEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, classad.ExprTree):
+            return str(obj)
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
 def ad_to_json(ad):
     result = {}
-    for key in ad:
-        val_expr = ad.lookup(key)
-        if classad.ExprTree("%s =?= UNDEFINED" % key).eval(ad):
-            result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
-        else:
-            val = val_expr.eval()
-            if isinstance(val, types.ListType) or isinstance(val, types.DictType):
-                result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
-            else:
-                result[key] = val
+    for (key, val) in ad.items():
+        if isinstance(val, classad.ExprTree):
+            val = val.eval()
+        if val == classad.Value.Undefined:
+            val = None
+        result[key] = val
     return result
 
 
@@ -104,7 +108,7 @@ def schedds(environ, start_response):
 
     start_response(OK_STATUS, _headers('application/json'))
 
-    return [ json.dumps(results) ]
+    return [ json.dumps(results, cls=ClassadEncoder) ]
 
 
 def schedd(environ, start_response):
