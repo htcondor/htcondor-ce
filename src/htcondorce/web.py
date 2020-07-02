@@ -79,23 +79,17 @@ def _headers(content_type):
             ('Cache-Control', 'max-age=60, public')]
 
 
-class ClassadEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, classad.ExprTree):
-            return str(obj)
-        else:
-            return json.JSONEncoder.default(self, obj)
-
-
 def ad_to_json(ad):
-    result = {}
+    result = classad.ClassAd()
     for (key, val) in ad.items():
+        # Evaluate Condor expressions
         if isinstance(val, classad.ExprTree):
             val = val.eval()
-        if val == classad.Value.Undefined:
-            val = None
         result[key] = val
-    return result
+    # Unfortunately, classad.Value.Undefined is of type int,
+    # and json.dumps() converts it to "2".
+    # Use HTCondor JSON conversion, then back to a Python object instead.
+    return json.loads(result.printJson())
 
 
 def schedds(environ, start_response):
@@ -108,7 +102,7 @@ def schedds(environ, start_response):
 
     start_response(OK_STATUS, _headers('application/json'))
 
-    return [ json.dumps(results, cls=ClassadEncoder) ]
+    return [ json.dumps(results) ]
 
 
 def schedd(environ, start_response):
