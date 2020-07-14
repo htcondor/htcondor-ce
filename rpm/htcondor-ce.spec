@@ -525,12 +525,13 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Tue Jun 23 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.1-1
+* Tue Jul 14 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.1-1
 - Fix a stacktrace with the BDII provider when `HTCONDORCE_SPEC` isn't
   defined in the local HTCondor configuration
 - Fixed a race condition that could result in removed jobs being put
   on hold
-
+- Improve performance of the HTCondor-CE View
+  
 * Mon Jun 15 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.0-1
 - Add plug-in interface to HTCondor-CE View and separate out
   OSG-specific code and configuration (SOFTWARE-3963)
