@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.4.1
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -160,7 +160,13 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
 # voms-proxy-info used by condor_ce_trace
+%if 0%{?osg}
+# osg uses its own, patched version of voms-clients-cpp, so keep using that
 Requires: voms-clients-cpp
+%else
+Requires: voms-clients
+%endif
+
 %if ! 0%{?uw_build}
 Requires: grid-certificates >= 7
 %endif
@@ -525,6 +531,10 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed Jul 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.4.1-2
+- Change voms-clients-cpp requirement to voms-clients for non-OSG builds,
+  because voms-clients-java works equally well
+
 * Tue Jul 14 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.1-1
 - Fix a stacktrace with the BDII provider when `HTCONDORCE_SPEC` isn't
   defined in the local HTCondor configuration
