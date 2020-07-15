@@ -12,6 +12,13 @@ HTCondor-CE 3 Version History
 This section contains release notes for each version of HTCondor-CE 3.
 HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 3.4.3 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.3) includes the following bugfixes:
+
+- Fix a stacktrace with the BDII provider when `HTCONDORCE_SPEC` isn't defined in the local HTCondor configuration
+- Fixed a race condition that could result in removed jobs being put on hold
+
 ### 3.4.2 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.2) includes the following new features:
