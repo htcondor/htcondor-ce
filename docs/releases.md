@@ -51,6 +51,14 @@ HTCondor-CE 4 Version History
 This section contains release notes for each version of HTCondor-CE 4.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 4.4.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.4.1) includes the following bug-fixes:
+
+- Fixed a stacktrace with the BDII provider when `HTCONDORCE_SPEC` isn't defined in the local HTCondor configuration
+- Fixed a race condition that could result in removed jobs being put on hold
+- Improved performance of the HTCondor-CE View
+
 ### 4.4.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.4.0) includes the following new features:
