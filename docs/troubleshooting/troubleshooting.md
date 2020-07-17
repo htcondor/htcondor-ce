@@ -512,7 +512,8 @@ To disable this feature on your CE, consult
 
 ### condor_ce_submit
 
-See the [submitting to HTCondor-CE](submit-htcondor-ce) document for details.
+See the [OSG documentation for submitting to HTCondor-CE](https://opensciencegrid.org/docs/compute-element/submit-htcondor-ce/)
+for details.
 
 ### condor_ce_ping
 
