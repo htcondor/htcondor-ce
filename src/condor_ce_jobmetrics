@@ -38,8 +38,8 @@ def secure_json_write(fname, contents):
         temp_file.close()
 
 def process_one_schedd(ad):
-    htcondor = __import__("htcondor")
-    classad = __import__("classad")
+    import htcondor
+    import classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
     total_results = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
