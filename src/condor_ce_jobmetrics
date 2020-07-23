@@ -42,9 +42,10 @@ def process_one_schedd(ad):
     import classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
-    total_results = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-    vo_results = {}
-    job_count = {}
+    _newstat = lambda: {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+    total_results = _newstat()
+    vo_results = collections.defaultdict(_newstat)
+    job_count = collections.defaultdict(_newstat)
     print "Processing CE %s." % ad.get("Name", "Unknown")
     try:
         for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
@@ -53,10 +54,6 @@ def process_one_schedd(ad):
             vo = job.get('x509UserProxyVOName') or 'Unknown'
             voms = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "") or 'Unknown'
             job_key = (dn, vo, voms)
-            if job_key not in job_count:
-                job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-            if vo not in vo_results:
-                vo_results[vo] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
             results = vo_results[vo]
             job_results = job_count[job_key]
             results["Jobs"] += 1
