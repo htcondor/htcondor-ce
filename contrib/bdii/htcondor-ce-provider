@@ -9,6 +9,7 @@ GIP provider for htcondor-CE.
 
 
 from __future__ import print_function
+import re
 import sys
 from datetime import datetime
 import subprocess
@@ -155,7 +156,7 @@ def main():
     """
 
     # Get hostname of the batch system central manager
-    central_manager = htcondor.param.get('COLLECTOR_HOST').split(' ')[0]
+    central_manager = re.split(r'\s*,\s*', htcondor.param.get('COLLECTOR_HOST'))[0]
 
 
     # Get VO Names
