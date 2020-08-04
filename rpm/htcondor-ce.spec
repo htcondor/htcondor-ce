@@ -517,7 +517,7 @@ fi
 %attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d
 %attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
 
-%attr(0700,root,root) %{_sysconfdir}/httpd/conf.d/htcondorce_registry.conf
+%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/httpd/conf.d/htcondorce_registry.conf
 
 %attr(-,condor,condor) %dir %{_localstatedir}/run/condor-ce
 %attr(-,condor,condor) %dir %{_localstatedir}/log/condor-ce
