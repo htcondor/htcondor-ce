@@ -47,13 +47,15 @@ def process_one_schedd(ad):
     total_results = _newstat()
     vo_results = collections.defaultdict(_newstat)
     job_count = collections.defaultdict(_newstat)
+    gpu_job_count = collections.defaultdict(_newstat)
     print "Processing CE %s." % ad.get("Name", "Unknown")
     try:
         for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
-                                          'x509UserProxyFirstFQAN', 'x509userproxysubject']):
+              'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
             dn = job.get("x509userproxysubject") or 'Unknown'
             vo = job.get('x509UserProxyVOName') or 'Unknown'
             voms = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "") or 'Unknown'
+            gpus = job.get('RequestGPUs')
             job_key = (dn, vo, voms)
             results = vo_results[vo]
             job_results = job_count[job_key]
@@ -65,6 +67,11 @@ def process_one_schedd(ad):
             results[status] += 1
             job_results[status] += 1
             total_results[status] += 1
+
+            if gpus:
+                gpu_job_count[job_key]["Jobs"] += 1
+                gpu_job_count[job_key][status] += 1
+
     except RuntimeError, e:
         print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
     return [total_results, vo_results, job_count, ad]
