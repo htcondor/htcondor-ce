@@ -24,7 +24,11 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     /* Set the environment */
     copy_environment = "orig_environment";
     set_osg_environment = "@osg_environment@";
-    eval_set_environment = mergeEnvironment(join(" ", strcat("HOME=", userHome(Owner, "/")), @advertise_pilots@),
+    eval_set_environment = mergeEnvironment(join(" ",
+                                                 $(USE_CE_HOME_DIR) =?= True ?
+                                                     strcat("HOME=", userHome(Owner, "/")) :
+                                                     "",
+                                                 @advertise_pilots@),
                                             osg_environment,
                                             orig_environment,
                                             $(CONDORCE_PILOT_JOB_ENV),
