@@ -38,48 +38,35 @@ def secure_json_write(fname, contents):
         temp_file.close()
 
 def process_one_schedd(ad):
-    htcondor = __import__("htcondor")
-    classad = __import__("classad")
+    import htcondor
+    import classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
-    total_results = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-    vo_results = {}
-    job_count = {}
+    status_map = {1: "Idle", 2: "Running", 5: "Held"}
+    _newstat = lambda: {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+    total_results = _newstat()
+    vo_results = collections.defaultdict(_newstat)
+    job_count = collections.defaultdict(_newstat)
     print "Processing CE %s." % ad.get("Name", "Unknown")
     try:
         for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
                                           'x509UserProxyFirstFQAN', 'x509userproxysubject']):
-            jobad = {}
-            jobad['dn'] = job.get("x509userproxysubject", 'Unknown')
-            jobad['vo'] = job.get('x509UserProxyVOName', 'Unknown')
-            jobad['voms'] = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
-            for attr, val in jobad.iteritems():
-                if not val:
-                    jobad[attr] = 'Unknown'
-            job_key = tuple(jobad.values())
-            if job_key not in job_count:
-                job_count[job_key] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-            if jobad['vo'] not in vo_results:
-                vo_results[jobad['vo']] = {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
-            results = vo_results[jobad['vo']]
+            dn = job.get("x509userproxysubject") or 'Unknown'
+            vo = job.get('x509UserProxyVOName') or 'Unknown'
+            voms = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "") or 'Unknown'
+            job_key = (dn, vo, voms)
+            results = vo_results[vo]
             job_results = job_count[job_key]
             results["Jobs"] += 1
             total_results['Jobs'] += 1
             job_results['Jobs'] += 1
-            if job.get("JobStatus") == 1:
-                results['Idle'] += 1
-                job_results['Idle'] += 1
-                total_results['Idle'] += 1
-            elif job.get("JobStatus") == 2:
-                results['Running'] += 1
-                job_results['Running'] += 1
-                total_results['Running'] += 1
-            elif job.get("JobStatus") == 5:
-                results['Held'] += 1
-                job_results['Held'] += 1
-                total_results['Held'] += 1
-    except RuntimeError, re:
-        print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), str(re))
+
+            status = status_map.get(job.get("JobStatus"))
+            results[status] += 1
+            job_results[status] += 1
+            total_results[status] += 1
+    except RuntimeError, e:
+        print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
     return [total_results, vo_results, job_count, ad]
 
 
