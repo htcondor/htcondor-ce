@@ -37,13 +37,15 @@ def secure_json_write(fname, contents):
     finally:
         temp_file.close()
 
+
+_newstat = lambda: {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
+
 def process_one_schedd(ad):
     import htcondor
     import classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
     status_map = {1: "Idle", 2: "Running", 5: "Held"}
-    _newstat = lambda: {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
     total_results = _newstat()
     gpu_total_results = _newstat()
     vo_results = collections.defaultdict(_newstat)
@@ -101,11 +103,11 @@ def main():
     pool = multiprocessing.Pool(10)
     ads, environ = pool.map(get_ads, [opts.spool])[0]
 
-    total_results = collections.defaultdict(int, {"Running": 0, "Idle": 0, "Held": 0})
-    vo_results = {}
-    job_results = {}
-    gpu_job_results = {}
-    gpu_total_results = collections.defaultdict(int, {"Running": 0, "Idle": 0, "Held": 0})
+    total_results = _newstat()
+    vo_results = collections.defaultdict(_newstat)
+    job_results = collections.defaultdict(_newstat)
+    gpu_job_results = collections.defaultdict(_newstat)
+    gpu_total_results = _newstat()
 
     map_results = pool.map(process_one_schedd, ads, 1)
 
@@ -119,17 +121,17 @@ def main():
             gpu_total_results[key] += val
 
         for vo, schedd_results in schedd_vo_results.items():
-            results = vo_results.setdefault(vo, collections.defaultdict(int))
+            results = vo_results[vo]
             for key, val in schedd_results.items():
                 results[key] += val
 
         for key, val in schedd_job_results.items():
-            results = job_results.setdefault(key, collections.defaultdict(int))
+            results = job_results[key]
             for key2, val2 in val.items():
                 results[key2] += val2
 
         for key, val in schedd_gpu_job_results.items():
-            results = gpu_job_results.setdefault(key, collections.defaultdict(int))
+            results = gpu_job_results[key]
             for key2, val2 in val.items():
                 results[key2] += val2
 
