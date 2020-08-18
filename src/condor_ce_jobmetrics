@@ -67,15 +67,17 @@ def process_one_schedd(ad):
             job_results['Jobs'] += 1
 
             status = status_map.get(job.get("JobStatus"))
-            results[status] += 1
-            job_results[status] += 1
-            total_results[status] += 1
+            if status:
+                results[status] += 1
+                job_results[status] += 1
+                total_results[status] += 1
 
             if gpus:
                 gpu_job_count[job_key]["Jobs"] += 1
-                gpu_job_count[job_key][status] += 1
                 gpu_total_results['Jobs'] += 1
-                gpu_total_results[status] += 1
+                if status:
+                    gpu_job_count[job_key][status] += 1
+                    gpu_total_results[status] += 1
 
     except RuntimeError, e:
         print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
