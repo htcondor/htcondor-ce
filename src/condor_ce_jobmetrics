@@ -100,6 +100,7 @@ def main():
     total_results = collections.defaultdict(int, {"Running": 0, "Idle": 0, "Held": 0})
     vo_results = {}
     job_results = {}
+    gpu_job_results = {}
 
     map_results = pool.map(process_one_schedd, ads, 1)
 
@@ -115,6 +116,11 @@ def main():
 
         for key, val in schedd_job_results.items():
             results = job_results.setdefault(key, collections.defaultdict(int))
+            for key2, val2 in val.items():
+                results[key2] += val2
+
+        for key, val in schedd_gpu_job_results.items():
+            results = gpu_job_results.setdefault(key, collections.defaultdict(int))
             for key2, val2 in val.items():
                 results[key2] += val2
 
