@@ -45,6 +45,7 @@ def process_one_schedd(ad):
     status_map = {1: "Idle", 2: "Running", 5: "Held"}
     _newstat = lambda: {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
     total_results = _newstat()
+    gpu_total_results = _newstat()
     vo_results = collections.defaultdict(_newstat)
     job_count = collections.defaultdict(_newstat)
     gpu_job_count = collections.defaultdict(_newstat)
@@ -71,10 +72,13 @@ def process_one_schedd(ad):
             if gpus:
                 gpu_job_count[job_key]["Jobs"] += 1
                 gpu_job_count[job_key][status] += 1
+                gpu_total_results['Jobs'] += 1
+                gpu_total_results[status] += 1
 
     except RuntimeError, e:
         print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
-    return [total_results, vo_results, job_count, gpu_job_count, ad]
+    return [total_results, vo_results, job_count,
+            gpu_total_results, gpu_job_count, ad]
 
 
 def get_ads(spooldir):
@@ -101,13 +105,18 @@ def main():
     vo_results = {}
     job_results = {}
     gpu_job_results = {}
+    gpu_total_results = collections.defaultdict(int, {"Running": 0, "Idle": 0, "Held": 0})
 
     map_results = pool.map(process_one_schedd, ads, 1)
 
-    for schedd_total_results, schedd_vo_results, schedd_job_results, schedd_gpu_job_results, ad in map_results:
+    for (schedd_total_results, schedd_vo_results, schedd_job_results,
+         schedd_gpu_total_results, schedd_gpu_job_results, ad) in map_results:
 
         for key, val in schedd_total_results.items():
             total_results[key] += val
+
+        for key, val in schedd_gpu_total_results.items():
+            gpu_total_results[key] += val
 
         for vo, schedd_results in schedd_vo_results.items():
             results = vo_results.setdefault(vo, collections.defaultdict(int))
