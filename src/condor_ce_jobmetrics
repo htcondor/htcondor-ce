@@ -91,6 +91,18 @@ def get_ads(spooldir):
     return [ads, environ]
 
 
+def dict_sum1(src, dst):
+    for key, val in src.items():
+        dst[key] += val
+
+
+def dict_sum2(src, dst):
+    for key, val in src.items():
+        results = dst[key]
+        for key2, val2 in val.items():
+            results[key2] += val2
+
+
 def main():
     opts = parse_opts()
 
@@ -114,26 +126,12 @@ def main():
     for (schedd_total_results, schedd_vo_results, schedd_job_results,
          schedd_gpu_total_results, schedd_gpu_job_results, ad) in map_results:
 
-        for key, val in schedd_total_results.items():
-            total_results[key] += val
+        dict_sum1(schedd_total_results,     total_results)
+        dict_sum1(schedd_gpu_total_results, gpu_total_results)
 
-        for key, val in schedd_gpu_total_results.items():
-            gpu_total_results[key] += val
-
-        for vo, schedd_results in schedd_vo_results.items():
-            results = vo_results[vo]
-            for key, val in schedd_results.items():
-                results[key] += val
-
-        for key, val in schedd_job_results.items():
-            results = job_results[key]
-            for key2, val2 in val.items():
-                results[key2] += val2
-
-        for key, val in schedd_gpu_job_results.items():
-            results = gpu_job_results[key]
-            for key2, val2 in val.items():
-                results[key2] += val2
+        dict_sum2(schedd_vo_results,        vo_results)
+        dict_sum2(schedd_job_results,       job_results)
+        dict_sum2(schedd_gpu_job_results,   job_gpu_results)
 
         total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):
