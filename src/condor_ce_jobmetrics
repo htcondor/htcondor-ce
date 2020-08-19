@@ -161,8 +161,8 @@ def main():
     pilots_fname = rrd.path_with_spool(environ, "pilots")
     secure_json_write(pilots_fname, job_results_final)
 
-    gpu_job_results_final = list_job_results_final(gpu_job_results)
-    gpu_pilots_fname = rrd.path_with_spool(environ, "gpu_pilots")
+    # gpu_job_results_final = list_job_results_final(gpu_job_results)
+    # gpu_pilots_fname = rrd.path_with_spool(environ, "gpu_pilots")
     #secure_json_write(gpu_pilots_fname, gpu_job_results_final)
 
     # update ad with GPU totals (Jobs, Idle, Running, Held)
