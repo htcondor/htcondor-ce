@@ -54,7 +54,7 @@ def process_one_schedd(ad):
     print "Processing CE %s." % ad.get("Name", "Unknown")
     try:
         for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
-              'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
+                                          'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
             dn = job.get("x509userproxysubject") or 'Unknown'
             vo = job.get('x509UserProxyVOName') or 'Unknown'
             voms = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "") or 'Unknown'
@@ -191,4 +191,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
