@@ -104,9 +104,7 @@ def dict_sum2(src, dst):
     """ helper to add each src[key1][key2] value to dst[key1][key2]
         assumes dst contains or provides defaults for keys from src """
     for key, val in src.items():
-        results = dst[key]
-        for key2, val2 in val.items():
-            results[key2] += val2
+        dict_sum1(val, dst[key])
 
 
 def list_job_results_final(job_results):
