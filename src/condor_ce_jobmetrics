@@ -165,7 +165,7 @@ def main():
     # gpu_pilots_fname = rrd.path_with_spool(environ, "gpu_pilots")
     #secure_json_write(gpu_pilots_fname, gpu_job_results_final)
 
-    # update ad with GPU totals (Jobs, Idle, Running, Held)
+    # update schedd ad with GPU totals (Jobs, Idle, Running, Held)
     for key, val in gpu_total_results.items():
         print "GPUPilotsTotal%s=%d" % (key, val)
     print "- update:true"
