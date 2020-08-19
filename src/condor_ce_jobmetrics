@@ -168,6 +168,7 @@ def main():
     # update schedd ad with GPU totals (Jobs, Idle, Running, Held)
     for key, val in gpu_total_results.items():
         print "GPUPilotsTotal%s=%d" % (key, val)
+    # send update to collector right away, too
     print "- update:true"
 
     total_results['UpdateTime'] = time.time()
