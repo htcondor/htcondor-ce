@@ -145,7 +145,7 @@ def main():
 
         dict_sum2(schedd_vo_results,        vo_results)
         dict_sum2(schedd_job_results,       job_results)
-        dict_sum2(schedd_gpu_job_results,   job_gpu_results)
+        dict_sum2(schedd_gpu_job_results,   gpu_job_results)
 
         total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):
