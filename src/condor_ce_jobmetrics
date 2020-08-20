@@ -33,7 +33,7 @@ def secure_json_write(fname, contents):
             json.dump(contents, temp_file)
             os.rename(temp_fname, fname)
         except:
-            print "Error writing json file"
+            print >> sys.stderr, "Error writing json file"
     finally:
         temp_file.close()
 
@@ -52,7 +52,7 @@ def process_one_schedd(ad):
     vo_results = collections.defaultdict(_newstat)
     job_count = collections.defaultdict(_newstat)
     gpu_job_count = collections.defaultdict(_newstat)
-    print "Processing CE %s." % ad.get("Name", "Unknown")
+    print >> sys.stderr, "Processing CE %s." % ad.get("Name", "Unknown")
     try:
         for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
                                           'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
@@ -81,7 +81,7 @@ def process_one_schedd(ad):
                     gpu_total_results[status] += 1
 
     except RuntimeError, e:
-        print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
+        print >> sys.stderr, "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
     return [total_results, vo_results, job_count,
             gpu_total_results, gpu_job_count, ad]
 
@@ -124,7 +124,7 @@ def main():
     htcondor = __import__("htcondor")
     # Check if the CEVIEW daemon is in the daemon list, exit if it is not
     if htcondor.param["DAEMON_LIST"].find("CEVIEW") == -1:
-        print "CEVIEW is not in DAEMON_LIST, exiting..."
+        print >> sys.stderr, "CEVIEW is not in DAEMON_LIST, exiting..."
         sys.exit(0)
 
     pool = multiprocessing.Pool(10)
