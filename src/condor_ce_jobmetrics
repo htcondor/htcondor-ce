@@ -33,9 +33,13 @@ def secure_json_write(fname, contents):
             json.dump(contents, temp_file)
             os.rename(temp_fname, fname)
         except:
-            print "Error writing json file"
+            print >> sys.stderr, "Error writing json file"
     finally:
         temp_file.close()
+
+
+def _newstat():
+    return {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
 
 def process_one_schedd(ad):
     import htcondor
@@ -43,17 +47,19 @@ def process_one_schedd(ad):
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
     status_map = {1: "Idle", 2: "Running", 5: "Held"}
-    _newstat = lambda: {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
     total_results = _newstat()
+    gpu_total_results = _newstat()
     vo_results = collections.defaultdict(_newstat)
     job_count = collections.defaultdict(_newstat)
-    print "Processing CE %s." % ad.get("Name", "Unknown")
+    gpu_job_count = collections.defaultdict(_newstat)
+    print >> sys.stderr, "Processing CE %s." % ad.get("Name", "Unknown")
     try:
-        for job in schedd.xquery("true", ["JobStatus", 'x509UserProxyVOName',
-                                          'x509UserProxyFirstFQAN', 'x509userproxysubject']):
+        for job in schedd.xquery("RoutedJob is UNDEFINED", ["JobStatus", 'x509UserProxyVOName',
+                                          'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
             dn = job.get("x509userproxysubject") or 'Unknown'
             vo = job.get('x509UserProxyVOName') or 'Unknown'
             voms = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "") or 'Unknown'
+            gpus = job.get('RequestGPUs')
             job_key = (dn, vo, voms)
             results = vo_results[vo]
             job_results = job_count[job_key]
@@ -62,12 +68,22 @@ def process_one_schedd(ad):
             job_results['Jobs'] += 1
 
             status = status_map.get(job.get("JobStatus"))
-            results[status] += 1
-            job_results[status] += 1
-            total_results[status] += 1
+            if status:
+                results[status] += 1
+                job_results[status] += 1
+                total_results[status] += 1
+
+            if gpus:
+                gpu_job_count[job_key]["Jobs"] += 1
+                gpu_total_results['Jobs'] += 1
+                if status:
+                    gpu_job_count[job_key][status] += 1
+                    gpu_total_results[status] += 1
+
     except RuntimeError, e:
-        print "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
-    return [total_results, vo_results, job_count, ad]
+        print >> sys.stderr, "Failure to query CE %s: %s" % (ad.get("Name", "Unknown"), e)
+    return [total_results, vo_results, job_count,
+            gpu_total_results, gpu_job_count, ad]
 
 
 def get_ads(spooldir):
@@ -78,38 +94,59 @@ def get_ads(spooldir):
     return [ads, environ]
 
 
+def dict_sum1(src, dst):
+    """ helper to add each src[key] value to dst[key]
+        assumes dst contains or provides defaults for keys from src """
+    for key, val in src.items():
+        dst[key] += val
+
+
+def dict_sum2(src, dst):
+    """ helper to add each src[key1][key2] value to dst[key1][key2]
+        assumes dst contains or provides defaults for keys from src """
+    for key, val in src.items():
+        dict_sum1(val, dst[key])
+
+
+def list_job_results_final(job_results):
+    job_results_final = []
+    for key, val in job_results.items():
+        val['DN'] = key[0]
+        val['VO'] = key[1]
+        val['VOMS'] = key[2]
+        job_results_final.append(val)
+    return job_results_final
+
+
 def main():
     opts = parse_opts()
 
     htcondor = __import__("htcondor")
     # Check if the CEVIEW daemon is in the daemon list, exit if it is not
     if htcondor.param["DAEMON_LIST"].find("CEVIEW") == -1:
-        print "CEVIEW is not in DAEMON_LIST, exiting..."
+        print >> sys.stderr, "CEVIEW is not in DAEMON_LIST, exiting..."
         sys.exit(0)
 
     pool = multiprocessing.Pool(10)
     ads, environ = pool.map(get_ads, [opts.spool])[0]
 
-    total_results = collections.defaultdict(int, {"Running": 0, "Idle": 0, "Held": 0})
-    vo_results = {}
-    job_results = {}
+    total_results = _newstat()
+    vo_results = collections.defaultdict(_newstat)
+    job_results = collections.defaultdict(_newstat)
+    gpu_job_results = collections.defaultdict(_newstat)
+    gpu_total_results = _newstat()
 
     map_results = pool.map(process_one_schedd, ads, 1)
 
-    for schedd_total_results, schedd_vo_results, schedd_job_results, ad in map_results:
+    for (schedd_total_results, schedd_vo_results, schedd_job_results,
+         schedd_gpu_total_results, schedd_gpu_job_results, ad) in map_results:
 
-        for key, val in schedd_total_results.items():
-            total_results[key] += val
+        dict_sum1(schedd_total_results,     total_results)
+        dict_sum1(schedd_gpu_total_results, gpu_total_results)
 
-        for vo, schedd_results in schedd_vo_results.items():
-            results = vo_results.setdefault(vo, collections.defaultdict(int))
-            for key, val in schedd_results.items():
-                results[key] += val
-
-        for key, val in schedd_job_results.items():
-            results = job_results.setdefault(key, collections.defaultdict(int))
-            for key2, val2 in val.items():
-                results[key2] += val2
+        dict_sum2(schedd_vo_results,        vo_results)
+        dict_sum2(schedd_job_results,       job_results)
+        dict_sum2(schedd_gpu_job_results,   gpu_job_results)
 
         total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):
@@ -123,14 +160,20 @@ def main():
                 print >> sys.stderr, "Schedd", ad['Name'], "VO", vo, "totals:", info
             rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
 
-    job_results_final = []
-    for key, val in job_results.items():
-        val['DN'] = key[0]
-        val['VO'] = key[1]
-        val['VOMS'] = key[2]
-        job_results_final.append(val)
+    job_results_final = list_job_results_final(job_results)
     pilots_fname = rrd.path_with_spool(environ, "pilots")
     secure_json_write(pilots_fname, job_results_final)
+
+    # someday we might want to use these gpu_pilots totals, but not yet
+    #gpu_job_results_final = list_job_results_final(gpu_job_results)
+    #gpu_pilots_fname = rrd.path_with_spool(environ, "gpu_pilots")
+    #secure_json_write(gpu_pilots_fname, gpu_job_results_final)
+
+    # update schedd ad with GPU totals (Jobs, Idle, Running, Held)
+    for key, val in gpu_total_results.items():
+        print "GPUPilotsTotal%s=%d" % (key, val)
+    # send update to collector right away, too
+    print "- update:true"
 
     total_results['UpdateTime'] = time.time()
     totals_fname = rrd.path_with_spool(environ, "totals")
@@ -153,4 +196,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
