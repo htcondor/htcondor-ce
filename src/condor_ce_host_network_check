@@ -411,7 +411,7 @@ def main():
                 print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
                 sys.exit(1)
     else:
-        print sys.stderr, "WARNING: Unable to access certificate file at %s; skipping host certificate name check." % hostcert
+        print >> sys.stderr, "WARNING: Unable to access certificate file at %s; skipping host certificate name check." % hostcert
 
 
     # Forward resolution: resolve the host's FQDN on port 9618 to an IPv4 address.
