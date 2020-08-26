@@ -66,7 +66,8 @@ Requires: /usr/bin/unshare
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
-Requires: %{name} = %{version}-%{release}, bdii
+Requires: python2-condor
+Requires: bdii
 
 %description bdii
 %{summary}
