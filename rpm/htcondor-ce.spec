@@ -178,7 +178,13 @@ Requires: voms-clients
 Requires: grid-certificates >= 7
 %endif
 
-Requires: condor-python
+%if 0%{?rhel} >= 8
+%define __python /usr/bin/python3
+Requires: python3-condor
+%else
+%define __python /usr/bin/python2
+Requires: python2-condor
+%endif
 
 %description client
 %{summary}
