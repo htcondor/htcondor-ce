@@ -186,25 +186,25 @@ def main():
 
     # Query collector for the number of CPUs and batch system Collector ad
     coll = htcondor.Collector()
-    total_cores = {}
+    total_cores = 0
     topologies = {}
-    for classad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"',
+    for classad in coll.query(htcondor.AdTypes.Startd,
+                              'State != "Owner" && SlotType != "Dynamic"',
                               ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName',
-                               'DetectedCpus', 'DetectedMemory', 'Machine']):
+                               'TotalSlotCpus', 'TotalSlotMemory', 'Machine']):
         if not classad.get('Machine'):
             continue  # skip malformed ads where we can't provide additional information
 
         try:
-            if classad['Machine'] not in total_cores:
-                total_cores[classad['Machine']] = classad['DetectedCpus']
+            total_cores += classad['Cpus']
 
             machine = (
                 classad['Arch'].lower(),
                 classad['OpSys'].lower(),
                 classad['OpSysName'],
                 classad['OpSysMajorVer'],
-                classad['DetectedCpus'],
-                classad['DetectedMemory']
+                classad['TotalSlotCpus'],
+                classad['TotalSlotMemory']
             )
             if machine not in topologies:
                 topologies[machine] = 1
@@ -260,7 +260,7 @@ def main():
         central_manager=central_manager,
         bind_dn=bind_dn,
         version=version,
-        total_cores=sum(total_cores.values()),
+        total_cores=total_cores,
         ))
 
     ce_batch_schedd_ads = coll.query(
