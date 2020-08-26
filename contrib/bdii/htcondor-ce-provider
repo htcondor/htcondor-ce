@@ -150,6 +150,30 @@ def handler(signum, frame):
     """
     raise TimeoutError("TimeoutError")
 
+
+def format_resource_entry(central_manager, arch, os, os_flavor, os_ver, cpus, memory, instances, specs):
+    resource = '_'.join([arch, os, os_flavor, os_ver, memory, cpus])
+
+    ldifs = RESOURCE_LDIF.format(central_manager=central_manager,
+                                 resource=resource,
+                                 arch=arch,
+                                 os=os,
+                                 name=os_flavor,
+                                 version=os_ver,
+                                 memory=memory,
+                                 cpu=cpus,
+                                 instances=instances)
+
+    for spec_type, spec_value in specs.items():
+        spec_type = spec_type.strip().replace('_', '-')
+        ldifs += SPEC_LDIF.format(central_manager=central_manager,
+                                  resource=resource,
+                                  spec_type=spec_type,
+                                  spec_value=spec_value)
+
+    return '\n'.join(ldifs)
+
+
 def main():
     """
     Main provider routine.
@@ -213,37 +237,13 @@ def main():
     resources = []
 
 
+    # Get from the configuration types and values of the benchmarks
+    specs = ca.ClassAd(htcondor.param.get('HTCONDORCE_SPEC', "[]"))
+
     # Print the entry for the GLUE2 Resource
     for tup in topologies:
-        resource = '{0}_{1}_{2}_{3}_{4}_{5}'.format(tup[0], tup[1], tup[2], tup[3], tup[4], tup[5])
         instances = topologies[tup]
-        resources.append(resource)
-
-        print (RESOURCE_LDIF.format(
-            central_manager=central_manager,
-            resource=resource,
-            arch=tup[0],
-            os=tup[1],
-            name=tup[2],
-            version=tup[3],
-            memory=tup[5],
-            cpu=tup[4],
-            instances=instances,
-        ))
-
-
-        # Get from the configuration types and values of the benchmarks
-        specs = ca.ClassAd(htcondor.param.get('HTCONDORCE_SPEC', "[]"))
-        for spec_type, spec_value in specs.items():
-            spec_type = spec_type.strip().replace('_', '-')
-            print(SPEC_LDIF.format(
-                central_manager=central_manager,
-                resource=resource,
-                spec_type=spec_type,
-                spec_value=spec_value
-            ))
-
-
+        print(format_resource_entry(central_manager, tup[0], tup[1], tup[2], tup[3], tup[4], tup[5], instances, specs))
 
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
