@@ -18,7 +18,7 @@ import signal
 import htcondor
 import classad as ca
 
-SERVICE_LDIF = """dn: {bind_dn}
+SERVICE_LDIF = """dn: GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 GLUE2ServiceID: {central_manager}
 objectClass: GLUE2Entity
 objectClass: GLUE2Service
@@ -32,7 +32,7 @@ GLUE2ServiceAdminDomainForeignKey: {site_name}
 """
 
 
-MANAGER_LDIF = """dn: GLUE2ManagerID={central_manager}_Manager,{bind_dn}
+MANAGER_LDIF = """dn: GLUE2ManagerID={central_manager}_Manager,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Manager
 objectClass: GLUE2ComputingManager
@@ -45,7 +45,7 @@ GLUE2ComputingManagerComputingServiceForeignKey: {central_manager}
 """
 
 
-RESOURCE_LDIF = """dn: GLUE2ResourceID={central_manager}_{resource},{bind_dn}
+RESOURCE_LDIF = """dn: GLUE2ResourceID={central_manager}_{resource},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Resource
 objectClass: GLUE2ExecutionEnvironment
@@ -66,7 +66,7 @@ GLUE2ExecutionEnvironmentComputingManagerForeignKey:  {central_manager}_Manager
 """
 
 
-ENDPOINT_LDIF = """dn: GLUE2EndpointID={name}_HTCondorCE,{bind_dn}
+ENDPOINT_LDIF = """dn: GLUE2EndpointID={name}_HTCondorCE,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Endpoint
 objectClass: GLUE2ComputingEndpoint
@@ -99,7 +99,7 @@ GLUE2BenchmarkComputingManagerForeignKey: {central_manager}_Manager
 GLUE2EntityName: Benchmark {spec_type}
 """
 
-SHARE_LDIF = """dn: GLUE2ShareID={shareid},{bind_dn}
+SHARE_LDIF = """dn: GLUE2ShareID={shareid},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Share
 objectClass: GLUE2ComputingShare
@@ -116,7 +116,7 @@ GLUE2ShareEndpointForeignKey: {endpointid}
 """
 
 
-POLICY_LDIF = """dn: GLUE2PolicyID={policyid},GLUE2ShareID={shareid},{bind_dn}
+POLICY_LDIF = """dn: GLUE2PolicyID={policyid},GLUE2ShareID={shareid},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Policy
 objectClass: GLUE2MappingPolicy
@@ -125,7 +125,7 @@ GLUE2PolicyScheme: org.glite.standard
 GLUE2PolicyRule: vo:{vo}
 GLUE2MappingPolicyShareForeignKey: {shareid}
 
-dn: GLUE2PolicyID={policyid}_access,GLUE2ShareID={shareid},{bind_dn}
+dn: GLUE2PolicyID={policyid}_access,GLUE2ShareID={shareid},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Policy
 objectClass: GLUE2AccessPolicy
@@ -179,11 +179,6 @@ def main():
     if not time_out:
         time_out = 10
 
-
-    # This is the bind DN for all entries
-    bind_dn = "GLUE2ServiceID=%s,GLUE2GroupID=resource,o=glue" % (central_manager)
-
-
     # Query collector for the number of CPUs and batch system Collector ad
     coll = htcondor.Collector()
     total_cores = {}
@@ -233,7 +228,6 @@ def main():
             version=tup[3],
             memory=tup[5],
             cpu=tup[4],
-            bind_dn=bind_dn,
             instances=instances,
         ))
 
@@ -258,7 +252,6 @@ def main():
     # Print the entry for the GLUE2 Manager
     print (MANAGER_LDIF.format(
         central_manager=central_manager,
-        bind_dn=bind_dn,
         version=version,
         total_cores=sum(total_cores.values()),
         ))
@@ -273,7 +266,6 @@ def main():
     # Print the entry for the GLUE2 Service
     print (SERVICE_LDIF.format(
         central_manager=central_manager,
-        bind_dn=bind_dn,
         num_endpoints=len(ce_batch_schedd_ads),
         num_shares=len(vonames),
         site_name=site_name,
@@ -356,7 +348,6 @@ def main():
 
         print (ENDPOINT_LDIF.format(
             name=name,
-            bind_dn=bind_dn,
             version=version,
             state=state,
             state_info=state_info,
@@ -381,7 +372,6 @@ def main():
                     .format(central_manager, resource)
             print (SHARE_LDIF.format(
                 shareid=shareid,
-                bind_dn=bind_dn,
                 total_vo_jobs=total_jobs,
                 idle_vo_jobs=idle_jobs,
                 running_vo_jobs=running_jobs,
@@ -392,9 +382,9 @@ def main():
 
             policyid = "%s_%s_policy" % (ce_host, voname)
             print (POLICY_LDIF.format(
+                central_manager=central_manager,
                 policyid=policyid,
                 shareid=shareid,
-                bind_dn=bind_dn,
                 vo=voname,
                 endpointid=endpointid
                 ))
