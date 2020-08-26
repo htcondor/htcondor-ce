@@ -180,6 +180,14 @@ def format_manager_entry(central_manager, version, total_cores):
                                total_cores=total_cores)
 
 
+def format_service_entry(central_manager, endpoints, vonames, site_name):
+    # Print the entry for the GLUE2 Service
+    return SERVICE_LDIF.format(central_manager=central_manager,
+                               num_endpoints=len(endpoints),
+                               num_shares=len(vonames),
+                               site_name=site_name)
+
+
 def main():
     """
     Main provider routine.
@@ -262,14 +270,7 @@ def main():
         ['Machine']
     )
 
-
-    # Print the entry for the GLUE2 Service
-    print (SERVICE_LDIF.format(
-        central_manager=central_manager,
-        num_endpoints=len(ce_batch_schedd_ads),
-        num_shares=len(vonames),
-        site_name=site_name,
-        ))
+    print(format_service_entry(central_manager, ce_batch_schedd_ads, vonames, site_name))
 
     for ce_batch_schedd_ad in ce_batch_schedd_ads:
 
