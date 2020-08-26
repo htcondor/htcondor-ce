@@ -188,6 +188,38 @@ def format_service_entry(central_manager, endpoints, vonames, site_name):
                                site_name=site_name)
 
 
+def locate_ce_schedd(fqdn, port=9619):
+    # find the CE using the default CE port
+    ce_host = '%s:%s' % (fqdn, port)
+    ce_collector = htcondor.Collector(ce_host)
+    try:
+        ce_schedd_ad = ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(fqdn))[0]
+    except (RuntimeError, IndexError):
+        sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_host)
+    except EnvironmentError:
+        sys.stderr.write("Failed communication with CE collector on %s\n" % ce_host)
+
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(time_out)
+    try:
+        if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
+            state = 'ok'
+        else:
+            state = 'warning'
+        state_info = 'Authorization ping successful'
+    except (KeyError, RuntimeError):
+        state = 'critical'
+        state_info = 'Authorization ping failed'
+    except TimeoutError as exc:
+        sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n"
+                         % (ce_host, time_out))
+        continue
+
+    signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
+    return htcondor.Schedd(ce_schedd_ad)
+
+
 def main():
     """
     Main provider routine.
@@ -273,47 +305,13 @@ def main():
     print(format_service_entry(central_manager, ce_batch_schedd_ads, vonames, site_name))
 
     for ce_batch_schedd_ad in ce_batch_schedd_ads:
-
-        ce_host = ce_batch_schedd_ad['Machine']
-        # find the CE using the default CE port
-        ce_collector = htcondor.Collector(ce_host + ':9619')
-        try:
-            ce_schedd_ad = ce_collector.query(
-                htcondor.AdTypes.Schedd,
-                'Name =?= "{0}"'.format(ce_host)
-            )[0]
-
-        except (RuntimeError, IndexError):
-            sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_host)
-            continue
-        except EnvironmentError:
-            sys.stderr.write("Failed communication with CE collector on %s\n" % ce_host)
-            continue
-
-        signal.signal(signal.SIGALRM, handler)
-        signal.alarm(time_out)
-        try:
-            if htcondor.SecMan().ping(ce_schedd_ad, "READ")['AuthorizationSucceeded']:
-                state = 'ok'
-            else:
-                state = 'warning'
-            state_info = 'Authorization ping successful'
-        except (KeyError, RuntimeError):
-            state = 'critical'
-            state_info = 'Authorization ping failed'
-        except TimeoutError as exc:
-            sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n"
-                             % (ce_host, time_out))
-            continue
-
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
-
-        ce_schedd = htcondor.Schedd(ce_schedd_ad)
+        ce_fqdn = ce_batch_schedd_ad['Machine']
+        ce_schedd = locate_ce_schedd(ce_fqdn)
 
         try:
             query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
         except RuntimeError, exc:
-            sys.stderr.write("%s: %s\n" % (exc, ce_host))
+            sys.stderr.write("%s: %s\n" % (exc, ce_fqdn))
             continue
 
         idle_vo_jobs = defaultdict(int)
@@ -332,7 +330,7 @@ def main():
                 elif job['JobStatus'] == 2:
                     running_vo_jobs[job['x509userproxyvoname']] += 1
         except TimeoutError as exc:
-            sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_host, time_out)
+            sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_fqdn, time_out)
             continue
 
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
@@ -360,8 +358,8 @@ def main():
 
         for voname in vonames:
             voname = voname.strip()
-            shareid = "%s_%s_share" % (ce_host, voname)
-            endpointid = "%s_HTCondorCE" % (ce_host)
+            shareid = "%s_%s_share" % (ce_fqdn, voname)
+            endpointid = "%s_HTCondorCE" % (ce_fqdn)
             total_jobs = total_vo_jobs.get(voname, 0)
             idle_jobs = idle_vo_jobs.get(voname, 0)
             running_jobs = running_vo_jobs.get(voname, 0)
@@ -381,7 +379,7 @@ def main():
                 resource_keys=resource_keys,
                 ))
 
-            policyid = "%s_%s_policy" % (ce_host, voname)
+            policyid = "%s_%s_policy" % (ce_fqdn, voname)
             print (POLICY_LDIF.format(
                 central_manager=central_manager,
                 policyid=policyid,
