@@ -115,6 +115,9 @@ GLUE2ShareEndpointForeignKey: {ce_fqdn}_HTCondorCE
 {resource_keys}
 """
 
+RESOURCE_KEY = """GLUE2ComputingShareExecutionEnvironmentForeignKey: {central_manager}_{resource}
+GLUE2ShareResourceForeignKey: {central_manager}_{resource}
+"""
 
 POLICY_LDIF = """dn: GLUE2PolicyID={ce_fqdn}_{voname}_policy,GLUE2ShareID={ce_fqdn}_{voname}_share,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
@@ -210,6 +213,20 @@ def format_endpoint_entry(central_manager, ce_schedd_ad):
                                 start_time=start_time,
                                 issuer=issuer,
                                 central_manager=central_manager)
+
+
+def format_share_entry(central_manager, ce_fqdn, voname, topologies, total_jobs, idle_jobs, running_jobs):
+    resource_keys = ""
+    for machine_ad in topologies:
+        resource = format_resource_name(machine_ad)
+        resource_keys += RESOURCE_KEY.format(central_manager=central_manager, resource=resource)
+        return SHARE_LDIF.format(ce_fqdn=ce_fqdn,
+                                 voname=voname,
+                                 total_vo_jobs=total_jobs,
+                                 idle_vo_jobs=idle_jobs,
+                                 running_vo_jobs=running_jobs,
+                                 central_manager=central_manager,
+                                 resource_keys=resource_keys)
 
 
 def format_policy_entry(central_manager, ce_fqdn, voname):
@@ -375,21 +392,14 @@ def main():
             total_jobs = total_vo_jobs.get(voname, 0)
             idle_jobs = idle_vo_jobs.get(voname, 0)
             running_jobs = running_vo_jobs.get(voname, 0)
-            resource_keys = ""
-            for resource in resources:
-                resource_keys += 'GLUE2ComputingShareExecutionEnvironmentForeignKey: {0}_{1}\n'\
-                    .format(central_manager, resource)
-                resource_keys += 'GLUE2ShareResourceForeignKey: {0}_{1}\n'\
-                    .format(central_manager, resource)
-            print (SHARE_LDIF.format(
-                ce_fqdn=ce_fqdn,
-                voname=voname,
-                total_vo_jobs=total_jobs,
-                idle_vo_jobs=idle_jobs,
-                running_vo_jobs=running_jobs,
-                central_manager=central_manager,
-                resource_keys=resource_keys,
-                ))
+
+            print(format_share_entry(central_manager,
+                                     ce_fqdn,
+                                     voname,
+                                     topologies,
+                                     total_jobs,
+                                     idle_jobs,
+                                     running_jobs))
 
             print(format_policy_entry(central_manager, ce_fqdn, voname))
 
