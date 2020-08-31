@@ -240,7 +240,7 @@ def main():
     if not vonames:
         sys.stderr.write("Error: HTCONDORCE_VONames not set\n")
         sys.exit(1)
-    vonames = vonames.split(',')
+    vonames = re.split(r'[\s,]+', vonames)
 
 
     # Get Site Name
@@ -360,7 +360,6 @@ def main():
 
 
         for voname in vonames:
-            voname = voname.strip()
             shareid = "%s_%s_share" % (ce_fqdn, voname)
             endpointid = "%s_HTCondorCE" % (ce_fqdn)
             total_jobs = total_vo_jobs.get(voname, 0)
