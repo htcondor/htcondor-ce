@@ -245,6 +245,38 @@ def get_cert_issuer(path):
     return cmd_proc.communicate()[0].replace('issuer=', '').strip()
 
 
+def get_ce_jobs(ce_schedd_ad, time_out):
+    ce_schedd = htcondor.Schedd(ce_schedd_ad)
+    ce_fqdn = ce_schedd_ad['Machine']
+
+    try:
+        query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
+    except RuntimeError, exc:
+        sys.stderr.write("%s: %s\n" % (exc, ce_fqdn))
+
+    idle_vo_jobs = defaultdict(int)
+    running_vo_jobs = defaultdict(int)
+    total_vo_jobs = defaultdict(int)
+
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(time_out)
+    try:
+        for job in query:
+            if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
+                continue
+            total_vo_jobs[job['x509userproxyvoname']] += 1
+            if job['JobStatus'] == 1:
+                idle_vo_jobs[job['x509userproxyvoname']] += 1
+            elif job['JobStatus'] == 2:
+                running_vo_jobs[job['x509userproxyvoname']] += 1
+    except TimeoutError as exc:
+        sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_fqdn, time_out)
+
+    signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
+    return total_vo_jobs, idle_vo_jobs, running_vo_jobs
+
+
 def main():
     """
     Main provider routine.
@@ -330,34 +362,8 @@ def main():
     for ce_batch_schedd_ad in ce_batch_schedd_ads:
         ce_fqdn = ce_batch_schedd_ad['Machine']
         ce_schedd_ad = get_ce_schedd_ad(ce_fqdn)
-        ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
-        try:
-            query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
-        except RuntimeError, exc:
-            sys.stderr.write("%s: %s\n" % (exc, ce_fqdn))
-            continue
-
-        idle_vo_jobs = defaultdict(int)
-        running_vo_jobs = defaultdict(int)
-        total_vo_jobs = defaultdict(int)
-
-        signal.signal(signal.SIGALRM, handler)
-        signal.alarm(time_out)
-        try:
-            for job in query:
-                if not job.get("JobStatus") or not job.get("x509userproxyvoname"):
-                    continue
-                total_vo_jobs[job['x509userproxyvoname']] += 1
-                if job['JobStatus'] == 1:
-                    idle_vo_jobs[job['x509userproxyvoname']] += 1
-                elif job['JobStatus'] == 2:
-                    running_vo_jobs[job['x509userproxyvoname']] += 1
-        except TimeoutError as exc:
-            sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_fqdn, time_out)
-            continue
-
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
+        total_vo_jobs, idle_vo_jobs, running_vo_jobs = get_ce_jobs(ce_schedd_ad, time_out)
 
         print(format_endpoint_entry(central_manager, ce_schedd_ad))
 
