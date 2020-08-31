@@ -188,7 +188,7 @@ def format_service_entry(central_manager, endpoints, vonames, site_name):
                                site_name=site_name)
 
 
-def locate_ce_schedd(fqdn, port=9619):
+def get_ce_schedd_ad(fqdn, port=9619):
     # find the CE using the default CE port
     ce_host = '%s:%s' % (fqdn, port)
     ce_collector = htcondor.Collector(ce_host)
@@ -198,7 +198,10 @@ def locate_ce_schedd(fqdn, port=9619):
         sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_host)
     except EnvironmentError:
         sys.stderr.write("Failed communication with CE collector on %s\n" % ce_host)
+    return ce_schedd_ad
 
+
+def find_ce_state(ce_schedd_ad, time_out):
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(time_out)
     try:
@@ -210,14 +213,13 @@ def locate_ce_schedd(fqdn, port=9619):
     except (KeyError, RuntimeError):
         state = 'critical'
         state_info = 'Authorization ping failed'
-    except TimeoutError as exc:
+    except TimeoutError:
         sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n"
-                         % (ce_host, time_out))
-        continue
+                         % (ce_schedd_ad['Name'], time_out))
 
     signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
-    return htcondor.Schedd(ce_schedd_ad)
+    return state, state_info
 
 
 def get_cert_issuer(path):
@@ -251,9 +253,7 @@ def main():
 
 
     # Get the timeout value
-    time_out = htcondor.param.get('GLUE_PROVIDER_TIMEOUT')
-    if not time_out:
-        time_out = 10
+    time_out = int(htcondor.param.get('GLUE_PROVIDER_TIMEOUT', 10))
 
     # Query collector for the number of CPUs and batch system Collector ad
     coll = htcondor.Collector()
@@ -312,7 +312,9 @@ def main():
 
     for ce_batch_schedd_ad in ce_batch_schedd_ads:
         ce_fqdn = ce_batch_schedd_ad['Machine']
-        ce_schedd = locate_ce_schedd(ce_fqdn)
+        ce_schedd_ad = get_ce_schedd_ad(ce_fqdn)
+        state, state_info = find_ce_state(ce_schedd_ad)
+        ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
         try:
             query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
