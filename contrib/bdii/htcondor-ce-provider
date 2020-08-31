@@ -99,40 +99,40 @@ GLUE2BenchmarkComputingManagerForeignKey: {central_manager}_Manager
 GLUE2EntityName: Benchmark {spec_type}
 """
 
-SHARE_LDIF = """dn: GLUE2ShareID={shareid},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
+SHARE_LDIF = """dn: GLUE2ShareID={ce_fqdn}_{voname}_share,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Share
 objectClass: GLUE2ComputingShare
-GLUE2ShareID: {shareid}
+GLUE2ShareID: {share_fqdn}_{voname}_share
 GLUE2ComputingShareServingState: production
 GLUE2ComputingShareTotalJobs: {total_vo_jobs}
 GLUE2ComputingShareWaitingJobs: {idle_vo_jobs}
 GLUE2ComputingShareRunningJobs: {running_vo_jobs}
 GLUE2ComputingShareComputingServiceForeignKey: {central_manager}
-GLUE2ComputingShareComputingEndpointForeignKey: {endpointid}
+GLUE2ComputingShareComputingEndpointForeignKey: {ce_fqdn}_HTCondorCE
 GLUE2ShareServiceForeignKey: {central_manager}
-GLUE2ShareEndpointForeignKey: {endpointid}
+GLUE2ShareEndpointForeignKey: {ce_fqdn}_HTCondorCE
 {resource_keys}
 """
 
 
-POLICY_LDIF = """dn: GLUE2PolicyID={policyid},GLUE2ShareID={shareid},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
+POLICY_LDIF = """dn: GLUE2PolicyID={ce_fqdn}_{voname}_policy,GLUE2ShareID={ce_fqdn}_{voname}_share,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Policy
 objectClass: GLUE2MappingPolicy
-GLUE2PolicyID: {policyid}
+GLUE2PolicyID: {ce_fqdn}_{voname}_policy
 GLUE2PolicyScheme: org.glite.standard
 GLUE2PolicyRule: vo:{vo}
-GLUE2MappingPolicyShareForeignKey: {shareid}
+GLUE2MappingPolicyShareForeignKey: {ce_fqdn}_{voname}_share
 
-dn: GLUE2PolicyID={policyid}_access,GLUE2ShareID={shareid},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
+dn: GLUE2PolicyID={ce_fqdn}_{voname}_policy_access,GLUE2ShareID={ce_fqdn}_{voname}_share,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Policy
 objectClass: GLUE2AccessPolicy
-GLUE2PolicyID: {policyid}_access
+GLUE2PolicyID: {ce_fqdn}_{voname}_policy_access
 GLUE2PolicyScheme: org.glite.standard
 GLUE2PolicyRule: vo:{vo}
-GLUE2AccessPolicyEndpointForeignKey: {endpointid}
+GLUE2AccessPolicyEndpointForeignKey: {ce_fqdn}_HTCondorCE
 """
 
 
@@ -368,8 +368,6 @@ def main():
         print(format_endpoint_entry(central_manager, ce_schedd_ad))
 
         for voname in vonames:
-            shareid = "%s_%s_share" % (ce_fqdn, voname)
-            endpointid = "%s_HTCondorCE" % (ce_fqdn)
             total_jobs = total_vo_jobs.get(voname, 0)
             idle_jobs = idle_vo_jobs.get(voname, 0)
             running_jobs = running_vo_jobs.get(voname, 0)
@@ -380,22 +378,19 @@ def main():
                 resource_keys += 'GLUE2ShareResourceForeignKey: {0}_{1}\n'\
                     .format(central_manager, resource)
             print (SHARE_LDIF.format(
-                shareid=shareid,
+                ce_fqdn=ce_fqdn,
+                voname=voname,
                 total_vo_jobs=total_jobs,
                 idle_vo_jobs=idle_jobs,
                 running_vo_jobs=running_jobs,
                 central_manager=central_manager,
-                endpointid=endpointid,
                 resource_keys=resource_keys,
                 ))
 
-            policyid = "%s_%s_policy" % (ce_fqdn, voname)
             print (POLICY_LDIF.format(
                 central_manager=central_manager,
-                policyid=policyid,
-                shareid=shareid,
+                ce_fqdn=ce_fqdn,
                 vo=voname,
-                endpointid=endpointid
                 ))
 
 if __name__ == '__main__':
