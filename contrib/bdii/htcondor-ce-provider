@@ -131,7 +131,7 @@ objectClass: GLUE2Policy
 objectClass: GLUE2AccessPolicy
 GLUE2PolicyID: {ce_fqdn}_{voname}_policy_access
 GLUE2PolicyScheme: org.glite.standard
-GLUE2PolicyRule: vo:{vo}
+GLUE2PolicyRule: vo:{voname}
 GLUE2AccessPolicyEndpointForeignKey: {ce_fqdn}_HTCondorCE
 """
 
@@ -203,6 +203,12 @@ def format_endpoint_entry(central_manager, ce_schedd_ad):
                                 start_time=start_time,
                                 issuer=issuer,
                                 central_manager=central_manager)
+
+
+def format_policy_entry(central_manager, ce_fqdn, voname):
+    return POLICY_LDIF.format(central_manager=central_manager,
+                              ce_fqdn=ce_fqdn,
+                              voname=voname)
 
 
 def get_ce_schedd_ad(fqdn, port=9619):
@@ -387,11 +393,8 @@ def main():
                 resource_keys=resource_keys,
                 ))
 
-            print (POLICY_LDIF.format(
-                central_manager=central_manager,
-                ce_fqdn=ce_fqdn,
-                vo=voname,
-                ))
+            print(format_policy_entry(central_manager, ce_fqdn, voname))
+
 
 if __name__ == '__main__':
     main()
