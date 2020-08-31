@@ -188,6 +188,23 @@ def format_service_entry(central_manager, endpoints, vonames, site_name):
                                site_name=site_name)
 
 
+def format_endpoint_entry(central_manager, ce_schedd_ad):
+    name = ce_schedd_ad['Name']
+    version = ce_schedd_ad['CondorVersion']
+    state, state_info = find_ce_state(ce_schedd_ad, time_out)
+    issuer = get_cert_issuer('/etc/grid-security/hostcert.pem')
+
+    start_time = datetime.fromtimestamp(int(ce_schedd_ad['DaemonStartTime'])).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    return ENDPOINT_LDIF.format(name=name,
+                                version=version,
+                                state=state,
+                                state_info=state_info,
+                                start_time=start_time,
+                                issuer=issuer,
+                                central_manager=central_manager)
+
+
 def get_ce_schedd_ad(fqdn, port=9619):
     # find the CE using the default CE port
     ce_host = '%s:%s' % (fqdn, port)
@@ -313,7 +330,6 @@ def main():
     for ce_batch_schedd_ad in ce_batch_schedd_ads:
         ce_fqdn = ce_batch_schedd_ad['Machine']
         ce_schedd_ad = get_ce_schedd_ad(ce_fqdn)
-        state, state_info = find_ce_state(ce_schedd_ad)
         ce_schedd = htcondor.Schedd(ce_schedd_ad)
 
         try:
@@ -343,23 +359,7 @@ def main():
 
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
-        issuer = get_cert_issuer('/etc/grid-security/hostcert.pem')
-
-        name = ce_schedd_ad['Name']
-        start_time = datetime.fromtimestamp(
-            int(ce_schedd_ad['DaemonStartTime'])
-        ).strftime('%Y-%m-%dT%H:%M:%SZ')
-
-        print (ENDPOINT_LDIF.format(
-            name=name,
-            version=version,
-            state=state,
-            state_info=state_info,
-            start_time=start_time,
-            issuer=issuer,
-            central_manager=central_manager,
-            ))
-
+        print(format_endpoint_entry(central_manager, ce_schedd_ad))
 
         for voname in vonames:
             shareid = "%s_%s_share" % (ce_fqdn, voname)
