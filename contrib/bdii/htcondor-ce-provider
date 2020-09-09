@@ -162,17 +162,20 @@ def format_resource_name(machine_ad):
                      machine_ad.DetectedMemory])
 
 
-def format_resource_entry(central_manager, machine_ad, instances, specs):
-    resource = format_resource_name(machine_ad)
+def format_resource_entry(central_manager, machine_ad, instances):
+    return RESOURCE_LDIF.format(central_manager=central_manager,
+                                arch=machine_ad.Arch,
+                                os=machine_ad.OpSys,
+                                name=machine_ad.OpSysName,
+                                version=machine_ad.OpSysMajorVer,
+                                memory=machine_ad.DetectedMemory,
+                                cpu=machine_ad.DetectedCpus,
+                                instances=instances)
 
-    ldifs = [RESOURCE_LDIF.format(central_manager=central_manager,
-                                  arch=machine_ad.Arch,
-                                  os=machine_ad.OpSys,
-                                  name=machine_ad.OpSysName,
-                                  version=machine_ad.OpSysMajorVer,
-                                  memory=machine_ad.DetectedMemory,
-                                  cpu=machine_ad.DetectedCpus,
-                                  instances=instances)]
+def format_spec_entry(central_manager, machine_ad, specs):
+    ldifs = []
+
+    resource = format_resource_name(machine_ad)
 
     for spec_type, spec_value in specs.items():
         spec_type = spec_type.strip().replace('_', '-')
@@ -365,7 +368,8 @@ def main():
 
     # Print the entry for the GLUE2 Resource
     for resource, instances in topologies.items():
-        print(format_resource_entry(central_manager, resource, instances, specs))
+        print(format_resource_entry(central_manager, resource, instances))
+        print(format_spec_entry(central_manager, resource, specs))
 
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
