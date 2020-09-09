@@ -13,7 +13,7 @@ import re
 import sys
 from datetime import datetime
 import subprocess
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 import signal
 import htcondor
 import classad as ca
@@ -150,26 +150,33 @@ def handler(signum, frame):
     """
     raise TimeoutError("TimeoutError")
 
+def format_resource_name(machine_ad):
+    return '_'.join([machine_ad.Arch,
+                     machine_ad.OpSys,
+                     machine_ad.OpSysName,
+                     machine_ad.OpSysMajorVer,
+                     machine_ad.DetectedCpus,
+                     machine_ad.DetectedMemory])
 
-def format_resource_entry(central_manager, arch, os, os_flavor, os_ver, cpus, memory, instances, specs):
-    resource = '_'.join([arch, os, os_flavor, os_ver, memory, cpus])
 
-    ldifs = RESOURCE_LDIF.format(central_manager=central_manager,
-                                 resource=resource,
-                                 arch=arch,
-                                 os=os,
-                                 name=os_flavor,
-                                 version=os_ver,
-                                 memory=memory,
-                                 cpu=cpus,
-                                 instances=instances)
+def format_resource_entry(central_manager, machine_ad, instances, specs):
+    resource = format_resource_name(machine_ad)
+
+    ldifs = [RESOURCE_LDIF.format(central_manager=central_manager,
+                                  arch=machine_ad.Arch,
+                                  os=machine_ad.OpSys,
+                                  name=machine_ad.OpSysName,
+                                  version=machine_ad.OpSysMajorVer,
+                                  memory=machine_ad.DetectedMemory,
+                                  cpu=machine_ad.DetectedCpus,
+                                  instances=instances)]
 
     for spec_type, spec_value in specs.items():
         spec_type = spec_type.strip().replace('_', '-')
-        ldifs += SPEC_LDIF.format(central_manager=central_manager,
-                                  resource=resource,
-                                  spec_type=spec_type,
-                                  spec_value=spec_value)
+        ldifs.append(SPEC_LDIF.format(central_manager=central_manager,
+                                      resource=resource,
+                                      spec_type=spec_type,
+                                      spec_value=spec_value))
 
     return '\n'.join(ldifs)
 
@@ -313,44 +320,35 @@ def main():
     # Query collector for the number of CPUs and batch system Collector ad
     coll = htcondor.Collector()
     total_cores = {}
-    topologies = {}
-    for classad in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"',
-                              ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName',
-                               'DetectedCpus', 'DetectedMemory', 'Machine']):
-        if not classad.get('Machine'):
-            continue  # skip malformed ads where we can't provide additional information
+    topologies = defaultdict(int)
+    machine_attrs = ['Arch', 'OpSys', 'OpSysMajorVer', 'OpSysName', 'DetectedCpus', 'DetectedMemory']
+    machine_tuple = namedtuple('machine_tuple', machine_attrs)
 
+    for startd in coll.query(htcondor.AdTypes.Startd, 'State=!="Owner"', machine_attrs + ['Machine']):
         try:
-            if classad['Machine'] not in total_cores:
-                total_cores[classad['Machine']] = classad['DetectedCpus']
+            # Format the attributes for printing
+            resource_class = machine_tuple(Arch=startd['Arch'].lower(),
+                                           OpSys=startd['OpSys'].lower(),
+                                           OpSysMajorVer=str(startd['OpSysMajorVer']),
+                                           OpSysName=startd['OpSysName'],
+                                           DetectedCpus=str(startd['DetectedCpus']),
+                                           DetectedMemory=str(startd['DetectedMemory']))
 
-            machine = (
-                classad['Arch'].lower(),
-                classad['OpSys'].lower(),
-                classad['OpSysName'],
-                classad['OpSysMajorVer'],
-                classad['DetectedCpus'],
-                classad['DetectedMemory']
-            )
-            if machine not in topologies:
-                topologies[machine] = 1
-            else:
-                topologies[machine] += 1
+            if startd['Machine'] not in total_cores:
+                total_cores[startd['Machine']] = startd['DetectedCpus']
         except KeyError, exc:
             msg = "Malformed machine ad: Missing '{0}' attribute for {1}"\
-                   .format(exc, classad['Machine'])
+                   .format(exc, startd['Machine'])
             sys.stderr.write(msg)
 
-    resources = []
-
+        topologies[resource_class] += 1
 
     # Get from the configuration types and values of the benchmarks
     specs = ca.ClassAd(htcondor.param.get('HTCONDORCE_SPEC', "[]"))
 
     # Print the entry for the GLUE2 Resource
-    for tup in topologies:
-        instances = topologies[tup]
-        print(format_resource_entry(central_manager, tup[0], tup[1], tup[2], tup[3], tup[4], tup[5], instances, specs))
+    for resource, instances in topologies.items():
+        print(format_resource_entry(central_manager, resource, instances, specs))
 
     coll_ad = coll.query(htcondor.AdTypes.Collector)[0]  # the pool collector ad
     version = coll_ad['CondorVersion'].split()[1]
