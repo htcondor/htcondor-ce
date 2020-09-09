@@ -45,11 +45,11 @@ GLUE2ComputingManagerComputingServiceForeignKey: {central_manager}
 """
 
 
-RESOURCE_LDIF = """dn: GLUE2ResourceID={central_manager}_{resource},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
+RESOURCE_LDIF = """dn: GLUE2ResourceID={central_manager}_{arch}_{os}_{name}_{version}_{cpu}_{memory},GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 objectClass: GLUE2Entity
 objectClass: GLUE2Resource
 objectClass: GLUE2ExecutionEnvironment
-GLUE2ResourceID: {central_manager}_{resource}
+GLUE2ResourceID: {central_manager}_{arch}_{os}_{name}_{version}_{cpu}_{memory}
 GLUE2ExecutionEnvironmentMainMemorySize: {memory}
 GLUE2ExecutionEnvironmentVirtualMemorySize: {memory}
 GLUE2ExecutionEnvironmentOSFamily: {os}
