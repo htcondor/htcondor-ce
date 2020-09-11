@@ -201,7 +201,7 @@ def format_service_entry(central_manager, endpoints, vonames, site_name):
                                site_name=site_name)
 
 
-def format_endpoint_entry(central_manager, ce_schedd_ad):
+def format_endpoint_entry(central_manager, ce_schedd_ad, time_out):
     name = ce_schedd_ad['Name']
     version = ce_schedd_ad['CondorVersion']
     state, state_info = find_ce_state(ce_schedd_ad, time_out)
@@ -266,6 +266,7 @@ def find_ce_state(ce_schedd_ad, time_out):
     except TimeoutError:
         sys.stderr.write("Ping to CE schedd on %s timed out after %i s.\n"
                          % (ce_schedd_ad['Name'], time_out))
+        raise
 
     signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
@@ -304,6 +305,7 @@ def get_ce_jobs(ce_schedd_ad, time_out):
                 running_vo_jobs[job['x509userproxyvoname']] += 1
     except TimeoutError as exc:
         sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_fqdn, time_out)
+        raise
 
     signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
@@ -388,9 +390,15 @@ def main():
         ce_fqdn = ce_batch_schedd_ad['Machine']
         ce_schedd_ad = get_ce_schedd_ad(ce_fqdn)
 
-        total_vo_jobs, idle_vo_jobs, running_vo_jobs = get_ce_jobs(ce_schedd_ad, time_out)
+        try:
+            print(format_endpoint_entry(central_manager, ce_schedd_ad, time_out))
+        except TimeoutError:
+            continue
 
-        print(format_endpoint_entry(central_manager, ce_schedd_ad))
+        try:
+            total_vo_jobs, idle_vo_jobs, running_vo_jobs = get_ce_jobs(ce_schedd_ad, time_out)
+        except TimeoutError:
+            continue
 
         for voname in vonames:
             total_jobs = total_vo_jobs.get(voname, 0)
