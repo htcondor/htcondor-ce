@@ -243,13 +243,7 @@ def get_ce_schedd_ad(fqdn, port=9619):
     # find the CE using the default CE port
     ce_host = '%s:%s' % (fqdn, port)
     ce_collector = htcondor.Collector(ce_host)
-    try:
-        ce_schedd_ad = ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(fqdn))[0]
-    except (RuntimeError, IndexError):
-        sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_host)
-    except EnvironmentError:
-        sys.stderr.write("Failed communication with CE collector on %s\n" % ce_host)
-    return ce_schedd_ad
+    return ce_collector.query(htcondor.AdTypes.Schedd, 'Name =?= "{0}"'.format(fqdn))[0]
 
 
 def find_ce_state(ce_schedd_ad, time_out):
@@ -389,7 +383,14 @@ def main():
 
     for ce_batch_schedd_ad in ce_batch_schedd_ads:
         ce_fqdn = ce_batch_schedd_ad['Machine']
-        ce_schedd_ad = get_ce_schedd_ad(ce_fqdn)
+        try:
+            ce_schedd_ad = get_ce_schedd_ad(ce_fqdn)
+        except (RuntimeError, IndexError):
+            sys.stderr.write("Unable to locate CE schedd on %s\n" % ce_fqdn)
+            continue
+        except EnvironmentError:
+            continue
+            sys.stderr.write("Failed communication with CE collector on %s\n" % ce_fqdn)
 
         try:
             print(format_endpoint_entry(central_manager, ce_schedd_ad, time_out))
