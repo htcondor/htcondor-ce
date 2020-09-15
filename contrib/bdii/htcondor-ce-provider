@@ -223,13 +223,14 @@ def format_share_entry(central_manager, ce_fqdn, voname, topologies, total_jobs,
     for machine_ad in topologies:
         resource = format_resource_name(machine_ad)
         resource_keys += RESOURCE_KEY.format(central_manager=central_manager, resource=resource)
-        return SHARE_LDIF.format(ce_fqdn=ce_fqdn,
-                                 voname=voname,
-                                 total_vo_jobs=total_jobs,
-                                 idle_vo_jobs=idle_jobs,
-                                 running_vo_jobs=running_jobs,
-                                 central_manager=central_manager,
-                                 resource_keys=resource_keys)
+
+    return SHARE_LDIF.format(ce_fqdn=ce_fqdn,
+                             voname=voname,
+                             total_vo_jobs=total_jobs,
+                             idle_vo_jobs=idle_jobs,
+                             running_vo_jobs=running_jobs,
+                             central_manager=central_manager,
+                             resource_keys=resource_keys)
 
 
 def format_policy_entry(central_manager, ce_fqdn, voname):
