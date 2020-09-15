@@ -203,7 +203,7 @@ def format_service_entry(central_manager, endpoints, vonames, site_name):
 
 def format_endpoint_entry(central_manager, ce_schedd_ad, time_out):
     name = ce_schedd_ad['Name']
-    version = ce_schedd_ad['CondorVersion']
+    version = ce_schedd_ad['CondorVersion'].split()[1]
     state, state_info = find_ce_state(ce_schedd_ad, time_out)
     issuer = get_cert_issuer('/etc/grid-security/hostcert.pem')
 
