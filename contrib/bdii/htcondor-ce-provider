@@ -125,7 +125,7 @@ objectClass: GLUE2Policy
 objectClass: GLUE2MappingPolicy
 GLUE2PolicyID: {ce_fqdn}_{voname}_policy
 GLUE2PolicyScheme: org.glite.standard
-GLUE2PolicyRule: vo:{vo}
+GLUE2PolicyRule: vo:{voname}
 GLUE2MappingPolicyShareForeignKey: {ce_fqdn}_{voname}_share
 
 dn: GLUE2PolicyID={ce_fqdn}_{voname}_policy_access,GLUE2ShareID={ce_fqdn}_{voname}_share,GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
