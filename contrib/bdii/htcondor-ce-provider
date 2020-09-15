@@ -103,7 +103,7 @@ SHARE_LDIF = """dn: GLUE2ShareID={ce_fqdn}_{voname}_share,GLUE2ServiceID={centra
 objectClass: GLUE2Entity
 objectClass: GLUE2Share
 objectClass: GLUE2ComputingShare
-GLUE2ShareID: {share_fqdn}_{voname}_share
+GLUE2ShareID: {ce_fqdn}_{voname}_share
 GLUE2ComputingShareServingState: production
 GLUE2ComputingShareTotalJobs: {total_vo_jobs}
 GLUE2ComputingShareWaitingJobs: {idle_vo_jobs}
