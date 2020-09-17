@@ -26,6 +26,9 @@ submitted from job factories.
 Successful pilot jobs create and make available an environment for end-user jobs to match and ultimately run within
 the pilot job.
 
+!!! note
+    The Compute Entrypoint was previously known as the "Compute Element".
+
 What is HTCondor-CE?
 --------------------
 
