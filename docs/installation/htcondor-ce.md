@@ -3,7 +3,7 @@ Installing an HTCondor-CE
 
 !!! note
     If you are installing an HTCondor-CE for the Open Science Grid (OSG), consult the
-    [OSG-specific documentation](https://opensciencegrid.org/docs/compute-entrypoint/install-htcondor-ce/).
+    [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
 The [HTCondor-CE](overview) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Entrypoints
 (CE) belonging to a computing grid
