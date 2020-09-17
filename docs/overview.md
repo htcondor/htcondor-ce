@@ -13,10 +13,10 @@ Before continuing with the overview, make sure that you are familiar with the fo
 -   Pilot jobs and factories (e.g., [GlideinWMS](http://glideinwms.fnal.gov/doc.prd/index.html),
     [PanDA](http://news.pandawms.org/), [DIRAC](https://dirac.readthedocs.io/en/latest/index.html))
 
-What is a Compute Element?
+What is a Compute Entrypoint?
 --------------------------
 
-A Compute Element (CE) is the entry point for grid jobs into your local resources.
+A Compute Entrypoint (CE) is the entry point for grid jobs into your local resources.
 CEs are made up of a layer of software that you install on a machine that can submit jobs into your local batch system.
 At the heart of the CE is the *job gateway* software, which is responsible for handling incoming jobs, authenticating
 and authorizing them, and delegating them to your batch system for execution.
