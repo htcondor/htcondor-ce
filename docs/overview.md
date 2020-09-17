@@ -23,6 +23,9 @@ and ultimately run within the pilot job.
 CEs are made up of a thin layer of software that you install on a machine that already has the ability to submit and
 manage jobs in your local batch system.
 
+!!! note
+    The Compute Entrypoint was previously known as the "Compute Element".
+
 What is HTCondor-CE?
 --------------------
 
