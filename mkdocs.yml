@@ -24,7 +24,7 @@ pages:
 #   - Helpful Logs: 'troubleshooting/logs.md'
 - Releases: 'releases.md'
 - Central Grid Operations:
-#   - Job Submission: 'job-submission.md'
+    - Submit Jobs Remotely: 'remote-job-submission.md'
     - Install a Central Collector: 'installation/central-collector.md'
 #   - Install a Hosted CE: 'installation/hosted-ce.md'
 - Reference: 'reference.md'
