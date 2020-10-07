@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import sys
@@ -323,10 +323,10 @@ def pick_condor_addr():
                 addrs.add(ipv4_addr)
     if not ranked:
         if iface_pattern == "*":
-            print >> sys.stderr, "No available network addresses detected."
+            print("No available network addresses detected.", file=sys.stderr)
         else:
-            print >> sys.stderr, "NETWORK_INTERFACE value %s does not match any detected addresses or interfaces." % iface_pattern
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+            print(f"NETWORK_INTERFACE value {iface_pattern} does not match any detected addresses or interfaces.", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
     best = ranked[max(ranked)].pop()
     return best
@@ -334,7 +334,7 @@ def pick_condor_addr():
 def log(msg, *format):
     """Write message to stdout unless program was asked to be quiet."""
     if g_verbose:
-        print msg % format
+        print(msg % format)
 
 
 def parse_opts():
@@ -403,24 +403,24 @@ def main():
         fd = os.popen("openssl x509 -in %s -noout -subject" % hostcert)
         dn = fd.read().strip()
         if fd.close() or not dn:
-            print >> sys.stderr, "WARNING: OpenSSL unable to parse host certificate %s; GSI configuration will likely fail." % hostcert
+            print(f"WARNING: OpenSSL unable to parse host certificate {hostcert}; GSI configuration will likely fail.", file=sys.stderr)
         else:
             host_dn = dn.split("/CN=")[-1].lower()
             if host_dn != default_fqdn:
-                print >> sys.stderr, "Host certificate (%s) does not match HTCondor-CE hostname %s." % (dn, default_fqdn)
-                print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+                print(f"Host certificate ({dn}) does not match HTCondor-CE hostname {default_fqdn}", file=sys.stderr)
+                print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
                 sys.exit(1)
     else:
-        print >> sys.stderr, "WARNING: Unable to access certificate file at %s; skipping host certificate name check." % hostcert
+        print(f"WARNING: Unable to access certificate file at {hostcert}; skipping host certificate name check.", file=sys.stderr)
 
 
     # Forward resolution: resolve the host's FQDN on port 9618 to an IPv4 address.
     # Exit with an error if resolving fails.
     try:
         ipv4_forward_addr = socket.getaddrinfo(default_fqdn, 9618, socket.AF_INET)[0][4][0]
-    except socket.gaierror, e:
-        print >> sys.stderr, "Failed to resolve hostname %s to an address: %s" % (default_fqdn, str(e))
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+    except socket.gaierror as exc:
+        print(f"Failed to resolve hostname {default_fqdn} to an address: {exc}", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
 
     log("Forward resolution of hostname %s is %s.", default_fqdn, ipv4_forward_addr)
@@ -431,17 +431,17 @@ def main():
     try:
         host_reverse = socket.getnameinfo((ipv4_forward_addr, 9618), socket.NI_NAMEREQD)[0].lower()
         host_reverse = socket.getfqdn(host_reverse).lower()
-    except socket.gaierror, e:
-        print >> sys.stderr, "Failed to resolve address %s to hostname: %s" % (ipv4_forward_addr, str(e))
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+    except socket.gaierror as exc:
+        print(f"Failed to resolve address {ipv4_forward_addr} to hostname: {exc}", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
 
     log("Backward resolution of IPv4 %s is %s.", ipv4_forward_addr, host_reverse)
 
     # Exit with an error if forward and reverse resolution do not match.
     if host_reverse != default_fqdn:
-        print >> sys.stderr, "Backward resolution of address %s to %s does not match default hostname %s." % (ipv4_forward_addr, host_reverse, default_fqdn)
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+        print(f"Backward resolution of address {ipv4_forward_addr} to {host_reverse} does not match default hostname {default_fqdn}.", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
 
     log("Forward and backward resolution match!")
@@ -453,9 +453,9 @@ def main():
 
     if not htcondor.param['BIND_ALL_INTERFACES'] and (htcondor.param['NETWORK_INTERFACE'] != "*"):
         if is_private_addr(condor_addr):
-            print >> sys.stderr, "WARNING: The address %s is a private address; using only this address may not result in a public-facing service." % condor_addr
+            print(f"WARNING: The address {condor_addr} is a private address; using only this address may not result in a public-facing service.", file=sys.stderr)
         elif is_loopback_addr(condor_addr):
-            print >> sys.stderr, "WARNING: The address %s is a loopback address; using only this address will not result in a public-facing service." % condor_addr
+            print(f"WARNING: The address {condor_addr} is a loopback address; using only this address will not result in a public-facing service.", file=sys.stderr)
 
     # If the address selected by HTCondor-CE is the same as the address the
     # FQDN resolves to, we are done with network validation!
@@ -471,28 +471,28 @@ def main():
     try:
         host_reverse = socket.getnameinfo((condor_addr, 9618), socket.NI_NAMEREQD)[0].lower()
         host_reverse = socket.getfqdn(host_reverse).lower()
-    except socket.gaierror, e:
-        print >> sys.stderr, "Failed to resolve condor address %s to hostname: %s" % (condor_addr, str(e))
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+    except socket.gaierror as exc:
+        print(f"Failed to resolve condor address {condor_addr} to hostname: {exc}", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
 
     if host_reverse != default_fqdn:
-        print >> sys.stderr, "Backward resolution of HTCondor address %s to %s does not match default hostname %s." % (condor_addr, host_reverse, default_fqdn)
+        print(f"Backward resolution of HTCondor address {condor_addr} to {host_reverse} does not match default hostname {default_fqdn}.", file=sys.stderr)
         if is_private_addr(ipv4_forward_addr) or is_loopback_addr(ipv4_forward_addr):
-            print >> sys.stderr, "The address of %s is not a publicly routable one; forcing use of that instead may not result in a usable service." % ipv4_forward_addr
+            print(f"The address of {ipv4_forward_addr} is not a publicly routable one; forcing use of that instead may not result in a usable service.", file=sys.stderr)
         else:
-            print >> sys.stderr, "Try setting BIND_ALL_INTERFACES=false, NETWORK_INTERFACE=%s to force the HTCondor to use only %s." % (ipv4_forward_addr, ipv4_forward_addr)
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+            print(f"Try setting BIND_ALL_INTERFACES=false, NETWORK_INTERFACE={ipv4_forward_addr} to force the HTCondor to use only {ipv4_forward_addr}.", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
     else:
         log("Backward of resolution of HTCondor address %s matches default hostname of %s.", condor_addr, default_fqdn)
 
     try:
         addresses = socket.getaddrinfo(default_fqdn, 9618, socket.AF_INET)
-    except socket.gaierror, e:
+    except socket.gaierror as exc:
         # Shouldn't happen - we already checked for this
-        print >> sys.stderr, "Failed to resolve hostname %s to an address: %s" % (default_fqdn, str(e))
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+        print(f"Failed to resolve hostname {default_fqdn} to an address: {exc}", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
 
     # Verify that one of the addresses the FQDN resolves to is the address
@@ -505,8 +505,8 @@ def main():
             found_forward_map = True
             break
     if not found_forward_map:
-        print >> sys.stderr, "HTCondor primary address %s is not a valid address for default FQDN of %s." % (condor_addr, default_fqdn)
-        print >> sys.stderr, "Host network configuration not expected to work with HTCondor-CE."
+        print(f"HTCondor primary address {condor_addr} is not a valid address for default FQDN of {default_fqdn}.", file=sys.stderr)
+        print("Host network configuration not expected to work with HTCondor-CE.", file=sys.stderr)
         sys.exit(1)
     else:
         log("Forward resolution of default hostname (%s) includes default HTCondor address %s.", default_fqdn, condor_addr)
@@ -515,4 +515,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

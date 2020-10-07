@@ -133,7 +133,7 @@ def main():
 
     result = exchange_scitoken(pool, args.name, args.scitoken, token_dir, debug=args.debug)
     if result:
-        print(result.decode('ascii'), end="")
+        print(result.decode('ascii'), end='')
     else:
         print("Failed to exchange SciToken in %s with CE at %s" % (args.scitoken, args.name), file=sys.stderr)
         sys.exit(3)

@@ -20,7 +20,7 @@ bad_dirs=$(stat --format "%n (%U:%G)" $required_dirs | awk '$2 != "(condor:condo
 # Skip sanity checks if running as a central collector
 if [ "$1" != "collector" ]; then
     # Verify configuration using the python bindings
-    python /usr/share/condor-ce/verify_ce_config.py || exit 6
+    python3 /usr/share/condor-ce/verify_ce_config.py || exit 6
 else
     shift
 fi

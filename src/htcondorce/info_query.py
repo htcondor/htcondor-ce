@@ -1,5 +1,3 @@
-import itertools
-
 import classad
 import htcondor
 
@@ -141,14 +139,14 @@ def filterResourceAds(constraints, resources):
 
     """
     predicates = []
-    for attr, value in constraints.iteritems():
+    for attr, value in constraints.items():
         if value is None:
             continue
         # NB: Do not use 'attr' or 'value' inside the lambdas because that
         # would be 'closing over the loop variable'
         if attr == 'cpus':
             predicates.append(
-                lambda res: constraints['cpus'] <= res.get('CPUs', res.get('Cpus')))
+                lambda res: False if (res.get('CPUs', res.get('Cpus')) is None) else (constraints['cpus'] <= res.get('CPUs', res.get('Cpus'))))
         elif attr == 'constrain':
             predicates.append(
                 lambda res: bool(evalExpressionStr(constraints['constrain'], res)))
@@ -166,8 +164,7 @@ def filterResourceAds(constraints, resources):
                 lambda res: matchWallTime(constraints['walltime'], res))
 
     for pred in predicates:
-        resources = itertools.ifilter(pred, resources)
+        resources = filter(pred, resources)
 
     return resources
-
 

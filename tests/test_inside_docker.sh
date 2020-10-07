@@ -24,7 +24,7 @@ function run_integration_tests {
     osg-ca-generator --host --user $test_user --pass $test_user
 
     # add the host subject DN to the top of the condor_mapfile
-    host_dn=$(python -c "import cagen; print cagen.certificate_info('/etc/grid-security/hostcert.pem')[0]")
+    host_dn=$(python3 -c "import cagen; print(cagen.certificate_info('/etc/grid-security/hostcert.pem')[0])")
     host_dn=${host_dn//\//\\/} # escape all forward slashes
     entry="GSI \"${host_dn}\" $(hostname --long)@daemon.htcondor.org"
     ce_mapfile='/etc/condor-ce/condor_mapfile'
@@ -117,7 +117,7 @@ yum install -y globus-proxy-utils $extra_packages
 
 # Run unit tests
 pushd htcondor-ce/tests/
-python run_tests.py
+python3 run_tests.py
 popd
 
 # HTCondor really, really wants a domain name.  Fake one.
@@ -128,7 +128,7 @@ sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 git clone -q https://github.com/opensciencegrid/osg-ca-generator.git
 pushd osg-ca-generator
 git rev-parse HEAD
-make install
+make install PYTHON=/usr/bin/python3
 popd
 
 # Bind on the right interface and skip hostname checks.

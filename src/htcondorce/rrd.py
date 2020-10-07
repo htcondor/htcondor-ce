@@ -25,7 +25,7 @@ def check_rrd(environ, host, plot, group=None, name=None):
     dirname, _ = os.path.split(path)
     try:
         os.makedirs(dirname)
-    except OSError, exc:
+    except OSError as exc:
         if exc.errno != errno.EEXIST:
             raise
     if os.path.exists(path):

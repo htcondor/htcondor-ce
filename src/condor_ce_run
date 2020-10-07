@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import os
 import re
 import sys
@@ -121,20 +121,20 @@ def submit_job(job_info):
     # Example output: 1 job(s) submitted to cluster 14.
     cluster_re = re.compile(r'(\d+) job\(s\) submitted to cluster (\d+)\.')
     try:
-        job_info['cluster'] = cluster_re.search(stdout).group(2)
+        job_info['cluster'] = cluster_re.search(ce.to_str(stdout)).group(2)
     except AttributeError:
         pass
 
     if job_info['remote'] and ('cluster' not in job_info):
         raise ce.CondorRunException("Could not parse job cluster from " \
-                                    "condor_submit output.\nSTDOUT: %s\n STDERR: %s" % (stdout, stderr))
+                                    "condor_submit output.\nSTDOUT: %s\n STDERR: %s" % (ce.to_str(stdout), ce.to_str(stderr)))
 
     if rc < 0:
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
-                                    "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
+                                    "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, ce.to_str(stdout), ce.to_str(stderr)))
     elif rc > 0:
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
-                                    "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (rc, stdout, stderr))
+                                    "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (rc, ce.to_str(stdout), ce.to_str(stderr)))
 
 def wait_for_job(job_info):
     if job_info['remote']:
@@ -162,7 +162,7 @@ def check_remote_status(job_info):
     rc, stdout, stderr = ce.run_command(args)
     job_status = None
     status_re = re.compile(r"(\d+)")
-    for line in stdout:
+    for line in ce.to_str(stdout):
         try:
             job_status = int(status_re.match(line).group(1))
         except AttributeError:
@@ -199,14 +199,14 @@ def wait_for_job_remote(job_info):
 
 def print_results(job_info):
     for line in open(job_info["stdout_file"], "r").readlines():
-        print line,
+        print(line, end='')
 
     for line in open(job_info["stderr_file"], "r").readlines():
-        print line,
+        print(line, end='')
 
 def configureAuth():
     try:
-        auth_methods = re.split(r",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
+        auth_methods = re.split(r"[,\s]+", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
     except KeyError:
         auth_methods = []
     if 'GSI' not in auth_methods:
@@ -223,7 +223,7 @@ def main():
         configureAuth()
 
     if len(args) < 2:
-        print "Usage: condor_ce_run <hostname> <command> [arg1] [arg2] [...]"
+        print("Usage: condor_ce_run <hostname> <command> [arg1] [arg2] [...]")
         return 1
 
     collector_hostname = args[0].split(":")[0]
@@ -257,8 +257,8 @@ def main():
     except TypeError:
         # No attribute file was specified but the extra_attr key is expected by the submit files
         job_info['extra_attr'] = ''
-    except IOError, e:
-        ce.print_formatted_msg("Could not open extra attributes file. %s" % e)
+    except IOError as exc:
+        ce.print_formatted_msg(f"Could not open extra attributes file. {exc}")
         sys.exit(1)
 
     job_info.update(ce.generate_job_files())
@@ -268,11 +268,11 @@ def main():
         if opts.dry_run:
             ce.print_formatted_msg("Without the --dry-run option, condor_ce_run would submit the following " \
                                    "file to %s." % job_info["schedd_name"])
-            print "\n%s" % run_script # don't wrap the submit file
+            print(f"\n{run_script}") # don't wrap the submit file
         else:
             pid = os.getpid()
             submit_fd, job_info['submit_file'] = tempfile.mkstemp(dir=".", prefix=".submit_%d_" % pid)
-            os.write(submit_fd, run_script)
+            os.write(submit_fd, ce.to_bytes(run_script))
             os.close(submit_fd)
             submit_job(job_info)
             wait_for_job(job_info)
@@ -286,9 +286,9 @@ def main():
 if __name__ == '__main__':
     try:
         sys.exit(main())
-    except ce.CondorRunException, e:
+    except ce.CondorRunException as exc:
         try:
             if os.environ['CONDOR_CE_RUN_DEBUG'].lower() == 'true':
                 traceback.print_exc()
         except KeyError:
-            ce.print_timestamped_msg(e)
+            ce.print_timestamped_msg(exc)

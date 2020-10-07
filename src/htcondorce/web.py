@@ -8,7 +8,7 @@ import types
 import socket
 import logging
 import xml.sax.saxutils
-import urlparse
+from urllib.parse import urlparse
 
 import genshi.template
 

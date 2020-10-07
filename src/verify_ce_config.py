@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/bin/env python3
 
 """
 Verify HTCondor-CE configuration before service startup

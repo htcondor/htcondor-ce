@@ -20,10 +20,13 @@ rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.n
 # Broken mirror?
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
-yum -y -d0 install yum-plugin-priorities rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl
+yum -y -d0 install rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl python3 python-srpm-macros python-rpm-macros python3-rpm-macros python3-devel rrdtool rrdtool-devel
+if (( $OS_VERSION < 8 )); then
+    yum -y -d0 install yum-plugin-priorities
+fi
 
 if [[ $BUILD_ENV == osg ]]; then
-    rpm -U https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
+    rpm -U https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
 else
     pushd /etc/yum.repos.d
     yum install -y -d0 wget
@@ -61,3 +64,12 @@ mkdir -p htcondor-ce/travis_deploy
 cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/travis_deploy/
 cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/travis_deploy/
 
+# Install the python3 rrdtool manually, must be compiled from source to import correctly
+git clone -q https://github.com/commx/python-rrdtool
+pushd python-rrdtool
+python3 setup.py install
+popd
+
+# Manually install the required python3 packages
+# TODO: These should be getting installed from the requirements.txt file.
+pip3 install flask genshi CherryPy==3.*

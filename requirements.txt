@@ -1,5 +1,6 @@
 htcondor
 # Requirement for CEView
+rrdtool
 # Newer versions of CherryPy do not include cherrypy.wsgiserver
 CherryPy >= 3.2, == 3.*
 # Requirements for registry
