@@ -23,7 +23,11 @@ echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.c
 yum -y -d0 install yum-plugin-priorities rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl
 
 if [[ $BUILD_ENV == osg ]]; then
-    rpm -U https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
+    if [[ $OS_VERSION == 6 ]]; then
+        rpm -U https://repo.opensciencegrid.org/osg/3.4/osg-3.4-el${OS_VERSION}-release-latest.rpm
+    else
+        rpm -U https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
+    fi
 else
     pushd /etc/yum.repos.d
     yum install -y -d0 wget
