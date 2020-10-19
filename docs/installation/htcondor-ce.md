@@ -318,6 +318,9 @@ To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor
 
 #### Uploading accounting records to APEL ####
 
+!!! note "Batch System Support"
+    HTCondor-CE only supports generation of APEL accounting records for HTCondor batch systems.
+
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
 blah APEL records for HTCondor batch systems:
 
@@ -341,6 +344,9 @@ blah APEL records for HTCondor batch systems:
    [services](/verification#managing-htcondor-ce-services)
 
 #### Enabling BDII integration ####
+
+!!! note "Batch System Support"
+    HTCondor-CE only supports reporting BDII information for HTCondor batch systems.
 
 HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
 batch system.
