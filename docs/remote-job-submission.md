@@ -44,6 +44,11 @@ On success, you will see `Job status: Completed` and the job's environment on th
 If you do not see the expected output, refer to the
 [troubleshooting guide](troubleshooting/troubleshooting#condor_ce_trace).
 
+!!! note "CONDOR_CE_TRACE_ATTEMPTS"
+    For a busy site cluster, it may take longer than the default 5 minutes to test end-to-end submission.
+    To extend the length of time that `condor_ce_trace` waits for the job to complete, prepend the command with
+    `_condor_CONDOR_CE_TRACE_ATTEMPTS=<TIME IN SECONDS>`.
+
 ### (Optional) Requesting resources ###
 
 `condor_ce_trace` doesn't make any specific resource requests so its jobs are only given the default resources as

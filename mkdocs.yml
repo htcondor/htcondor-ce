@@ -25,6 +25,7 @@ pages:
 - Releases: 'releases.md'
 - Central Grid Operations:
     - Submit Jobs Remotely: 'remote-job-submission.md'
+    - Remote Troubleshooting: 'troubleshooting/remote-troubleshooting.md'
     - Install a Central Collector: 'installation/central-collector.md'
 #   - Install a Hosted CE: 'installation/hosted-ce.md'
 - Reference: 'reference.md'
