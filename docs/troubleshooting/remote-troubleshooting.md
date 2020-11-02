@@ -135,7 +135,7 @@ nu_lhcb ID: 24638   10/18 15:15      7      _      _      _      8 24638.1
 You can inspect the details of a specific resource request with the `-long` option:
 
 ```console
-$ condor_q -all -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -l 24631.5
+$ condor_q -all -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -long 24631.5
 Arguments = ""
 BufferBlockSize = 32768
 BufferSize = 524288
@@ -202,8 +202,8 @@ After you have retrieved your credential, verify that you have the ability to su
 (i.e., `WRITE` access) with [condor_ping](https://htcondor.readthedocs.io/en/latest/man-pages/condor_ping.html):
 
 ```console
-$ _condor_SEC_CLIENT_AUTHENTICATION_METHODS=SCITOKENS,GSI
-$ _condor_SEC_TOOL_DEBUG=D_SECURITY:2  # Extremely verbose debugging for troubleshooting authentication issues
+$ export _condor_SEC_CLIENT_AUTHENTICATION_METHODS=SCITOKENS,GSI
+$ export _condor_SEC_TOOL_DEBUG=D_SECURITY:2  # Extremely verbose debugging for troubleshooting authentication issues
 $ condor_ping -name htcondor-ce.chtc.wisc.edu \
               -pool htcondor-ce.chtc.wisc.edu:9619 \
               -verbose \
