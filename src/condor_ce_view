@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import pwd
@@ -15,6 +15,7 @@ import cherrypy.wsgiserver
 
 import htcondor
 import htcondorce.web
+import htcondorce.tools as ce
 
 
 ALIVE_HEARTBEAT = 60
@@ -146,7 +147,7 @@ class WSGILogging(object):
                     break
             return start_response(status, response_headers, exc_info)
         retval = self.app(environ, custom_start_response)
-        content_length = content_lengths[0] if content_lengths else len(b''.join(retval))
+        content_length = content_lengths[0] if content_lengths else len("".join(retval))
 
         msg = { \
             'host': environ.get('REMOTE_ADDR', ''),
@@ -239,7 +240,6 @@ def main():
     if os.geteuid() == 0:
         uid, gid = condor_ids()
         cherrypy.process.plugins.DropPrivileges(cherrypy.engine, uid=uid, gid=gid).subscribe()
-
     cherrypy.engine.start()
 
     if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
@@ -249,7 +249,6 @@ def main():
     # Periodically update to make sure we're still a multi-ce (or not)
     wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
     wd.start()
-
     cherrypy.engine.block()
 
 

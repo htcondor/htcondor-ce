@@ -23,11 +23,11 @@ class CondorUserException(Exception):
 
 def print_formatted_msg(msg):
     """Limit output messages to 80 characters in width"""
-    print "*"*80
+    print("*"*80)
     wrapper = textwrap.TextWrapper(width=80)
     for line in msg.split('\n'):
-        print wrapper.fill(line)
-    print "*"*80
+        print(wrapper.fill(line))
+    print("*"*80)
 
 def print_timestamped_msg(msg):
     """Prepend the current date and time to a message"""
@@ -59,6 +59,26 @@ def cleanup_job_files(job_info):
             os.unlink(job_info[filetype + '_file'])
         except KeyError:
             pass
-        except OSError, e:
-            if e.errno != errno.ENOENT:
+        except OSError as exc:
+            if exc.errno != errno.ENOENT:
                 raise
+
+def to_str(strlike, encoding="latin-1", errors="strict"):
+    """Turns a bytes into a str or leaves it alone.
+    The default encoding is latin-1 (which will not raise
+    a UnicodeDecodeError); best to use when you want to treat the data
+    as arbitrary bytes, but some function is expecting a str.
+    """
+    if isinstance(strlike, bytes):
+        return strlike.decode(encoding, errors)
+    return strlike
+
+def to_bytes(strlike, encoding="latin-1", errors="backslashreplace"):
+    """Turns a str into bytes or leaves it alone.
+    The default encoding is latin-1 under the assumption that you have
+    obtained the str from to_str, applied some transformation, and want
+    to pass it back to the system.
+    """
+    if isinstance(strlike, str):
+        return strlike.encode(encoding, errors)
+    return strlike

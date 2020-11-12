@@ -47,13 +47,8 @@ Requires: /usr/bin/unshare
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
-%if 0%{?rhel} >= 8
 %define __python /usr/bin/python3
 Requires: python3-condor
-%else
-%define __python /usr/bin/python2
-Requires: python2-condor
-%endif
 Requires: bdii
 
 %description bdii
@@ -80,8 +75,9 @@ Requires: %{name}-master = %{version}-%{release}
 Requires: python-cherrypy
 Requires: python-genshi
 Requires: ganglia-gmond
-Requires: rrdtool-python
+Requires: rrdtool-devel
 Requires: python-flask
+Requires: python36-rpm
 
 %description view
 %{summary}
@@ -178,13 +174,8 @@ Requires: voms-clients
 Requires: grid-certificates >= 7
 %endif
 
-%if 0%{?rhel} >= 8
 %define __python /usr/bin/python3
 Requires: python3-condor
-%else
-%define __python /usr/bin/python2
-Requires: python2-condor
-%endif
 
 %description client
 %{summary}
@@ -386,6 +377,12 @@ fi
 
 %files view
 %defattr(-,root,root,-)
+
+/usr/lib/python3.6/site-packages/htcondorce/__pycache__/*.pyc
+/usr/share/condor-ce/__pycache__/*.pyc
+%if 0%{?osg}
+%{_datadir}/condor-ce/ceview-plugins/__pycache__/agis_json*.pyc
+%endif
 
 # Web package
 %{python_sitelib}/htcondorce/web.py*
