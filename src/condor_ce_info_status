@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from __future__ import print_function
 
 DEFAULT_COLLECTOR = 'collector.opensciencegrid.org:9619'
 DEFAULT_COLLECTOR_PORT = '9619'
