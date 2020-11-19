@@ -65,5 +65,4 @@ cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/travis_deploy/
 cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/travis_deploy/
 
 # Install the python requirements
-pwd
-pip3 install ../requirements.txt
+pip3 install /home/travis/build/htcondor/htcondor-ce/requirements.txt
