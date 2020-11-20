@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.4.1
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -521,6 +521,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Fri Nov 20 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.1-3
+- Fix blahp requirements for HTCondor 8.9.9 (HTCONDOR-84)
+- Remove OSG grid-certificates requirement duplicated by downstream
+  requirements in the osg-ce metapackage
+
 * Wed Jul 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.4.1-2
 - Change voms-clients-cpp requirement to voms-clients for non-OSG builds,
   because voms-clients-java works equally well
