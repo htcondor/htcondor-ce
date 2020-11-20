@@ -126,7 +126,6 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to Slurm
 Requires: %{name} = %{version}-%{release}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
 Requires: blahp
 
 %description slurm
