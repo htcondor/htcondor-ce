@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 4.4.1
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -99,12 +99,7 @@ Requires: %{name} = %{version}-%{release}
 Group: Applications/System
 Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description pbs
 %{summary}
@@ -113,12 +108,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to LSF
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description lsf
 %{summary}
@@ -127,12 +117,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description sge
 %{summary}
@@ -141,12 +126,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to Slurm
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description slurm
 %{summary}
@@ -172,10 +152,6 @@ Requires: condor
 Requires: voms-clients-cpp
 %else
 Requires: voms-clients
-%endif
-
-%if ! 0%{?uw_build}
-Requires: grid-certificates >= 7
 %endif
 
 %if 0%{?rhel} >= 8
@@ -544,6 +520,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Fri Nov 20 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.1-3
+- Fix blahp requirements for HTCondor 8.9.9 (HTCONDOR-84)
+- Remove OSG grid-certificates requirement duplicated by downstream
+  requirements in the osg-ce metapackage
+
 * Wed Jul 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.4.1-2
 - Change voms-clients-cpp requirement to voms-clients for non-OSG builds,
   because voms-clients-java works equally well

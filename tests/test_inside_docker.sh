@@ -99,6 +99,7 @@ mkdir -p /var/run/lock
 RPM_LOCATION=/tmp/rpmbuild/RPMS/noarch
 if [[ $BUILD_ENV == osg ]]; then
     extra_repos='--enablerepo=osg-development'
+    extra_packages='python3-rpm'
 else
     # UW build tests run against HTCondor 8.8.0, which does not automatically configure a personal condor
     # The 'minicondor' package now provides that configuration
