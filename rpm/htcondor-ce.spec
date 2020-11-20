@@ -155,10 +155,6 @@ Requires: voms-clients-cpp
 Requires: voms-clients
 %endif
 
-%if ! 0%{?uw_build}
-Requires: grid-certificates >= 7
-%endif
-
 %if 0%{?rhel} >= 8
 %define __python /usr/bin/python3
 Requires: python3-condor
