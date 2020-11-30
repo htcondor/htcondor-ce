@@ -37,7 +37,7 @@ def run_command(command):
     """Run a command and return its return code, stdout, and stderr"""
     p = Popen(command, stdout=PIPE, stderr=PIPE)
     stdout, stderr = p.communicate()
-    return p.returncode, stdout, stderr
+    return p.returncode, to_str(stdout), to_str(stderr)
 
 def generate_job_files():
     """Create temporary job log, stdout, and stderr files"""

@@ -4,13 +4,14 @@ import json
 import os
 import xml.etree.ElementTree as ET
 
-from six.moves.http_client import HTTPException
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.error import URLError
+from http.client import HTTPException
+from urllib.request import urlopen
+from urllib.error import URLError
 
 from flask import Flask, url_for, make_response, request
 import genshi.template
 import subprocess
+from tools import to_str
 
 _loader = None
 
@@ -88,9 +89,9 @@ def fetch_tokens(reqid, config):
         stdout=subprocess.PIPE, env=req_environ)
     stdout, stderr = process.communicate()
     if process.returncode:
-        raise CondorToolException("Failed to list internal requests: %s" % stderr)
+        raise CondorToolException("Failed to list internal requests: %s" % to_str(stderr))
     try:
-        json_obj = json.loads(stdout)
+        json_obj = json.loads(to_str(stdout))
     except json.JSONDecodeError:
         raise CondorToolException("Internal error: invalid format of request list")
 
@@ -111,7 +112,7 @@ def approve_token(reqid, config):
         stdout=subprocess.PIPE, stdin=subprocess.PIPE, env=req_environ)
     stdout, stderr = process.communicate(input="yes\n")
     if process.returncode:
-        raise CondorToolException("Failed to approve request: %s" % stderr)
+        raise CondorToolException("Failed to approve request: %s" % to_str(stderr))
 
 
 def create_app(test_config = None):
