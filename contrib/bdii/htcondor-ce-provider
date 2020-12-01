@@ -17,7 +17,6 @@ import signal
 import htcondor
 import classad as ca
 
-
 SERVICE_LDIF = """dn: GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 GLUE2ServiceID: {central_manager}
 objectClass: GLUE2Entity
@@ -137,6 +136,7 @@ GLUE2PolicyScheme: org.glite.standard
 GLUE2PolicyRule: vo:{voname}
 GLUE2AccessPolicyEndpointForeignKey: {ce_fqdn}_HTCondorCE
 """
+
 
 class TimeoutError(Exception):
     """

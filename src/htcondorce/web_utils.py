@@ -3,7 +3,6 @@ import os
 import re
 import json
 import time
-import types
 import socket
 import traceback
 
@@ -117,7 +116,7 @@ def ad_to_json(ad):
             result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
         else:
             val = val_expr.eval()
-            if isinstance(val, types.ListType) or isinstance(val, types.DictType):
+            if isinstance(val, list) or isinstance(val, dict):
                 result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
             else:
                 result[key] = val
