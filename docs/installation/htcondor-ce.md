@@ -33,7 +33,7 @@ There are some one-time (per host) steps to prepare in advance:
 
 - Ensure the host has a supported operating system (Red Hat Enterprise Linux variant 7)
 - Obtain root access to the host
-- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor](https://research.cs.wisc.edu/htcondor/yum/) Yum
+- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor Development](https://research.cs.wisc.edu/htcondor/yum/) Yum
   repositories
 - Install CA certificates and VO data into `/etc/grid-security/certificates` and `/etc/grid-security/vomsdir`,
   respectively
