@@ -8,7 +8,7 @@ import types
 import socket
 import logging
 import xml.sax.saxutils
-from urllib.parse import urlparse
+from urllib import parse
 
 import genshi.template
 
@@ -220,7 +220,7 @@ def jobs_json(environ, start_response):
     response = {}
 
 
-    parsed_qs = urlparse.parse_qs(environ['QUERY_STRING'])
+    parsed_qs = parse.parse_qs(environ['QUERY_STRING'])
 
     if 'projection' in parsed_qs:
         projection = parsed_qs['projection'][0].split(',')
