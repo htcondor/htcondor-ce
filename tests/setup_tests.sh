@@ -2,6 +2,9 @@
 
 # This script starts docker and systemd (if el7)
 
+OS_VERSION=$1
+BUILD_ENV=$2
+
 set -e
 
 # Run tests in Container
