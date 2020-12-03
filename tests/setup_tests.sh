@@ -20,28 +20,18 @@ __END__
 trap "rm -f \"$env_file\"" EXIT
 set -x
 
-if [[ $OS_VERSION -eq 6 ]]; then
-    sudo docker run --privileged --rm=true \
-         --volume /sys/fs/cgroup:/sys/fs/cgroup \
-         --volume `pwd`:/htcondor-ce:rw \
-         centos:centos${OS_VERSION} \
-         /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV}"
-elif [[ $OS_VERSION -eq 7 ]]; then
-    docker run --privileged --detach --tty --interactive --env "container=docker" \
-           --volume /sys/fs/cgroup:/sys/fs/cgroup \
-           --volume `pwd`:/htcondor-ce:rw  \
-           centos:centos${OS_VERSION} \
-           /usr/sbin/init
+docker run --privileged --detach --tty --interactive --env "container=docker" \
+       --volume /sys/fs/cgroup:/sys/fs/cgroup \
+       --volume `pwd`:/htcondor-ce:rw  \
+       centos:centos${OS_VERSION} \
+       /usr/sbin/init
 
-    DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
-    docker logs $DOCKER_CONTAINER_ID
-    docker exec --tty --interactive $DOCKER_CONTAINER_ID \
-           /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV};
-           echo -ne \"------\nEND HTCONDOR-CE TESTS\n\";"
+DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
+docker logs $DOCKER_CONTAINER_ID
+docker exec --tty --interactive $DOCKER_CONTAINER_ID \
+       /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV};
+       echo -ne \"------\nEND HTCONDOR-CE TESTS\n\";"
 
-    docker ps -a
-    docker stop $DOCKER_CONTAINER_ID
-    docker rm -v $DOCKER_CONTAINER_ID
-fi
-
-
+docker ps -a
+docker stop $DOCKER_CONTAINER_ID
+docker rm -v $DOCKER_CONTAINER_ID
