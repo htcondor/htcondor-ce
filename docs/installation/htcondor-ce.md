@@ -308,6 +308,12 @@ To run the HTCondor-CE View, install the appropriate package and set the relevan
 
         :::console
         root@host # yum install htcondor-ce-view
+        
+1.  Enable the monitoring and webapp service in `/etc/condor-ce/config.d/05-ce-view.conf`
+
+    ``` file
+    DAEMON_LIST = $(DAEMON_LIST), CEVIEW, GANGLIAD, SCHEDD
+    ```
 
 1.  Restart the `condor-ce` service
 
