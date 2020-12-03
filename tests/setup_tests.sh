@@ -23,7 +23,7 @@ __END__
 trap "rm -f \"$env_file\"" EXIT
 set -x
 
-docker run --privileged --detach --tty --interactive --env "container=docker" \
+docker run --privileged --detach --env "container=docker" \
        --volume /sys/fs/cgroup:/sys/fs/cgroup \
        --volume `pwd`:/htcondor-ce:rw  \
        centos:centos${OS_VERSION} \
@@ -31,7 +31,7 @@ docker run --privileged --detach --tty --interactive --env "container=docker" \
 
 DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
 docker logs $DOCKER_CONTAINER_ID
-docker exec --tty --interactive $DOCKER_CONTAINER_ID \
+docker exec $DOCKER_CONTAINER_ID \
        /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV};
        echo -ne \"------\nEND HTCONDOR-CE TESTS\n\";"
 
