@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -exu
 
 # Build source and binary RPMs.
 # SRPMs will be /tmp/rpmbuild/SRPMS/*.rpm.
