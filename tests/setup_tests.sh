@@ -30,6 +30,12 @@ docker run --privileged --detach --env "container=docker" \
        /usr/sbin/init
 
 DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
+
+# Disable slow dnf makecache service
+# https://bugzilla.redhat.com/show_bug.cgi?id=1814337
+[[ $OS_VERSION -gt 7 ]] && \
+    docker exec $DOCKER_CONTAINER_ID systemctl stop dnf-makecache
+
 docker logs $DOCKER_CONTAINER_ID
 docker exec $DOCKER_CONTAINER_ID \
        /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV};
