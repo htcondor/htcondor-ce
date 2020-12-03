@@ -9,21 +9,26 @@ set -eu
 OS_VERSION=$1
 BUILD_ENV=$2
 
+if  [[ $OS_VERSION == 7 ]]; then
+    YUM_PKG_NAME="yum-plugin-priorities"
+else
+    YUM_PKG_NAME="yum-utils"
+fi
 
 # Clean the yum cache
 yum clean all
 yum -y -d0 update  # Update the OS packages
 
-# First, install all the needed packages.
-rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
+yum install -y epel-release $YUM_PKG_NAME
 
 # Broken mirror?
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
-yum -y -d0 install rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl python3 python-srpm-macros python-rpm-macros python3-rpm-macros python3-devel rrdtool rrdtool-devel
-if (( $OS_VERSION < 8 )); then
-    yum -y -d0 install yum-plugin-priorities
+if [[ $OS_VERSION != 7 ]]; then
+    yum-config-manager --enable PowerTools
 fi
+
+yum -y -d0 install rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl python3 python-srpm-macros python-rpm-macros python3-rpm-macros python3-devel rrdtool rrdtool-devel
 
 if [[ $BUILD_ENV == osg ]]; then
     rpm -U https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
