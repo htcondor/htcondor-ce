@@ -1,0 +1,22 @@
+name: Build HTCondor-CE RPMs
+on: [pull_request, push]
+
+jobs:
+  build-rpms-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dver: [7, 8]
+        target_env: [osg, uw_build]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Prepare Docker
+        run: |
+          echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
+            sudo service docker restart
+
+      - run: tests/setup_tests.sh ${{ matrix.dver }} ${{ matrix.target_env }}
+
