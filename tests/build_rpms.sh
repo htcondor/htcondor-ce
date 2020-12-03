@@ -39,7 +39,8 @@ yum -y -d0 install \
     tar \
     gzip \
     make \
-    autotools \
+    autoconf \
+    automake \
     openssl \
     python3 \
     python-srpm-macros \
