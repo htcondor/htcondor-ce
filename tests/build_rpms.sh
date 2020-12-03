@@ -28,7 +28,26 @@ if [[ $OS_VERSION != 7 ]]; then
     yum-config-manager --enable PowerTools
 fi
 
-yum -y -d0 install rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl python3 python-srpm-macros python-rpm-macros python3-rpm-macros python3-devel rrdtool rrdtool-devel
+# Install packages required for the build
+yum -y -d0 install \
+    rpm-build \
+    gcc \
+    gcc-c++ \
+    boost-devel \
+    cmake \
+    git \
+    tar \
+    gzip \
+    make \
+    autotools \
+    openssl \
+    python3 \
+    python-srpm-macros \
+    python-rpm-macros \
+    python3-rpm-macros \
+    python3-devel \
+    rrdtool \
+    rrdtool-devel
 
 if [[ $BUILD_ENV == osg ]]; then
     rpm -U https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
