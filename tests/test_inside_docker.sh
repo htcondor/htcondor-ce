@@ -96,6 +96,12 @@ $mydir/build_rpms.sh "$OS_VERSION" "$BUILD_ENV"; ret=$?
 # Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
 mkdir -p /var/run/lock
 
+# Create the condor user/group for subsequent chowns,
+# using the official RHEL UID/GID
+groupadd -g 64 -r condor
+useradd -r -g condor -d /var/lib/condor -s /sbin/nologin \
+        -u 64 -c "Owner of HTCondor Daemons" condor
+
 RPM_LOCATION=/tmp/rpmbuild/RPMS/noarch
 if [[ $BUILD_ENV == osg ]]; then
     extra_repos='--enablerepo=osg-development'
