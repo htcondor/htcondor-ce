@@ -178,6 +178,10 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
+
+# Explicitly require Python 3
+Requires: %{__python3}
+
 # voms-proxy-info used by condor_ce_trace
 %if 0%{?osg}
 # osg uses its own, patched version of voms-clients-cpp, so keep using that
