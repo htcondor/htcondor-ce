@@ -598,7 +598,7 @@ fi
 - Add `systemctl daemon-reload` to packaging for initial installations
 - Improve robustness of BDII provider
 
-* Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
+* Mon Sep 16 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
 - Fix call to error() (#245)
 
 * Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-1
@@ -706,7 +706,7 @@ expected to change is in /etc, other configuration is in /usr
 - Respect RequestCpus of incoming jobs (SOFTWARE-2598)
 - Fix set_attr check in condor_ce_startup (SOFTWARE-2581)
 
-* Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+* Tue Jan 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
 - condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
 - Added Russian Data Intensive Grid certs to condor_mapfile (GOC#31952)
 
@@ -743,7 +743,7 @@ expected to change is in /etc, other configuration is in /usr
 - HTCondor-CE should detect and refuse to start with invalid configs (SOFTWARE-1856)
 - Handle unbounded HTCondor-CE accounting dir (SOFTWARE-2090)
 
-* Wed Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
+* Wed Aug 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
 - Fix EL7 cleanup on uninstall
 
 * Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
@@ -776,10 +776,10 @@ expected to change is in /etc, other configuration is in /usr
 - Drop arch requirements
 - Accept subject DNs in extattr_table.txt (SOFTWARE-2243)
 
-* Fri Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
+* Mon Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
 - Drop CE ClassAd functions from JOB_ROUTER_DEFAULTS
 
-* Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
+* Wed Feb 17 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
 - Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
 - Drop CE ClassAd functions
 
@@ -811,7 +811,7 @@ expected to change is in /etc, other configuration is in /usr
 - Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
 - build against condor 8.4.1 (SOFTWARE-2084)
 
-* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+* Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
 - Add ability to disable glideins advertising to the CE
 - Add non-DigiCert hostcerts for CERN
