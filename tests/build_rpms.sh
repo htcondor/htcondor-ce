@@ -31,9 +31,6 @@ fi
 # Install packages required for the build
 yum -y install \
     rpm-build \
-    gcc \
-    gcc-c++ \
-    boost-devel \
     cmake \
     git \
     tar \
