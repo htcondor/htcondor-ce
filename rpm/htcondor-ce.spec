@@ -19,8 +19,16 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRequires: boost-devel
+BuildRequires: autoconf
+BuildRequires: automake
 BuildRequires: cmake
+BuildRequires: openssl
+BuildRequires: python-srpm-macros
+BuildRequires: python-rpm-macros
+BuildRequires: python3-devel
+BuildRequires: python3-rpm-macros
+BuildRequires: rrdtool
+BuildRequires: rrdtool-devel
 
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
