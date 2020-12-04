@@ -340,7 +340,8 @@ fi
 
 %{_datadir}/condor-ce/local-wrapper
 
-%{python_sitelib}/htcondorce/audit_payloads.py*
+%{python_sitelib}/htcondorce/audit_payloads.py
+%{python_sitelib}/htcondorce/__pycache__/audit_payloads.*.pyc
 
 %{_bindir}/condor_ce_host_network_check
 %{_bindir}/condor_ce_register
@@ -378,17 +379,15 @@ fi
 %files view
 %defattr(-,root,root,-)
 
-/usr/lib/python3.6/site-packages/htcondorce/__pycache__/*.pyc
-/usr/share/condor-ce/__pycache__/*.pyc
-%if 0%{?osg}
-%{_datadir}/condor-ce/ceview-plugins/__pycache__/agis_json*.pyc
-%endif
-
 # Web package
-%{python_sitelib}/htcondorce/web.py*
-%{python_sitelib}/htcondorce/web_utils.py*
-%{python_sitelib}/htcondorce/rrd.py*
-%{python_sitelib}/htcondorce/registry.py*
+%{python_sitelib}/htcondorce/web.py
+%{python_sitelib}/htcondorce/web_utils.py
+%{python_sitelib}/htcondorce/rrd.py
+%{python_sitelib}/htcondorce/registry.py
+%{python_sitelib}/htcondorce/__pycache__/web.*.pyc
+%{python_sitelib}/htcondorce/__pycache__/web_utils.*.pyc
+%{python_sitelib}/htcondorce/__pycache__/rrd.*.pyc
+%{python_sitelib}/htcondorce/__pycache__/registry.*.pyc
 %{python_sitelib}/htcondorce/static/bootstrap-pincode-input.js
 %{python_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
@@ -467,7 +466,8 @@ fi
 %files client
 
 %{_bindir}/condor_ce_info_status
-%{python_sitelib}/htcondorce/info_query.py*
+%{python_sitelib}/htcondorce/info_query.py
+%{python_sitelib}/htcondorce/__pycache__/info_query.*.pyc
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
@@ -507,8 +507,10 @@ fi
 %{_bindir}/condor_ce_ping
 
 %dir %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/tools.py*
+%{python_sitelib}/htcondorce/__init__.py
+%{python_sitelib}/htcondorce/tools.py
+%{python_sitelib}/htcondorce/__pycache__/__init__.*.pyc
+%{python_sitelib}/htcondorce/__pycache__/tools.*.pyc
 
 %files collector
 
