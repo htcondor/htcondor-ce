@@ -88,13 +88,3 @@ rpmbuild --define '_topdir /tmp/rpmbuild' -bb /tmp/rpmbuild/SPECS/htcondor-ce.sp
 mkdir -p htcondor-ce/travis_deploy
 cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/travis_deploy/
 cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/travis_deploy/
-
-# Install the python3 rrdtool manually, must be compiled from source to import correctly
-git clone -q https://github.com/commx/python-rrdtool
-pushd python-rrdtool
-python3 setup.py install
-popd
-
-# Manually install the required python3 packages
-# TODO: These should be getting installed from the requirements.txt file.
-pip3 install flask genshi CherryPy==3.*
