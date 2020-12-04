@@ -51,14 +51,9 @@ yum -y -d0 install \
     rrdtool-devel
 
 if [[ $BUILD_ENV == osg ]]; then
-    rpm -U https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
+    yum install -y https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
 else
-    pushd /etc/yum.repos.d
-    yum install -y -d0 wget
-    wget -q http://htcondor.org/yum/repo.d/htcondor-stable-rhel${OS_VERSION}.repo
-    wget -q http://htcondor.org/yum/RPM-GPG-KEY-HTCondor
-    rpm --import RPM-GPG-KEY-HTCondor
-    popd
+    yum install -y https://research.cs.wisc.edu/htcondor/repo/8.9/el${OS_VERSION}/release/htcondor-release-8.9-1.el${OS_VERSION}.noarch.rpm
 fi
 
 # Prepare the RPM environment
