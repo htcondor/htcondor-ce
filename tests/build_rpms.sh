@@ -74,8 +74,7 @@ git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD | \
 popd
 
 # Build the SRPM; don't put a dist tag in it
-# rpmbuild on el6 does not have --undefine
-rpmbuild --define '_topdir /tmp/rpmbuild' --define 'dist %{nil}' -bs /tmp/rpmbuild/SPECS/htcondor-ce.spec
+rpmbuild --define '_topdir /tmp/rpmbuild' --undefine 'dist' -bs /tmp/rpmbuild/SPECS/htcondor-ce.spec
 # Build the binary RPM
 rpmbuild --define '_topdir /tmp/rpmbuild' -bb /tmp/rpmbuild/SPECS/htcondor-ce.spec
 
