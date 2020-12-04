@@ -29,7 +29,7 @@ if [[ $OS_VERSION != 7 ]]; then
 fi
 
 # Install packages required for the build
-yum -y -d0 install \
+yum -y install \
     rpm-build \
     gcc \
     gcc-c++ \
