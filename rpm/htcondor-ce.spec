@@ -72,12 +72,20 @@ Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
 Requires: %{name}-master = %{version}-%{release}
-Requires: python-cherrypy
-Requires: python-genshi
 Requires: ganglia-gmond
 Requires: rrdtool-devel
-Requires: python-flask
+
+%if 0%{?rhel} >= 8
+Requires: python3-cherrypy
+Requires: python3-flask
+Requires: python3-genshi
+Requires: python3-rpm
+%else
+Requires: python-cherrypy
+Requires: python36-flask
+Requires: python36-genshi
 Requires: python36-rpm
+%endif
 
 %description view
 %{summary}
@@ -186,14 +194,25 @@ Summary: Central HTCondor-CE information services collector
 
 Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
-Requires: libxml2-python
+
+%if 0%{?rhel} >= 8
+Requires: python3-libxml2
+%else
+Requires: python36-libxml2
+%endif
 
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
 Requires: mod_wsgi
-Requires: python-flask
-Requires: python-genshi
+
+%if 0%{?rhel} >= 8
+Requires: python3-flask
+Requires: python3-genshi
+%else
+Requires: python36-flask
+Requires: python36-genshi
+%endif
 
 Conflicts: %{name}
 
