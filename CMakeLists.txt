@@ -1,5 +1,5 @@
 
-project(condor-ce)
+project(condor-ce NONE)
 
 cmake_minimum_required(VERSION 2.6)
 
