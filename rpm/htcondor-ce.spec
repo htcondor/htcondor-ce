@@ -55,7 +55,6 @@ Requires: /usr/bin/unshare
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
-%define __python /usr/bin/python3
 Requires: python3-condor
 Requires: bdii
 
@@ -194,7 +193,6 @@ Requires: voms-clients
 Requires: grid-certificates >= 7
 %endif
 
-%define __python /usr/bin/python3
 Requires: python3-condor
 
 %description client
@@ -239,7 +237,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python_sitelib}
+%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python3_sitelib}
 make %{?_smp_mflags}
 
 %install
@@ -370,8 +368,8 @@ fi
 
 %{_datadir}/condor-ce/local-wrapper
 
-%{python_sitelib}/htcondorce/audit_payloads.py
-%{python_sitelib}/htcondorce/__pycache__/audit_payloads.*.pyc
+%{python3_sitelib}/htcondorce/audit_payloads.py
+%{python3_sitelib}/htcondorce/__pycache__/audit_payloads.*.pyc
 
 %{_bindir}/condor_ce_host_network_check
 %{_bindir}/condor_ce_register
@@ -410,16 +408,16 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondorce/web.py
-%{python_sitelib}/htcondorce/web_utils.py
-%{python_sitelib}/htcondorce/rrd.py
-%{python_sitelib}/htcondorce/registry.py
-%{python_sitelib}/htcondorce/__pycache__/web.*.pyc
-%{python_sitelib}/htcondorce/__pycache__/web_utils.*.pyc
-%{python_sitelib}/htcondorce/__pycache__/rrd.*.pyc
-%{python_sitelib}/htcondorce/__pycache__/registry.*.pyc
-%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.js
-%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.css
+%{python3_sitelib}/htcondorce/web.py
+%{python3_sitelib}/htcondorce/web_utils.py
+%{python3_sitelib}/htcondorce/rrd.py
+%{python3_sitelib}/htcondorce/registry.py
+%{python3_sitelib}/htcondorce/__pycache__/web.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/web_utils.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/rrd.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/registry.*.pyc
+%{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.js
+%{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -496,8 +494,8 @@ fi
 %files client
 
 %{_bindir}/condor_ce_info_status
-%{python_sitelib}/htcondorce/info_query.py
-%{python_sitelib}/htcondorce/__pycache__/info_query.*.pyc
+%{python3_sitelib}/htcondorce/info_query.py
+%{python3_sitelib}/htcondorce/__pycache__/info_query.*.pyc
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
@@ -536,11 +534,11 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%dir %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py
-%{python_sitelib}/htcondorce/tools.py
-%{python_sitelib}/htcondorce/__pycache__/__init__.*.pyc
-%{python_sitelib}/htcondorce/__pycache__/tools.*.pyc
+%dir %{python3_sitelib}/htcondorce
+%{python3_sitelib}/htcondorce/__init__.py
+%{python3_sitelib}/htcondorce/tools.py
+%{python3_sitelib}/htcondorce/__pycache__/__init__.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/tools.*.pyc
 
 %files collector
 
