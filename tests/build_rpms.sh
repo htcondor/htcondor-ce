@@ -17,7 +17,17 @@ fi
 
 # Clean the yum cache
 yum clean all
-yum -y -d0 update  # Update the OS packages
+
+# Exponential backoff retry for missing DNF lock file
+# FileNotFoundError: [Errno 2] No such file or directory: '/var/cache/dnf/metadata_lock.pid'
+# 2020-03-17T13:43:57Z CRITICAL [Errno 2] No such file or directory: '/var/cache/dnf/metadata_lock.pid'
+set +e
+for retry in {1..3}; do
+    yum -y -d0 update  # Update the OS packages
+    [[ $? -eq 0 ]] && break
+    sleep $((5**$retry))
+done
+set -e
 
 yum install -y epel-release $YUM_PKG_NAME
 
