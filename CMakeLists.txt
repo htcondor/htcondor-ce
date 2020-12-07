@@ -83,7 +83,7 @@ install(FILES
   src/htcondorce/tools.py
   src/htcondorce/info_query.py
   src/htcondorce/registry.py
-  src/audit_payloads.py
+  src/htcondorce/audit_payloads.py
   DESTINATION ${PYTHON_SITELIB}/htcondorce)
 install(FILES
   src/htcondorce/static/bootstrap-pincode-input.css
