@@ -35,7 +35,7 @@ yum install -y epel-release $YUM_PKG_NAME
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
 if [[ $OS_VERSION != 7 ]]; then
-    yum-config-manager --enable PowerTools
+    yum-config-manager --enable powertools
 fi
 
 # Install packages required for the build
