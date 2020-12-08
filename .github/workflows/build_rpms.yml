@@ -13,6 +13,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Run unit tests
+        run: >-
+          cd tests;
+          python3 run_tests.py
+
       - name: Prepare Docker
         run: |
           echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&

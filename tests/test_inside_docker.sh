@@ -97,11 +97,6 @@ yum localinstall -y $RPM_LOCATION/htcondor-ce-${package_version}* \
 # ensure that our test users can generate proxies
 yum install -y globus-proxy-utils $extra_packages
 
-# Run unit tests
-pushd htcondor-ce/tests/
-python3 run_tests.py
-popd
-
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 /bin/cp -f /etc/hosts.new /etc/hosts
