@@ -32,7 +32,22 @@ jobs:
                  centos:centos${{ matrix.dver }} \
                  /usr/sbin/init
 
-      - name: Build EL${{ matrix.dver }} RPMs and run ${{ matrix.target_env }} tests
+      - name: Build EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/build_rpms.sh \
+                     ${{ matrix.dver }} \
+                     ${{ matrix.target_env}}"
+
+      - name: Install EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/install_rpms.sh \
+                     ${{ matrix.target_env}}"
+
+      - name: Run ${{ matrix.target_env }} tests (EL${{ matrix.dver }}
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
