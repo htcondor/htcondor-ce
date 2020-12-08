@@ -50,7 +50,7 @@ jobs:
                   "cd /htcondor-ce/tests; \
                    python3 run_tests.py"
 
-      - name: Run ${{ matrix.target_env }} integration tests (EL${{ matrix.dver }}
+      - name: Run ${{ matrix.target_env }} integration tests (EL${{ matrix.dver }})
         id: integration-tests
         run: |
           docker exec $GITHUB_SHA \
