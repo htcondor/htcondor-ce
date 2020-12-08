@@ -18,5 +18,14 @@ jobs:
           echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
             sudo service docker restart
 
+      - name: Start CentOS ${{ matrix.dver}} image
+        run: |
+          docker run --privileged --detach --env "container=docker" \
+                 --name ${{ matrix.target_env }}-${{ matrix.dver }} \
+                 --volume /sys/fs/cgroup:/sys/fs/cgroup \
+                 --volume `pwd`:/htcondor-ce:rw \
+                 centos:centos${{ matrix.dver }} \
+                 /usr/sbin/init
+
       - run: tests/setup_tests.sh ${{ matrix.dver }} ${{ matrix.target_env }}
 

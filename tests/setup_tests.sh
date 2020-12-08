@@ -23,13 +23,7 @@ __END__
 trap "rm -f \"$env_file\"" EXIT
 set -x
 
-docker run --privileged --detach --env "container=docker" \
-       --volume /sys/fs/cgroup:/sys/fs/cgroup \
-       --volume `pwd`:/htcondor-ce:rw  \
-       centos:centos${OS_VERSION} \
-       /usr/sbin/init
-
-DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
+DOCKER_CONTAINER_ID=$BUILD_ENV-$OS_VERSION
 
 # Disable slow dnf makecache service
 # https://bugzilla.redhat.com/show_bug.cgi?id=1814337
