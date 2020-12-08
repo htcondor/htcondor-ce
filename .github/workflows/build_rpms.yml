@@ -13,11 +13,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run unit tests
-        run: >-
-          cd tests;
-          python3 run_tests.py
-
       - name: Prepare Docker
         run: |
           echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
@@ -47,7 +42,14 @@ jobs:
                    "/htcondor-ce/tests/install_rpms.sh \
                      ${{ matrix.target_env}}"
 
-      - name: Run ${{ matrix.target_env }} tests (EL${{ matrix.dver }}
+      - name: Run unit tests
+        run: |
+          docker exec $GITHUB_SHA \
+                /bin/bash -xc \
+                  "cd /htcondor-ce/tests; \
+                   python3 run_tests.py"
+
+      - name: Run ${{ matrix.target_env }} integration tests (EL${{ matrix.dver }}
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
