@@ -1,5 +1,5 @@
-name: Build HTCondor-CE RPMs
-on: [pull_request, push]
+name: Build and test HTCondor-CE RPMs
+on: [pull_request]
 
 jobs:
   build-rpms-and-test:
