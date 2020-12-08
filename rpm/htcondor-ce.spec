@@ -89,8 +89,8 @@ Requires: python3-genshi
 Requires: python3-rpm
 %else
 Requires: python-cherrypy
-Requires: python36-flask
-Requires: python36-genshi
+Requires: python-flask
+Requires: python-genshi
 Requires: python36-rpm
 %endif
 
