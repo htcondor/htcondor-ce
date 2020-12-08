@@ -50,6 +50,7 @@ jobs:
                    python3 run_tests.py"
 
       - name: Run ${{ matrix.target_env }} integration tests (EL${{ matrix.dver }}
+        id: integration-tests
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
@@ -58,31 +59,31 @@ jobs:
                      ${{ matrix.target_env}}"
 
       - name: Host certificate details
-        if: ${{ failure() }}
+        if: steps.integration-tests.outcome == 'failure'
         run: |
           docker exec $GITHUB_SHA \
                  openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 
       - name: HTCondor-CE configuration details
-        if: ${{ failure() }}
+        if: steps.integration-tests.outcome == 'failure'
         run: |
           docker exec $GITHUB_SHA \
                  condor_ce_config_val -dump
 
       - name: HTCondor configuration details
-        if: ${{ failure() }}
+        if: steps.integration-tests.outcome == 'failure'
         run: |
           docker exec $GITHUB_SHA \
                  condor_config_val -dump
 
       - name: HTCondor-CE logs
-        if: ${{ failure() }}
+        if: steps.integration-tests.outcome == 'failure'
         run: |
           docker exec $GITHUB_SHA \
                  cat "/var/log/condor-ce/*"
 
       - name: HTCondor logs
-        if: ${{ failure() }}
+        if: steps.integration-tests.outcome == 'failure'
         run: |
           docker exec $GITHUB_SHA \
                  cat "/var/log/condor/*"
