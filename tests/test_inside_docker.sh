@@ -56,30 +56,6 @@ function run_integration_tests {
     set -e
 }
 
-function debug_info {
-    # Some simple debug files for failures.
-    openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
-    for logdir in condor-ce condor; do
-        abs_logdir="/var/log/$logdir"
-        echo "------------ $abs_logdir Logs --------------"
-        for logfile in MasterLog CollectorLog SchedLog SharedPortLog; do
-            cat $abs_logdir/$logfile
-        done
-
-        if [[ $logdir == condor-ce ]]; then
-            cat $abs_logdir/JobRouterLog
-            if [[ $BUILD_ENV == osg ]]; then
-                cat $abs_logdir/CEViewLog
-            fi
-        fi
-    done
-
-    echo "------------ HTCondor{-CE,} Config --------------"
-    condor_ce_config_val -dump
-    condor_config_val -dump
-}
-
-
 # --------- EXECUTION BEGINS HERE ---------
 set -xe
 
@@ -159,8 +135,6 @@ if [[ $BUILD_ENV == osg ]]; then
 else
     run_integration_tests
 fi
-
-debug_info
 
 # Verify preun/postun in the spec file
 yum remove -y 'htcondor-ce*'

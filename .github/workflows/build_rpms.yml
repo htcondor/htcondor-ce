@@ -35,3 +35,32 @@ jobs:
                      ${{ matrix.dver}} \
                      ${{ matrix.target_env}}"
 
+      - name: Host certificate details
+        if: ${{ failure() }}
+        run: |
+          docker exec $GITHUB_SHA \
+                 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
+
+      - name: HTCondor-CE configuration details
+        if: ${{ failure() }}
+        run: |
+          docker exec $GITHUB_SHA \
+                 condor_ce_config_val -dump
+
+      - name: HTCondor configuration details
+        if: ${{ failure() }}
+        run: |
+          docker exec $GITHUB_SHA \
+                 condor_config_val -dump
+
+      - name: HTCondor-CE logs
+        if: ${{ failure() }}
+        run: |
+          docker exec $GITHUB_SHA \
+                 cat "/var/log/condor-ce/*"
+
+      - name: HTCondor logs
+        if: ${{ failure() }}
+        run: |
+          docker exec $GITHUB_SHA \
+                 cat "/var/log/condor/*"
