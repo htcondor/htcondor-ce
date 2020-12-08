@@ -88,3 +88,9 @@ jobs:
         run: |
           docker exec $GITHUB_SHA \
                  cat "/var/log/condor/*"
+
+      - name: Verify preun/postun RPM sections
+        run: |
+          docker exec $GITHUB_SHA \
+                 yum remove -y 'htcondor-ce*'
+

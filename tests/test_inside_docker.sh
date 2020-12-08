@@ -100,7 +100,4 @@ else
     run_integration_tests
 fi
 
-# Verify preun/postun in the spec file
-yum remove -y 'htcondor-ce*'
-
 exit $test_exit
