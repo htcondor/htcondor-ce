@@ -30,11 +30,3 @@ DOCKER_CONTAINER_ID=$BUILD_ENV-$OS_VERSION
 [[ $OS_VERSION -gt 7 ]] && \
     docker exec $DOCKER_CONTAINER_ID systemctl stop dnf-makecache
 
-docker logs $DOCKER_CONTAINER_ID
-docker exec $DOCKER_CONTAINER_ID \
-       /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV};
-       echo -ne \"------\nEND HTCONDOR-CE TESTS\n\";"
-
-docker ps -a
-docker stop $DOCKER_CONTAINER_ID
-docker rm -v $DOCKER_CONTAINER_ID

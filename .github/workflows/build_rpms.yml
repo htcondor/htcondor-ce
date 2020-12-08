@@ -21,11 +21,17 @@ jobs:
       - name: Start CentOS ${{ matrix.dver}} image
         run: |
           docker run --privileged --detach --env "container=docker" \
-                 --name ${{ matrix.target_env }}-${{ matrix.dver }} \
+                 --name $GITHUB_SHA \
                  --volume /sys/fs/cgroup:/sys/fs/cgroup \
                  --volume `pwd`:/htcondor-ce:rw \
                  centos:centos${{ matrix.dver }} \
                  /usr/sbin/init
 
-      - run: tests/setup_tests.sh ${{ matrix.dver }} ${{ matrix.target_env }}
+      - name: Build EL${{ matrix.dver }} RPMs and run ${{ matrix.target_env }} tests
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/test_inside_docker.sh \
+                     ${{ matrix.dver}} \
+                     ${{ matrix.target_env}}"
 
