@@ -19,8 +19,16 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRequires: boost-devel
+BuildRequires: autoconf
+BuildRequires: automake
 BuildRequires: cmake
+BuildRequires: openssl
+BuildRequires: python-srpm-macros
+BuildRequires: python-rpm-macros
+BuildRequires: python3-devel
+BuildRequires: python3-rpm-macros
+BuildRequires: rrdtool
+BuildRequires: rrdtool-devel
 
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
@@ -47,7 +55,6 @@ Requires: /usr/bin/unshare
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
-%define __python /usr/bin/python3
 Requires: python3-condor
 Requires: bdii
 
@@ -72,12 +79,20 @@ Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
 Requires: %{name}-master = %{version}-%{release}
-Requires: python-cherrypy
-Requires: python-genshi
 Requires: ganglia-gmond
 Requires: rrdtool-devel
+
+%if 0%{?rhel} >= 8
+Requires: python3-cherrypy
+Requires: python3-flask
+Requires: python3-genshi
+Requires: python3-rpm
+%else
+Requires: python-cherrypy
 Requires: python-flask
+Requires: python-genshi
 Requires: python36-rpm
+%endif
 
 %description view
 %{summary}
@@ -162,6 +177,10 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
+
+# Explicitly require Python 3
+Requires: %{__python3}
+
 # voms-proxy-info used by condor_ce_trace
 %if 0%{?osg}
 # osg uses its own, patched version of voms-clients-cpp, so keep using that
@@ -174,7 +193,6 @@ Requires: voms-clients
 Requires: grid-certificates >= 7
 %endif
 
-%define __python /usr/bin/python3
 Requires: python3-condor
 
 %description client
@@ -186,15 +204,25 @@ Summary: Central HTCondor-CE information services collector
 
 Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
-Requires: libxml2-python
-Requires: python-six
+
+%if 0%{?rhel} >= 8
+Requires: python3-libxml2
+%else
+Requires: python36-libxml2
+%endif
 
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
 Requires: mod_wsgi
-Requires: python-flask
-Requires: python-genshi
+
+%if 0%{?rhel} >= 8
+Requires: python3-flask
+Requires: python3-genshi
+%else
+Requires: python36-flask
+Requires: python36-genshi
+%endif
 
 Conflicts: %{name}
 
@@ -209,7 +237,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python_sitelib}
+%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python3_sitelib}
 make %{?_smp_mflags}
 
 %install
@@ -340,7 +368,8 @@ fi
 
 %{_datadir}/condor-ce/local-wrapper
 
-%{python_sitelib}/htcondorce/audit_payloads.py*
+%{python3_sitelib}/htcondorce/audit_payloads.py
+%{python3_sitelib}/htcondorce/__pycache__/audit_payloads.*.pyc
 
 %{_bindir}/condor_ce_host_network_check
 %{_bindir}/condor_ce_register
@@ -378,19 +407,17 @@ fi
 %files view
 %defattr(-,root,root,-)
 
-/usr/lib/python3.6/site-packages/htcondorce/__pycache__/*.pyc
-/usr/share/condor-ce/__pycache__/*.pyc
-%if 0%{?osg}
-%{_datadir}/condor-ce/ceview-plugins/__pycache__/agis_json*.pyc
-%endif
-
 # Web package
-%{python_sitelib}/htcondorce/web.py*
-%{python_sitelib}/htcondorce/web_utils.py*
-%{python_sitelib}/htcondorce/rrd.py*
-%{python_sitelib}/htcondorce/registry.py*
-%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.js
-%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.css
+%{python3_sitelib}/htcondorce/web.py
+%{python3_sitelib}/htcondorce/web_utils.py
+%{python3_sitelib}/htcondorce/rrd.py
+%{python3_sitelib}/htcondorce/registry.py
+%{python3_sitelib}/htcondorce/__pycache__/web.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/web_utils.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/rrd.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/registry.*.pyc
+%{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.js
+%{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
@@ -467,7 +494,8 @@ fi
 %files client
 
 %{_bindir}/condor_ce_info_status
-%{python_sitelib}/htcondorce/info_query.py*
+%{python3_sitelib}/htcondorce/info_query.py
+%{python3_sitelib}/htcondorce/__pycache__/info_query.*.pyc
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
@@ -506,9 +534,11 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%dir %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/tools.py*
+%dir %{python3_sitelib}/htcondorce
+%{python3_sitelib}/htcondorce/__init__.py
+%{python3_sitelib}/htcondorce/tools.py
+%{python3_sitelib}/htcondorce/__pycache__/__init__.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/tools.*.pyc
 
 %files collector
 
@@ -598,7 +628,7 @@ fi
 - Add `systemctl daemon-reload` to packaging for initial installations
 - Improve robustness of BDII provider
 
-* Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
+* Mon Sep 16 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
 - Fix call to error() (#245)
 
 * Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-1
@@ -706,7 +736,7 @@ expected to change is in /etc, other configuration is in /usr
 - Respect RequestCpus of incoming jobs (SOFTWARE-2598)
 - Fix set_attr check in condor_ce_startup (SOFTWARE-2581)
 
-* Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+* Tue Jan 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
 - condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
 - Added Russian Data Intensive Grid certs to condor_mapfile (GOC#31952)
 
@@ -743,7 +773,7 @@ expected to change is in /etc, other configuration is in /usr
 - HTCondor-CE should detect and refuse to start with invalid configs (SOFTWARE-1856)
 - Handle unbounded HTCondor-CE accounting dir (SOFTWARE-2090)
 
-* Wed Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
+* Wed Aug 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
 - Fix EL7 cleanup on uninstall
 
 * Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
@@ -776,10 +806,10 @@ expected to change is in /etc, other configuration is in /usr
 - Drop arch requirements
 - Accept subject DNs in extattr_table.txt (SOFTWARE-2243)
 
-* Fri Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
+* Mon Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
 - Drop CE ClassAd functions from JOB_ROUTER_DEFAULTS
 
-* Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
+* Wed Feb 17 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
 - Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
 - Drop CE ClassAd functions
 
@@ -811,7 +841,7 @@ expected to change is in /etc, other configuration is in /usr
 - Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
 - build against condor 8.4.1 (SOFTWARE-2084)
 
-* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+* Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
 - Add ability to disable glideins advertising to the CE
 - Add non-DigiCert hostcerts for CERN

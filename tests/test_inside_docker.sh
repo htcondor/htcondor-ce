@@ -36,8 +36,8 @@ function run_integration_tests {
 
     echo "------------ Integration Test --------------"
     # start necessary services
-    service condor-ce start
-    service condor start
+    systemctl start condor-ce
+    systemctl start condor
 
     set +e
     # wait until the schedd is ready before submitting a job
@@ -56,69 +56,19 @@ function run_integration_tests {
     set -e
 }
 
-function debug_info {
-    # Some simple debug files for failures.
-    openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
-    for logdir in condor-ce condor; do
-        abs_logdir="/var/log/$logdir"
-        echo "------------ $abs_logdir Logs --------------"
-        for logfile in MasterLog CollectorLog SchedLog SharedPortLog; do
-            cat $abs_logdir/$logfile
-        done
-
-        if [[ $logdir == condor-ce ]]; then
-            cat $abs_logdir/JobRouterLog
-            if [[ $BUILD_ENV == osg ]]; then
-                cat $abs_logdir/CEViewLog
-            fi
-        fi
-    done
-
-    echo "------------ HTCondor{-CE,} Config --------------"
-    condor_ce_config_val -dump
-    condor_config_val -dump
-}
-
-
 # --------- EXECUTION BEGINS HERE ---------
 set -xe
 
 OS_VERSION=$1
 BUILD_ENV=$2
 
-mydir=$(dirname "$0")
-
-ls -l /home
-
-$mydir/build_rpms.sh "$OS_VERSION" "$BUILD_ENV"; ret=$?
-
-# After building the RPM, try to install it
-# Fix the lock file error on EL7.  /var/lock is a symlink to /var/run/lock
-mkdir -p /var/run/lock
-
-RPM_LOCATION=/tmp/rpmbuild/RPMS/noarch
-if [[ $BUILD_ENV == osg ]]; then
-    extra_repos='--enablerepo=osg-development'
-else
+if [[ $BUILD_ENV == uw_build ]]; then
     # UW build tests run against HTCondor 8.8.0, which does not automatically configure a personal condor
     # The 'minicondor' package now provides that configuration
     extra_packages='minicondor'
 fi
-
-package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
-yum localinstall -y $RPM_LOCATION/htcondor-ce-${package_version}* \
-    $RPM_LOCATION/htcondor-ce-client-* \
-    $RPM_LOCATION/htcondor-ce-condor-* \
-    $RPM_LOCATION/htcondor-ce-view-* \
-    $extra_repos
-
 # ensure that our test users can generate proxies
 yum install -y globus-proxy-utils $extra_packages
-
-# Run unit tests
-pushd htcondor-ce/tests/
-python3 run_tests.py
-popd
 
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
@@ -145,18 +95,9 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
 if [[ $BUILD_ENV == osg ]]; then
-    if [[ $OS_VERSION == 6 ]]; then
-        echo "*** Skipping OSG integration tests on EL 6 due to excessive random failures ***"
-        exit 0
-    fi
     run_osg_tests
 else
     run_integration_tests
 fi
-
-debug_info
-
-# Verify preun/postun in the spec file
-yum remove -y 'htcondor-ce*'
 
 exit $test_exit

@@ -2,6 +2,9 @@
 
 # This script starts docker and systemd (if el7)
 
+OS_VERSION=$1
+BUILD_ENV=$2
+
 set -e
 
 # Run tests in Container
@@ -20,28 +23,10 @@ __END__
 trap "rm -f \"$env_file\"" EXIT
 set -x
 
-if [[ $OS_VERSION -eq 6 ]]; then
-    sudo docker run --privileged --rm=true \
-         --volume /sys/fs/cgroup:/sys/fs/cgroup \
-         --volume `pwd`:/htcondor-ce:rw \
-         centos:centos${OS_VERSION} \
-         /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV}"
-elif [[ $OS_VERSION -eq 7 ]]; then
-    docker run --privileged --detach --tty --interactive --env "container=docker" \
-           --volume /sys/fs/cgroup:/sys/fs/cgroup \
-           --volume `pwd`:/htcondor-ce:rw  \
-           centos:centos${OS_VERSION} \
-           /usr/sbin/init
+DOCKER_CONTAINER_ID=$BUILD_ENV-$OS_VERSION
 
-    DOCKER_CONTAINER_ID=$(docker ps | grep centos | awk '{print $1}')
-    docker logs $DOCKER_CONTAINER_ID
-    docker exec --tty --interactive $DOCKER_CONTAINER_ID \
-           /bin/bash -c "exec bash -x /htcondor-ce/tests/test_inside_docker.sh ${OS_VERSION} ${BUILD_ENV};
-           echo -ne \"------\nEND HTCONDOR-CE TESTS\n\";"
-
-    docker ps -a
-    docker stop $DOCKER_CONTAINER_ID
-    docker rm -v $DOCKER_CONTAINER_ID
-fi
-
+# Disable slow dnf makecache service
+# https://bugzilla.redhat.com/show_bug.cgi?id=1814337
+[[ $OS_VERSION -gt 7 ]] && \
+    docker exec $DOCKER_CONTAINER_ID systemctl stop dnf-makecache
 

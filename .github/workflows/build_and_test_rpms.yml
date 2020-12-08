@@ -1,0 +1,96 @@
+name: Build and test HTCondor-CE RPMs
+on: [pull_request]
+
+jobs:
+  build-rpms-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dver: [7, 8]
+        target_env: [osg, uw_build]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Prepare Docker
+        run: |
+          echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
+            sudo service docker restart
+
+      - name: Start CentOS ${{ matrix.dver}} image
+        run: |
+          docker run --privileged --detach --env "container=docker" \
+                 --name $GITHUB_SHA \
+                 --volume /sys/fs/cgroup:/sys/fs/cgroup \
+                 --volume `pwd`:/htcondor-ce:rw \
+                 centos:centos${{ matrix.dver }} \
+                 /usr/sbin/init
+
+      - name: Build EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/build_rpms.sh \
+                     ${{ matrix.dver }} \
+                     ${{ matrix.target_env}}"
+
+      - name: Install EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/install_rpms.sh \
+                     ${{ matrix.target_env}}"
+
+      - name: Run unit tests
+        run: |
+          docker exec $GITHUB_SHA \
+                /bin/bash -xc \
+                  "cd /htcondor-ce/tests; \
+                   python3 run_tests.py"
+
+      - name: Run ${{ matrix.target_env }} integration tests (EL${{ matrix.dver }})
+        id: integration-tests
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/test_inside_docker.sh \
+                     ${{ matrix.dver}} \
+                     ${{ matrix.target_env}}"
+
+      - name: Host certificate details
+        if: failure() && steps.integration-tests.outcome == 'failure'
+        run: |
+          docker exec $GITHUB_SHA \
+                 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
+
+      - name: HTCondor-CE configuration details
+        if: failure() && steps.integration-tests.outcome == 'failure'
+        run: |
+          docker exec $GITHUB_SHA \
+                 condor_ce_config_val -dump
+
+      - name: HTCondor configuration details
+        if: failure() && steps.integration-tests.outcome == 'failure'
+        run: |
+          docker exec $GITHUB_SHA \
+                 condor_config_val -dump
+
+      - name: HTCondor-CE logs
+        if: failure() && steps.integration-tests.outcome == 'failure'
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -c "cat /var/log/condor-ce/*"
+
+      - name: HTCondor logs
+        if: failure() && steps.integration-tests.outcome == 'failure'
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -c "cat /var/log/condor/*"
+
+      - name: Verify preun/postun RPM sections
+        run: |
+          docker exec $GITHUB_SHA \
+                 yum remove -y 'htcondor-ce*'
+

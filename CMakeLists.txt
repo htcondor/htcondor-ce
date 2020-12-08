@@ -1,23 +1,11 @@
 
-project(condor-ce)
+project(condor-ce NONE)
 
 cmake_minimum_required(VERSION 2.6)
 
 set( HTCONDORCE_VERSION "4.4.1" CACHE INTERNAL "Version of the HTCondor-CE" )
 
-set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
-
 find_package(PkgConfig)
-
-if( CMAKE_COMPILER_IS_GNUCXX )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror" )
-endif( CMAKE_COMPILER_IS_GNUCXX )
-
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif()
 
 set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Base directory for files which go to share/")
 set(SYSCONF_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc" CACHE PATH "Base directory for files which go to etc/")
@@ -95,7 +83,7 @@ install(FILES
   src/htcondorce/tools.py
   src/htcondorce/info_query.py
   src/htcondorce/registry.py
-  src/audit_payloads.py
+  src/htcondorce/audit_payloads.py
   DESTINATION ${PYTHON_SITELIB}/htcondorce)
 install(FILES
   src/htcondorce/static/bootstrap-pincode-input.css

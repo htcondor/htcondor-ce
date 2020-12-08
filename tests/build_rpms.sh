@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -exu
 
 # Build source and binary RPMs.
 # SRPMs will be /tmp/rpmbuild/SRPMS/*.rpm.
@@ -9,31 +9,58 @@ set -eu
 OS_VERSION=$1
 BUILD_ENV=$2
 
+if  [[ $OS_VERSION == 7 ]]; then
+    YUM_PKG_NAME="yum-plugin-priorities"
+else
+    YUM_PKG_NAME="yum-utils"
+fi
 
 # Clean the yum cache
 yum clean all
-yum -y -d0 update  # Update the OS packages
 
-# First, install all the needed packages.
-rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VERSION}.noarch.rpm
+# Exponential backoff retry for missing DNF lock file
+# FileNotFoundError: [Errno 2] No such file or directory: '/var/cache/dnf/metadata_lock.pid'
+# 2020-03-17T13:43:57Z CRITICAL [Errno 2] No such file or directory: '/var/cache/dnf/metadata_lock.pid'
+set +e
+for retry in {1..3}; do
+    yum -y -d0 update  # Update the OS packages
+    [[ $? -eq 0 ]] && break
+    sleep $((5**$retry))
+done
+set -e
+
+yum install -y epel-release $YUM_PKG_NAME
 
 # Broken mirror?
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
-yum -y -d0 install rpm-build gcc gcc-c++ boost-devel cmake git tar gzip make autotools openssl python3 python-srpm-macros python-rpm-macros python3-rpm-macros python3-devel rrdtool rrdtool-devel
-if (( $OS_VERSION < 8 )); then
-    yum -y -d0 install yum-plugin-priorities
+if [[ $OS_VERSION != 7 ]]; then
+    yum-config-manager --enable powertools
 fi
 
+# Install packages required for the build
+yum -y install \
+    rpm-build \
+    cmake \
+    git \
+    tar \
+    gzip \
+    make \
+    autoconf \
+    automake \
+    openssl \
+    python3 \
+    python-srpm-macros \
+    python-rpm-macros \
+    python3-rpm-macros \
+    python3-devel \
+    rrdtool \
+    rrdtool-devel
+
 if [[ $BUILD_ENV == osg ]]; then
-    rpm -U https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
+    yum install -y https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
 else
-    pushd /etc/yum.repos.d
-    yum install -y -d0 wget
-    wget -q http://htcondor.org/yum/repo.d/htcondor-stable-rhel${OS_VERSION}.repo
-    wget -q http://htcondor.org/yum/RPM-GPG-KEY-HTCondor
-    rpm --import RPM-GPG-KEY-HTCondor
-    popd
+    yum install -y https://research.cs.wisc.edu/htcondor/repo/8.9/el${OS_VERSION}/release/htcondor-release-8.9-1.el${OS_VERSION}.noarch.rpm
 fi
 
 # Prepare the RPM environment
@@ -54,8 +81,7 @@ git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD | \
 popd
 
 # Build the SRPM; don't put a dist tag in it
-# rpmbuild on el6 does not have --undefine
-rpmbuild --define '_topdir /tmp/rpmbuild' --define 'dist %{nil}' -bs /tmp/rpmbuild/SPECS/htcondor-ce.spec
+rpmbuild --define '_topdir /tmp/rpmbuild' --undefine 'dist' -bs /tmp/rpmbuild/SPECS/htcondor-ce.spec
 # Build the binary RPM
 rpmbuild --define '_topdir /tmp/rpmbuild' -bb /tmp/rpmbuild/SPECS/htcondor-ce.spec
 
@@ -63,13 +89,3 @@ rpmbuild --define '_topdir /tmp/rpmbuild' -bb /tmp/rpmbuild/SPECS/htcondor-ce.sp
 mkdir -p htcondor-ce/travis_deploy
 cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/travis_deploy/
 cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/travis_deploy/
-
-# Install the python3 rrdtool manually, must be compiled from source to import correctly
-git clone -q https://github.com/commx/python-rrdtool
-pushd python-rrdtool
-python3 setup.py install
-popd
-
-# Manually install the required python3 packages
-# TODO: These should be getting installed from the requirements.txt file.
-pip3 install flask genshi CherryPy==3.*
