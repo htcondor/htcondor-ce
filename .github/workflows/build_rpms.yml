@@ -5,6 +5,7 @@ jobs:
   build-rpms-and-test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         dver: [7, 8]
         target_env: [osg, uw_build]
