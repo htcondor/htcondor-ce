@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 BUILD_ENV=$1
 
 # After building the RPM, try to install it
