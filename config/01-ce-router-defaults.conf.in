@@ -59,13 +59,13 @@ COMPLETED_JOB_EXPIRATION = 30
 REMOVE_CLAUSE_3 = (JobStatus == 4 && time() - EnteredCurrentStatus > $(COMPLETED_JOB_EXPIRATION)*3600*24)
 REMOVE_REASON_3 = strcat("job completed over ", $(COMPLETED_JOB_EXPIRATION), " days ago.")
 
-# Remove jobs that
+# Remove jobs that have exceeded configured or requested max wall time
 REMOVE_CLAUSE_4 = (JobUniverse == 5 && \
                    JobStatus == 2 && \
                    time() - JobCurrentStartExecutingDate > \
-                       maxWalltime isnt defined ? $(ROUTED_JOB_MAX_TIME)*60 : maxWalltime*60 )
-REMOVE_REASON_4 = strcat("job exeeded allowed walltime: ", \
-                         maxWalltime isnt defined ? $(ROUTED_JOB_MAX_TIME)*60 : maxWalltime*60, \
+                       maxWalltime is undefined ? $(ROUTED_JOB_MAX_TIME)*60 : maxWalltime*60 )
+REMOVE_REASON_4 = strcat("job exceeded allowed walltime: ", \
+                         maxWalltime is undefined ? $(ROUTED_JOB_MAX_TIME)*60 : maxWalltime*60, \
                          "min")
 
 SYSTEM_PERIODIC_REMOVE =  $(REMOVE_CLAUSE_1) || \
