@@ -1,0 +1,21 @@
+ARG EL=7
+
+FROM centos:centos$EL
+
+# "ARG EL" needs to be here again because the previous instance has gone out of scope.
+ARG EL=7
+ARG BUILD_ENV=uw_build
+
+# Build and install RPMs using existing scripts so we don't have to
+# reproduce dependencies
+COPY . /src/htcondor-ce/
+
+# Build and install RPM scripts expect the spec file bin
+# htcondor-ce/rpm/htcondor-ce.spec
+WORKDIR /src/
+RUN htcondor-ce/tests/build_rpms.sh $EL $BUILD_ENV
+RUN htcondor-ce/tests/install_rpms.sh $BUILD_ENV
+
+WORKDIR htcondor-ce
+
+ENTRYPOINT ["/src/htcondor-ce/tests/runme.sh"]

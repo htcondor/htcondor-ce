@@ -34,3 +34,34 @@ branch contains the previous version.
 
 - [Development](https://htcondor-ce.readthedocs.io/en/latest/): HTCondor-CE 4
 - [Stable](https://htcondor-ce.readthedocs.io/en/stable/): HTCondor-CE 3
+
+Development
+-----------
+
+1.  Build the development container:
+
+        $ docker build -t htcondor-ce-dev -f tests/Dockerfile.dev .
+
+    Optionally, specify the following build arguments:
+
+        -  `EL`: CentOS base image to use for the build.
+           Accepted values: `8` or `7` (default)
+        -  `BUILD_ENV`: specifies the repositories to use for HTCondor/BLAH dependencies.
+           Accepted values: `osg` or `uw_build` (default)
+
+2.  Run the container with the following:
+
+        $ docker run -d \
+                     --name my-htcondor-ce \
+                     -v ${PWD}:/src/htcondor-ce \
+                     -p 9619:9619 \
+                     -p 8080:80 \
+                     htcondor-ce-dev
+
+3.  Make changes to the source, apply them, and reconfigure the CE:
+
+        $ docker exec my-htcondor-ce \
+                 /bin/sh -c \
+                   "cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 && \
+                    make install && \
+                    condor_ce_restart -fast"
