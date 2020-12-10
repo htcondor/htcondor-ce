@@ -9,14 +9,11 @@ import optparse
 
 os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
 
-import cherrypy
-import cherrypy._cpwsgi_server
-import cherrypy.wsgiserver
+import gunicorn.app.base
 
 import htcondor
 import htcondorce.web
 import htcondorce.tools as ce
-
 
 ALIVE_HEARTBEAT = 60
 def send_heartbeat():
@@ -119,14 +116,24 @@ def parse_opts(localname=None, pidfile=None):
     return opts
 
 
-class MyWSGIGateway(cherrypy.wsgiserver.WSGIGateway_10):
+class MyWSGIGateway(gunicorn.app.base.BaseApplication):
+    """From the Gunicorn documentation example:
+    https://docs.gunicorn.org/en/20.0.4/custom.html
+    """
 
-    env_override = {}
+    def __init__(self, app, gunicorn_opts=None):
+        self.options = gunicorn_opts or {}
+        self.application = app
+        super().__init__()
 
-    def get_environ(self):
-        environ = cherrypy.wsgiserver.WSGIGateway_10.get_environ(self)
-        environ.update(self.env_override)
-        return environ
+    def load_config(self):
+        config = {key: value for key, value in self.options.items()
+                  if key in self.cfg.settings and value is not None}
+        for key, value in config.items():
+            self.cfg.set(key.lower(), value)
+
+    def load(self):
+        return self.application
 
 
 class WSGILogging(object):
@@ -193,18 +200,17 @@ def main():
         port = int(opts.port)
     else:
         port = int(htcondor.param.get('HTCONDORCE_VIEW_PORT', 8080))
-    MyWSGIGateway.env_override['htcondorce.spool'] = spooldir
+
+    wsgi_opts = htcondorce.web.GUNICORN_CONFIG.copy()
+    wsgi_opts['raw_env'] = [f"htcondorce.spool={spooldir}"]
     if os.path.exists('templates'):
-        MyWSGIGateway.env_override['htcondorce.templates'] = 'templates'
+        wsgi_opts['raw_env'].append("htcondorce.templates=templates")
     if opts.pool:
-        MyWSGIGateway.env_override['htcondorce.pool'] = opts.pool
+        wsgi_opts['raw_env'].append(f"htcondorce.pool={opts.pool}")
     if opts.name:
-        MyWSGIGateway.env_override['htcondorce.name'] = opts.name
+        wsgi_opts['raw_env'].append(f"htcondorce.name{opts.name}")
 
     app = WSGILogging(htcondorce.web.application)
-
-    cherrypy.tree.graft(app, "/")
-    cherrypy.server.unsubscribe()
 
     # Do the IPv6 / v4 dance:
     #   - If bindv6only is enabled, then we must connect to v4 and v6 separately.
@@ -213,45 +219,32 @@ def main():
     addrs = socket.getaddrinfo(socket.getfqdn(), 9618, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, 0)
     families = [i[0] for i in addrs]
     bind_ipv6_only = False
+    wsgi_opts['bind'] = []
+
     if socket.AF_INET6 in families:
         bind_ipv6_only = os.path.exists(bindonly) and open(bindonly).read() == "1"
-        server6 = cherrypy._cpserver.Server()
-        server6.socket_host = "::"
-        server6.socket_port = port
-        server6.thread_pool = 5
-        wsgi_server = cherrypy._cpwsgi_server.CPWSGIServer(server6)
-        wsgi_server.gateway = MyWSGIGateway
-        server6.instance = wsgi_server
-        server6.subscribe()
+        wsgi_opts['bind'].append(f"::1:{port}")
 
-    if (socket.AF_INET in families) and ( \
-             (bind_ipv6_only) or (socket.AF_INET6 not in families) \
-            ):
-        server4 = cherrypy._cpserver.Server()
-        server4.socket_host = "0.0.0.0"
-        server4.socket_port = port
-        server4.thread_pool = 5
+    if (socket.AF_INET in families) and \
+       ((bind_ipv6_only) or (socket.AF_INET6 not in families)):
+        wsgi_opts['bind'].append(f"0.0.0.0:{port}")
 
-        wsgi_server = cherrypy._cpwsgi_server.CPWSGIServer(server4)
-        wsgi_server.gateway = MyWSGIGateway
-        server4.instance = wsgi_server
-        server4.subscribe()
+    MyWSGIGateway(app, wsgi_opts).run()
 
-    if os.geteuid() == 0:
-        uid, gid = condor_ids()
-        cherrypy.process.plugins.DropPrivileges(cherrypy.engine, uid=uid, gid=gid).subscribe()
-    cherrypy.engine.start()
+    # if os.geteuid() == 0:
+    #     uid, gid = condor_ids()
+    #     cherrypy.process.plugins.DropPrivileges(cherrypy.engine, uid=uid, gid=gid).subscribe()
+    #     cherrypy.engine.start()
 
-    if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
-        wd = cherrypy.process.plugins.BackgroundTask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
-        wd.start()
+    # if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
+    #     wd = cherrypy.process.plugins.BackgroundTask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
+    #     wd.start()
 
     # Periodically update to make sure we're still a multi-ce (or not)
-    wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
-    wd.start()
-    cherrypy.engine.block()
+    # wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
+    # wd.start()
+    # cherrypy.engine.block()
 
 
 if __name__ == '__main__':
     main()
-

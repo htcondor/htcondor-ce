@@ -28,6 +28,9 @@ OK_STATUS = '200 OK'
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
+# Number of Gunicorn workers to spawn
+GUNICORN_CONFIG = {'workers': 4}
+
 
 def validate_plugin(name, plugin):
     try:
