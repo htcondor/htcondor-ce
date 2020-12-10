@@ -62,6 +62,6 @@ Development
 
         $ docker exec my-htcondor-ce \
                  /bin/sh -c \
-                   "cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 && \
+                   "cmake -DCMAKE_INSTALL_PREFIX=/usr -DPYTHON_EXECUTABLE=/usr/bin/python3 && \
                     make install && \
                     condor_ce_restart -fast"
