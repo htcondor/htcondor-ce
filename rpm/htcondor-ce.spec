@@ -83,14 +83,12 @@ Requires: ganglia-gmond
 Requires: rrdtool-devel
 
 %if 0%{?rhel} >= 8
-Requires: python3-cherrypy
 Requires: python3-flask
-Requires: python3-genshi
+Requires: python3-gunicorn
 Requires: python3-rpm
 %else
-Requires: python-cherrypy
-Requires: python-flask
-Requires: python-genshi
+Requires: python36-flask
+Requires: python36-gunicorn
 Requires: python36-rpm
 %endif
 
