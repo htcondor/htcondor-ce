@@ -28,8 +28,49 @@ OK_STATUS = '200 OK'
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-# Number of Gunicorn workers to spawn
-GUNICORN_CONFIG = {'workers': 4}
+GUNICORN_LOG_CONFIG = dict(
+        loggers={
+            "root": {"level": "INFO", "handlers": ["htcondor"]},
+            "gunicorn.error": {
+                "level": "DEBUG",
+                "handlers": ["htcondor"],
+                "propagate": True,
+                "qualname": "gunicorn.error"
+            },
+
+            "gunicorn.access": {
+                "level": "DEBUG",
+                "handlers": ["htcondor"],
+                "propagate": True,
+                "qualname": "gunicorn.access"
+            }
+        },
+        handlers={
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "generic",
+                "stream": "ext://sys.stdout"
+            },
+            "htcondor": {
+                "class": "htcondorce.web.HTCondorHandler",
+                "formatter": "generic",
+            },
+        },
+)
+
+GUNICORN_CONFIG = {'workers': 4,
+                   'logconfig_dict': GUNICORN_LOG_CONFIG}
+
+
+class HTCondorHandler(logging.Handler):
+
+    def emit(self, record):
+        msg = self.format(record)
+        euid = os.geteuid()
+        htcondor = htcondorce.web_utils.check_htcondor()
+        htcondor.log(htcondor.LogLevel.Always, msg)
+        if euid != os.geteuid():
+            os.seteuid(euid)
 
 
 def validate_plugin(name, plugin):

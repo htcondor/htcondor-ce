@@ -10,6 +10,7 @@ import optparse
 os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
 
 import gunicorn.app.base
+import gunicorn.glogging
 
 import htcondor
 import htcondorce.web
@@ -29,16 +30,6 @@ def send_heartbeat():
                          'ERROR: Failed to send keepalive to the HTCondor-CE master daemon with EUID {0}'.format(euid))
     if euid != os.geteuid():
         os.seteuid(euid)
-
-
-class HTCondorHandler(logging.Handler):
-
-    def emit(self, record):
-        msg = self.format(record)
-        euid = os.geteuid()
-        htcondor.log(htcondor.LogLevel.Always, msg)
-        if euid != os.geteuid():
-            os.seteuid(euid) 
 
 
 def condor_ids():
@@ -66,8 +57,6 @@ def check_multice():
 def setup_logging():
     if not hasattr(htcondor, 'log'):
         return
-    cherrypy.log.error_log.handlers = []
-    #cherrypy.log.access_log.handlers = []
     euid = os.geteuid()
     if os.isatty(1):
         htcondor.enable_debug()
@@ -75,16 +64,6 @@ def setup_logging():
         htcondor.enable_log()
     if euid != os.geteuid():
         os.seteuid(euid)
-    h = HTCondorHandler()
-    h.setLevel(logging.DEBUG)
-    h.setFormatter(cherrypy._cplogging.logfmt)
-
-    def nulltime():
-        return ''
-
-    cherrypy.log.time = nulltime
-    cherrypy.log.error_log.addHandler(h)
-    cherrypy.log.access_log.addHandler(h)
 
 
 def parse_opts(localname=None, pidfile=None):
