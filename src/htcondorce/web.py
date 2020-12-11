@@ -10,7 +10,7 @@ import logging
 import xml.sax.saxutils
 from urllib import parse
 
-import genshi.template
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import classad
 htcondor = None
@@ -50,16 +50,20 @@ def validate_plugin(name, plugin):
 
 def check_initialized(environ):
     global _initialized
-    global _loader
+    global _jinja_env
     global _cp
     global _plugins
     global htcondor
 
     if not _initialized:
-        if 'htcondorce.templates' in environ:
-            _loader = genshi.template.TemplateLoader(environ['htcondorce.templates'], auto_reload=True)
-        else:
-            _loader = genshi.template.TemplateLoader('/usr/share/condor-ce/templates', auto_reload=True)
+        try:
+            template_path = environ['htcondorce.templates']
+        except KeyError:
+            template_path = '/usr/share/condor-ce/templates'
+
+        _jinja_env = Environment(loader=FileSystemLoader(template_path),
+                                 autoescape=select_autoescape(['html', 'xml']))
+
         ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
         htcondor = htcondorce.web_utils.check_htcondor()
 
@@ -251,51 +255,51 @@ def jobs_json(environ, start_response):
 def vos(environ, start_response):
     vos = htcondorce.rrd.list_vos(environ)
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('vos.html')
+    tmpl = _jinja_env.get_template('vos.html')
 
     info = {
         'vos': vos,
         'multice': g_is_multice
     }
 
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def metrics(environ, start_response):
     metrics = htcondorce.rrd.list_metrics(environ)
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('metrics.html')
+    tmpl = _jinja_env.get_template('metrics.html')
 
     info = {
         'metrics': metrics,
         'multice': g_is_multice
     }
 
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def health(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('health.html')
+    tmpl = _jinja_env.get_template('health.html')
     info = {
         'multice': g_is_multice
     }
 
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def pilots_page(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('pilots.html')
+    tmpl = _jinja_env.get_template('pilots.html')
     info = {'multice': g_is_multice}
-    return [tmpl.generate(**info).render('html', doctype='html')] 
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def index(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('index.html')
+    tmpl = _jinja_env.get_template('index.html')
     info = {'multice': g_is_multice}
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def robots(environ, start_response):

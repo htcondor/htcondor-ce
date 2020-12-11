@@ -154,7 +154,7 @@ class WSGILogging(object):
                     break
             return start_response(status, response_headers, exc_info)
         retval = self.app(environ, custom_start_response)
-        content_length = content_lengths[0] if content_lengths else len("".join(retval))
+        content_length = content_lengths[0] if content_lengths else len(b"".join(retval))
 
         msg = { \
             'host': environ.get('REMOTE_ADDR', ''),
