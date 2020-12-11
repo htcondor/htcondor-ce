@@ -351,6 +351,11 @@ Disallow: /
     return return_text
 
 
+def favicon(environ, start_response):
+    start_response('204 No Content', _headers('text/plain'))
+    return ''
+
+
 ce_graph_re = re.compile(r'^/+graphs/+ce/?([a-zA-Z]+)?/?$')
 def ce_graph(environ, start_response):
     start_response(OK_STATUS, _headers('image/png'))
@@ -422,6 +427,7 @@ def not_found(environ, start_response):
 
 urls = [
     (re.compile(r'^/*$'), index),
+    (re.compile(r'^favicon\.ico$'), favicon),
     (re.compile(r'^robots\.txt$'), robots),
     (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^metrics/*$'), metrics),
