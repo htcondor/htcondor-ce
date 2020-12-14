@@ -450,6 +450,13 @@ urls = [
 
 def application(environ, start_response):
 
+    # Gunicorn raw_env dumps its vars into the worker proc environment
+    environ['htcondorce.spool'] = os.environ.get('htcondorce.spool')  # spool is required
+
+    # optional env vars
+    for env_var in ('name', 'pool', 'template'):
+        environ[f'htcondorce.{env_var}'] = os.environ.get(f'htcondorce.{env_var}', '')
+
     check_initialized(environ)
 
     path = environ.get('PATH_INFO', '').lstrip('/')
