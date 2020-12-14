@@ -208,12 +208,12 @@ def main():
        ((bind_ipv6_only) or (socket.AF_INET6 not in families)):
         wsgi_opts['bind'].append(f"0.0.0.0:{port}")
 
-    MyWSGIGateway(app, wsgi_opts).run()
+    if os.geteuid() == 0:
+        uid, gid = condor_ids()
+        wsgi_opts['user'] = uid
+        wsgi_opts['group'] = gid
 
-    # if os.geteuid() == 0:
-    #     uid, gid = condor_ids()
-    #     cherrypy.process.plugins.DropPrivileges(cherrypy.engine, uid=uid, gid=gid).subscribe()
-    #     cherrypy.engine.start()
+    MyWSGIGateway(app, wsgi_opts).run()
 
     # if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
     #     wd = cherrypy.process.plugins.BackgroundTask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
