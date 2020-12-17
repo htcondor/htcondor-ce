@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
+import multiprocessing
 import os
 import pwd
 import sys
 import socket
 import logging
+import time
 import optparse
 
 os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
@@ -209,15 +211,20 @@ def main():
         wsgi_opts['bind'].append(f"0.0.0.0:{port}")
 
     if os.geteuid() == 0:
-        uid, gid = condor_ids()
-        wsgi_opts['user'] = uid
-        wsgi_opts['group'] = gid
+        condor_uid, condor_gid = condor_ids()
+        wsgi_opts['user'] = condor_uid
+        wsgi_opts['group'] = condor_gid
 
-    MyWSGIGateway(app, wsgi_opts).run()
+    gateway = MyWSGIGateway(app, wsgi_opts)
+    server = multiprocessing.Process(target=gateway.run)
+    server.start()
 
-    # if not os.isatty(1) and hasattr(htcondor, 'send_alive'):
-    #     wd = cherrypy.process.plugins.BackgroundTask(max(ALIVE_HEARTBEAT/3-1, 1), send_heartbeat)
-    #     wd.start()
+    if not os.isatty(1):
+        while True:
+            os.seteuid(condor_uid)
+            os.setegid(condor_gid)
+            send_heartbeat()
+            time.sleep(max(ALIVE_HEARTBEAT/3-1, 1))
 
     # Periodically update to make sure we're still a multi-ce (or not)
     # wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
