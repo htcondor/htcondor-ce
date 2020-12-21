@@ -27,8 +27,6 @@ BuildRequires: python-srpm-macros
 BuildRequires: python-rpm-macros
 BuildRequires: python3-devel
 BuildRequires: python3-rpm-macros
-BuildRequires: rrdtool
-BuildRequires: rrdtool-devel
 
 # because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
 Requires:  condor >= 8.6.5
@@ -80,16 +78,17 @@ Summary: A Website that will report the current status of the local HTCondor-CE
 
 Requires: %{name}-master = %{version}-%{release}
 Requires: ganglia-gmond
-Requires: rrdtool-devel
 
 %if 0%{?rhel} >= 8
 Requires: python3-flask
 Requires: python3-gunicorn
 Requires: python3-rpm
+Requires: python3-rrdtool
 %else
 Requires: python36-flask
 Requires: python36-gunicorn
 Requires: python36-rpm
+Requires: rrdtool
 %endif
 
 %description view
