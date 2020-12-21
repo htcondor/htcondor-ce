@@ -4,8 +4,6 @@ import re
 import imp
 import json
 import time
-import types
-import socket
 import logging
 import xml.sax.saxutils
 from urllib import parse

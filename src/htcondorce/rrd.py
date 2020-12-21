@@ -2,7 +2,6 @@
 import os
 import re
 import errno
-import tempfile
 
 # Try using rrdtool Python bindings
 try:
