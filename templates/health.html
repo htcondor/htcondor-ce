@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	    xmlns:xi="http://www.w3.org/2001/XInclude"
-			xmlns:py="http://genshi.edgewall.org/">
-			<xi:include href="header.html" />
-			<head>
-				<title py:if="multice">Grid Overview</title>
-				<title py:if="not multice">HTCondor-CE Overview</title>
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+  <xi:include href="header.html" />
+  <head>
+    <title py:if="multice">Grid Overview</title>
+    <title py:if="not multice">HTCondor-CE Overview</title>
     <script type='text/javascript'>
 //<![CDATA[
         $(document).ready(function() {
@@ -29,25 +29,25 @@
   </head>
   <body>
     <div class="container" style="padding-top:60px">
-			<div class="row">
-				<div class="col-sm-12">
-					<h1 id="ce_status">Status: </h1>
-				</div>
+      <div class="row">
+	<div class="col-sm-12">
+	  <h1 id="ce_status">Status: </h1>
+	</div>
       </div>
       <div class="row">
-				<div class="col-sm-12">
-					<h2>Availability:</h2>
-					<div class="row">
-          	<div class="col-sm-4">
-           		<h3>Last Hour</h3>
-           		<img src="graphs/metrics/HTCondor.Schedd/Availability/hourly" class="img-responsive"/>
-          	</div>
-          	<div class="col-sm-4">
-           		<h3>Last Day</h3>
-           		<img src="graphs/metrics/HTCondor.Schedd/Availability/daily" class="img-responsive"/>
-          	</div>
-					</div>
-				</div>
+	<div class="col-sm-12">
+	  <h2>Availability:</h2>
+	  <div class="row">
+            <div class="col-sm-4">
+              <h3>Last Hour</h3>
+              <img src="graphs/metrics/HTCondor.Schedd/Availability/hourly" class="img-responsive"/>
+            </div>
+            <div class="col-sm-4">
+              <h3>Last Day</h3>
+              <img src="graphs/metrics/HTCondor.Schedd/Availability/daily" class="img-responsive"/>
+            </div>
+	  </div>
+	</div>
       </div>
     </div>
   </body>
