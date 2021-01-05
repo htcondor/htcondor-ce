@@ -5,8 +5,11 @@
     <xi:include href="header.html" />
   <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title py:if="multice">Grid Overview</title>
-    <title py:if="not multice">HTCondor-CE Overview</title>
+    {% if multice %}
+    <title>Grid Overview</title>
+    {% else %}
+    <title>HTCondor-CE Overview</title>
+    {% endif %}
     <script type='text/javascript'>
 //<![CDATA[
         google.load('visualization', '1', {packages:['table', 'controls']});

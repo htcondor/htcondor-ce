@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="header.html" />
   <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title py:if="multice">Grid Overview</title>
-    <title py:if="not multice">HTCondor-CE Overview</title>
+    {% if multice %}
+    <title>Grid Overview</title>
+    {% else %}
+    <title>HTCondor-CE Overview</title>
+    {% endif %}    
   </head>
   <body>
     <div class="container" style="padding-top:60px">
-      <div py:for="group in sorted(metrics)">
-        <h1>${group}</h1>
-        <div py:for="name in sorted(metrics[group])" class="row">
+      <div>
+        {% for group in metrics|sort %}
+        <h1>{{ group }}</h1>
+        <div class="row">
+          {% for name in metrics.group|sort %}
 	  <div class="col-sm-12">
 	    <div class="row">
-	      <h2 class="col-sm-6">${name}</h2>
+	      <h2 class="col-sm-6">{{ name }}</h2>
 	    </div>
 	    <div class="row">
               <div class="col-sm-6">
@@ -24,13 +28,15 @@
               </div>
               <div class="col-sm-6">
              	<h3>Last Day</h3>
-		<img src="graphs/metrics/${group}/${name}/daily" class="img-responsive"/>
+		<img src="graphs/metrics/{{ group }}/{ {name }}/daily" class="img-responsive"/>
 	      </div>
 	    </div>
           </div>
+          {% endfor %}
         </div>
         <hr/>
       </div>
+      {% endfor %}
     </div>
   </body>
 </html>
