@@ -41,20 +41,6 @@ def condor_ids():
     return info.pw_uid, info.pw_gid
 
 
-g_spooldir = None
-def check_multice():
-    global g_spooldir
-    if not g_spooldir:
-        return
-    dircount = 0
-    for path in os.listdir(g_spooldir):
-        if os.path.isdir(os.path.join(g_spooldir, path)) and (path not in ['vos', 'metrics']):
-            dircount += 1
-            if dircount > 1:
-                break
-    htcondorce.web.g_is_multice = dircount > 1
-
-
 def setup_logging():
     if not hasattr(htcondor, 'log'):
         return
@@ -172,9 +158,6 @@ def main():
         if not os.path.exists("tmp"):
             os.mkdir("tmp")
         spooldir = "tmp"
-    global g_spooldir
-    g_spooldir = spooldir
-    check_multice()
 
     if opts.port:
         port = int(opts.port)
@@ -183,6 +166,11 @@ def main():
 
     wsgi_opts = htcondorce.web.GUNICORN_CONFIG.copy()
     wsgi_opts['raw_env'] = [f"htcondorce.spool={spooldir}"]
+
+    # Show different page titles and tables for central collectors vs standalone CEs
+    multice = htcondor.param.get('IS_CENTRAL_COLLECTOR', False)
+    wsgi_opts['raw_env'].append(f"htcondorce.multice={multice}")
+
     if os.path.exists('templates'):
         wsgi_opts['raw_env'].append("htcondorce.templates=templates")
     if opts.pool:
@@ -224,11 +212,6 @@ def main():
             os.setegid(condor_gid)
             send_heartbeat()
             time.sleep(max(ALIVE_HEARTBEAT/3-1, 1))
-
-    # Periodically update to make sure we're still a multi-ce (or not)
-    # wd = cherrypy.process.plugins.BackgroundTask(5, check_multice)
-    # wd.start()
-    # cherrypy.engine.block()
 
 
 if __name__ == '__main__':

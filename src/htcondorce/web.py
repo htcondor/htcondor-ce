@@ -20,7 +20,6 @@ _initialized = None
 _loader = None
 _view = None
 _plugins = []
-g_is_multice = False
 OK_STATUS = '200 OK'
 
 log = logging.getLogger(__name__)
@@ -298,7 +297,7 @@ def vos(environ, start_response):
 
     info = {
         'vos': vos,
-        'multice': g_is_multice
+        'multice': environ['htcondorce.multice']
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -311,7 +310,7 @@ def metrics(environ, start_response):
 
     info = {
         'metrics': metrics,
-        'multice': g_is_multice
+        'multice': environ['htcondorce.multice']
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -321,7 +320,7 @@ def health(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('health.html')
     info = {
-        'multice': g_is_multice
+        'multice': environ['htcondorce.multice']
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -330,14 +329,14 @@ def health(environ, start_response):
 def pilots_page(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('pilots.html')
-    info = {'multice': g_is_multice}
+    info = {'multice': environ['htcondorce.multice']}
     return [tmpl.render(**info).encode('utf-8')]
 
 
 def index(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('index.html')
-    info = {'multice': g_is_multice}
+    info = {'multice': environ['htcondorce.multice']}
     return [tmpl.render(**info).encode('utf-8')]
 
 
@@ -452,7 +451,7 @@ def application(environ, start_response):
     environ['htcondorce.spool'] = os.environ.get('htcondorce.spool')  # spool is required
 
     # optional env vars
-    for env_var in ('name', 'pool', 'template'):
+    for env_var in ('multice', 'name', 'pool', 'template'):
         environ[f'htcondorce.{env_var}'] = os.environ.get(f'htcondorce.{env_var}', '')
 
     check_initialized(environ)
