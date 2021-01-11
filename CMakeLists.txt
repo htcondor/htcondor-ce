@@ -205,9 +205,17 @@ foreach(private_dir IN ITEMS ${PRIVATE_HTCONDORCE_DIRS})
 endforeach(private_dir)
 
 install(FILES config/ce-status.cpf config/pilot-status.cpf DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce)
-install(FILES templates/index.html templates/vos.html templates/metrics.html
-        templates/code.html templates/code_submit.html templates/code_submit_failure.html
-	templates/health.html templates/header.html templates/pilots.html DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
+install(FILES
+  templates/index.html
+  templates/vos.html
+  templates/metrics.html
+  templates/code.html
+  templates/code_submit.html
+  templates/code_submit_failure.html
+  templates/health.html
+  templates/header.html
+  templates/pilots.html
+  DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)
 
 install(FILES
