@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 
-<html xmlns:py="http://genshi.edgewall.org/">
+<html lang="en">
     <head>
 
     <title>HTCondor-CE Registration Failed</title>
@@ -21,7 +21,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <p>HTCondor-CE Registration Failed</p>
-                    <p py:if="info">${info}</p>
+                    {% if info %}
+                      <p>{{ info }}</p>
+                    {% endif %}
                 </div>
             </div>
           </div>
