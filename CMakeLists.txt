@@ -213,7 +213,7 @@ install(FILES
   templates/code_submit.html
   templates/code_submit_failure.html
   templates/health.html
-  templates/header.html
+  templates/view_base.html
   templates/pilots.html
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/templates)
 install(FILES config/condor-ce config/condor-ce-collector DESTINATION ${SYSCONF_INSTALL_DIR}/sysconfig)

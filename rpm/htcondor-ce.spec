@@ -420,7 +420,7 @@ fi
 %{_datadir}/condor-ce/templates/vos.html
 %{_datadir}/condor-ce/templates/metrics.html
 %{_datadir}/condor-ce/templates/health.html
-%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/templates/view_base.html
 %{_datadir}/condor-ce/templates/pilots.html
 %{_datadir}/condor-ce/templates/code.html
 %{_datadir}/condor-ce/templates/code_submit.html
