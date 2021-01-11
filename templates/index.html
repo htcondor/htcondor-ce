@@ -1,206 +1,205 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:py="http://genshi.edgewall.org/">
-    <xi:include href="header.html" />
-  <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    {% if multice %}
-    <title>Grid Overview</title>
-    {% else %}
-    <title>HTCondor-CE Overview</title>
-    {% endif %}
-    <script type='text/javascript'>
-//<![CDATA[
-        google.load('visualization', '1', {packages:['table', 'controls']});
-        $(document).ready(function() {
-            load_data();
-            setInterval(load_data, 300000);
-        });
+{% extends "view_base.html" %}
 
-        function load_data() {
-            $.get('/json/totals', got_totals);
-            $.get('/json/pilots', got_pilots);
-            if("${multice}" != "False") {
-                $.when(
-                    $.get('/json/schedds'),
-                    $.get('/json/tableattribs'),
-                ).then(function(a1, a2) { got_schedds(a1[0], a2[0]) });
-            } else {
-                $.get('/json/schedd', got_info);
-            }
-        }
+{% block title %}
+{% if multice %}
+Grid Overview
+{% else %}
+HTCondor-CE Overview
+{% endif %}
+{% endblock %}
 
-        function got_totals(data) {
+{% block script %}
+<script type='text/javascript'>
+  //<![CDATA[
+  google.load('visualization', '1', {packages:['table', 'controls']});
+  $(document).ready(function() {
+      load_data();
+      setInterval(load_data, 300000);
+  });
 
-            $('#overall_stats_table').detach();
-            schedd_stats_table = $("<table></table>");
-            schedd_stats_table.addClass("table");
-            schedd_stats_table.attr('id', 'overall_stats_table');
-            schedd_stats_table.append("<tr><th>Running</th><th>Idle</th><th>Held</th><th>Last Data Update</th>");
-            schedd_stats_table.append("<tr><td>" + data.Running + "</td><td>" + data.Idle + "</td><td>" + data.Held + "</td><td>" + Date(data.UpdateDate).toLocaleString() + "</td></tr>");
-            $("#schedd_stats_table").append(schedd_stats_table);
-        }
+  function load_data() {
+      $.get('/json/totals', got_totals);
+      $.get('/json/pilots', got_pilots);
+      if("${multice}" != "False") {
+          $.when(
+              $.get('/json/schedds'),
+              $.get('/json/tableattribs'),
+          ).then(function(a1, a2) { got_schedds(a1[0], a2[0]) });
+      } else {
+          $.get('/json/schedd', got_info);
+      }
+  }
 
-        function got_info(data) {
+  function got_totals(data) {
 
-          $('#info_table_inner').detach();
-          info_table = $("<table></table>");
-          info_table.addClass("table");
-          info_table.attr("id", "info_table_inner");
-          $.getJSON("/json/tableattribs", function(attribs) {
-              console.log(attribs);
-              attribs.forEach(function(it) {
-                  info_table.append("<tr><td>" + it.label + "</td><td>" + data[it.attrib] + "</td></tr>");
-              });
-          });
-          $("#info_table").append(info_table);
+      $('#overall_stats_table').detach();
+      schedd_stats_table = $("<table></table>");
+      schedd_stats_table.addClass("table");
+      schedd_stats_table.attr('id', 'overall_stats_table');
+      schedd_stats_table.append("<tr><th>Running</th><th>Idle</th><th>Held</th><th>Last Data Update</th>");
+      schedd_stats_table.append("<tr><td>" + data.Running + "</td><td>" + data.Idle + "</td><td>" + data.Held + "</td><td>" + Date(data.UpdateDate).toLocaleString() + "</td></tr>");
+      $("#schedd_stats_table").append(schedd_stats_table);
+  }
 
-        }
+  function got_info(data) {
 
-        function got_schedds(data, attribs) {
-          $('#info_table_inner').detach();
-          info_table = $("<table></table>");
-          info_table.addClass("table");
-          info_table.addClass("tablesorter");
-          info_table.attr("id", "info_table_inner");
-
-          thead = $('<thead>');
-          row = $('<tr/>');
-          row.append("<th>CE</th>");
+      $('#info_table_inner').detach();
+      info_table = $("<table></table>");
+      info_table.addClass("table");
+      info_table.attr("id", "info_table_inner");
+      $.getJSON("/json/tableattribs", function(attribs) {
+          console.log(attribs);
           attribs.forEach(function(it) {
-              row.append("<th>" + it.label + "</th>");
+              info_table.append("<tr><td>" + it.label + "</td><td>" + data[it.attrib] + "</td></tr>");
           });
-          thead.append(row);
-          info_table.append(thead);
+      });
+      $("#info_table").append(info_table);
 
-          tbody = $('<tbody/>');
-          for (name in data) {
-              key = data[name]
-              row = $('<tr/>');
-              row.append("<td>" + name + "</td>");
-              attribs.forEach(function(it) {
-                  row.append("<td>" + key[it.attrib] + "</td>");
-              });
-              tbody.append(row);
+  }
+
+  function got_schedds(data, attribs) {
+      $('#info_table_inner').detach();
+      info_table = $("<table></table>");
+      info_table.addClass("table");
+      info_table.addClass("tablesorter");
+      info_table.attr("id", "info_table_inner");
+
+      thead = $('<thead>');
+      row = $('<tr/>');
+      row.append("<th>CE</th>");
+      attribs.forEach(function(it) {
+          row.append("<th>" + it.label + "</th>");
+      });
+      thead.append(row);
+      info_table.append(thead);
+
+      tbody = $('<tbody/>');
+      for (name in data) {
+          key = data[name]
+          row = $('<tr/>');
+          row.append("<td>" + name + "</td>");
+          attribs.forEach(function(it) {
+              row.append("<td>" + key[it.attrib] + "</td>");
+          });
+          tbody.append(row);
+      }
+      info_table.append(tbody);
+
+      $("#info_table").append(info_table);
+
+      $("#info_table_inner").tablesorter({
+          debug: true,
+          theme: "bootstrap",
+          headerTemplate : '{content} {icon}',
+          widgets: ["filter", "uitheme", "zebra"],
+          widgetOptions : {
+              filter_external : '#infoSearch',
+              filter_columnFilters: false,
+              zebra : ["even", "odd"],
           }
-          info_table.append(tbody);
+      });
 
-          $("#info_table").append(info_table);
+  }
 
-          $("#info_table_inner").tablesorter({
-              debug: true,
-              theme: "bootstrap",
-              headerTemplate : '{content} {icon}',
-              widgets: ["filter", "uitheme", "zebra"],
-              widgetOptions : {
-                filter_external : '#infoSearch',
-                filter_columnFilters: false,
-                zebra : ["even", "odd"],
-              }
-            });
+  function got_pilots(data) {
+      $("#pilots_table_inner").detach();
+      pilots_table = $("<table></table>");
+      pilots_table.addClass("table");
+      pilots_table.addClass("table-striped");
+      pilots_table.addClass("table-hover");
+      pilots_table.addClass("table-condensed");
+      pilots_table.addClass("tablesorter");
+      pilots_table.attr("id", "pilots_table_inner");
+      pilots_table.append("<thead><tr><th>VO</th><th>VOMS</th><th>Jobs</th><th>Running</th><th>Idle</th><th>Held</th><th>DN</th></tr></thead>");
+      pilots_table.append("<tbody>");
+      for (idx in data) {
+          pilot = data[idx];
+          pilots_table.append("<tr><td>" + pilot.VO + "</td><td>" + pilot.VOMS + "</td><td>" + pilot.Jobs + "</td><td>" + pilot.Running + "</td><td>" + pilot.Idle + "</td><td>" + pilot.Held + "</td><td>" + pilot.DN + "</td></tr>");
+      }
+      pilots_table.append("</tbody>");
+      $("#pilots_table").append(pilots_table);
 
-        }
+      $("#pilots_table_inner").tablesorter({
+          debug: true,
+          theme: "bootstrap",
+          headerTemplate : '{content} {icon}',
+          widgets: ["filter", "uitheme", "zebra"],
+          widgetOptions : {
+              filter_external : '#pilotSearch',
+              filter_columnFilters: false,
+              zebra : ["even", "odd"],
+          }
+      });
 
-        function got_pilots(data) {
-            $("#pilots_table_inner").detach();
-            pilots_table = $("<table></table>");
-            pilots_table.addClass("table");
-            pilots_table.addClass("table-striped");
-            pilots_table.addClass("table-hover");
-            pilots_table.addClass("table-condensed");
-            pilots_table.addClass("tablesorter");
-            pilots_table.attr("id", "pilots_table_inner");
-            pilots_table.append("<thead><tr><th>VO</th><th>VOMS</th><th>Jobs</th><th>Running</th><th>Idle</th><th>Held</th><th>DN</th></tr></thead>");
-            pilots_table.append("<tbody>");
-            for (idx in data) {
-                pilot = data[idx];
-                pilots_table.append("<tr><td>" + pilot.VO + "</td><td>" + pilot.VOMS + "</td><td>" + pilot.Jobs + "</td><td>" + pilot.Running + "</td><td>" + pilot.Idle + "</td><td>" + pilot.Held + "</td><td>" + pilot.DN + "</td></tr>");
-            }
-            pilots_table.append("</tbody>");
-            $("#pilots_table").append(pilots_table);
+  }
+  //]]>
+</script>
+{% endblock %}
 
-            $("#pilots_table_inner").tablesorter({
-              debug: true,
-              theme: "bootstrap",
-              headerTemplate : '{content} {icon}',
-              widgets: ["filter", "uitheme", "zebra"],
-              widgetOptions : {
-                filter_external : '#pilotSearch',
-                filter_columnFilters: false,
-                zebra : ["even", "odd"],
-              }
-            });
-
-        }
-//]]>
-    </script>
-  </head>
-  <body>
-    <div class="container" style="padding-top:60px">
-      <div class="row" id="top_summary">
-        <div class="col-sm-12">
-          <div class="row">
-          <div class="col-sm-3" style="padding-top:40px">
-            <div id="schedd_stats_table"></div>
-          </div>
-          <div class="col-sm-3">
-            <div class="row">
-              <h2>Last Hour</h2>
-              <div id="ce_hourly_img">
-                  <img id="ce_hourly_img" src="graphs/ce/hourly" class="img-responsive"/>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="row">
-              <h2>Last Day</h2>
-              <div id="ce_daily_div">
-                  <img id="ce_daily_img" src="graphs/ce/daily" class="img-responsive"/>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="row">
-              <h2>Last Week</h2>
-              <div id="ce_weekly_div">
-                  <img id="ce_weekly_img" src="graphs/ce/weekly" class="img-responsive"/>
-              </div>
-            </div>
-          </div>
-         </div>
-       </div>
-      </div>
+{% block body %}
+<div class="container" style="padding-top:60px">
+  <div class="row" id="top_summary">
+    <div class="col-sm-12">
       <div class="row">
-        <div class="col-sm-12">
-        <h2>Pilots</h2>
-        <div class="row">
-          <div class="col-sm-3">
-            <p>
-              <input class="form-control" id="pilotSearch" placeholder="Search Table" type="search" data-column="all"></input>
-           </p>
+        <div class="col-sm-3" style="padding-top:40px">
+          <div id="schedd_stats_table"></div>
+        </div>
+        <div class="col-sm-3">
+          <div class="row">
+            <h2>Last Hour</h2>
+            <div id="ce_hourly_img">
+              <img id="ce_hourly_img" src="graphs/ce/hourly" class="img-responsive"/>
+            </div>
           </div>
         </div>
-          <div class="table-responsive">
-            <div id="pilots_table"/>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <h2>Info</h2>
+        <div class="col-sm-3">
           <div class="row">
-            <div class="col-sm-3">
-              <p>
-                <input class="form-control" id="infoSearch" placeholder="Search Table" type="search" data-column="all"></input>
-             </p>
+            <h2>Last Day</h2>
+            <div id="ce_daily_div">
+              <img id="ce_daily_img" src="graphs/ce/daily" class="img-responsive"/>
             </div>
           </div>
-          <div class="table-responsive">
-            <div id="info_table"/>
+        </div>
+        <div class="col-sm-3">
+          <div class="row">
+            <h2>Last Week</h2>
+            <div id="ce_weekly_div">
+              <img id="ce_weekly_img" src="graphs/ce/weekly" class="img-responsive"/>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
-</html>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>Pilots</h2>
+      <div class="row">
+        <div class="col-sm-3">
+          <p>
+            <input class="form-control" id="pilotSearch" placeholder="Search Table" type="search" data-column="all"></input>
+          </p>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <div id="pilots_table"/>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>Info</h2>
+      <div class="row">
+        <div class="col-sm-3">
+          <p>
+            <input class="form-control" id="infoSearch" placeholder="Search Table" type="search" data-column="all"></input>
+          </p>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <div id="info_table"/>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

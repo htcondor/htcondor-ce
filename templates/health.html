@@ -1,56 +1,57 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-  <xi:include href="header.html" />
-  <head>
-    {% if multice %}
-    <title>Grid Overview</title>
-    {% else %}
-    <title>HTCondor-CE Overview</title>
-    {% endif %}
-    <script type='text/javascript'>
-//<![CDATA[
-        $(document).ready(function() {
-            load_data();
-            setInterval(load_data, 300000);
-        });
+{% extends "view_base.html" %}
 
-        function load_data() {
-            $.get('/json/status', got_status);
-        }
+{% block title %}
+{% if multice %}
+Grid Overview
+{% else %}
+HTCondor-CE Overview
+{% endif %}
+{% endblock %}
 
-        function got_status(data) {
-            $("#ce_status_inner").detach();
-            stat = $("<p></p>");
-            stat.attr('id', "ce_status_inner");
-            stat.append(data.status);
-            $("#ce_status").append(stat);
-        }
-//]]>
-    </script>
-  </head>
-  <body>
-    <div class="container" style="padding-top:60px">
+{% block script %}
+<script type='text/javascript'>
+  //<![CDATA[
+  $(document).ready(function() {
+      load_data();
+      setInterval(load_data, 300000);
+  });
+
+  function load_data() {
+      $.get('/json/status', got_status);
+  }
+
+  function got_status(data) {
+      $("#ce_status_inner").detach();
+      stat = $("<p></p>");
+      stat.attr('id', "ce_status_inner");
+      stat.append(data.status);
+      $("#ce_status").append(stat);
+  }
+  //]]>
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding-top:60px">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1 id="ce_status">Status: </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>Availability:</h2>
       <div class="row">
-	<div class="col-sm-12">
-	  <h1 id="ce_status">Status: </h1>
-	</div>
-      </div>
-      <div class="row">
-	<div class="col-sm-12">
-	  <h2>Availability:</h2>
-	  <div class="row">
-            <div class="col-sm-4">
-              <h3>Last Hour</h3>
-              <img src="graphs/metrics/HTCondor.Schedd/Availability/hourly" class="img-responsive"/>
-            </div>
-            <div class="col-sm-4">
-              <h3>Last Day</h3>
-              <img src="graphs/metrics/HTCondor.Schedd/Availability/daily" class="img-responsive"/>
-            </div>
-	  </div>
-	</div>
+        <div class="col-sm-4">
+          <h3>Last Hour</h3>
+          <img src="graphs/metrics/HTCondor.Schedd/Availability/hourly" class="img-responsive"/>
+        </div>
+        <div class="col-sm-4">
+          <h3>Last Day</h3>
+          <img src="graphs/metrics/HTCondor.Schedd/Availability/daily" class="img-responsive"/>
+        </div>
       </div>
     </div>
-  </body>
-</html>
+  </div>
+</div>
+{% endblock %}
