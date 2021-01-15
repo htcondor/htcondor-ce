@@ -33,6 +33,9 @@
 
 {% block body %}
 <div class="container" style="padding-top:60px">
+  {% if not vos %}
+  <h1>No VO data found</h1>
+  {% endif %}
   <div class="row" id="top_summary">
     {% for vo in vos|sort %}
     <div class="col-sm-12">
