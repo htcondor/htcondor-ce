@@ -1,0 +1,38 @@
+name: Build and upload HTCondor-CE RPMs
+on:
+  release:
+    # there seems to be contention between 'published' vs 'created' here
+    # 'published' occurs with a GitHub release
+    types: [published]
+
+jobs:
+  build-rpms-and-upload:
+    runs-on: ubuntu-latest
+    if: startsWith(github.repository, 'htcondor/')
+    strategy:
+      matrix:
+        dver: [7, 8]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare Docker
+        run: |
+          echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
+            sudo service docker restart
+
+      - name: Start CentOS ${{ matrix.dver}} image
+        run: |
+          docker run --detach --env "container=docker" \
+                 --name $GITHUB_SHA \
+                 --volume `pwd`:/htcondor-ce:rw \
+                 centos:centos${{ matrix.dver }} \
+                 /usr/sbin/init
+
+      - name: Build CHTC EL${{ matrix.dver }} RPMs
+        run: |
+          docker exec $GITHUB_SHA \
+                 /bin/bash -xc \
+                   "/htcondor-ce/tests/build_rpms.sh \
+                     ${{ matrix.dver }} \
+                     uw_build"
+
