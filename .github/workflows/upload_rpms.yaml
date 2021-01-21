@@ -36,3 +36,10 @@ jobs:
                      ${{ matrix.dver }} \
                      uw_build"
 
+      - name: Upload CHTC EL${{ matrix.dver }} RPMs
+        run: |
+          ssh-agent -a "$SSH_AUTH_SOCK" > /dev/null
+          ssh-add - <<< "${{ secrets.CI_XFER_KEY }}"
+          tests/sftp_upload.sh
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
