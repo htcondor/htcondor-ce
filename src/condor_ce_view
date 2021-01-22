@@ -176,7 +176,7 @@ def main():
     if opts.pool:
         wsgi_opts['raw_env'].append(f"htcondorce.pool={opts.pool}")
     if opts.name:
-        wsgi_opts['raw_env'].append(f"htcondorce.name{opts.name}")
+        wsgi_opts['raw_env'].append(f"htcondorce.name={opts.name}")
 
     app = WSGILogging(htcondorce.web.application)
 
