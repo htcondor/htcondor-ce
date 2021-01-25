@@ -34,7 +34,6 @@ PubkeyAuthentication yes
 PasswordAuthentication no
 GSSAPIAuthentication no
 ChallengeResponseAuthentication no
-KerberosAuthentication no
 __END__
         printf "%s\n" "$hostsig" > ~/.ssh/known_hosts
     )
