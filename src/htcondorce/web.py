@@ -4,13 +4,11 @@ import re
 import imp
 import json
 import time
-import types
-import socket
 import logging
 import xml.sax.saxutils
 from urllib import parse
 
-import genshi.template
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import classad
 htcondor = None
@@ -22,11 +20,54 @@ _initialized = None
 _loader = None
 _view = None
 _plugins = []
-g_is_multice = False
 OK_STATUS = '200 OK'
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
+
+GUNICORN_LOG_CONFIG = dict(
+        loggers={
+            "root": {"level": "INFO", "handlers": ["htcondor"]},
+            "gunicorn.error": {
+                "level": "DEBUG",
+                "handlers": ["htcondor"],
+                "propagate": True,
+                "qualname": "gunicorn.error"
+            },
+
+            "gunicorn.access": {
+                "level": "DEBUG",
+                "handlers": ["htcondor"],
+                "propagate": True,
+                "qualname": "gunicorn.access"
+            }
+        },
+        handlers={
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "generic",
+                "stream": "ext://sys.stdout"
+            },
+            "htcondor": {
+                "class": "htcondorce.web.HTCondorHandler",
+                "formatter": "generic",
+            },
+        },
+)
+
+GUNICORN_CONFIG = {'workers': 4,
+                   'logconfig_dict': GUNICORN_LOG_CONFIG}
+
+
+class HTCondorHandler(logging.Handler):
+
+    def emit(self, record):
+        msg = self.format(record)
+        euid = os.geteuid()
+        htcondor = htcondorce.web_utils.check_htcondor()
+        htcondor.log(htcondor.LogLevel.Always, msg)
+        if euid != os.geteuid():
+            os.seteuid(euid)
 
 
 def validate_plugin(name, plugin):
@@ -47,16 +88,20 @@ def validate_plugin(name, plugin):
 
 def check_initialized(environ):
     global _initialized
-    global _loader
+    global _jinja_env
     global _cp
     global _plugins
     global htcondor
 
     if not _initialized:
-        if 'htcondorce.templates' in environ:
-            _loader = genshi.template.TemplateLoader(environ['htcondorce.templates'], auto_reload=True)
-        else:
-            _loader = genshi.template.TemplateLoader('/usr/share/condor-ce/templates', auto_reload=True)
+        try:
+            template_path = environ['htcondorce.templates']
+        except KeyError:
+            template_path = '/usr/share/condor-ce/templates'
+
+        _jinja_env = Environment(loader=FileSystemLoader(template_path),
+                                 autoescape=select_autoescape(['html', 'xml']))
+
         ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
         htcondor = htcondorce.web_utils.check_htcondor()
 
@@ -248,51 +293,51 @@ def jobs_json(environ, start_response):
 def vos(environ, start_response):
     vos = htcondorce.rrd.list_vos(environ)
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('vos.html')
+    tmpl = _jinja_env.get_template('vos.html')
 
     info = {
         'vos': vos,
-        'multice': g_is_multice
+        'multice': environ['htcondorce.multice']
     }
 
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def metrics(environ, start_response):
     metrics = htcondorce.rrd.list_metrics(environ)
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('metrics.html')
+    tmpl = _jinja_env.get_template('metrics.html')
 
     info = {
         'metrics': metrics,
-        'multice': g_is_multice
+        'multice': environ['htcondorce.multice']
     }
 
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def health(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('health.html')
+    tmpl = _jinja_env.get_template('health.html')
     info = {
-        'multice': g_is_multice
+        'multice': environ['htcondorce.multice']
     }
 
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def pilots_page(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('pilots.html')
-    info = {'multice': g_is_multice}
-    return [tmpl.generate(**info).render('html', doctype='html')] 
+    tmpl = _jinja_env.get_template('pilots.html')
+    info = {'multice': environ['htcondorce.multice']}
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def index(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
-    tmpl = _loader.load('index.html')
-    info = {'multice': g_is_multice}
-    return [tmpl.generate(**info).render('html', doctype='html')]
+    tmpl = _jinja_env.get_template('index.html')
+    info = {'multice': environ['htcondorce.multice']}
+    return [tmpl.render(**info).encode('utf-8')]
 
 
 def robots(environ, start_response):
@@ -301,6 +346,11 @@ def robots(environ, start_response):
 Disallow: /
 """
     return return_text
+
+
+def favicon(environ, start_response):
+    start_response('204 No Content', _headers('text/plain'))
+    return ''
 
 
 ce_graph_re = re.compile(r'^/+graphs/+ce/?([a-zA-Z]+)?/?$')
@@ -374,6 +424,7 @@ def not_found(environ, start_response):
 
 urls = [
     (re.compile(r'^/*$'), index),
+    (re.compile(r'^favicon\.ico$'), favicon),
     (re.compile(r'^robots\.txt$'), robots),
     (re.compile(r'^vos/*$'), vos),
     (re.compile(r'^metrics/*$'), metrics),
@@ -395,6 +446,13 @@ urls = [
 
 
 def application(environ, start_response):
+
+    # Gunicorn raw_env dumps its vars into the worker proc environment
+    environ['htcondorce.spool'] = os.environ.get('htcondorce.spool')  # spool is required
+
+    # optional env vars
+    for env_var in ('multice', 'name', 'pool', 'template'):
+        environ[f'htcondorce.{env_var}'] = os.environ.get(f'htcondorce.{env_var}', '')
 
     check_initialized(environ)
 
