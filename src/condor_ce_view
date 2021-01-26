@@ -22,6 +22,7 @@ def send_heartbeat():
     euid = os.geteuid()
     try:
         htcondor.send_alive(timeout=ALIVE_HEARTBEAT)
+        htcondor.log(htcondor.LogLevel.Always, 'Sent heartbeat to HTCondor-CE master')
     except (RuntimeError, ValueError) as exc:
         if 'CONDOR_INHERIT' in exc or 'location ClassAd' in exc:
             htcondor.log(htcondor.LogLevel.FullDebug,
