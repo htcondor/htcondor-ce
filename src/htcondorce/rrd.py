@@ -6,7 +6,7 @@ import errno
 # Try using rrdtool Python bindings
 try:
     import rrdtool
-except ImportError:
+except ModuleNotFoundError:
     # If not available, fallback to shelling out to the CLI
     import subprocess
 
