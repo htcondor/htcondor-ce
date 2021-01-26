@@ -161,9 +161,8 @@ def schedd(environ, start_response):
         if 'Name' not in ad:
             continue
         results[ad['Name']] = ad
-    keys = results.keys()
-    keys.sort()
-    result = ad_to_json(results[keys[0]])
+    top_result = sorted(results)[0]
+    result_json = ad_to_json(top_result)
 
     start_response(OK_STATUS, _headers('application/json'))
     return [ json.dumps(result) ]

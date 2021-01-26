@@ -103,9 +103,8 @@ def get_schedd_statuses(environ={}):
 
 def get_schedd_status(environ={}):
     statuses = get_schedd_statuses()
-    keys = statuses.keys()
-    keys.sort()
-    return statuses[keys[0]]
+    top_result = sorted(statuses)[0]
+    return statuses[top_result]
 
 
 def ad_to_json(ad):
