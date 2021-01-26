@@ -192,3 +192,6 @@ def get_spooldir():
         spooldir = "tmp"
     return spooldir
 
+
+def dump_json_utf8(results):
+    return json.dumps(results).encode('utf-8')

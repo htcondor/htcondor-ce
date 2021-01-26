@@ -151,7 +151,7 @@ def schedds(environ, start_response):
 
     start_response(OK_STATUS, _headers('application/json'))
 
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results)]
 
 
 def schedd(environ, start_response):
@@ -165,7 +165,7 @@ def schedd(environ, start_response):
     result_json = ad_to_json(top_result)
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(result) ]
+    return [htcondorce.web_utils.dump_json_utf8(result_json)]
 
 
 def totals_ce_json(environ, start_response):
@@ -181,14 +181,14 @@ def totals_ce_json(environ, start_response):
                 results['Held'] += 1
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results) ]
 
 
 def totals(environ, start_response):
     fname = htcondorce.rrd.path_with_spool(environ, "totals")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results) ]
 
 
 def pilots_ce_json(environ, start_response):
@@ -212,14 +212,14 @@ def pilots_ce_json(environ, start_response):
                 results['Held'] += 1
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(job_count.values()) ]
+    return [htcondorce.web_utils.dump_json_utf8(job_count.values())]
 
 
 def pilots(environ, start_response):
     fname = htcondorce.rrd.path_with_spool(environ, "pilots")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results)]
 
 
 def vos_ce_json(environ, start_response):
@@ -240,20 +240,20 @@ def vos_ce_json(environ, start_response):
             elif job.get("JobStatus") == 5:
                 results['Held'] += 1
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(job_count) ]
+    return [htcondorce.web_utils.dump_json_utf8(job_count)]
 
 
 def vos_json(environ, start_response):
     fname = htcondorce.rrd.path_with_spool(environ, "vos.json")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results)]
 
 
 def status_json(environ, start_response):
     response = {"status": htcondorce.web_utils.get_schedd_status(environ)}
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(response) ]
+    return [htcondorce.web_utils.dump_json_utf8(response)]
 
 
 def statuses_json(environ, start_response):
@@ -262,7 +262,7 @@ def statuses_json(environ, start_response):
     for name, status in result.items():
         response[name] = {'status': status}
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(response) ]
+    return [htcondorce.web_utils.dump_json_utf8(response)]
 
 def jobs_json(environ, start_response):
     response = {}
@@ -287,10 +287,10 @@ def jobs_json(environ, start_response):
     # Query the schedd
     jobs = schedd.query(constraint, projection)
 
-    parsed_jobs = map(ad_to_json, jobs)
+    parsed_jobs = [ad_to_json(job) for job in jobs]
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(parsed_jobs) ]
+    return [htcondorce.web_utils.dump_json_utf8(parsed_jobs)]
 
 
 def vos(environ, start_response):
@@ -414,7 +414,7 @@ def get_tableattribs(environ):
 
 def tableattribs_json(environ, start_response):
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(get_tableattribs(environ)) ]
+    return [htcondorce.web_utils.dump_json_utf8(get_tableattribs(environ))]
 
 
 def not_found(environ, start_response):
