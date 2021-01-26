@@ -213,3 +213,11 @@ def graph(environ, host, plot, interval):
 
     return graph
 
+
+def update(fname, value):
+    try:
+        rrdtool.update(fname, value)
+    except NameError:
+        cmd = ['/usr/bin/rrdtool', 'update', fname, value]
+        proc = subprocess.Popen(cmd)
+        proc.communicate()  # wait until 'rrdtool update' completes

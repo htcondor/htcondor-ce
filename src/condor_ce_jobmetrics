@@ -9,8 +9,6 @@ import optparse
 import collections
 import multiprocessing
 
-import rrdtool
-
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
 # htcondor and classad modules are imported within the functions that need them 
@@ -151,14 +149,14 @@ def main():
         total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):
             print(f"Schedd {ad['Name']} totals: {schedd_total_results}", file=sys.stderr)
-        rrdtool.update(total_fname, "N:%d:%d:%d" % (schedd_total_results["Running"], schedd_total_results["Idle"],
+        rrd.update(total_fname, "N:%d:%d:%d" % (schedd_total_results["Running"], schedd_total_results["Idle"],
                                                     schedd_total_results["Held"]))
 
         for vo, info in schedd_vo_results.items():
             vo_fname = rrd.check_rrd(environ, ad['Name'], "vos", vo)
             if os.isatty(2):
                 print(f"Schedd {ad['Name']} VO {vo} totals: {info}", file=sys.stderr)
-            rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
+            rrd.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
 
     job_results_final = list_job_results_final(job_results)
     pilots_fname = rrd.path_with_spool(environ, "pilots")
@@ -182,7 +180,7 @@ def main():
     total_fname = rrd.check_rrd(environ, None, "jobs")
     if os.isatty(2):
         print(f"Totals: {total_results}", file=sys.stderr)
-    rrdtool.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
+    rrd.update(total_fname, "N:%d:%d:%d" % (total_results["Running"], total_results["Idle"], total_results["Held"]))
 
 
     vos_fname = rrd.path_with_spool(environ, "vos.json")
@@ -191,7 +189,7 @@ def main():
         vo_fname = rrd.check_rrd(environ, None, "vos", vo)
         if os.isatty(2):
             print(f"VO {vo} totals: {info}", file=sys.stderr)
-        rrdtool.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
+        rrd.update(vo_fname, "N:%d:%d:%d:%d" % (info['Running'], info['Idle'], info['Held'], info['Jobs']))
 
 
 if __name__ == '__main__':

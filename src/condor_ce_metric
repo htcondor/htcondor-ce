@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import optparse
-import rrdtool
 from htcondorce import rrd, web_utils
 
 def parse_opts():
@@ -44,10 +43,10 @@ def main():
     environ = {'htcondorce.spool': spooldir}
 
     fname = rrd.check_rrd(environ, None, "metrics", opts.group, opts.name)
-    rrdtool.update(fname, "N:%s" % str(value))
+    rrd.update(fname, "N:%s" % str(value))
 
     fname = rrd.check_rrd(environ, opts.spoof.split(":")[-1], "metrics", opts.group, opts.name)
-    rrdtool.update(fname, "N:%s" % str(value))
+    rrd.update(fname, "N:%s" % str(value))
 
 
 if __name__ == '__main__':
