@@ -168,10 +168,6 @@ def main():
     wsgi_opts = htcondorce.web.GUNICORN_CONFIG.copy()
     wsgi_opts['raw_env'] = [f"htcondorce.spool={spooldir}"]
 
-    # Show different page titles and tables for central collectors vs standalone CEs
-    multice = htcondor.param.get('IS_CENTRAL_COLLECTOR', False)
-    wsgi_opts['raw_env'].append(f"htcondorce.multice={multice}")
-
     if os.path.exists('templates'):
         wsgi_opts['raw_env'].append("htcondorce.templates=templates")
     if opts.pool:

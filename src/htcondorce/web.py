@@ -92,6 +92,7 @@ def check_initialized(environ):
     global _cp
     global _plugins
     global htcondor
+    global multice
 
     if not _initialized:
         try:
@@ -104,6 +105,9 @@ def check_initialized(environ):
 
         ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
         htcondor = htcondorce.web_utils.check_htcondor()
+
+        # Show different page titles and tables for central collectors vs standalone CEs
+        multice = htcondor.param.get('IS_CENTRAL_COLLECTOR', False)
 
         plugins_dir = htcondor.param.get("HTCONDORCE_VIEW_PLUGINS_DIR", "/usr/share/condor-ce/ceview-plugins")
         if os.path.isdir(plugins_dir):
@@ -297,7 +301,7 @@ def vos(environ, start_response):
 
     info = {
         'vos': vos,
-        'multice': environ['htcondorce.multice']
+        'multice': multice
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -310,7 +314,7 @@ def metrics(environ, start_response):
 
     info = {
         'metrics': metrics,
-        'multice': environ['htcondorce.multice']
+        'multice': multice
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -320,7 +324,7 @@ def health(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('health.html')
     info = {
-        'multice': environ['htcondorce.multice']
+        'multice': multice
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -329,14 +333,14 @@ def health(environ, start_response):
 def pilots_page(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('pilots.html')
-    info = {'multice': environ['htcondorce.multice']}
+    info = {'multice': multice}
     return [tmpl.render(**info).encode('utf-8')]
 
 
 def index(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('index.html')
-    info = {'multice': environ['htcondorce.multice']}
+    info = {'multice': multice}
     return [tmpl.render(**info).encode('utf-8')]
 
 
