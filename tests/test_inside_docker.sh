@@ -50,6 +50,7 @@ function run_integration_tests {
     # TODO: Change this to voms-proxy-init to test VOMS attr mapping
     pushd /tmp
     sudo -u $test_user /bin/sh -c "echo $test_user | grid-proxy-init -pwstdin"
+    sudo -u $test_user condor_ce_status -any
     sudo -u $test_user condor_ce_trace -d $(hostname)
     test_exit=$?
     popd
