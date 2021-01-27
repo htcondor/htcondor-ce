@@ -1,3 +1,4 @@
+# TODO: catch rrdtool method exceptions and non-zero return codes from the rrdtool cli with `check_call()`
 
 import os
 import re
