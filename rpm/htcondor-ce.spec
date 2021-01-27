@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.0.0
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 0.rc2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -28,8 +28,9 @@ BuildRequires: python-rpm-macros
 BuildRequires: python3-devel
 BuildRequires: python3-rpm-macros
 
-# because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
-Requires:  condor >= 8.6.5
+# CE collector plugin needs the Python 3 support available in the 8.9 series:
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-13
+Requires:  condor >= 8.9.7
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -560,6 +561,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed Jan 27 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-0.rc1
+- Remove unused deps from the central collector packaging
+
 * Wed Jan 27 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-0.rc1
 - Convert HTCondor-CE to Python 3 (#391, #397, #400, #402, #403, #404, #405,
   #406)
