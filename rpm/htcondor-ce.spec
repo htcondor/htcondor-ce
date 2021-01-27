@@ -176,7 +176,7 @@ Summary: Client-side tools for submission to HTCondor-CE
 Requires: condor
 
 # Explicitly require Python 3
-Requires: %{__python3}
+Requires: python3
 
 # voms-proxy-info used by condor_ce_trace
 %if 0%{?osg}
