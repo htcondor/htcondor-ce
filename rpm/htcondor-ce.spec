@@ -202,12 +202,6 @@ Summary: Central HTCondor-CE information services collector
 Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
 
-%if 0%{?rhel} >= 8
-Requires: python3-libxml2
-%else
-Requires: python36-libxml2
-%endif
-
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
@@ -215,10 +209,8 @@ Requires: mod_wsgi
 
 %if 0%{?rhel} >= 8
 Requires: python3-flask
-Requires: python3-genshi
 %else
 Requires: python36-flask
-Requires: python36-genshi
 %endif
 
 Conflicts: %{name}
