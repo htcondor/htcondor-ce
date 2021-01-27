@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.4.1
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 5.0.0
+Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -568,6 +568,16 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed Jan 27 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-0.rc1
+- Convert HTCondor-CE to Python 3 (#391, #397, #400, #402, #403, #404, #405,
+  #406)
+- Add USE_CE_HOME_DIR configuration to allow users to disable passing the CE
+  users's HOME dir to the job on the worker node (#377)
+- RPM packaging fixes for default CE registry httpd configuration (#372)
+- Add CE View advertising of GPU job counts to the central collector (#381)
+- BDII: Reduce package dependencies of htcondor-ce-bdii (#384)
+- BDII: Add support for whitespace/comma separated local collectors (#375)
+
 * Wed Jul 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.4.1-2
 - Change voms-clients-cpp requirement to voms-clients for non-OSG builds,
   because voms-clients-java works equally well
