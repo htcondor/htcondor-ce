@@ -22,6 +22,7 @@ def send_heartbeat():
     euid = os.geteuid()
     try:
         htcondor.send_alive(timeout=ALIVE_HEARTBEAT)
+        htcondor.log(htcondor.LogLevel.Always, 'Sent heartbeat to HTCondor-CE master')
     except (RuntimeError, ValueError) as exc:
         if 'CONDOR_INHERIT' in exc or 'location ClassAd' in exc:
             htcondor.log(htcondor.LogLevel.FullDebug,
@@ -166,10 +167,6 @@ def main():
 
     wsgi_opts = htcondorce.web.GUNICORN_CONFIG.copy()
     wsgi_opts['raw_env'] = [f"htcondorce.spool={spooldir}"]
-
-    # Show different page titles and tables for central collectors vs standalone CEs
-    multice = htcondor.param.get('IS_CENTRAL_COLLECTOR', False)
-    wsgi_opts['raw_env'].append(f"htcondorce.multice={multice}")
 
     if os.path.exists('templates'):
         wsgi_opts['raw_env'].append("htcondorce.templates=templates")

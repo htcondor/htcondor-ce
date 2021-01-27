@@ -92,6 +92,7 @@ def check_initialized(environ):
     global _cp
     global _plugins
     global htcondor
+    global multice
 
     if not _initialized:
         try:
@@ -104,6 +105,9 @@ def check_initialized(environ):
 
         ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
         htcondor = htcondorce.web_utils.check_htcondor()
+
+        # Show different page titles and tables for central collectors vs standalone CEs
+        multice = htcondor.param.get('IS_CENTRAL_COLLECTOR', False)
 
         plugins_dir = htcondor.param.get("HTCONDORCE_VIEW_PLUGINS_DIR", "/usr/share/condor-ce/ceview-plugins")
         if os.path.isdir(plugins_dir):
@@ -147,7 +151,7 @@ def schedds(environ, start_response):
 
     start_response(OK_STATUS, _headers('application/json'))
 
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results)]
 
 
 def schedd(environ, start_response):
@@ -157,12 +161,11 @@ def schedd(environ, start_response):
         if 'Name' not in ad:
             continue
         results[ad['Name']] = ad
-    keys = results.keys()
-    keys.sort()
-    result = ad_to_json(results[keys[0]])
+    top_result = sorted(results)[0]
+    result_json = ad_to_json(top_result)
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(result) ]
+    return [htcondorce.web_utils.dump_json_utf8(result_json)]
 
 
 def totals_ce_json(environ, start_response):
@@ -178,14 +181,14 @@ def totals_ce_json(environ, start_response):
                 results['Held'] += 1
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results) ]
 
 
 def totals(environ, start_response):
     fname = htcondorce.rrd.path_with_spool(environ, "totals")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results) ]
 
 
 def pilots_ce_json(environ, start_response):
@@ -209,14 +212,14 @@ def pilots_ce_json(environ, start_response):
                 results['Held'] += 1
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(job_count.values()) ]
+    return [htcondorce.web_utils.dump_json_utf8(job_count.values())]
 
 
 def pilots(environ, start_response):
     fname = htcondorce.rrd.path_with_spool(environ, "pilots")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results)]
 
 
 def vos_ce_json(environ, start_response):
@@ -237,20 +240,20 @@ def vos_ce_json(environ, start_response):
             elif job.get("JobStatus") == 5:
                 results['Held'] += 1
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(job_count) ]
+    return [htcondorce.web_utils.dump_json_utf8(job_count)]
 
 
 def vos_json(environ, start_response):
     fname = htcondorce.rrd.path_with_spool(environ, "vos.json")
     results = json.load(open(fname))
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(results) ]
+    return [htcondorce.web_utils.dump_json_utf8(results)]
 
 
 def status_json(environ, start_response):
     response = {"status": htcondorce.web_utils.get_schedd_status(environ)}
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(response) ]
+    return [htcondorce.web_utils.dump_json_utf8(response)]
 
 
 def statuses_json(environ, start_response):
@@ -259,7 +262,7 @@ def statuses_json(environ, start_response):
     for name, status in result.items():
         response[name] = {'status': status}
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(response) ]
+    return [htcondorce.web_utils.dump_json_utf8(response)]
 
 def jobs_json(environ, start_response):
     response = {}
@@ -284,10 +287,10 @@ def jobs_json(environ, start_response):
     # Query the schedd
     jobs = schedd.query(constraint, projection)
 
-    parsed_jobs = map(ad_to_json, jobs)
+    parsed_jobs = [ad_to_json(job) for job in jobs]
 
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(parsed_jobs) ]
+    return [htcondorce.web_utils.dump_json_utf8(parsed_jobs)]
 
 
 def vos(environ, start_response):
@@ -297,7 +300,7 @@ def vos(environ, start_response):
 
     info = {
         'vos': vos,
-        'multice': environ['htcondorce.multice']
+        'multice': multice
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -310,7 +313,7 @@ def metrics(environ, start_response):
 
     info = {
         'metrics': metrics,
-        'multice': environ['htcondorce.multice']
+        'multice': multice
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -320,7 +323,7 @@ def health(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('health.html')
     info = {
-        'multice': environ['htcondorce.multice']
+        'multice': multice
     }
 
     return [tmpl.render(**info).encode('utf-8')]
@@ -329,14 +332,14 @@ def health(environ, start_response):
 def pilots_page(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('pilots.html')
-    info = {'multice': environ['htcondorce.multice']}
+    info = {'multice': multice}
     return [tmpl.render(**info).encode('utf-8')]
 
 
 def index(environ, start_response):
     start_response(OK_STATUS, _headers('text/html'))
     tmpl = _jinja_env.get_template('index.html')
-    info = {'multice': environ['htcondorce.multice']}
+    info = {'multice': multice}
     return [tmpl.render(**info).encode('utf-8')]
 
 
@@ -411,7 +414,7 @@ def get_tableattribs(environ):
 
 def tableattribs_json(environ, start_response):
     start_response(OK_STATUS, _headers('application/json'))
-    return [ json.dumps(get_tableattribs(environ)) ]
+    return [htcondorce.web_utils.dump_json_utf8(get_tableattribs(environ))]
 
 
 def not_found(environ, start_response):

@@ -1,7 +1,14 @@
 {% extends "view_base.html" %}
 
 
-{% block title %}HTCondor-CE VO Overview{% endblock %}
+{% block title %}
+{% if multice %}
+Grid Overview
+{% else %}
+HTCondor-CE Overview
+{% endif %}
+{% endblock %}
+
 
 {% block script %}
     <script type='text/javascript'>

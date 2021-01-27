@@ -1,3 +1,4 @@
+# TODO: catch rrdtool method exceptions and non-zero return codes from the rrdtool cli with `check_call()`
 
 import os
 import re
@@ -6,7 +7,7 @@ import errno
 # Try using rrdtool Python bindings
 try:
     import rrdtool
-except ImportError:
+except ModuleNotFoundError:
     # If not available, fallback to shelling out to the CLI
     import subprocess
 
@@ -213,3 +214,11 @@ def graph(environ, host, plot, interval):
 
     return graph
 
+
+def update(fname, value):
+    try:
+        rrdtool.update(fname, value)
+    except NameError:
+        cmd = ['/usr/bin/rrdtool', 'update', fname, value]
+        proc = subprocess.Popen(cmd)
+        proc.communicate()  # wait until 'rrdtool update' completes
