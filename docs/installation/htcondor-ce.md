@@ -33,7 +33,7 @@ There are some one-time (per host) steps to prepare in advance:
 
 - Ensure the host has a supported operating system (Red Hat Enterprise Linux variant 7)
 - Obtain root access to the host
-- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor](https://research.cs.wisc.edu/htcondor/yum/) Yum
+- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor Development](https://research.cs.wisc.edu/htcondor/yum/) Yum
   repositories
 - Install CA certificates and VO data into `/etc/grid-security/certificates` and `/etc/grid-security/vomsdir`,
   respectively
@@ -318,6 +318,9 @@ To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor
 
 #### Uploading accounting records to APEL ####
 
+!!! note "Batch System Support"
+    HTCondor-CE only supports generation of APEL accounting records for HTCondor batch systems.
+
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
 blah APEL records for HTCondor batch systems:
 
@@ -341,6 +344,9 @@ blah APEL records for HTCondor batch systems:
    [services](/verification#managing-htcondor-ce-services)
 
 #### Enabling BDII integration ####
+
+!!! note "Batch System Support"
+    HTCondor-CE only supports reporting BDII information for HTCondor batch systems.
 
 HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
 batch system.
