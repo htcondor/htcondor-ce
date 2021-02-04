@@ -401,6 +401,7 @@ fi
 %{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.js
 %{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
+%dir %{_datadir}/condor-ce/templates
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
 %{_datadir}/condor-ce/templates/metrics.html
@@ -484,6 +485,9 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
 %attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
+
+%dir %{_datadir}/condor-ce/
+%dir %{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
