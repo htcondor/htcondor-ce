@@ -77,7 +77,14 @@ def osgid_to_ce(osgid):
 def fetch_tokens(reqid, config):
     binary = config.get('CONDOR_TOKEN_REQUEST_LIST', 'condor_token_request_list')
     pool = config.get('CONDORCE_COLLECTOR')
-    args = [binary, '-reqid', str(reqid), '-json']
+
+    try:
+        int(reqid)
+    except ValueError:
+        raise CondorToolException("Received invalid code: %s" % str(reqid))
+    else:
+        args = [binary, '-reqid', str(reqid), '-json']
+
     if pool:
         args.append('-pool', pool)
     req_environ = dict(os.environ)
@@ -100,7 +107,14 @@ def fetch_tokens(reqid, config):
 def approve_token(reqid, config):
     binary = config.get('CONDOR_TOKEN_REQUEST_APPROVE', 'condor_token_request_approve')
     pool = config.get('CONDORCE_COLLECTOR')
-    args = [binary, '-reqid', str(reqid)]
+
+    try:
+        int(reqid)
+    except ValueError:
+        raise CondorToolException("Received invalid code: %s" % str(reqid))
+    else:
+        args = [binary, '-reqid', str(reqid)]
+
     if pool:
         args.append('-pool', pool)
     req_environ = dict(os.environ)
