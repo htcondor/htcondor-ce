@@ -273,14 +273,6 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.os
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
 %endif
 
-%if 0%{?uw_build}
-# Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
-# GSI auth lines since they don't necessarily use GT callouts
-rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
-%else
-mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
-%endif
-
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/condor-ce/bosco_override
 
@@ -496,7 +488,13 @@ fi
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
 %{_datadir}/condor-ce/pilot-status.cpf
+
+%dir %{_datadir}/condor-ce/mapfiles.d
+%config %{_datadir}/condor-ce/mapfiles.d/50-common-defaults.conf
+
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
@@ -534,6 +532,7 @@ fi
 
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/mapfiles.d/50-central-collector.conf
 %{_datadir}/condor-ce/condor_ce_create_password
 
 %{_unitdir}/condor-ce-collector.service
@@ -541,7 +540,6 @@ fi
 
 %config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config %{_datadir}/condor-ce/config.d/05-ce-collector-auth.conf
-%config %{_sysconfdir}/condor-ce/condor_mapfile.central_collector
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d

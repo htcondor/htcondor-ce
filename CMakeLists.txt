@@ -93,9 +93,17 @@ install(FILES
 install(FILES
   config/condor_config
   config/condor_mapfile
-  config/condor_mapfile.central_collector
-  config/condor_mapfile.osg
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+
+install(FILES
+  config/mapfiles.d/10-gsi.conf
+  config/mapfiles.d/50-gsi-callout.conf
+  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/mapfiles.d)
+
+install(FILES
+  config/mapfiles.d/50-central-collector.conf
+  config/mapfiles.d/50-common-defaults.conf
+  DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 
 install(FILES config/htcondorce_registry.conf DESTINATION ${SYSCONF_INSTALL_DIR}/httpd/conf.d)
 # This file should contain various OIDC secrets; should not be world-readable.
