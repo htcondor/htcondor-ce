@@ -79,8 +79,8 @@ def fetch_tokens(reqid, config):
     pool = config.get('CONDORCE_COLLECTOR')
 
     try:
-        int(reqid)
-    except ValueError:
+        assert int(reqid) > 0
+    except (ValueError, AssertionError):
         raise CondorToolException("Received invalid code: %s" % reqid)
     else:
         args = [binary, '-reqid', str(reqid), '-json']
@@ -109,8 +109,8 @@ def approve_token(reqid, config):
     pool = config.get('CONDORCE_COLLECTOR')
 
     try:
-        int(reqid)
-    except ValueError:
+        assert int(reqid) > 0
+    except (ValueError, AssertionError):
         raise CondorToolException("Received invalid code: %s" % reqid)
     else:
         args = [binary, '-reqid', str(reqid)]
