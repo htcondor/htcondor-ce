@@ -81,7 +81,7 @@ def fetch_tokens(reqid, config):
     try:
         int(reqid)
     except ValueError:
-        raise CondorToolException("Received invalid code: %s" % str(reqid))
+        raise CondorToolException("Received invalid code: %s" % reqid)
     else:
         args = [binary, '-reqid', str(reqid), '-json']
 
@@ -111,7 +111,7 @@ def approve_token(reqid, config):
     try:
         int(reqid)
     except ValueError:
-        raise CondorToolException("Received invalid code: %s" % str(reqid))
+        raise CondorToolException("Received invalid code: %s" % reqid)
     else:
         args = [binary, '-reqid', str(reqid)]
 
