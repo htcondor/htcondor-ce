@@ -74,16 +74,21 @@ def osgid_to_ce(osgid):
     return ces
 
 
-def fetch_tokens(reqid, config):
-    binary = config.get('CONDOR_TOKEN_REQUEST_LIST', 'condor_token_request_list')
-    pool = config.get('CONDORCE_COLLECTOR')
-
+def validate_code(reqid):
+    """Ensure that the code we receive from the form submission is a positive integer
+    """
     try:
         assert int(reqid) > 0
     except (ValueError, AssertionError):
         raise CondorToolException("Received invalid code: %s" % reqid)
-    else:
-        args = [binary, '-reqid', str(reqid), '-json']
+
+
+def fetch_tokens(reqid, config):
+    binary = config.get('CONDOR_TOKEN_REQUEST_LIST', 'condor_token_request_list')
+    pool = config.get('CONDORCE_COLLECTOR')
+
+    validate_code(reqid)
+    args = [binary, '-reqid', str(reqid), '-json']
 
     if pool:
         args.append('-pool', pool)
@@ -108,12 +113,8 @@ def approve_token(reqid, config):
     binary = config.get('CONDOR_TOKEN_REQUEST_APPROVE', 'condor_token_request_approve')
     pool = config.get('CONDORCE_COLLECTOR')
 
-    try:
-        assert int(reqid) > 0
-    except (ValueError, AssertionError):
-        raise CondorToolException("Received invalid code: %s" % reqid)
-    else:
-        args = [binary, '-reqid', str(reqid)]
+    validate_code(reqid)
+    args = [binary, '-reqid', str(reqid)]
 
     if pool:
         args.append('-pool', pool)
