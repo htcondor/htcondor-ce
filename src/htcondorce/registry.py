@@ -3,12 +3,13 @@
 import json
 import os
 import xml.etree.ElementTree as ET
+from typing import Dict
 
 from http.client import HTTPException
 from urllib.request import urlopen
 from urllib.error import URLError
 
-from flask import Flask, url_for, make_response, request
+from flask import Flask, Config, url_for, make_response, request
 import genshi.template
 import subprocess
 from tools import to_str
@@ -75,10 +76,22 @@ def osgid_to_ce(osgid):
     return ces
 
 
-def fetch_tokens(reqid, config):
+def validate_code(reqid: str):
+    """Ensure that the code we receive from the form submission is a positive integer
+    """
+    try:
+        assert int(reqid) > 0
+    except (ValueError, AssertionError):
+        raise CondorToolException("Received invalid code: %s" % reqid)
+
+
+def fetch_tokens(reqid: str, config: Config) -> Dict:
     binary = config.get('CONDOR_TOKEN_REQUEST_LIST', 'condor_token_request_list')
     pool = config.get('CONDORCE_COLLECTOR')
+
+    validate_code(reqid)
     args = [binary, '-reqid', str(reqid), '-json']
+
     if pool:
         args.append('-pool', pool)
     req_environ = dict(os.environ)
@@ -98,10 +111,13 @@ def fetch_tokens(reqid, config):
     return json_obj
 
 
-def approve_token(reqid, config):
+def approve_token(reqid: str, config: Config):
     binary = config.get('CONDOR_TOKEN_REQUEST_APPROVE', 'condor_token_request_approve')
     pool = config.get('CONDORCE_COLLECTOR')
+
+    validate_code(reqid)
     args = [binary, '-reqid', str(reqid)]
+
     if pool:
         args.append('-pool', pool)
     req_environ = dict(os.environ)
