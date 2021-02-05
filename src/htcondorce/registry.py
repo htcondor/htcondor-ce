@@ -3,7 +3,7 @@
 import json
 import os
 import xml.etree.ElementTree as ET
-import typing.Dict
+from typing import Dict
 
 from http.client import HTTPException
 from urllib.request import urlopen
@@ -85,7 +85,7 @@ def validate_code(reqid: str):
         raise CondorToolException("Received invalid code: %s" % reqid)
 
 
-def fetch_tokens(reqid: str, config: Config) -> typing.Dict:
+def fetch_tokens(reqid: str, config: Config) -> Dict:
     binary = config.get('CONDOR_TOKEN_REQUEST_LIST', 'condor_token_request_list')
     pool = config.get('CONDORCE_COLLECTOR')
 
