@@ -31,7 +31,7 @@ function setup_ssh_to_chtc {
 Host $upload_server
 User cibot
 PubkeyAuthentication yes
-PasswordAuthentication no
+PasswordAuthentication yes
 GSSAPIAuthentication no
 ChallengeResponseAuthentication no
 __END__
