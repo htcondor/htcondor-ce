@@ -1,5 +1,5 @@
 # HTCondor-CE Certificate Mapfile
-# http://research.cs.wisc.edu/htcondor/manual/v8.6/3_8Security.html#SECTION00484000000000000000
+# https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication
 # Using GSI authentication for certificates requires the issuer CAs to be
 # installed in /etc/grid-security/certificates. If you would also like to
 # authenticate VOMS attributes, *.lsc files should be installed in
