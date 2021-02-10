@@ -1,5 +1,5 @@
 site_name: HTCondor-CE Documentation
-site_url: https://htcondor-ce.org
+site_url: http://htcondor-ce.org
 repo_url: https://github.com/htcondor/htcondor-ce/
 
 theme:
