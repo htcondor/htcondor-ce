@@ -1,5 +1,9 @@
 name: Build and test HTCondor-CE RPMs
-on: [pull_request]
+on:
+  pull_request:
+    paths-ignore:
+      - 'mkdocs.yml'
+      - 'docs/**'
 
 jobs:
   build-rpms-and-test:
