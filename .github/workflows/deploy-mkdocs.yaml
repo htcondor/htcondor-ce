@@ -2,7 +2,7 @@ name: Deploy static MkDocs pages
 on:
   push:
     branches:
-      - master
+      - V5-branch
 
 jobs:
   deploy-mkdocs:
