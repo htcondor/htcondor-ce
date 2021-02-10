@@ -1,0 +1,20 @@
+name: Deploy static MkDocs pages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-mkdocs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Deploy MkDocs pages
+        if: startsWith(github.repository, 'htcondor/')
+        uses: docker://squidfunk/mkdocs-material:6.2.8
+        with:
+          args: >-
+            gh-deploy
+            --verbose
