@@ -171,7 +171,7 @@ def main(argv):
 
     if opts.verbose:
         for res in resources:
-            print res
+            print( res )
     elif opts.submitfile:
         resources = [x for x in resources if x.get('Name')]
         if not resources:
