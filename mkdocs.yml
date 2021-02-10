@@ -11,7 +11,7 @@ theme:
 extra_css:
   - css/superfences.css
 
-pages:
+nav:
 - Home: 'index.md'
 - Overview: 'overview.md'
 - Installation: 'installation/htcondor-ce.md'

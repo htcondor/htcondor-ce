@@ -9,7 +9,7 @@ HTCondor-CE is a special configuration of the HTCondor software designed as a Co
 grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
 It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
-See the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
+See the [overview page](../overview.md) for more details on the features and architecture of HTCondor-CE.
 
 Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
@@ -18,7 +18,7 @@ Before Starting
 ---------------
 
 Before starting the installation process, consider the following points
-(consulting [the reference page](/reference) as necessary):
+(consulting [the reference page](../reference.md) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
 -   **SSL certificate:** The HTCondor-CE service uses a host certificate and key for SSL and GSI authentication
@@ -341,7 +341,7 @@ blah APEL records for HTCondor batch systems:
     - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
 
 1. Start and enable the `condor-ce-apel` and `condor-ce-apel.timer`
-   [services](/verification#managing-htcondor-ce-services)
+   [services](../verification.md#managing-htcondor-ce-services)
 
 #### Enabling BDII integration ####
 
@@ -378,10 +378,10 @@ Next Steps
 At this point, you should have an installation of HTCondor-CE that will forward pilot jobs into your site's batch system
 unchanged.
 If you need to transform incoming pilot jobs (e.g. by setting a partition, queue, or accounting group), configure the
-[HTCondor-CE Job Router](/batch-system-integration).
-Otherwise, continue to the [this document](/verification) to start the relevant services and verify your installation.
+[HTCondor-CE Job Router](../batch-system-integration.md).
+Otherwise, continue to the [this document](../verification.md) to start the relevant services and verify your installation.
 
 Getting Help
 ------------
 
-If you have any questions or issues with the installation process, please [contact us](/#contact-us) for assistance.
+If you have any questions or issues with the installation process, please [contact us](../index.md#contact-us) for assistance.
