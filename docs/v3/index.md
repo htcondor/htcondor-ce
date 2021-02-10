@@ -19,7 +19,7 @@ Community Webinar Programme:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6IWaMbofG7M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 
-Or visit the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
+Or visit the [overview page](overview.md) for more details on the features and architecture of HTCondor-CE.
 
 Contact Us
 ----------

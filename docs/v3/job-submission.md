@@ -68,7 +68,7 @@ For a list of other attributes that can be set with the `--attribute` option, co
 
 !!! note
     Non-HTCondor batch systems may need additional configuration to support these job attributes.
-    See the [batch system integration](/configuration/batch-system-integration#setting-batch-system-directives)
+    See the [batch system integration](batch-system-integration.md#setting-batch-system-directives)
     for details on how to support them.
 
 #### condor_ce_run
@@ -246,7 +246,7 @@ a transformed job to your batch system.
 
 ### Matching
 
-See [this section](/batch-system-integration#how-jobs-match-to-job-routes) for details on how jobs are matched
+See [this section](batch-system-integration.md#how-jobs-match-to-job-routes) for details on how jobs are matched
 to job routes.
 
 **Examples**

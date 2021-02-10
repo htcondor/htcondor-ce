@@ -48,7 +48,7 @@ Each job route’s [ClassAd](https://htcondor.readthedocs.io/en/stable/misc-conc
 How Jobs Match to Job Routes
 ----------------------------
 
-The job router considers jobs in the queue ([condor_ce_q](/troubleshooting/troubleshooting#condor_ce_q)) that
+The job router considers jobs in the queue ([condor_ce_q](troubleshooting/troubleshooting.md#condor_ce_q)) that
 meet the following constraints:
 
 - The job has not already been considered by the job router
@@ -56,7 +56,7 @@ meet the following constraints:
 - The job's universe is standard or vanilla
 
 If the job meets the above constraints, then the job's ClassAd is compared against each
-[route's requirements](/batch-system-integration#filtering-jobs-based-on).
+[route's requirements](#filtering-jobs-based-on).
 If the job only meets one route's requirements, the job is matched to that route.
 If the job meets the requirements of multiple routes,  the route that is chosen depends on your version of HTCondor
 (`condor_version`):
@@ -130,11 +130,11 @@ JOB_ROUTER_ENTRIES @=jre
 ```
 
 The name of the route will be useful in debugging since it shows up in the output of
-[condor\_ce\_job\_router\_info](/troubleshooting/troubleshooting#condor_ce_job_router_info),
-the [JobRouterLog](/troubleshooting/troubleshooting#jobrouterlog),
+[condor\_ce\_job\_router\_info](troubleshooting/troubleshooting.md#condor_ce_job_router_info),
+the [JobRouterLog](troubleshooting/troubleshooting.md#jobrouterlog),
 and in the ClassAd of the routed job, which can be viewed with
-[condor\_ce\_q](/troubleshooting/troubleshooting#condor_ce_q) or
-[condor\_ce\_history](/troubleshooting/troubleshooting#condor_ce_history).
+[condor\_ce\_q](troubleshooting/troubleshooting.md#condor_ce_q) or
+[condor\_ce\_history](troubleshooting/troubleshooting.md#condor_ce_history).
 
 ### Writing multiple routes
 
@@ -180,7 +180,7 @@ JOB_ROUTER_ENTRIES @=jre
 ### Setting attributes for all routes
 
 To set an attribute that will be applied to all routes, you will need to ensure that `MERGE_JOB_ROUTER_DEFAULT_ADS` is
-set to `True` (check the value with [condor\_ce\_config\_val](/troubleshooting/troubleshooting#condor_ce_config_val))
+set to `True` (check the value with [condor\_ce\_config\_val](troubleshooting/troubleshooting.md#condor_ce_config_val))
 and use the [set_](#setting-attributes) function in the `JOB_ROUTER_DEFAULTS`.
 The following configuration sets the `Periodic_Hold` attribute for all routes:
 
@@ -201,7 +201,7 @@ Jobs will evaluate against the ClassAd expression set in the `Requirements` and 
 the route will match.
 More information on the syntax of ClassAd's can be found in the
 [HTCondor manual](https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html).
-For an example on how incoming jobs interact with filtering in job routes, consult [this document](/job-submission).
+For an example on how incoming jobs interact with filtering in job routes, consult [this document](job-submission.md).
 
 When setting requirements, you need to prefix job attributes that you are filtering with `TARGET.` so that the job route
 knows to compare the attribute of the incoming job rather than the route’s own attribute.
@@ -677,7 +677,7 @@ This results in the following being appended to the script that gets submitted t
 Getting Help
 ------------
 
-If you have any questions or issues with configuring job routes, please [contact us](/#contact-us) for assistance.
+If you have any questions or issues with configuring job routes, please [contact us](index.md#contact-us) for assistance.
 
 Reference
 ---------
