@@ -1,0 +1,1158 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="http://htcondor-ce.org/v3/releases/">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Releases - HTCondor-CE Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../css/superfences.css">
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#releases" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="http://htcondor-ce.org" title="HTCondor-CE Documentation" class="md-header-nav__button md-logo" aria-label="HTCondor-CE Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            HTCondor-CE Documentation
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Releases
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        HTCondor-CE 4 and 5
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
+        HTCondor-CE 3
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="http://htcondor-ce.org" title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    HTCondor-CE Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" >
+      
+      <label class="md-nav__link" for="nav-1">
+        HTCondor-CE 4 and 5
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 4 and 5" data-md-level="1">
+        <label class="md-nav__title" for="nav-1">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 4 and 5
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1-8" type="checkbox" id="nav-1-8" >
+      
+      <label class="md-nav__link" for="nav-1-8">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="nav-1-8">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/remote-troubleshooting/" class="md-nav__link">
+        Remote Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      
+      <label class="md-nav__link" for="nav-2">
+        HTCondor-CE 3
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 3" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Releases
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Releases
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#htcondor-ce-3-version-history" class="md-nav__link">
+    HTCondor-CE 3 Version History
+  </a>
+  
+    <nav class="md-nav" aria-label="HTCondor-CE 3 Version History">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#343" class="md-nav__link">
+    3.4.3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#342" class="md-nav__link">
+    3.4.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#341" class="md-nav__link">
+    3.4.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#340" class="md-nav__link">
+    3.4.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#330" class="md-nav__link">
+    3.3.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322" class="md-nav__link">
+    3.2.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#321" class="md-nav__link">
+    3.2.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#320" class="md-nav__link">
+    3.2.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#314" class="md-nav__link">
+    3.1.4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313" class="md-nav__link">
+    3.1.3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-3" class="md-nav__link">
+    3.1.2-3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-2" class="md-nav__link">
+    3.1.2-2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312" class="md-nav__link">
+    3.1.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#311" class="md-nav__link">
+    3.1.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#310" class="md-nav__link">
+    3.1.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#304" class="md-nav__link">
+    3.0.4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#303" class="md-nav__link">
+    3.0.3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#302" class="md-nav__link">
+    3.0.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#301" class="md-nav__link">
+    3.0.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#300" class="md-nav__link">
+    3.0.0
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#htcondor-ce-3-version-history" class="md-nav__link">
+    HTCondor-CE 3 Version History
+  </a>
+  
+    <nav class="md-nav" aria-label="HTCondor-CE 3 Version History">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#343" class="md-nav__link">
+    3.4.3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#342" class="md-nav__link">
+    3.4.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#341" class="md-nav__link">
+    3.4.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#340" class="md-nav__link">
+    3.4.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#330" class="md-nav__link">
+    3.3.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322" class="md-nav__link">
+    3.2.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#321" class="md-nav__link">
+    3.2.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#320" class="md-nav__link">
+    3.2.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#314" class="md-nav__link">
+    3.1.4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313" class="md-nav__link">
+    3.1.3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-3" class="md-nav__link">
+    3.1.2-3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-2" class="md-nav__link">
+    3.1.2-2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312" class="md-nav__link">
+    3.1.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#311" class="md-nav__link">
+    3.1.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#310" class="md-nav__link">
+    3.1.0
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#304" class="md-nav__link">
+    3.0.4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#303" class="md-nav__link">
+    3.0.3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#302" class="md-nav__link">
+    3.0.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#301" class="md-nav__link">
+    3.0.1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#300" class="md-nav__link">
+    3.0.0
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/master/docs/v3/releases.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="releases">Releases<a class="headerlink" href="#releases" title="Permanent link">&para;</a></h1>
+<p>HTCondor-CE 3 is distributed via RPM and is available from the following Yum repositories:</p>
+<ul>
+<li><a href="https://research.cs.wisc.edu/htcondor/yum/">HTCondor stable</a></li>
+<li><a href="https://opensciencegrid.org/docs/common/yum/">Open Science Grid</a></li>
+</ul>
+<h2 id="htcondor-ce-3-version-history">HTCondor-CE 3 Version History<a class="headerlink" href="#htcondor-ce-3-version-history" title="Permanent link">&para;</a></h2>
+<p>This section contains release notes for each version of HTCondor-CE 3.
+HTCondor-CE version history can be found on <a href="https://github.com/htcondor/htcondor-ce/releases">GitHub</a>.</p>
+<h3 id="343">3.4.3<a class="headerlink" href="#343" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.3">This release</a> includes the following bugfixes:</p>
+<ul>
+<li>Fix a stacktrace with the BDII provider when <code>HTCONDORCE_SPEC</code> isn't defined in the local HTCondor configuration</li>
+<li>Fixed a race condition that could result in removed jobs being put on hold</li>
+</ul>
+<h3 id="342">3.4.2<a class="headerlink" href="#342" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.2">This release</a> includes the following new features:</p>
+<ul>
+<li>Identify broken job routes upon startup</li>
+<li>Add benchmarking parameters to the BDII provider via <code>HTCONDORCE_SPEC</code> in the configuration.
+  See <code>/etc/condor-ce/config.d/99-ce-bdii.conf</code> for examples.</li>
+</ul>
+<p>This release also includes the following bug-fixes:</p>
+<ul>
+<li>Replace APEL uploader SchedD cron with init and systemd services</li>
+<li>Fix reference to old BDII configuration values</li>
+</ul>
+<h3 id="341">3.4.1<a class="headerlink" href="#341" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.1">This release</a> includes improvements to the GLUE2
+validation for the BDII provider.</p>
+<h3 id="340">3.4.0<a class="headerlink" href="#340" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.0">This release</a> includes the following new features:</p>
+<ul>
+<li><strong>Added the ability to configure the environment of routed jobs:</strong> Administrators may now add or override environment
+  variables for resultant batch system jobs.</li>
+<li><strong>Simplified APEL configuration</strong>: HTCondor-CE provides appropriate default configuration for its APEL scripts so
+  administrators only need to configure their HTCondor worker nodes as well as the APEL parser, client, and SSM.
+  Details can be found in the <a href="../installation/htcondor-ce/#uploading-accounting-records-to-apel">documentation</a>.</li>
+</ul>
+<p>This release also includes the following bug-fixes:</p>
+<ul>
+<li>Refined the APEL record filter to ignore jobs that have not yet started</li>
+<li>Improved BDII provider error handling</li>
+</ul>
+<h3 id="330">3.3.0<a class="headerlink" href="#330" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Add APEL support for HTCondor-CE and HTCondor backends</li>
+<li>Store malformed ads reporting to htcondor-ce-collector</li>
+</ul>
+<h3 id="322">3.2.2<a class="headerlink" href="#322" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Make blahp requirement binary package specific (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3623">SOFTWARE-3623</a>)</li>
+<li>Added <code>condor_ce_store_cred</code> for PASSWORD authentication</li>
+<li>Use new multi-line syntax configuration syntax (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3637">SOFTWARE-3637</a>)</li>
+<li>Update MyOSG URL and queries</li>
+</ul>
+<h3 id="321">3.2.1<a class="headerlink" href="#321" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Explicitly set ALLOW_READ to support HTCondor 8.9 (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3538">SOFTWARE-3538</a>)</li>
+<li>Add timeouts to the BDII provider</li>
+</ul>
+<h3 id="320">3.2.0<a class="headerlink" href="#320" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Map certs with VOMS attr before local daemons (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3489">SOFTWARE-3489</a>)</li>
+<li>Send CEView keepalives as the condor user (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3486">SOFTWARE-3486</a>)</li>
+</ul>
+<h3 id="314">3.1.4<a class="headerlink" href="#314" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fix condor_ce_trace failures caused by transferring /usr/bin/env (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3387">SOFTWARE-3387</a>)</li>
+<li>Fix regex for RDIG certs (SOFTWARE-3399)</li>
+<li>Don't require authz check for <code>condor_ce_q</code> (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3414">SOFTWARE-3414</a>)</li>
+</ul>
+<h3 id="313">3.1.3<a class="headerlink" href="#313" title="Permanent link">&para;</a></h3>
+<p>Fix condor_ce_info_status using the wrong port for the central collector
+(<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3381">SOFTWARE-3381</a>)</p>
+<h3 id="312-3">3.1.2-3<a class="headerlink" href="#312-3" title="Permanent link">&para;</a></h3>
+<p>Ensure that all BDII files exist for the condor repository</p>
+<h3 id="312-2">3.1.2-2<a class="headerlink" href="#312-2" title="Permanent link">&para;</a></h3>
+<p>This version enables building of the BDII sub-package for the condor repository</p>
+<h3 id="312">3.1.2<a class="headerlink" href="#312" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Require <code>voms-clients-cpp</code> explicitly (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3201">SOFTWARE-3201</a>)</li>
+<li>Add daemon mapping for Let's Encrypt certificates (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3236">SOFTWARE-3236</a>)</li>
+</ul>
+<h3 id="311">3.1.1<a class="headerlink" href="#311" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Allow InCommon host certs</li>
+<li>Drop vestigal HTCondor-related configuration</li>
+<li>Add documentation for mapping multiple VOMS attributes</li>
+</ul>
+<h3 id="310">3.1.0<a class="headerlink" href="#310" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Removed OSG-specific code and configuration from builds intended for the HTCondor repo</li>
+<li>Updated the CERN BDII provider</li>
+<li>Removed packaging necessary for EL5 builds</li>
+</ul>
+<h3 id="304">3.0.4<a class="headerlink" href="#304" title="Permanent link">&para;</a></h3>
+<p>Handle missing <code>MyType</code> attribute in condor 8.7.5</p>
+<h3 id="303">3.0.3<a class="headerlink" href="#303" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fix <code>condor_ce_ping</code> with IPv6 addresses (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3030">SOFTWARE-3030</a>)</li>
+<li>Fix for CEView being killed after 24h (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-3030">SOFTWARE-2820</a>)</li>
+<li>Import the <code>web_utils</code> library for <code>condor_ce_metric</code></li>
+</ul>
+<h3 id="302">3.0.2<a class="headerlink" href="#302" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fix traceback if <code>JOB_ROUTER_ENTRIES</code> not present (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-2814">SOFTWARE-2814</a>)</li>
+<li>Improve POSIX compatability</li>
+</ul>
+<h3 id="301">3.0.1<a class="headerlink" href="#301" title="Permanent link">&para;</a></h3>
+<p>Fix bug that resulted in losing track of some payload jobs in the Collector audit plugin</p>
+<h3 id="300">3.0.0<a class="headerlink" href="#300" title="Permanent link">&para;</a></h3>
+<p>HTCondor-CE 3.0.0 adds user job auditing using HTCondor's collector plugin feature, which requires HTCondor 8.6.5.</p>
+<ul>
+<li>Add the audit_payloads function.  This logs the starting and stopping of
+  all payloads that were started from pilot systems based on condor.</li>
+<li>Do not hold jobs with expired proxy (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-2803">SOFTWARE-2803</a>)</li>
+<li>Only warn about configuration if osg-configure is present (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-2805">SOFTWARE-2805</a>)</li>
+<li>CEView VO tab throws 500 error on inital installation (<a href="https://jira.opensciencegrid.org/browse/SOFTWARE-2826">SOFTWARE-2826</a>)</li>
+</ul>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions about the release process or run into issues with an upgrade, please
+<a href="../#contact-us">contact us</a> for assistance.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../troubleshooting/troubleshooting/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Troubleshooting
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../reference/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Reference
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.tabs'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

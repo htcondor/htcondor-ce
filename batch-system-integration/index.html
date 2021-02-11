@@ -1,0 +1,2211 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="http://htcondor-ce.org/batch-system-integration/">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Batch System Integration - HTCondor-CE Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/superfences.css">
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#writing-routes-for-htcondor-ce" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="http://htcondor-ce.org" title="HTCondor-CE Documentation" class="md-header-nav__button md-logo" aria-label="HTCondor-CE Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            HTCondor-CE Documentation
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Batch System Integration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link md-tabs__link--active">
+        HTCondor-CE 4 and 5
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../v3/" class="md-tabs__link">
+        HTCondor-CE 3
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="http://htcondor-ce.org" title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    HTCondor-CE Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" checked>
+      
+      <label class="md-nav__link" for="nav-1">
+        HTCondor-CE 4 and 5
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 4 and 5" data-md-level="1">
+        <label class="md-nav__title" for="nav-1">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 4 and 5
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Batch System Integration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Batch System Integration
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quirks-and-pitfalls" class="md-nav__link">
+    Quirks and Pitfalls
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-job-routes-are-constructed" class="md-nav__link">
+    How Job Routes are Constructed
+  </a>
+  
+    <nav class="md-nav" aria-label="How Job Routes are Constructed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job_router_entries" class="md-nav__link">
+    JOB_ROUTER_ENTRIES
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job_router_defaults" class="md-nav__link">
+    JOB_ROUTER_DEFAULTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-jobs-match-to-job-routes" class="md-nav__link">
+    How Jobs Match to Job Routes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generic-routes" class="md-nav__link">
+    Generic Routes
+  </a>
+  
+    <nav class="md-nav" aria-label="Generic Routes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-fields" class="md-nav__link">
+    Required fields
+  </a>
+  
+    <nav class="md-nav" aria-label="Required fields">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#batch-system" class="md-nav__link">
+    Batch system
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#route-name" class="md-nav__link">
+    Route name
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-multiple-routes" class="md-nav__link">
+    Writing multiple routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-comments" class="md-nav__link">
+    Writing comments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-attributes-for-all-routes" class="md-nav__link">
+    Setting attributes for all routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filtering-jobs-based-on" class="md-nav__link">
+    Filtering jobs based on…
+  </a>
+  
+    <nav class="md-nav" aria-label="Filtering jobs based on…">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#glidein-queue" class="md-nav__link">
+    Glidein queue
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-submitter" class="md-nav__link">
+    Job submitter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voms-attribute" class="md-nav__link">
+    VOMS attribute
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-default" class="md-nav__link">
+    Setting a default…
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting a default…">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maximum-number-of-jobs" class="md-nav__link">
+    Maximum number of jobs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum-memory" class="md-nav__link">
+    Maximum memory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number-of-cores-to-request" class="md-nav__link">
+    Number of cores to request
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum-walltime" class="md-nav__link">
+    Maximum walltime
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-job-environments" class="md-nav__link">
+    Setting job environments
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting job environments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#removing-attributes" class="md-nav__link">
+    Removing attributes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-attributes" class="md-nav__link">
+    Setting attributes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-attributes-with-classad-expressions" class="md-nav__link">
+    Setting attributes with ClassAd expressions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limiting-the-number-of-jobs" class="md-nav__link">
+    Limiting the number of jobs
+  </a>
+  
+    <nav class="md-nav" aria-label="Limiting the number of jobs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#total-jobs" class="md-nav__link">
+    Total jobs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idle-jobs" class="md-nav__link">
+    Idle jobs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-routes" class="md-nav__link">
+    Debugging routes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routes-for-htcondor-batch-systems" class="md-nav__link">
+    Routes for HTCondor Batch Systems
+  </a>
+  
+    <nav class="md-nav" aria-label="Routes for HTCondor Batch Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-periodic-hold-release-or-remove" class="md-nav__link">
+    Setting periodic hold, release or remove
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-routed-job-requirements" class="md-nav__link">
+    Setting routed job requirements
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting routed job requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preserving-original-job-requirements" class="md-nav__link">
+    Preserving original job requirements
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routes-for-non-htcondor-batch-systems" class="md-nav__link">
+    Routes for non-HTCondor Batch Systems
+  </a>
+  
+    <nav class="md-nav" aria-label="Routes for non-HTCondor Batch Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-default-batch-queue" class="md-nav__link">
+    Setting a default batch queue
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-batch-system-directives" class="md-nav__link">
+    Setting batch system directives
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    Reference
+  </a>
+  
+    <nav class="md-nav" aria-label="Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aglt2s-job-routes" class="md-nav__link">
+    AGLT2's job routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bnls-job-routes" class="md-nav__link">
+    BNL's job routes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1-8" type="checkbox" id="nav-1-8" >
+      
+      <label class="md-nav__link" for="nav-1-8">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="nav-1-8">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/remote-troubleshooting/" class="md-nav__link">
+        Remote Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        HTCondor-CE 3
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 3" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v3/reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quirks-and-pitfalls" class="md-nav__link">
+    Quirks and Pitfalls
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-job-routes-are-constructed" class="md-nav__link">
+    How Job Routes are Constructed
+  </a>
+  
+    <nav class="md-nav" aria-label="How Job Routes are Constructed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job_router_entries" class="md-nav__link">
+    JOB_ROUTER_ENTRIES
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job_router_defaults" class="md-nav__link">
+    JOB_ROUTER_DEFAULTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-jobs-match-to-job-routes" class="md-nav__link">
+    How Jobs Match to Job Routes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generic-routes" class="md-nav__link">
+    Generic Routes
+  </a>
+  
+    <nav class="md-nav" aria-label="Generic Routes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-fields" class="md-nav__link">
+    Required fields
+  </a>
+  
+    <nav class="md-nav" aria-label="Required fields">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#batch-system" class="md-nav__link">
+    Batch system
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#route-name" class="md-nav__link">
+    Route name
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-multiple-routes" class="md-nav__link">
+    Writing multiple routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-comments" class="md-nav__link">
+    Writing comments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-attributes-for-all-routes" class="md-nav__link">
+    Setting attributes for all routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filtering-jobs-based-on" class="md-nav__link">
+    Filtering jobs based on…
+  </a>
+  
+    <nav class="md-nav" aria-label="Filtering jobs based on…">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#glidein-queue" class="md-nav__link">
+    Glidein queue
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-submitter" class="md-nav__link">
+    Job submitter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voms-attribute" class="md-nav__link">
+    VOMS attribute
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-default" class="md-nav__link">
+    Setting a default…
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting a default…">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maximum-number-of-jobs" class="md-nav__link">
+    Maximum number of jobs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum-memory" class="md-nav__link">
+    Maximum memory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number-of-cores-to-request" class="md-nav__link">
+    Number of cores to request
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum-walltime" class="md-nav__link">
+    Maximum walltime
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-job-environments" class="md-nav__link">
+    Setting job environments
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting job environments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#removing-attributes" class="md-nav__link">
+    Removing attributes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-attributes" class="md-nav__link">
+    Setting attributes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-attributes-with-classad-expressions" class="md-nav__link">
+    Setting attributes with ClassAd expressions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limiting-the-number-of-jobs" class="md-nav__link">
+    Limiting the number of jobs
+  </a>
+  
+    <nav class="md-nav" aria-label="Limiting the number of jobs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#total-jobs" class="md-nav__link">
+    Total jobs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idle-jobs" class="md-nav__link">
+    Idle jobs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-routes" class="md-nav__link">
+    Debugging routes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routes-for-htcondor-batch-systems" class="md-nav__link">
+    Routes for HTCondor Batch Systems
+  </a>
+  
+    <nav class="md-nav" aria-label="Routes for HTCondor Batch Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-periodic-hold-release-or-remove" class="md-nav__link">
+    Setting periodic hold, release or remove
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-routed-job-requirements" class="md-nav__link">
+    Setting routed job requirements
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting routed job requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preserving-original-job-requirements" class="md-nav__link">
+    Preserving original job requirements
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routes-for-non-htcondor-batch-systems" class="md-nav__link">
+    Routes for non-HTCondor Batch Systems
+  </a>
+  
+    <nav class="md-nav" aria-label="Routes for non-HTCondor Batch Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-default-batch-queue" class="md-nav__link">
+    Setting a default batch queue
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-batch-system-directives" class="md-nav__link">
+    Setting batch system directives
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    Reference
+  </a>
+  
+    <nav class="md-nav" aria-label="Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aglt2s-job-routes" class="md-nav__link">
+    AGLT2's job routes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bnls-job-routes" class="md-nav__link">
+    BNL's job routes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/master/docs/batch-system-integration.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="writing-routes-for-htcondor-ce">Writing Routes For HTCondor-CE<a class="headerlink" href="#writing-routes-for-htcondor-ce" title="Permanent link">&para;</a></h1>
+<p>The <a href="https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html">JobRouter</a> is at the heart of HTCondor-CE
+and allows admins to transform and direct jobs to specific batch systems.
+Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
+If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
+job') that is then submitted to the batch system.
+The CE package comes with default routes located in <code>/etc/condor-ce/config.d/02-ce-*.conf</code> that provide enough basic
+functionality for a small site.</p>
+<p>If you have needs beyond delegating all incoming jobs to your batch system as they are, this document provides examples
+of common job routes and job route problems.</p>
+<div class="admonition note">
+<p class="admonition-title">Definitions</p>
+<ul>
+<li><strong>Incoming Job</strong>: A job which was submitted to the CE from an external source.</li>
+<li><strong>Routed Job</strong>: A job that has been transformed by the JobRouter.</li>
+</ul>
+</div>
+<h2 id="quirks-and-pitfalls">Quirks and Pitfalls<a class="headerlink" href="#quirks-and-pitfalls" title="Permanent link">&para;</a></h2>
+<ul>
+<li>If a value is set in <a href="#job_router_defaults">JOB_ROUTER_DEFAULTS</a> with <code>eval_set_&lt;variable&gt;</code>, override it by using <code>eval_set_&lt;variable&gt;</code> in the <code>JOB_ROUTER_ENTRIES</code>. Do this at your own risk as it may cause the CE to break.</li>
+<li>Make sure to run <code>condor_ce_reconfig</code> after changing your routes, otherwise they will not take effect.</li>
+<li>HTCondor batch system only: Local universe jobs are excluded from any routing.</li>
+</ul>
+<h2 id="how-job-routes-are-constructed">How Job Routes are Constructed<a class="headerlink" href="#how-job-routes-are-constructed" title="Permanent link">&para;</a></h2>
+<p>Each job route’s <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/4_1HTCondor_s_ClassAd.html">ClassAd</a> is constructed by combining each entry from the <code>JOB_ROUTER_ENTRIES</code> with the <code>JOB_ROUTER_DEFAULTS</code>. Attributes that are <a href="#setting-attributes">set_*</a> in <code>JOB_ROUTER_ENTRIES</code> will override those <a href="#setting-attributes">set_*</a> in <code>JOB_ROUTER_DEFAULTS</code></p>
+<h3 id="job_router_entries">JOB_ROUTER_ENTRIES<a class="headerlink" href="#job_router_entries" title="Permanent link">&para;</a></h3>
+<p><code>JOB_ROUTER_ENTRIES</code> is a configuration variable whose default is set in <code>/etc/condor-ce/config.d/02-ce-*.conf</code> but may be overriden by the administrator in <code>/etc/condor-ce/config.d/99-local.conf</code>. This document outlines the many changes you can make to <code>JOB_ROUTER_ENTRIES</code> to fit your site’s needs.</p>
+<h3 id="job_router_defaults">JOB_ROUTER_DEFAULTS<a class="headerlink" href="#job_router_defaults" title="Permanent link">&para;</a></h3>
+<p><code>JOB_ROUTER_DEFAULTS</code> is a python-generated configuration variable that sets default job route values that are required for the HTCondor-CE's functionality. To view its contents in a readable format, run the following command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_config_val JOB_ROUTER_DEFAULTS <span class="p">|</span> sed <span class="s1">&#39;s/;/;\n/g&#39;</span>
+</code></pre></div>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If a value is set in <a href="#job_router_defaults">JOB_ROUTER_DEFAULTS</a> with <code>eval_set_&lt;variable&gt;</code>, override it by using <code>eval_set_&lt;variable&gt;</code> in the <code>JOB_ROUTER_ENTRIES</code>. Do this at your own risk as it may cause the CE to break.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do <strong>not</strong> set the <code>JOB_ROUTER_DEFAULTS</code> configuration variable yourself. This will cause the CE to stop functioning.</p>
+</div>
+<h2 id="how-jobs-match-to-job-routes">How Jobs Match to Job Routes<a class="headerlink" href="#how-jobs-match-to-job-routes" title="Permanent link">&para;</a></h2>
+<p>The job router considers jobs in the queue (<a href="../troubleshooting/troubleshooting/#condor_ce_q">condor_ce_q</a>) that
+meet the following constraints:</p>
+<ul>
+<li>The job has not already been considered by the job router</li>
+<li>The job is associated with an unexpired x509 proxy</li>
+<li>The job's universe is standard or vanilla</li>
+</ul>
+<p>If the job meets the above constraints, then the job's ClassAd is compared against each
+<a href="#filtering-jobs-based-on">route's requirements</a>.
+If the job only meets one route's requirements, the job is matched to that route.
+If the job meets the requirements of multiple routes,  the route that is chosen depends on your version of HTCondor
+(<code>condor_version</code>):</p>
+<table>
+<thead>
+<tr>
+<th>If your version of HTCondor is...</th>
+<th>Then the route is chosen by...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt; 8.7.1</td>
+<td><strong>Round-robin</strong> between all matching routes. In this case, we recommend making each route's requirements mutually exclusive.</td>
+</tr>
+<tr>
+<td>&gt;= 8.7.1, &lt; 8.9.5</td>
+<td><strong>First matching route</strong> where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive.</td>
+</tr>
+<tr>
+<td>&gt;= 8.9.5</td>
+<td><strong>First matching route</strong> where routes are considered in the order specified by <a href="https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES">JOB_ROUTER_ROUTE_NAMES</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition bug">
+<p class="admonition-title">Job Route Order</p>
+<p>For HTCondor versions &lt; 8.9.5 (as well as versions &gt;= 8.7.1 and &lt; 8.8.7) the order of job routes does not match the
+order in which they are configured.
+As a result, we recommend updating to at least HTCondor 8.9.5 (or 8.8.7) and specifying the names of your routes in
+<code>JOB_ROUTER_ROUTE_NAMES</code> in the order that you'd like them considered.</p>
+</div>
+<p>If you are using HTCondor &gt;= 8.7.1 and would like to use round-robin matching, add the following text to a file in
+<code>/etc/condor-ce/config.d/</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUND_ROBIN_SELECTION = True
+</code></pre></div>
+<h2 id="generic-routes">Generic Routes<a class="headerlink" href="#generic-routes" title="Permanent link">&para;</a></h2>
+<p>This section contains general information about job routes that can be used regardless of the type of batch system at
+your site.
+New routes should be placed in <code>/etc/condor-ce/config.d/99-local.conf</code>, not the original <code>02-ce-*.conf</code>.</p>
+<h3 id="required-fields">Required fields<a class="headerlink" href="#required-fields" title="Permanent link">&para;</a></h3>
+<p>The minimum requirements for a route are that you specify the type of batch system that jobs should be routed to and a
+name for each route.
+Default routes can be found in <code>/usr/share/condor-ce/config.d/02-ce-&lt;batch system&gt;-defaults.conf</code>, provided by the
+<code>htcondor-ce-&lt;batch system&gt;</code> packages.</p>
+<h4 id="batch-system">Batch system<a class="headerlink" href="#batch-system" title="Permanent link">&para;</a></h4>
+<p>Each route needs to indicate the type of batch system that jobs should be routed to.
+For HTCondor batch systems, the <code>TargetUniverse</code> attribute needs to be set to <code>5</code> or <code>"vanilla"</code>.
+For all other batch systems, the <code>TargetUniverse</code> attribute needs to be set to <code>9</code> or <code>"grid"</code> and the <code>GridResource</code>
+attribute needs to be set to <code>"batch &lt;batch system&gt;"</code> (where <code>&lt;batch system&gt;</code> can be one of <code>pbs</code>, <code>slurm</code>, <code>lsf</code>, or
+<code>sge</code>).</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+<span class="hll">  TargetUniverse = 5;
+</span>  name = &quot;Route jobs to HTCondor&quot;;
+]
+[
+<span class="hll">  GridResource = &quot;batch pbs&quot;;
+</span><span class="hll">  TargetUniverse = 9;
+</span>  name = &quot;Route jobs to PBS&quot;;
+]
+@jre
+</code></pre></div>
+<h4 id="route-name">Route name<a class="headerlink" href="#route-name" title="Permanent link">&para;</a></h4>
+<p>To identify routes, you will need to assign a name to the route with the <code>name</code> attribute:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+<span class="hll">  name = &quot;Route jobs to HTCondor&quot;;
+</span>]
+@jre
+</code></pre></div>
+<p>The name of the route will be useful in debugging since it shows up in the output of
+<a href="../troubleshooting/troubleshooting/#condor_ce_job_router_info">condor_ce_job_router_info</a>,
+the <a href="../troubleshooting/troubleshooting/#jobrouterlog">JobRouterLog</a>,
+and in the ClassAd of the routed job, which can be viewed with
+<a href="../troubleshooting/troubleshooting/#condor_ce_q">condor_ce_q</a> or
+<a href="../troubleshooting/troubleshooting/#condor_ce_history">condor_ce_history</a>.</p>
+<h3 id="writing-multiple-routes">Writing multiple routes<a class="headerlink" href="#writing-multiple-routes" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before writing multiple routes, consider the details of <a href="#how-jobs-match-to-job-routes">how jobs match to job routes</a></p>
+</div>
+<p>If your batch system needs incoming jobs to be sorted (e.g. if different VO's need to go to separate queues),
+you will need to write multiple job routes where each route is enclosed by square brackets.
+The following routes takes incoming jobs that have a <code>queue</code> attribute set to <code>"analy"</code> and routes them to the site's
+HTCondor batch system.
+Any other jobs will be sent to that site's PBS batch system.</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+<span class="hll">[
+</span>  TargetUniverse = 5;
+  name = &quot;Route jobs to HTCondor&quot;;
+  Requirements = (TARGET.queue =?= &quot;analy&quot;);
+<span class="hll">]
+</span><span class="hll">[
+</span>  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Route jobs to PBS&quot;;
+  Requirements = (TARGET.queue =!= &quot;analy&quot;);
+<span class="hll">]
+</span>@jre
+</code></pre></div>
+<h3 id="writing-comments">Writing comments<a class="headerlink" href="#writing-comments" title="Permanent link">&para;</a></h3>
+<p>To write comments you can use <code>#</code> to comment a line:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = &quot;# comments&quot;;
+<span class="hll">  # This is a comment
+</span>]
+@jre
+</code></pre></div>
+<h3 id="setting-attributes-for-all-routes">Setting attributes for all routes<a class="headerlink" href="#setting-attributes-for-all-routes" title="Permanent link">&para;</a></h3>
+<p>To set an attribute that will be applied to all routes, you will need to ensure that <code>MERGE_JOB_ROUTER_DEFAULT_ADS</code> is
+set to <code>True</code> (check the value with <a href="../troubleshooting/troubleshooting/#condor_ce_config_val">condor_ce_config_val</a>)
+and use the <a href="#setting-attributes">set_</a> function in the <code>JOB_ROUTER_DEFAULTS</code>.
+The following configuration sets the <code>Periodic_Hold</code> attribute for all routes:</p>
+<div class="highlight"><pre><span></span><code># Use the defaults generated by the condor_ce_router_defaults script.  To add
+# additional defaults, add additional lines of the form:
+#
+#   JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS) [set_foo = 1;]
+#
+MERGE_JOB_ROUTER_DEFAULT_ADS=True
+<span class="hll">JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS) [set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;]
+</span></code></pre></div>
+<h3 id="filtering-jobs-based-on">Filtering jobs based on…<a class="headerlink" href="#filtering-jobs-based-on" title="Permanent link">&para;</a></h3>
+<p>To filter jobs, use the <code>Requirements</code> attribute.
+Jobs will evaluate against the ClassAd expression set in the <code>Requirements</code> and if the expression evaluates to <code>TRUE</code>,
+the route will match.
+More information on the syntax of ClassAd's can be found in the
+<a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
+For an example on how incoming jobs interact with filtering in job routes, consult <a href="../remote-job-submission/">this document</a>.</p>
+<p>When setting requirements, you need to prefix job attributes that you are filtering with <code>TARGET.</code> so that the job route
+knows to compare the attribute of the incoming job rather than the route’s own attribute.
+For example, if an incoming job has a <code>queue = "analy"</code> attribute, then the following job route will not match:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = &quot;Filtering by queue&quot;;
+  queue = &quot;not-analy&quot;;
+<span class="hll">  Requirements = (queue =?= &quot;analy&quot;);
+</span>]
+@jre
+</code></pre></div>
+<p>This is because when evaluating the route requirement, the job route will compare its own <code>queue</code> attribute to "analy"
+and see that it does not match.
+You can read more about comparing two ClassAds in the
+<a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators">HTCondor manual</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have an HTCondor batch system, note the difference with <a href="#setting-routed-job-requirements">set_requirements</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before writing multiple routes, consider the details of <a href="#how-jobs-match-to-job-routes">how jobs match to job routes</a>.</p>
+</div>
+<h4 id="glidein-queue">Glidein queue<a class="headerlink" href="#glidein-queue" title="Permanent link">&para;</a></h4>
+<p>To filter jobs based on their glidein queue attribute, your routes will need a <code>Requirements</code> expression using the
+incoming job's <code>queue</code> attribute.
+The following entry routes jobs to HTCondor if the incoming job (specified by <code>TARGET</code>) is an <code>analy</code> (Analysis) glidein:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = &quot;Filtering by queue&quot;;
+<span class="hll">  Requirements = (TARGET.queue =?= &quot;analy&quot;);
+</span>]
+@jre
+</code></pre></div>
+<h4 id="job-submitter">Job submitter<a class="headerlink" href="#job-submitter" title="Permanent link">&para;</a></h4>
+<p>To filter jobs based on who submitted it, your routes will need a <code>Requirements</code> expression using the incoming job's <code>Owner</code> attribute. The following entry routes jobs to the HTCondor batch system if the submitter is <code>usatlas2</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = &quot;Filtering by job submitter&quot;;
+<span class="hll">  Requirements = (TARGET.Owner =?= &quot;usatlas2&quot;);
+</span>]
+@jre
+</code></pre></div>
+<p>Alternatively, you can match based on regular expression. The following entry routes jobs to the PBS batch system if the submitter's name begins with <code>usatlas</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Filtering by job submitter (regular expression)&quot;;
+<span class="hll">  Requirements = regexp(&quot;^usatlas&quot;, TARGET.Owner);
+</span>]
+@jre
+</code></pre></div>
+<h4 id="voms-attribute">VOMS attribute<a class="headerlink" href="#voms-attribute" title="Permanent link">&para;</a></h4>
+<p>To filter jobs based on the subject of the job's proxy, your routes will need a <code>Requirements</code> expression using the incoming job's <code>x509UserProxyFirstFQAN</code> attribute. The following entry routes jobs to the PBS batch system if the proxy subject contains <code>/cms/Role=Pilot</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Filtering by VOMS attribute (regex)&quot;;
+<span class="hll">  Requirements = regexp(&quot;\/cms\/Role\=pilot&quot;, TARGET.x509UserProxyFirstFQAN);
+</span>]
+@jre
+</code></pre></div>
+<h3 id="setting-a-default">Setting a default…<a class="headerlink" href="#setting-a-default" title="Permanent link">&para;</a></h3>
+<p>This section outlines how to set default job limits, memory, cores, and maximum walltime. For an example on how users can override these defaults, consult <a href="../remote-job-submission/#submit-the-job">this document</a>.</p>
+<h4 id="maximum-number-of-jobs">Maximum number of jobs<a class="headerlink" href="#maximum-number-of-jobs" title="Permanent link">&para;</a></h4>
+<p>To set a default limit to the maximum number of jobs per route, you can edit the configuration variable <code>CONDORCE_MAX_JOBS</code> in <code>/etc/condor-ce/config.d/01-ce-router.conf</code>:</p>
+<div class="highlight"><pre><span></span><code>CONDORCE_MAX_JOBS = 10000
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above configuration is to be placed directly into the HTCondor-CE configuration, not into a job route.</p>
+</div>
+<h4 id="maximum-memory">Maximum memory<a class="headerlink" href="#maximum-memory" title="Permanent link">&para;</a></h4>
+<p>To set a default maximum memory (in MB) for routed jobs, set the attribute <code>default_maxMemory</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Request memory&quot;;
+  # Set the requested memory to 1 GB
+<span class="hll">  set_default_maxMemory = 1000;
+</span>]
+@jre
+</code></pre></div>
+<h4 id="number-of-cores-to-request">Number of cores to request<a class="headerlink" href="#number-of-cores-to-request" title="Permanent link">&para;</a></h4>
+<p>To set a default number of cores for routed jobs, set the attribute <code>default_xcount</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Request CPU&quot;;
+  # Set the requested cores to 8
+<span class="hll">  set_default_xcount = 8;
+</span>]
+@jre
+</code></pre></div>
+<h4 id="maximum-walltime">Maximum walltime<a class="headerlink" href="#maximum-walltime" title="Permanent link">&para;</a></h4>
+<p>To set a default maximum walltime (in minutes) for routed jobs, set the attribute <code>default_maxWallTime</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Setting WallTime&quot;;
+  # Set the max walltime to 1 hr
+<span class="hll">  set_default_maxWallTime = 60;
+</span>]
+@jre
+</code></pre></div>
+<h3 id="setting-job-environments">Setting job environments<a class="headerlink" href="#setting-job-environments" title="Permanent link">&para;</a></h3>
+<p>HTCondor-CE offers two different methods for setting environment variables of routed jobs:</p>
+<ul>
+<li><code>CONDORCE_PILOT_JOB_ENV</code> configuration, which should be used for setting environment variables for all routed jobs to
+  static strings.</li>
+<li><code>set_default_pilot_job_env</code> job route configuration, which should be used for setting environment variables:<ul>
+<li>Per job route</li>
+<li>To values based on incoming job attributes</li>
+<li>Using <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
+</ul>
+</li>
+</ul>
+<p>Both of these methods use the new HTCondor format of the
+<a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14">environment command</a>, which is
+described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
+For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
+<p>``` tab="HTCondor-CE Configuration"
+CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
+<div class="highlight"><pre><span></span><code>```bash tab=&quot;Resulting Environment&quot;
+WN_SCRATCH_DIR=/nobackup/
+http_proxy=proxy.wisc.edu
+</code></pre></div></p>
+<p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
+<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
+For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
+<p>``` tab="HTCondor-CE Configuration"
+LOCAL_PROXY = proxy.wisc.edu
+CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
+<div class="highlight"><pre><span></span><code>```bash tab=&quot;Resulting Environment&quot;
+WN_SCRATCH_DIR=/nobackup/
+http_proxy=proxy.wisc.edu
+</code></pre></div></p>
+<p>To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
+<code>set_default_pilot_job_env</code> to your job route configuration.
+For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:</p>
+<p>``` tab="HTCondor-CE Configuration" hl_lines="5 6 7" 
+JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = "Local_Condor";
+  set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                     " ACCOUNTING_GROUP=", toLower(JOB_VO));
+]
+@jre
+<div class="highlight"><pre><span></span><code>``` tab=&quot;Incoming Job Attributes&quot;
+JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
+JOB_VO = &quot;GLOW&quot;
+</code></pre></div></p>
+<p>``` bash tab="Resulting Environment"
+WN_SCRATCH_DIR=/nobackup/
+PILOT_COLLECTOR=collector.wisc.edu
+ACCOUNTING_GROUP=glow
+<div class="highlight"><pre><span></span><code>!!!tip &quot;Debugging job route environment expressions&quot;
+    While constructing `set_default_pilot_job_env` expressions, try wrapping your expression in
+    [debug()](#debugging-routes) to help with any issues that may arise.
+    Make sure to remove `debug()` after you&#39;re done!
+
+### Editing attributes…
+
+The following functions are operations that affect job attributes and are evaluated in the following order:
+
+1.  `copy_*`
+2.  `delete_*`
+3.  `set_*`
+4.  `eval_set_*`
+
+After each job route’s ClassAd is [constructed](#how-job-routes-are-constructed), the above operations are evaluated in order. For example, if the attribute `foo` is set using `eval_set_foo` in the `JOB_ROUTER_DEFAULTS`, you&#39;ll be unable to use `delete_foo` to remove it from your jobs since the attribute is set using `eval_set_foo` after the deletion occurs according to the order of operations. To get around this, we can take advantage of the fact that operations defined in `JOB_ROUTER_DEFAULTS` get overridden by the same operation in `JOB_ROUTER_ENTRIES`. So to &#39;delete&#39; `foo`, we would add `eval_set_foo = &quot;&quot;` to the route in the `JOB_ROUTER_ENTRIES`, resulting in `foo` being absent from the routed job.
+
+More documentation can be found in the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#SECTION00644000000000000000).
+
+#### Copying attributes
+
+To copy the value of an attribute of the incoming job to an attribute of the routed job, use `copy_`. The following route copies the `environment` attribute of the incoming job and sets the attribute `Original_Environment` on the routed job to the same value:
+
+```hl_lines=&quot;6&quot;
+JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Copying attributes&quot;;
+  copy_environment = &quot;Original_Environment&quot;;
+]
+@jre
+</code></pre></div></p>
+<h4 id="removing-attributes">Removing attributes<a class="headerlink" href="#removing-attributes" title="Permanent link">&para;</a></h4>
+<p>To remove an attribute of the incoming job from the routed job, use <code>delete_</code>. The following route removes the <code>environment</code> attribute from the routed job:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Copying attributes&quot;;
+<span class="hll">  delete_environment = True;
+</span>]
+@jre
+</code></pre></div>
+<h4 id="setting-attributes">Setting attributes<a class="headerlink" href="#setting-attributes" title="Permanent link">&para;</a></h4>
+<p>To set an attribute on the routed job, use <code>set_</code>. The following route sets the Job's <code>Rank</code> attribute to 5:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Setting an attribute&quot;;
+<span class="hll">  set_Rank = 5;
+</span>]
+@jre
+</code></pre></div>
+<h4 id="setting-attributes-with-classad-expressions">Setting attributes with ClassAd expressions<a class="headerlink" href="#setting-attributes-with-classad-expressions" title="Permanent link">&para;</a></h4>
+<p>To set an attribute to a ClassAd expression to be evaluated, use <code>eval_set</code>. The following route sets the <code>Experiment</code> attribute to <code>atlas.osguser</code> if the Owner of the incoming job is <code>osguser</code>:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a value is set in JOB_ROUTER_DEFAULTS with <code>eval_set_&lt;variable&gt;</code>, override it by using <code>eval_set_&lt;variable&gt;</code> in the <code>JOB_ROUTER_ENTRIES</code>.</p>
+</div>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Setting an attribute with a !ClassAd expression&quot;;
+<span class="hll">  eval_set_Experiment = strcat(&quot;atlas.&quot;, Owner);
+</span>]
+@jre
+</code></pre></div>
+<h3 id="limiting-the-number-of-jobs">Limiting the number of jobs<a class="headerlink" href="#limiting-the-number-of-jobs" title="Permanent link">&para;</a></h3>
+<p>This section outlines how to limit the number of total or idle jobs in a specific route (i.e., if this limit is reached, jobs will no longer be placed in this route).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution: HTCondor manages fair share on its own via <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/3_6User_Priorities.html">user priorities and group accounting</a>.</p>
+</div>
+<h4 id="total-jobs">Total jobs<a class="headerlink" href="#total-jobs" title="Permanent link">&para;</a></h4>
+<p>To set a limit on the number of jobs for a specific route, set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134">MaxJobs</a> attribute:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Limit the total number of jobs to 100&quot;;
+<span class="hll">  MaxJobs = 100;
+</span>]
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Limit the total number of jobs to 75&quot;;
+<span class="hll">  MaxJobs = 75;
+</span>]
+@jre
+</code></pre></div>
+<h4 id="idle-jobs">Idle jobs<a class="headerlink" href="#idle-jobs" title="Permanent link">&para;</a></h4>
+<p>To set a limit on the number of idle jobs for a specific route, set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135">MaxIdleJobs</a> attribute:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = &quot;Limit the total number of idle jobs to 100&quot;;
+<span class="hll">  MaxIdleJobs = 100;
+</span>]
+[
+  TargetUniverse = 5;
+  name = &quot;Limit the total number of idle jobs to 75&quot;;
+<span class="hll">  MaxIdleJobs = 75;
+</span>]
+@jre
+</code></pre></div>
+<h3 id="debugging-routes">Debugging routes<a class="headerlink" href="#debugging-routes" title="Permanent link">&para;</a></h3>
+<p>To help debug expressions in your routes, you can use the <code>debug()</code> function. First, set the debug mode for the JobRouter by editing a file in <code>/etc/condor-ce/config.d/</code> to read</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
+</code></pre></div>
+<p>Then wrap the problematic attribute in <code>debug()</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Debugging a difficult !ClassAd expression&quot;;
+<span class="hll">  eval_set_Experiment = debug(strcat(&quot;atlas&quot;, Name));
+</span>]
+@jre
+</code></pre></div>
+<p>You will find the debugging output in <code>/var/log/condor-ce/JobRouterLog</code>.</p>
+<h2 id="routes-for-htcondor-batch-systems">Routes for HTCondor Batch Systems<a class="headerlink" href="#routes-for-htcondor-batch-systems" title="Permanent link">&para;</a></h2>
+<p>This section contains information about job routes that can be used if you are running an HTCondor batch system at your site.</p>
+<h3 id="setting-periodic-hold-release-or-remove">Setting periodic hold, release or remove<a class="headerlink" href="#setting-periodic-hold-release-or-remove" title="Permanent link">&para;</a></h3>
+<p>To release, remove or put a job on hold if it meets certain criteria, use the <code>PERIODIC_*</code> family of attributes. By default, periodic expressions are evaluated once every 300 seconds but this can be changed by setting <code>PERIODIC_EXPR_INTERVAL</code> in your CE's configuration.</p>
+<p>In this example, we set the routed job on hold if the job is idle and has been started at least once or if the job has tried to start more than once.  This will catch jobs which are starting and stopping multiple times.</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+  name = &quot;Setting periodic statements&quot;;
+  # Puts the routed job on hold if the job&#39;s been idle and has been started at least once or if the job has tried to start more than once
+<span class="hll">  set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
+</span>  # Remove routed jobs if their walltime is longer than 3 days and 5 minutes
+  set_Periodic_Remove = ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) );
+  # Release routed jobs if the condor_starter couldn&#39;t start the executable and &#39;VMGAHP_ERR_INTERNAL&#39; is in the HoldReason
+<span class="hll">  set_Periodic_Release = HoldReasonCode == 6 &amp;&amp; regexp(&quot;VMGAHP_ERR_INTERNAL&quot;, HoldReason);
+</span>]
+@jre
+</code></pre></div>
+<h3 id="setting-routed-job-requirements">Setting routed job requirements<a class="headerlink" href="#setting-routed-job-requirements" title="Permanent link">&para;</a></h3>
+<p>If you need to set requirements on your routed job, you will need to use <code>set_Requirements</code> instead of <code>Requirements</code>. The <code>Requirements</code> attribute filters jobs coming into your CE into different job routes whereas <code>set_Requirements</code> will set conditions on the routed job that must be met by the worker node it lands on. For more information on requirements, consult the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/2_5Submitting_Job.html#SECTION00357000000000000000">HTCondor manual</a>.</p>
+<p>To ensure that your job lands on a Linux machine in your pool:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  TargetUniverse = 5;
+<span class="hll">  set_Requirements =  OpSys == &quot;LINUX&quot;;
+</span>]
+@jre
+</code></pre></div>
+<h4 id="preserving-original-job-requirements">Preserving original job requirements<a class="headerlink" href="#preserving-original-job-requirements" title="Permanent link">&para;</a></h4>
+<p>To preserve and include the original job requirements, rather than just setting new requirements, you can use
+<code>copy_Requirements</code> to store the current value of <code>Requirements</code> to another variable, which we'll call
+<code>original_requirements</code>.
+To do this, replace the above <code>set_Requirements</code> line with:</p>
+<div class="highlight"><pre><span></span><code>copy_Requirements = &quot;original_requirements&quot;;
+set_Requirements = original_requirements &amp;&amp; ...;
+</code></pre></div>
+<h2 id="routes-for-non-htcondor-batch-systems">Routes for non-HTCondor Batch Systems<a class="headerlink" href="#routes-for-non-htcondor-batch-systems" title="Permanent link">&para;</a></h2>
+<p>This section contains information about job routes that can be used if you are running a non-HTCondor batch system at your site.</p>
+<h3 id="setting-a-default-batch-queue">Setting a default batch queue<a class="headerlink" href="#setting-a-default-batch-queue" title="Permanent link">&para;</a></h3>
+<p>To set a default queue for routed jobs, set the attribute <code>default_queue</code>:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+[
+  GridResource = &quot;batch pbs&quot;;
+  TargetUniverse = 9;
+  name = &quot;Setting batch system queues&quot;;
+<span class="hll">  set_default_queue = &quot;osg_queue&quot;;
+</span>]
+@jre
+</code></pre></div>
+<h3 id="setting-batch-system-directives">Setting batch system directives<a class="headerlink" href="#setting-batch-system-directives" title="Permanent link">&para;</a></h3>
+<p>To write batch system directives that are not supported in the route examples above, you will need to edit the job submit script for your local batch system in <code>/etc/blahp/</code> (e.g., if your local batch system is PBS, edit <code>/etc/blahp/pbs_local_submit_attributes.sh</code>). This file is sourced during submit time and anything printed to stdout is appended to the batch system job submit script. ClassAd attributes can be passed from the routed job to the local submit attributes script via <code>set_default_CERequirements</code>, which takes a comma-separated list of other attributes:</p>
+<div class="highlight"><pre><span></span><code>set_foo = X;
+set_bar = &quot;Y&quot;;
+set_default_CERequirements = &quot;foo,bar&quot;;
+</code></pre></div>
+<p>This sets <code>foo</code> to value <code>X</code> and <code>bar</code> to the string <code>Y</code> in the environment of the local submit attributes script.</p>
+<p>The following example sets the maximum walltime to 1 hour and the accounting group to the <code>x509UserProxyFirstFQAN</code> attribute of the job submitted to a PBS batch system:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre [
+     GridResource = &quot;batch pbs&quot;;
+     TargetUniverse = 9;
+     name = &quot;Setting job submit variables&quot;;
+<span class="hll">     set_Walltime = 3600;
+</span>     set_AccountingGroup = x509UserProxyFirstFQAN;
+     set_default_CERequirements = &quot;WallTime,AccountingGroup&quot;;
+]
+@jre
+</code></pre></div>
+<p>With <code>/etc/blahp/pbs_local_submit_attributes.sh</code> containing:</p>
+<div class="highlight"><pre><span></span><code>#!/bin/bash
+echo &quot;#PBS -l walltime=$Walltime&quot;
+echo &quot;#PBS -A $AccountingGroup&quot;
+</code></pre></div>
+<p>This results in the following being appended to the script that gets submitted to your batch system:</p>
+<div class="highlight"><pre><span></span><code>#PBS -l walltime=3600
+#PBS -A &lt;CE job&#39;s x509UserProxyFirstFQAN attribute&gt;
+</code></pre></div>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions or issues with configuring job routes, please <a href="..#contact-us">contact us</a> for assistance.</p>
+<h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
+<p>Here are some example HTCondor-CE job routes:</p>
+<h3 id="aglt2s-job-routes">AGLT2's job routes<a class="headerlink" href="#aglt2s-job-routes" title="Permanent link">&para;</a></h3>
+<p>Atlas AGLT2 is using an HTCondor batch system. Here are some things to note about their routes.</p>
+<ul>
+<li>Setting various HTCondor-specific attributes like <code>Rank</code>, <code>AccountingGroup</code>, <code>JobPrio</code> and <code>Periodic_Remove</code> (see the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/12_Appendix_A.html">HTCondor manual</a> for more). Some of these are site-specific like <code>LastandFrac</code>, <code>IdleMP8Pressure</code>, <code>localQue</code>, <code>IsAnalyJob</code> and <code>JobMemoryLimit</code>.</li>
+<li>There is a difference between <code>Requirements</code> and <code>set_requirements</code>. The <code>Requirements</code> attribute matches jobs to specific routes while the <code>set_requirements</code> sets the <code>Requirements</code> attribute on the <em>routed</em> job, which confines which machines that the routed job can land on.</li>
+</ul>
+<p>Source: <a href="https://www.aglt2.org/wiki/bin/view/AGLT2/CondorCE#The_JobRouter_configuration_file_content">https://www.aglt2.org/wiki/bin/view/AGLT2/CondorCE#The_JobRouter_configuration_file_content</a></p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+# Still to do on all routes, get job requirements and add them here
+# Route no 1
+# Analysis queue
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue==&quot;analy&quot;;
+    Name = &quot;Analysis Queue&quot;;
+    TargetUniverse = 5;
+    eval_set_IdleMP8Pressure = $(IdleMP8Pressure);
+    eval_set_LastAndFrac = $(LastAndFrac);
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer ) &amp;&amp; (IfThenElse((Owner == &quot;atlasconnect&quot; || Owner == &quot;muoncal&quot;),IfThenElse(IdleMP8Pressure,(TARGET.PARTITIONED =!= TRUE),True),IfThenElse(LastAndFrac,(TARGET.PARTITIONED =!= TRUE),True)));
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.prod.analy.&quot;,Owner);
+    set_localQue = &quot;Analysis&quot;;
+    set_IsAnalyJob = True;
+    set_JobPrio = 5;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 2
+# splitterNT queue
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue == &quot;splitterNT&quot;;
+    Name = &quot;Splitter ntuple queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+    eval_set_AccountingGroup = &quot;group_calibrate.muoncal&quot;;
+    set_localQue = &quot;Splitter&quot;;
+    set_IsAnalyJob = False;
+    set_JobPrio = 10;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 3
+# splitter queue
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue == &quot;splitter&quot;;
+    Name = &quot;Splitter queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+    eval_set_AccountingGroup = &quot;group_calibrate.muoncal&quot;;
+    set_localQue = &quot;Splitter&quot;;
+    set_IsAnalyJob = False;
+    set_JobPrio = 15;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 4
+# xrootd queue
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue == &quot;xrootd&quot;;
+    Name = &quot;Xrootd queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.prod.analy.&quot;,Owner);
+    set_localQue = &quot;Analysis&quot;;
+    set_IsAnalyJob = True;
+    set_JobPrio = 35;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 5
+# Tier3Test queue
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue == &quot;Tier3Test&quot;;
+    Name = &quot;Tier3 Test Queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer ) &amp;&amp; ( IS_TIER3_TEST_QUEUE =?= True );
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.prod.analy.&quot;,Owner);
+    set_localQue = &quot;Tier3Test&quot;;
+    set_IsTier3TestJob = True;
+    set_IsAnalyJob = True;
+    set_JobPrio = 20;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 6
+# mp8 queue
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue==&quot;mp8&quot;;
+    Name = &quot;MCORE Queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer ) &amp;&amp; (( TARGET.Cpus == 8 &amp;&amp; TARGET.CPU_TYPE =?= &quot;mp8&quot; ) || TARGET.PARTITIONED =?= True );
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.prod.mcore.&quot;,Owner);
+    set_localQue = &quot;MP8&quot;;
+    set_IsAnalyJob = False;
+    set_JobPrio = 25;
+    set_Rank = 0.0;
+    eval_set_RequestCpus = 8;
+    set_JobMemoryLimit = 33552000;
+    set_Slot_Type = &quot;mp8&quot;;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 7
+# Installation queue, triggered by usatlas2 user
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue is undefined &amp;&amp; target.Owner == &quot;usatlas2&quot;;
+    Name = &quot;Install Queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer ) &amp;&amp; ( TARGET.IS_INSTALL_QUE =?= True ) &amp;&amp; (TARGET.AGLT2_SITE == &quot;UM&quot; );
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.other.&quot;,Owner);
+    set_localQue = &quot;Default&quot;;
+    set_IsAnalyJob = False;
+    set_IsInstallJob = True;
+    set_JobPrio = 15;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 8
+# Default queue for usatlas1 user
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue is undefined &amp;&amp; regexp(&quot;usatlas1&quot;,target.Owner);
+    Name = &quot;ATLAS Production Queue&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.prod.prod.&quot;,Owner);
+    set_localQue = &quot;Default&quot;;
+    set_IsAnalyJob = False;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 9
+# Default queue for any other usatlas account
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue is undefined &amp;&amp; (regexp(&quot;usatlas2&quot;,target.Owner) || regexp(&quot;usatlas3&quot;,target.Owner));
+    Name = &quot;Other ATLAS Production&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+    eval_set_AccountingGroup = strcat(&quot;group_gatekpr.other.&quot;,Owner);
+    set_localQue = &quot;Default&quot;;
+    set_IsAnalyJob = False;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+# Route no 10
+# Anything else. Set queue as Default and assign to other VOs
+  [
+    GridResource = &quot;condor localhost localhost&quot;;
+    eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot; $(JOB_ROUTER_SCHEDD2_POOL)&quot;);
+    Requirements = target.queue is undefined &amp;&amp; ifThenElse(regexp(&quot;usatlas&quot;,target.Owner),false,true);
+    Name = &quot;Other Jobs&quot;;
+    TargetUniverse = 5;
+    set_requirements = ( ( TARGET.TotalDisk =?= undefined ) || ( TARGET.TotalDisk &gt;= 21000000 ) ) &amp;&amp; ( TARGET.Arch == &quot;X86_64&quot; ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+    eval_set_AccountingGroup = strcat(&quot;group_VOgener.&quot;,Owner);
+    set_localQue = &quot;Default&quot;;
+    set_IsAnalyJob = False;
+    set_Rank = (SlotID + (64-TARGET.DETECTED_CORES))*1.0;
+    set_JobMemoryLimit = 4194000;
+    set_Periodic_Remove = ( ( RemoteWallClockTime &gt; (3*24*60*60 + 5*60) ) || (ImageSize &gt; JobMemoryLimit) );
+  ]
+  @jre
+</code></pre></div>
+<h3 id="bnls-job-routes">BNL's job routes<a class="headerlink" href="#bnls-job-routes" title="Permanent link">&para;</a></h3>
+<p>ATLAS BNL T1, they are using an HTCondor batch system. Here are some things to note about their routes:</p>
+<ul>
+<li>Setting various HTCondor-specific attributes like <code>JobLeaseDuration</code>, <code>Requirements</code> and <code>Periodic_Hold</code> (see the
+    <a href="https://htcondor.readthedocs.io/en/stable/classad-attributes/job-classad-attributes.html">HTCondor manual</a>).
+    Some of these are site-specific like <code>RACF_Group</code>, <code>Experiment</code>, <code>Job_Type</code> and <code>VO</code>.</li>
+<li>Jobs are split into different routes based on the <a href="#glidein-queue">GlideIn</a> queue that they're in.</li>
+<li>There is a difference between <code>Requirements</code> and <code>set_requirements</code>.
+    The <code>Requirements</code> attribute matches <em>incoming</em> jobs to specific routes while the <code>set_requirements</code> sets the
+    <code>Requirements</code> attribute on the <em>routed</em> job, which confines which machines that the routed job can land on.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
+   [
+     GridResource = &quot;condor localhost localhost&quot;;
+     eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot;$(FULL_HOSTNAME)&quot;);
+     TargetUniverse = 5;
+     name = &quot;BNL_Condor_Pool_long&quot;;
+     Requirements = target.queue==&quot;analysis.long&quot;;
+     eval_set_RACF_Group = &quot;long&quot;;
+     set_Experiment = &quot;atlas&quot;;
+     set_requirements = ( ( Arch == &quot;INTEL&quot; || Arch == &quot;X86_64&quot; ) &amp;&amp; ( CPU_Experiment == &quot;atlas&quot; ) ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+     set_Job_Type = &quot;cas&quot;;
+     set_JobLeaseDuration = 3600;
+     set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
+     eval_set_VO = x509UserProxyVOName;
+   ]
+   [
+     GridResource = &quot;condor localhost localhost&quot;;
+     eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot;$(FULL_HOSTNAME)&quot;);
+     TargetUniverse = 5;
+     name = &quot;BNL_Condor_Pool_short&quot;;
+     Requirements = target.queue==&quot;analysis.short&quot;;
+     eval_set_RACF_Group = &quot;short&quot;;
+     set_Experiment = &quot;atlas&quot;;
+     set_requirements = ( ( Arch == &quot;INTEL&quot; || Arch == &quot;X86_64&quot; ) &amp;&amp; ( CPU_Experiment == &quot;atlas&quot; ) ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+     set_Job_Type = &quot;cas&quot;;
+     set_JobLeaseDuration = 3600;
+     set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
+     eval_set_VO = x509UserProxyVOName;
+   ]
+   [
+     GridResource = &quot;condor localhost localhost&quot;;
+     eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot;$(FULL_HOSTNAME)&quot;);
+     TargetUniverse = 5;
+     name = &quot;BNL_Condor_Pool_grid&quot;;
+     Requirements = target.queue==&quot;grid&quot;;
+     eval_set_RACF_Group = &quot;grid&quot;;
+     set_Experiment = &quot;atlas&quot;;
+     set_requirements = ( ( Arch == &quot;INTEL&quot; || Arch == &quot;X86_64&quot; ) &amp;&amp; ( CPU_Experiment == &quot;atlas&quot; ) ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+     set_Job_Type = &quot;cas&quot;;
+     set_JobLeaseDuration = 3600;
+     set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
+     eval_set_VO = x509UserProxyVOName;
+   ]
+   [
+     GridResource = &quot;condor localhost localhost&quot;;
+     eval_set_GridResource = strcat(&quot;condor &quot;, &quot;$(FULL_HOSTNAME)&quot;, &quot;$(FULL_HOSTNAME)&quot;);
+     TargetUniverse = 5;
+     name = &quot;BNL_Condor_Pool&quot;;
+     Requirements = target.queue is undefined;
+     eval_set_RACF_Group = &quot;grid&quot;;
+     set_requirements = ( ( Arch == &quot;INTEL&quot; || Arch == &quot;X86_64&quot; ) &amp;&amp; ( CPU_Experiment == &quot;rcf&quot; ) ) &amp;&amp; ( TARGET.OpSys == &quot;LINUX&quot; ) &amp;&amp; ( TARGET.Disk &gt;= RequestDisk ) &amp;&amp; ( TARGET.Memory &gt;= RequestMemory ) &amp;&amp; ( TARGET.HasFileTransfer );
+     set_Experiment = &quot;atlas&quot;;
+     set_Job_Type = &quot;cas&quot;;
+     set_JobLeaseDuration = 3600;
+     set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
+     eval_set_VO = x509UserProxyVOName;
+   ]
+   @jre
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../installation/htcondor-ce/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Installation
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../verification/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Verification
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: ['navigation.tabs'],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
