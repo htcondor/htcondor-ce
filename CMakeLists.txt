@@ -3,7 +3,7 @@ project(condor-ce NONE)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( HTCONDORCE_VERSION "4.4.1" CACHE INTERNAL "Version of the HTCondor-CE" )
+set( HTCONDORCE_VERSION "5.0.0" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 find_package(PkgConfig)
 
