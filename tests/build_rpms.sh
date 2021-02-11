@@ -61,7 +61,6 @@ rpmbuild --define '_topdir /tmp/rpmbuild' --define 'dist %{nil}' -bs /tmp/rpmbui
 rpmbuild --define '_topdir /tmp/rpmbuild' -bb /tmp/rpmbuild/SPECS/htcondor-ce.spec
 
 # dir needs to be inside htcondor-ce so it's visible outside the container
-mkdir -p htcondor-ce/travis_deploy
-cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/travis_deploy/
-cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/travis_deploy/
-
+mkdir -p htcondor-ce/ci_deploy
+cp -f /tmp/rpmbuild/RPMS/*/*.rpm htcondor-ce/ci_deploy/
+cp -f /tmp/rpmbuild/SRPMS/*.rpm htcondor-ce/ci_deploy/
