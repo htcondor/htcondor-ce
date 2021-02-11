@@ -494,7 +494,7 @@ fi
 %{_datadir}/condor-ce/pilot-status.cpf
 
 %dir %{_datadir}/condor-ce/mapfiles.d
-%config %{_datadir}/condor-ce/mapfiles.d/50-common-defaults.conf
+%config %{_datadir}/condor-ce/mapfiles.d/50-common-default.conf
 
 %config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf

@@ -102,7 +102,7 @@ install(FILES
 
 install(FILES
   config/mapfiles.d/50-central-collector.conf
-  config/mapfiles.d/50-common-defaults.conf
+  config/mapfiles.d/50-common-default.conf
   DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/config.d)
 
 install(FILES config/htcondorce_registry.conf DESTINATION ${SYSCONF_INSTALL_DIR}/httpd/conf.d)
