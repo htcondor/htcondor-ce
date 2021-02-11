@@ -12,6 +12,12 @@ HTCondor-CE 3 Version History
 This section contains release notes for each version of HTCondor-CE 3.
 HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 3.4.4 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.4) fixes a circular configuration definition in
+the HTCondor-CE View that resulted in 100% CPU usage by the `condor_gangliad` daemon
+([HTCONDOR-161](https://opensciencegrid.atlassian.net/browse/HTCONDOR-161))
+
 ### 3.4.3 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v3.4.3) includes the following bugfixes:
