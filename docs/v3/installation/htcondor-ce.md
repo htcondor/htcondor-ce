@@ -5,12 +5,12 @@ Installing an HTCondor-CE
     If you are installing an HTCondor-CE for the Open Science Grid (OSG), consult the
     [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
-The [HTCondor-CE](overview) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Entrypoints
+The [HTCondor-CE](../overview.md) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Entrypoints
 (CE) belonging to a computing grid
 (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
 As such, HTCondor-CE serves as an entry point for incoming grid jobs — it handles authorization and delegation of jobs
 to a grid site's local batch system.
-See the [overview page](/overview) for more details on the features and architecture of HTCondor-CE.
+See the [overview page](../overview.md) for more details on the features and architecture of HTCondor-CE.
 
 Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
@@ -19,7 +19,7 @@ Before Starting
 ---------------
 
 Before starting the installation process, consider the following points
-(consulting [the reference page](/reference) as necessary):
+(consulting [the reference page](../reference.md) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
 -   **SSL certificate:** The HTCondor-CE service uses a host certificate at `/etc/grid-security/hostcert.pem` and an
@@ -28,7 +28,7 @@ Before starting the installation process, consider the following points
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
     local cluster running supported batch system software (Grid Engine, HTCondor, LSF, PBS/Torque, Slurm) 
--   **File Systems**: Non-HTCondor batch systems require a [shared file system](#batch-systems-other-than-htcondor)
+-   **File Systems**: Non-HTCondor batch systems require a [shared file system](#sharing-the-spool-directory)
     between the HTCondor-CE host and the batch system worker nodes.
 
 There are some one-time (per host) steps to prepare in advance:
@@ -90,7 +90,7 @@ For more advanced configuration, see the section on [optional configurations](#o
 ### Configuring authentication ###
 
 To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
-[built-in mapfile](#built-in-mapping) or to make [Globus callouts](#globus-callouts) to an external service like Argus
+[built-in mapfile](#built-in-mapfile) or to make [Globus callouts](#globus-callout) to an external service like Argus
 or LCMAPS. THe former option is simpler but the latter option may be preferred if your grid supports it or your site
 already runs such a service.
 
@@ -251,6 +251,38 @@ NETWORK_INTERFACE = 127.0.0.1
 Replacing `condorce.example.com` text with your public interface’s hostname and `127.0.0.1` with your public interface’s
 IP address.
 
+#### Limiting or disabling locally running jobs on the CE
+
+If you want to limit or disable jobs running locally on your CE, you will need to configure HTCondor-CE's local and
+scheduler universes.
+Local and scheduler universes allow jobs to be run on the CE itself, mainly for remote troubleshooting.
+Pilot jobs will not run as local/scheduler universe jobs so leaving them enabled does NOT turn your CE into another
+worker node.
+
+The two universes are effectively the same (scheduler universe launches a starter process for each job), so we will be
+configuring them in unison.
+
+- **To change the default limit** on the number of locally run jobs (the current default is 20), add the following to
+  `/etc/condor-ce/config.d/99-local.conf`:
+
+        START_LOCAL_UNIVERSE = TotalLocalJobsRunning + TotalSchedulerJobsRunning < <JOB-LIMIT>
+        START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+
+    Where `<JOB-LIMIT>` is the maximum number of jobs allowed to run locally
+
+- **To only allow a specific user** to start locally run jobs, add the following to
+  `/etc/condor-ce/config.d/99-local.conf`:
+
+        START_LOCAL_UNIVERSE = target.Owner =?= "<USERNAME>"
+        START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+
+   Change `<USERNAME>` for the username allowed to run jobs locally
+
+- **To disable** locally run jobs, add the following to `/etc/condor-ce/config.d/99-local.conf`:
+
+        START_LOCAL_UNIVERSE = False
+        START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+
 #### Enabling the monitoring web interface
 
 The HTCondor-CE View is an optional web interface to the status of your CE.
@@ -293,7 +325,7 @@ blah APEL records for HTCondor batch systems:
     - Records are written to `APEL_OUTPUT_DIR` in the HTCondor-CE configuration (default: `/var/lib/condor-ce/apel/`)
     - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
 
-1. Start and enable the `condor-ce-apel` [services](/verification#managing-htcondor-ce-services) appropriate for your
+1. Start and enable the `condor-ce-apel` [services](../verification.md#managing-htcondor-ce-services) appropriate for your
    operating system.
 
 #### Enabling BDII integration ####
@@ -328,10 +360,10 @@ Next Steps
 At this point, you should have an installation of HTCondor-CE that will forward grid jobs into your site's batch system
 unchanged.
 If you need to transform incoming grid jobs (e.g. by setting a partition, queue, or accounting group), configure the
-[HTCondor-CE Job Router](/batch-system-integration).
-Otherwise, continue to the [this document](/verification) to start the relevant services and verify your installation.
+[HTCondor-CE Job Router](../batch-system-integration.md).
+Otherwise, continue to the [this document](../verification.md) to start the relevant services and verify your installation.
 
 Getting Help
 ------------
 
-If you have any questions or issues with the installation process, please [contact us](/#contact-us) for assistance,
+If you have any questions or issues with the installation process, please [contact us](../index.md#contact-us) for assistance,

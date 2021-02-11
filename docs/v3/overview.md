@@ -8,7 +8,7 @@ Before continuing with the overview, make sure that you are familiar with the fo
     ([HTCondor](http://htcondor.org),
     [Grid Engine](http://www.univa.com/products/),
     [LSF](https://www.ibm.com/us-en/marketplace/hpc-workload-management),
-    [PBS Pro](https://www.pbsworks.com/PBSProduct.aspx?n=Altair-PBS-Professional&c=Overview-and-Capabilities)/[Torque](https://adaptivecomputing.com/cherry-services/torque-resource-manager/),
+    [PBS Pro](https://www.altair.com/pbs-professional/)/[Torque](https://adaptivecomputing.com/cherry-services/torque-resource-manager/),
     and [Slurm](https://slurm.schedmd.com/))?
 -   Pilot jobs and factories (e.g., [GlideinWMS](http://glideinwms.fnal.gov/doc.prd/index.html),
     [PanDA](http://news.pandawms.org/), [DIRAC](https://dirac.readthedocs.io/en/latest/index.html))

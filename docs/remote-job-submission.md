@@ -32,7 +32,7 @@ root@host # yum install htcondor-ce-client
 ### Verify end-to-end submission ###
 
 The HTCondor-CE client package includes a debugging tool that perform tests of end-to-end job submission called
-[condor\_ce\_trace](troubleshooting/troubleshooting#condor_ce_trace).
+[condor\_ce\_trace](troubleshooting/troubleshooting.md#condor_ce_trace).
 To submit a diagnostic job with `condor_ce_trace`, run the following command:
 
 ``` console
@@ -42,7 +42,7 @@ user@host $ condor_ce_trace --debug <CE HOST>
 Replacing `<CE HOST>` with the hostname of the CE you wish to test.
 On success, you will see `Job status: Completed` and the job's environment on the worker node where it ran.
 If you do not see the expected output, refer to the
-[troubleshooting guide](troubleshooting/troubleshooting#condor_ce_trace).
+[troubleshooting guide](troubleshooting/troubleshooting.md#condor_ce_trace).
 
 !!! note "CONDOR_CE_TRACE_ATTEMPTS"
     For a busy site cluster, it may take longer than the default 5 minutes to test end-to-end submission.
@@ -79,7 +79,7 @@ For a list of other attributes that can be set with the `--attribute` option, co
 
 !!! note
     Non-HTCondor batch systems may need additional HTCondor-CE configuration to support these job attributes.
-    See the [batch system integration](configuration/batch-system-integration#setting-batch-system-directives)
+    See the [batch system integration](batch-system-integration.md#setting-batch-system-directives)
     for details on how to support them.
 
 Submission with HTCondor Submit
@@ -229,4 +229,4 @@ A more comprehensive list of submit file commands specific to HTCondor can be fo
 Getting Help
 ------------
 
-If you have any questions or issues with job submission, please [contact us](#contact-us) for assistance.
+If you have any questions or issues with job submission, please [contact us](index.md#contact-us) for assistance.

@@ -26,7 +26,7 @@ Before starting the installation process, consider the following points
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
     local cluster running supported batch system software (Grid Engine, HTCondor, LSF, PBS/Torque, Slurm) 
--   **File Systems**: Non-HTCondor batch systems require a [shared file system](#batch-systems-other-than-htcondor)
+-   **File Systems**: Non-HTCondor batch systems require a [shared file system](#sharing-the-spool-directory)
     between the HTCondor-CE host and the batch system worker nodes.
 
 There are some one-time (per host) steps to prepare in advance:
@@ -88,7 +88,7 @@ For more advanced configuration, see the section on [optional configurations](#o
 ### Configuring authentication ###
 
 To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
-[built-in mapfile](#built-in-mapping) or to make [Globus callouts](#globus-callouts) to an external service like Argus
+[built-in mapfile](#built-in-mapfile) or to make [Globus callouts](#globus-callout) to an external service like Argus
 or LCMAPS.
 The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
 such a service.
@@ -298,6 +298,38 @@ NETWORK_INTERFACE = 127.0.0.1
 
 Replacing `condorce.example.com` text with your public interface’s hostname and `127.0.0.1` with your public interface’s
 IP address.
+
+#### Limiting or disabling locally running jobs on the CE
+
+If you want to limit or disable jobs running locally on your CE, you will need to configure HTCondor-CE's local and
+scheduler universes.
+Local and scheduler universes allow jobs to be run on the CE itself, mainly for remote troubleshooting.
+Pilot jobs will not run as local/scheduler universe jobs so leaving them enabled does NOT turn your CE into another
+worker node.
+
+The two universes are effectively the same (scheduler universe launches a starter process for each job), so we will be
+configuring them in unison.
+
+- **To change the default limit** on the number of locally run jobs (the current default is 20), add the following to
+  `/etc/condor-ce/config.d/99-local.conf`:
+
+        START_LOCAL_UNIVERSE = TotalLocalJobsRunning + TotalSchedulerJobsRunning < <JOB-LIMIT>
+        START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+
+    Where `<JOB-LIMIT>` is the maximum number of jobs allowed to run locally
+
+- **To only allow a specific user** to start locally run jobs, add the following to
+  `/etc/condor-ce/config.d/99-local.conf`:
+
+        START_LOCAL_UNIVERSE = target.Owner =?= "<USERNAME>"
+        START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+
+   Change `<USERNAME>` for the username allowed to run jobs locally
+
+- **To disable** locally run jobs, add the following to `/etc/condor-ce/config.d/99-local.conf`:
+
+        START_LOCAL_UNIVERSE = False
+        START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
 
 #### Enabling the monitoring web interface
 

@@ -11,7 +11,7 @@ Known Issues
 
 If you are adding attributes to jobs submitted to your HTCondor pool with `SUBMIT_ATTRS`, these will *not* be applied to
 jobs that are entering your pool from the HTCondor-CE. 
-To get around this, you will want to add the attributes to your [job routes](job-router-recipes). 
+To get around this, you will want to add the attributes to your [job routes](../batch-system-integration.md). 
 If the CE is the only entry point for jobs into your pool, you can get rid of `SUBMIT_ATTRS` on your backend. Otherwise,
 you will have to maintain your list of attributes both in your list of routes and in your `SUBMIT_ATTRS`.
 
@@ -130,7 +130,7 @@ Daemon startup failure may manifest in many ways, the following are few symptoms
 
 **Next actions**
 
-1.  **If the MasterLog is filled with `ERROR:SECMAN...TCP connection to collector...failed`:** This is likely due to a misconfiguration for a host with multiple network interfaces. Verify that you have followed the instructions in [this](install-htcondor-ce#networking) section of the install guide.
+1.  **If the MasterLog is filled with `ERROR:SECMAN...TCP connection to collector...failed`:** This is likely due to a misconfiguration for a host with multiple network interfaces. Verify that you have followed the instructions in [this](../installation/htcondor-ce.md#configuring-for-multiple-network-interfaces) section of the install guide.
 2.  **If the MasterLog is filled with `DC_AUTHENTICATE` errors:** The HTCondor-CE daemons use the host certificate to authenticate with each other. Verify that your host certificate’s DN matches one of the regular expressions found in `/etc/condor-ce/condor_mapfile`.
 3.  **If the SchedLog is filled with `Can’t find address for negotiator`:** You can ignore this error! The negotiator daemon is used in HTCondor batch systems to match jobs with resources but since HTCondor-CE does not manage any resources directly, it does not run one.
 
@@ -150,7 +150,7 @@ You may see error messages like the following in your [SchedLog](#schedlog):
 **Next actions**
 
 1.  **Check voms-mapfile or grid-mapfile** and ensure that the user's DN or VOMS attributes are known to your
-    [authentication method](install-htcondor-ce#configuring-authentication), and that the mapped users exist
+    [authentication method](../installation/htcondor-ce.md#configuring-authentication), and that the mapped users exist
     on your CE and cluster.
 1.  **Check for lcmaps errors** in `/var/log/messages`
 1.  **If you do not see helpful error messages in `/var/log/messages`,** adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and checking `/var/log/messages` for errors again.
@@ -266,7 +266,8 @@ ERROR: couldn't locate condorce.example.com!
 
 #### Remote idle jobs: Are you authorized to run jobs on the CE?
 
-The CE will only accept jobs from users that authenticate via [LCMAPS VOMS](/security/lcmaps-voms-authentication).
+The CE will only run jobs from users that authenticate through the
+[HTCondor-CE configuration](../installation/htcondor-ce.md#configuring-authentication).
 You can use [condor\_ce\_ping](#condor_ce_ping) to check if you are authorized and what user your proxy is being mapped
 to.
 
@@ -291,7 +292,7 @@ Notice the failures in the above message: `Remote Mapping: gsi@unmapped` and `Au
 
 **Next actions**
 
-1.  Verify that an [authentication method](install-htcondor-ce#configuring-authentication) is set up on the CE
+1.  Verify that an [authentication method](../installation/htcondor-ce.md#configuring-authentication) is set up on the CE
 2.  Verify that your user DN is mapped to an existing system user
 
 ### Jobs go on hold
@@ -310,9 +311,9 @@ The most common cases for this behavior are as follows:
 
 - **The job does not match any job routes:**
   use [condor\_ce\_job\_router\_info](#condor_ce_job_router_info) to see why your idle job does not match any
-  [routes](/batch-system-integration#how-job-routes-are-constructed).
+  [routes](../batch-system-integration.md#how-job-routes-are-constructed).
 - **The route(s) that the job matches to are full:**
-  See [limiting the number of jobs](/batch-system-integration#limiting-the-number-of-jobs).
+  See [limiting the number of jobs](../batch-system-integration.md#limiting-the-number-of-jobs).
 - **The job router is throttling submission to your batch system due to submission failures:**
   See the HTCondor manual for [FailureRateThreshold](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958).
   Check for errors in the [JobRouterLog](#jobrouterlog) or [GridmanagerLog](#gridmanagerlog) for HTCondor and
@@ -436,7 +437,7 @@ If you are not running an HTCondor batch system, the non-CE commands will return
 `condor_ce_trace` is a useful tool for testing end-to-end job submission. It contacts both the CE’s Schedd and Collector daemons to verify your permission to submit to the CE, displays the submit script that it submits to the CE, and tracks the resultant job.
 
 !!! note
-    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](install-htcondor-ce#configuring-authentication).
+    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](../installation/htcondor-ce.md#configuring-authentication).
 
 ``` console
 user@host $ condor_ce_trace condorce.example.com
@@ -449,7 +450,7 @@ condor output.
 #### Troubleshooting
 
 1.  **If the command fails with “Failed ping…”:** Make sure that the HTCondor-CE daemons are running on the CE
-2.  **If you see “gsi@unmapped” in the “Remote Mapping” line:** Either your credentials are not mapped on the CE or authentication is not set up at all. To set up authentication, refer to our [installation document](install-htcondor-ce#configuring-authentication).
+2.  **If you see “gsi@unmapped” in the “Remote Mapping” line:** Either your credentials are not mapped on the CE or authentication is not set up at all. To set up authentication, refer to our [installation document](../installation/htcondor-ce.md#configuring-authentication).
 3.  **If the job submits but does not complete:** Look at the status of the job and perform the relevant [troubleshooting steps](#htcondor-ce-troubleshooting-items).
 
 ### condor_ce_host_network_check
@@ -486,7 +487,7 @@ submitting jobs through your CE.
 To submit a job to the CE and run the `env` command on the remote batch system:
 
 !!! note
-    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](install-htcondor-ce#configuring-authentication).
+    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](../installation/htcondor-ce.md#configuring-authentication).
 
 ``` console
 user@host $ condor_ce_run -r condorce.example.com:9619 /bin/env
@@ -503,7 +504,7 @@ user@host $ condor_ce_run -lr condorce.example.com:9619 cat /var/log/condor-ce/J
 
 Replacing the `condorce.example.com` text with the hostname of the CE. 
 To disable this feature on your CE, consult
-[this](install-htcondor-ce#limiting-or-disabling-locally-running-jobs-on-the-ce) section of the install documentation.
+[this](../installation/htcondor-ce.md#limiting-or-disabling-locally-running-jobs-on-the-ce) section of the install documentation.
 
 #### Troubleshooting
 
@@ -555,7 +556,7 @@ Authorized:                  TRUE
 
     Then look in the [MasterLog](#masterlog) and [SchedLog](#schedlog) for any errors.
 
-2.  **If you see “gsi@unmapped” in the “Remote Mapping” line**, this means that either your credentials are not mapped on the CE or that authentication is not set up at all. To set up authentication, refer to our [installation document](install-htcondor-ce#configuring-authentication).
+2.  **If you see “gsi@unmapped” in the “Remote Mapping” line**, this means that either your credentials are not mapped on the CE or that authentication is not set up at all. To set up authentication, refer to our [installation document](../installation/htcondor-ce.md#configuring-authentication).
 
 
 ### condor_ce_q
@@ -642,7 +643,7 @@ user@host $ condor_ce_history -name condorce.example.com -pool condorce.example.
 
 Use the `condor_ce_job_router_info` command to help troubleshoot your routes and how jobs will match to them. 
 To see all of your routes (the output is long because it combines your routes with the
-[JOB\_ROUTER\_DEFAULTS](job-router-recipes#job_router_defaults) configuration variable):
+[JOB\_ROUTER\_DEFAULTS](../batch-system-integration.md#job_router_defaults) configuration variable):
 
 ``` console
 root@host # condor_ce_job_router_info -config
@@ -699,9 +700,9 @@ root@host # condor_ce_job_router_info -match-jobs -ignore-prior-routing -jobads 
         target.RoutedBy isnt "htcondor-ce")
 
 
-    Both routes evaluate to `true` for the job’s ClassAd because it contained `osgTestPBS = true`. Make sure your routes are mutually exclusive, otherwise you may have jobs routed incorrectly! See the [job route configuration page](job-router-recipes) for more details.
+    Both routes evaluate to `true` for the job’s ClassAd because it contained `osgTestPBS = true`. Make sure your routes are mutually exclusive, otherwise you may have jobs routed incorrectly! See the [job route configuration page](../batch-system-integration.md) for more details.
 
-3.  **If it is unclear why jobs are matching a route:** wrap the route's requirements expression in [debug()](job-router-recipes#debugging-routes) and check the [JobRouterLog](#jobrouterlog) for more information.
+3.  **If it is unclear why jobs are matching a route:** wrap the route's requirements expression in [debug()](../batch-system-integration.md#debugging-routes) and check the [JobRouterLog](#jobrouterlog) for more information.
 
 
 ### condor_ce_router_q
@@ -1073,7 +1074,7 @@ This log is a good place to check if experiencing connectivity issues with HTCon
 ### Messages log
 
 The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the [authentication setup](install-htcondor-ce#configuring-authentication), the errors may
+If there are issues with the [authentication setup](../installation/htcondor-ce.md#configuring-authentication), the errors may
 appear here.
 
 - Location: `/var/log/messages`
@@ -1130,7 +1131,6 @@ Reference
 
 Here are some other HTCondor-CE documents that might be helpful:
 
--   [HTCondor-CE overview and architecture](htcondor-ce-overview)
--   [Installing HTCondor-CE](install-htcondor-ce)
--   [Configuring HTCondor-CE job routes](job-router-recipes)
--   [Submitting jobs to HTCondor-CE](submit-htcondor-ce)
+-   [HTCondor-CE overview and architecture](../overview.md)
+-   [Installing HTCondor-CE](../installation/htcondor-ce.md)
+-   [Configuring HTCondor-CE job routes](../batch-system-integration.md)

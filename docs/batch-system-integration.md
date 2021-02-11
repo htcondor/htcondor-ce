@@ -289,7 +289,7 @@ JOB_ROUTER_ENTRIES @=jre
 
 ### Setting a default…
 
-This section outlines how to set default job limits, memory, cores, and maximum walltime. For an example on how users can override these defaults, consult [this document](submit-htcondor-ce#route-defaults).
+This section outlines how to set default job limits, memory, cores, and maximum walltime. For an example on how users can override these defaults, consult [this document](remote-job-submission.md#submit-the-job).
 
 #### Maximum number of jobs
 
@@ -683,7 +683,7 @@ This results in the following being appended to the script that gets submitted t
 Getting Help
 ------------
 
-If you have any questions or issues with configuring job routes, please [contact us](#contact-us) for assistance.
+If you have any questions or issues with configuring job routes, please [contact us](index.md#contact-us) for assistance.
 
 Reference
 ---------
@@ -889,8 +889,6 @@ ATLAS BNL T1, they are using an HTCondor batch system. Here are some things to n
 -   There is a difference between `Requirements` and `set_requirements`.
     The `Requirements` attribute matches *incoming* jobs to specific routes while the `set_requirements` sets the
     `Requirements` attribute on the *routed* job, which confines which machines that the routed job can land on.
-
-Source: <http://www.usatlas.bnl.gov/twiki/bin/view/Admins/HTCondorCE.html>
 
 ```
 JOB_ROUTER_ENTRIES @=jre

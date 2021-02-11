@@ -27,7 +27,7 @@ user@host $ voms-proxy-init
 ### Using HTCondor-CE tools
 
 There are two HTCondor-CE tools that allow users to test the functionality of their HTCondor-CE:
-[condor\_ce\_trace](troubleshoot-htcondor-ce#condor_ce_trace) and [condor\_ce\_run](troubleshoot-htcondor-ce#condor_ce_run).
+[condor\_ce\_trace](troubleshooting/troubleshooting.md#condor_ce_trace) and [condor\_ce\_run](troubleshooting/troubleshooting.md#condor_ce_run).
 The former is the preferred tool as it provides useful feedback if failure occurs while the latter is simply an
 automated submission tool.
 These commands may be run from any host that has `htcondor-ce-client` installed, which you may wish to do if you are
@@ -45,7 +45,7 @@ user@host $ condor_ce_trace --debug condorce.example.com
 
 Replacing `condorce.example.com` with the hostname of the CE you wish to test.
 On success, you will see `Job status: Completed` and the environment of the job on the worker node it landed on.
-If you do not get the expected output, refer to the [troubleshooting guide](troubleshoot-htcondor-ce#condor_ce_trace).
+If you do not get the expected output, refer to the [troubleshooting guide](troubleshooting/troubleshooting.md#condor_ce_trace).
 
 ##### Requesting resources
 
@@ -84,7 +84,7 @@ user@host $ condor_ce_run -r condorce.example.com:9619 /bin/env
 Replacing `condorce.example.com` with the hostname of the CE you wish to test.
 The command will not return any output until it completes: When it does you will see the environment of the job on the
 worker noded it landed on.
-If you do not get the expected output, refer to the [troubleshooting guide](troubleshoot-htcondor-ce#condor_ce_run).
+If you do not get the expected output, refer to the [troubleshooting guide](troubleshooting/troubleshooting.md#condor_ce_run).
 
 ### Using a submit file...
 
@@ -284,7 +284,7 @@ If a user submitted their job with `+foo = bar` in their submit file, the job wo
 
 ### Route defaults
 
-[Route defaults](job-router-recipes#setting-a-default) can be set for batch system queue, maximum memory, number of
+[Route defaults](batch-system-integration.md#setting-a-default) can be set for batch system queue, maximum memory, number of
 cores to request, and maximum walltime.
 The submitting user can override any of these by setting the corresponding [attribute](#job-attributes) in their job.
 
@@ -342,17 +342,17 @@ If there are issues contacting the CE, you will see error messages about a 'Down
 ```
 
 This indicates a communication issue with your CE that can be diagnosed with
-[condor\_ce\_ping](troubleshoot-htcondor-ce#condor_ce_ping).
+[condor\_ce\_ping](troubleshooting/troubleshooting.md#condor_ce_ping).
 
 Reference
 ---------
 
 Here are some other HTCondor-CE documents that might be helpful:
 
--   [HTCondor-CE overview and architecture](htcondor-ce-overview)
--   [Installing HTCondor-CE](install-htcondor-ce)
--   [Configuring HTCondor-CE job routes](job-router-recipes)
--   [The HTCondor-CE troubleshooting guide](troubleshoot-htcondor-ce)
+-   [HTCondor-CE overview and architecture](overview.md)
+-   [Installing HTCondor-CE](installation/htcondor-ce.md)
+-   [Configuring HTCondor-CE job routes](batch-system-integration.md)
+-   [The HTCondor-CE troubleshooting guide](troubleshooting/troubleshooting.md)
 
 ### Job attributes
 
