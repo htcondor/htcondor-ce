@@ -10,22 +10,23 @@ Managing HTCondor-CE services
 In addition to the HTCondor-CE job gateway service itself, there are a number of supporting services in your installation.
 The specific services are:
 
-| Software                     | Service name                                |
-|:-----------------------------|:--------------------------------------------|
-| Fetch CRL                    | `fetch-crl-boot` and `fetch-crl-cron`       |
-| Your batch system            | `condor` or `pbs_server` or …               |
-| HTCondor-CE                  | `condor-ce`                                 |
-| **(Optional)** APEL uploader | `condor-ce-apel` and `condor-ce-apel.timer` |
+| Software                               | Service name                          |
+|:---------------------------------------|:--------------------------------------|
+| Fetch CRL                              | `fetch-crl-boot` and `fetch-crl-cron` |
+| Your batch system                      | `condor` or `pbs_server` or …         |
+| HTCondor-CE                            | `condor-ce`                           |
+| **(Optional)** APEL uploader           | `condor-ce-apel`                      |
+| **(Optional, EL7-only)** APEL uploader | `condor-ce-apel.timer`                |
 
 Start and enable the services in the order listed and stop them in reverse order.
 As a reminder, here are common service commands (all run as `root`):
 
-| To...                                   | On EL7, run the command...                    |
-| :-------------------------------------- | :-------------------------------------------- |
-| Start a service                         | `systemctl start <SERVICE-NAME>`              |
-| Stop a  service                         | `systemctl stop <SERVICE-NAME>`               |
-| Enable a service to start on boot       | `systemctl enable <SERVICE-NAME>`             |
-| Disable a service from starting on boot | `systemctl disable <SERVICE-NAME>`            |
+| To...                                   | On EL6, run the command...                | On EL7, run the command...                    |
+| :-------------------------------------- | :---------------------------------------- | :-------------------------------------------- |
+| Start a service                         | `service <SERVICE-NAME> start`            | `systemctl start <SERVICE-NAME>`              |
+| Stop a  service                         | `service <SERVICE-NAME> stop`             | `systemctl stop <SERVICE-NAME>`               |
+| Enable a service to start on boot       | `chkconfig <SERVICE-NAME> on`             | `systemctl enable <SERVICE-NAME>`             |
+| Disable a service from starting on boot | `chkconfig <SERVICE-NAME> off`            | `systemctl disable <SERVICE-NAME>`            |
 
 Validating HTCondor-CE
 ----------------------

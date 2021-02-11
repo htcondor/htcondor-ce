@@ -1,5 +1,5 @@
-HTCondor-CE 4 and 5
-===================
+HTCondor-CE 3
+=============
 
 The [HTCondor-CE](overview) software is a *Compute Entrypoint* (CE) based on [HTCondor](http://htcondor.org) for sites
 that are part of a larger computing grid

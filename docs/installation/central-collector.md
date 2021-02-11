@@ -225,4 +225,4 @@ As a reminder, here are common service commands (all run as `root`):
 Getting Help
 ------------
 
-If you have any questions or issues with the installation process, please [contact us](/#contact-us) for assistance.
+If you have any questions or issues with the installation process, please [contact us](../index.md#contact-us) for assistance.

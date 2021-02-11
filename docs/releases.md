@@ -21,7 +21,7 @@ As such, upgrades from older versions of HTCondor-CE may require manual interven
         ENABLE_JOB_RETRIES = True
 
 - **Simplified remote CE requirements format:**
-  [remote CE requirements](/batch-system-integration#setting-batch-system-directives) are a way to specify batch system
+  [remote CE requirements](batch-system-integration.md#setting-batch-system-directives) are a way to specify batch system
   directives that aren't directly supported in the job router for non-HTCondor batch systems.
   In the past, specifying these directives were often quite complicated. For example, a snippet from an example job
   route:
@@ -109,7 +109,7 @@ This release also includes the following bug-fixes:
   variables for resultant batch system jobs.
 - **Simplified APEL configuration**: HTCondor-CE provides appropriate default configuration for its APEL scripts so
   administrators only need to configure their HTCondor worker nodes as well as the APEL parser, client, and SSM.
-  Details can be found in the [documentation](/installation/htcondor-ce#uploading-accounting-records-to-apel).
+  Details can be found in the [documentation](installation/htcondor-ce.md#uploading-accounting-records-to-apel).
 
 This release also includes the following bug-fixes:
 
@@ -128,7 +128,7 @@ HTCondor batch systems ([#245](https://github.com/htcondor/htcondor-ce/issues/24
 
 ### 4.0.0 ###
 
-[This release]((https://github.com/htcondor/htcondor-ce/releases/tag/v4.0.0)) includes the following new features:
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.0.0) includes the following new features:
 
 - **SciTokens support** if using an HTCondor version that supports SciTokens (e.g. the OSG-distributed HTCondor 8.9.2).
 - **Disabled job retries by default** since most jobs submitted through HTCondor-CEs are actually resource requests
@@ -143,7 +143,7 @@ HTCondor batch systems ([#245](https://github.com/htcondor/htcondor-ce/issues/24
   [FS authentication](https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#file-system-authentication)
   between its own daemons instead of GSI.
 - **Simplified remote CE requirements format:**
-  [Remote CE requirements](/batch-system-integration#setting-batch-system-directives)
+  [Remote CE requirements](batch-system-integration.md#setting-batch-system-directives)
   are a way to specify batch system directives that aren't directly supported in the job router for non-HTCondor batch systems.
   In the past, specifying these directives were often quite complicated. For example, a snippet from an example job route:
 
@@ -172,4 +172,4 @@ Getting Help
 ------------
 
 If you have any questions about the release process or run into issues with an upgrade, please
-[contact us](/#contact-us) for assistance.
+[contact us](index.md#contact-us) for assistance.

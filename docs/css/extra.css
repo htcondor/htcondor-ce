@@ -1,0 +1,7 @@
+.md-tabs {
+    background-color: #303fa1;
+}
+
+.md-tabs .md-tabs--active {
+    background-color: #4051b5;
+}

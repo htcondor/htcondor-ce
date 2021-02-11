@@ -311,9 +311,9 @@ The most common cases for this behavior are as follows:
 
 - **The job does not match any job routes:**
   use [condor\_ce\_job\_router\_info](#condor_ce_job_router_info) to see why your idle job does not match any
-  [routes](/batch-system-integration#how-job-routes-are-constructed).
+  [routes](../batch-system-integration.md#how-job-routes-are-constructed).
 - **The route(s) that the job matches to are full:**
-  See [limiting the number of jobs](/batch-system-integration#limiting-the-number-of-jobs).
+  See [limiting the number of jobs](../batch-system-integration.md#limiting-the-number-of-jobs).
 - **The job router is throttling submission to your batch system due to submission failures:**
   See the HTCondor manual for [FailureRateThreshold](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958).
   Check for errors in the [JobRouterLog](#jobrouterlog) or [GridmanagerLog](#gridmanagerlog) for HTCondor and
@@ -513,7 +513,8 @@ To disable this feature on your CE, consult
 
 ### condor_ce_submit
 
-See [this documentation](../remote-job-submission.md) for details
+See the [OSG documentation for submitting to HTCondor-CE](https://opensciencegrid.org/docs/compute-element/submit-htcondor-ce/)
+for details.
 
 ### condor_ce_ping
 
@@ -735,7 +736,7 @@ user@host $ condor_ce_status -any
 !!! note ""Missing" Worker Nodes"
     An HTCondor-CE will not show any worker nodes (e.g. `Machine` entries in the `condor_ce_status -any` output) if
     it does not have any running GlideinWMS pilot jobs.
-    This is expected since HTCondor-CE only forwards incoming pilot jobs to your batch system and does not match jobs to
+    This is expected since HTCondor-CE only forwards incoming grid jobs to your batch system and does not match jobs to
     worker nodes.
 
 #### Troubleshooting
@@ -1133,4 +1134,3 @@ Here are some other HTCondor-CE documents that might be helpful:
 -   [HTCondor-CE overview and architecture](../overview.md)
 -   [Installing HTCondor-CE](../installation/htcondor-ce.md)
 -   [Configuring HTCondor-CE job routes](../batch-system-integration.md)
--   [Submitting jobs to HTCondor-CE](../remote-job-submission.md)
