@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.0.0
-Release: 0.rc2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -561,6 +561,18 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-1
+- Add Python 3 and EL8 support (HTCondor-13)
+- Whole node jobs (HTCondor batch systems only) now make use of GPUs (HTCONDOR-103)
+- Added `USE_CE_HOME_DIR` configuration variable (default: `False`) to allow users to enable setting `$HOME` in the
+  routed job's environment based on the HTCondor-CE user's home directory
+- HTCondor-CE Central Collectors now prefer GSI over SSL authentication (HTCONDOR-237)
+- HTCondor-CE registry now validates the value of submitted client codes (HTCONDOR-241)
+- Automatically remove CE jobs that exceed their `maxWalltime` (if defined) or the configuration value of
+  `ROUTED_JOB_MAX_TIME` (default: 4320 sec/72 hrs)
+- Remove circular HTCondor-CE View configuration definition (HTCONDOR-161)
+- Replace htcondor-ce package requirement with python2-condor for htcondor-ce-bdii
+
 * Wed Jan 27 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-0.rc1
 - Remove unused deps from the central collector packaging
 
