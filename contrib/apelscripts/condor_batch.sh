@@ -32,8 +32,7 @@ safe_config_val SCALING_ATTR APEL_SCALING_ATTR
 safe_config_val BATCH_HOST APEL_BATCH_HOST
 
 TZ=GMT condor_history -constraint "$CONSTR" \
-    -format "%s" clusterId \
-    -format ".%s_${BATCH_HOST}|" ProcId \
+    -format "%s|" GlobalJobId \
     -format "%s|" Owner \
     -format "%d|" RemoteWallClockTime \
     -format "%d|" RemoteUserCpu \
