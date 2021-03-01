@@ -11,7 +11,7 @@
 ###############################################################################
 
 # Place local authentication mapping customizations
-# in /etc/condor-ce/config.d
+# in /etc/condor-ce/mapfiles.d
 @include /etc/condor-ce/mapfiles.d/
 
 # Default mappings - DO NOT EDIT!
