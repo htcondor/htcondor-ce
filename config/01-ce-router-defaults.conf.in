@@ -103,3 +103,196 @@ SCHEDD_ATTRS = $(SCHEDD_ATTRS) HTCondorCEVersion grid_resource
 #
 MERGE_JOB_ROUTER_DEFAULT_ADS=True
 JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS_GENERATED)
+
+
+#################################
+# Default Job Router Transforms #
+#################################
+
+JOB_ROUTER_PRE_ROUTE_TRANSFORMS = Base Cleanup OrigRequests
+JOB_ROUTER_POST_ROUTE_TRANSFORMS = Cpus Gpus Memory Queue BatchRuntime CERequirements OnExitHold
+
+JOB_ROUTER_TRANSFORM_Base @=jrt
+    # Job Router special values
+    MaxIdleJobs                    = 2000
+    MaxJobs                        = $(CONDORCE_MAX_JOBS)
+    # Always set the following routed job attributes
+    SET RoutedJob                  True
+    SET Requirements               True
+
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_Cleanup @=jrt
+    # If the batch condor job is removed then the CE will resubmit the
+    # job and we want to void that
+    DELETE PeriodicRemove
+    DELETE TotalSubmitProcs
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_OrigRequests @=jrt
+    # Copy original, incoming job attributes for use in post transforms
+    COPY /^Request.+$/             orig_\0
+    COPY /^OnExitHold.*$/          orig_\0
+    COPY BatchRuntime              orig_BatchRuntime
+    COPY environment               orig_environment
+
+    # Support whole node job requests against HTCondor pools if the source job specifies 'WantWholeNode = True'
+    # 'if' can't handle complex expressions yet so we evaluate it here for use in post-transforms
+    EVALMACRO test_want_whole_node $(MY.WantWholeNode : False)
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_Cpus @=jrt
+    # Outside of the HTCondor WholeNodeJobs case, set RequestCpus to one of the following, in order:
+    # 1. 'xcount' from the source job
+    # 2. RequestCpus from the source job
+    # 3. default_xcount from the job route
+    # 4. 1
+    if $(test_want_whole_node)
+        SET JOB_GLIDEIN_Cpus       "$$(MY.TotalCpus ?: JobCpus)"
+        # MATCH_EXP_JOB_GLIDEIN_Cpus is based on the value of JOB_GLIDEIN_Cpus once the routed job is matched to an
+        # HTCondor slot
+        SET GlideinCpusIsGood      int(MATCH_EXP_JOB_GLIDEIN_Cpus ?: "0") isnt error
+        # Also used by JobGpus and JobMemory
+        SET JobIsRunning           (JobStatus =!= 1) && (JobStatus =!= 5) && GlideinCpusIsGood
+        SET JobCpus                JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Cpus) : OriginalCpus
+        SET RequestCpus            TARGET.TotalCpus ?: JobCpus
+    endif
+
+    EVALMACRO test_xcount $(MY.xcount : 0) > 1
+    if $(test_xcount)
+        cpus = $(MY.xcount)
+    else
+        EVALMACRO test_orig_RequestCpus $(MY.orig_RequestCpus : 0) > 1
+        if $(test_orig_RequestCpus)
+            cpus = $(MY.orig_RequestCpus)
+         else
+            cpus = $(default_xcount)
+         endif
+    endif
+
+    EVALSET OriginalCpus           $(cpus : 1)
+    EVALSET remote_SMPGranularity  $(cpus : 1)
+    EVALSET remote_NodeNumber      $(cpus : 1)
+
+    DEFAULT JobIsRunning           (JobStatus =!= 1) && (JobStatus =!= 5)
+    DEFAULT JobCpus                OriginalCpus
+    DEFAULT RequestCpus            OriginalCpus
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_Gpus @=jrt
+    # Request GPUs for whole node jobs (HTCONDOR-103)
+    # If a whole node job requests GPUs and is matched to a machine with GPUs then set the job's RequestGPUs to all the
+    # GPUs on that machine
+    if $(test_want_whole_node)
+        SET JOB_GLIDEIN_GPUs       "$$(MY.TotalGPUs ?: JobGPUs)"
+        # MATCH_EXP_JOB_GLIDEIN_GPUs is based on the value of JOB_GLIDEIN_GPUs once the routed job is matched to an
+        # HTCondor slot
+        SET GlideinGPUsIsGood      int(MATCH_EXP_JOB_GLIDEIN_GPUs ?: "0") isnt error
+        SET JobGPUs                JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_GPUs) : OriginalGPUs
+        SET RequestGPUs            (TARGET.TotalGPUs > 0) ? TotalGPUs: JobGPUs
+    endif
+
+    EVALSET OriginalGPUs           $(MY.orig_RequestGPUs)
+    DEFAULT RequestGPUs            OriginalGPUs
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_Memory @=jrt
+    # Outside of the HTCondor WholeNodeJobs case, set RequestCpus to one of the following, in order:
+    # 1. 'maxMemory' from the source job if it's positive
+    # 2. RequestMemory from the source job
+    # 3. default_MaxMemory from the job route
+    # 4. 2000
+    if $(test_want_whole_node)
+        SET JOB_GLIDEIN_Memory     "$$(MY.TotalMemory ?: 0)"
+        SET JobMemory              JobIsRunning ? int(MATCH_EXP_JOB_GLIDEIN_Memory)*95/100 : OriginalMemory
+        SET RequestMemory          TARGET.TotalMemory ? TotalMemory*95/100 : JobMemory
+    endif
+
+    EVALMACRO test_maxmemory $(MY.maxMemory : 0) > 1
+    if $(test_maxmemory)
+        mem = $(MY.maxMemory)
+    else
+        EVALMACRO test_orig_RequestMemory $(MY.orig_RequestMemory : 0) > 1
+        if $(test_orig_RequestMemory)
+            mem = $(MY.orig_RequestMemory)
+         else
+            mem = $(default_maxMemory)
+         endif
+    endif
+
+    EVALSET OriginalMemory         $(mem : 2000)
+    EVALSET remote_OriginalMemory  $(mem : 2000)
+
+    DEFAULT JobMemory              OriginalMemory
+    DEFAULT RequestMemory          OriginalMemory
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_Queue @=jrt
+    # Set the remote batch queue to one of the following, in order:
+    # 1. 'batch_queue' from the source job
+    # 2. 'queue' from the source job
+    # 3. 'default_queue' from the route
+    # 4. Empty string
+    EVALSET remote_queue $(MY.batch_queue) ?: \
+                           $(MY.queue) ?: \
+                           "$(default_queue)"
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_BatchRuntime @=jrt
+    # 'BatchRuntime' is in seconds but admins configure 'default_maxWallTime' and 'ROUTED_JOB_MAX_TIME' and remote
+    # submitters set 'maxWallTime' in minutes. Remote submitters set 'BatchRuntime' in minutes
+    # Set the remote batch runtime used by non-HTCondor batch systems to one of the following, in order:
+    # 1. 'maxWalltime' (seconds) from the source job
+    # 2. 'BatchRuntime' (minutes) from the source job
+    # 3. 'default_maxWallTime' (seconds) from the route
+    # 4. 'ROUTED_JOB_MAX_TIME' (minutes) from the config
+    def_walltime = 60*$(ROUTED_JOB_MAX_TIME)
+    if defined default_maxWallTime
+        def_walltime = 60*$(default_maxWallTime)
+    endif
+
+    if defined MY.orig_BatchRuntime
+        def_walltime = orig_BatchRuntime
+    endif
+
+    SET BatchRuntime (60*MY.maxWallTime) ?: $(def_walltime)
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_CERequirements @=jrt
+    SET CondorCE 1
+
+    ce_reqs = "CondorCE"
+    if defined default_CERequirements
+        ce_reqs = $(default_CERequirements),$(ce_reqs)
+    endif
+
+    EVALSET CERequirements $(ce_reqs)
+@jrt
+
+
+JOB_ROUTER_TRANSFORM_OnExitHold @=jrt
+    SET CondorCE_OnExitHold            ((MY.minWalltime isnt undefined && MY.RemoteWallClockTime isnt undefined) ? \
+                                            (MY.RemoteWallClockTime < 60*MY.minWallTime) : \
+                                            False)
+
+    EVALMACRO test_orig_OnExitHold      $(MY.orig_OnExitHold : False)
+
+    if $(test_orig_OnExitHold)
+        SET CondorCE_OnExitHoldReason   "The on_exit_hold expression ($(orig_OnExitHold)) evaluated to TRUE."
+        SET OnExitHoldSubcode           MY.orig_OnExitHoldSubcode ?: 1
+        SET OnExitHoldReason            MY.orig_OnExitHoldReason ?: MY.CondorCE_OnExitHoldReason
+    endif
+
+    SET OnExitHold                      (MY.orig_OnExitHold ?: False) || MY.CondorCE_OnExitHold
+    DEFAULT CondorCE_OnExitHoldReason   "The job's wall clock time $(MY.RemoteWallClockTime/60) min, is less than the minimum specified by the job ($(minWalltime))"
+    DEFAULT OnExitHoldSubcode           42
+    DEFAULT OnExitHoldReason            MY.CondorCE_OnExitHold ? MY.CondorCE_OnExitHoldReason : "Job held for unknown reason."
+@jrt

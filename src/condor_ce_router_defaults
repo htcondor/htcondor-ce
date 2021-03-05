@@ -6,6 +6,31 @@ import pwd
 import classad
 from collections import OrderedDict
 
+JOB_TRANSFORM_DEFAULTS = """
+JOB_ROUTER_TRANSFORM_Env @=jt
+    default_env = @advertise_pilots@
+    if $(USE_CE_HOME_DIR)
+        EVALMACRO use_ce_home userHome(Owner, "/")
+        default_env = $(default_env) HOME=$(use_ce_home)
+    endif
+
+    SET osg_environment @osg_environment@
+    EVALSET environment mergeEnvironment("$(default_env)", \
+                                         osg_environment, \
+                                         orig_environment, \
+                                         $(CONDORCE_PILOT_JOB_ENV), \
+                                         $(default_pilot_job_env))
+@jt
+
+JOB_ROUTER_TRANSFORM_AccountingGroup @=jt
+    accounting_group_osg = @accounting_group@
+    EVALSET AccountingGroup  $(accounting_group_osg)
+@jt
+
+JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) AccountingGroup
+JOB_ROUTER_POST_ROUTE_TRANSFORMS = $(JOB_ROUTER_POST_ROUTE_TRANSFORMS) Env
+"""
+
 JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
     MaxJobs = $(CONDORCE_MAX_JOBS);
