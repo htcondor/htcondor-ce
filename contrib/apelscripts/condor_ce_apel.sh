@@ -5,7 +5,7 @@
 safe_config_val () {
     var=$1
     attr=$2
-    val=$(condor_ce_config_val $attr) ||
+    val=$(/usr/bin/condor_ce_config_val $attr) ||
     fail "Failed to retrieve CE configuration value '$attr'"
     eval "$var"='$val'
 }
