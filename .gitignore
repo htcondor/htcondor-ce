@@ -6,7 +6,6 @@ install_manifest.txt
 cmake_install.cmake
 CMakeFiles
 CMakeCache.txt
-config/01-ce-router.conf
 config/01-ce-router-defaults.conf
 src/htcondorce/*.pyc
 tmp
