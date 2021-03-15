@@ -104,6 +104,10 @@ SCHEDD_ATTRS = $(SCHEDD_ATTRS) HTCondorCEVersion grid_resource
 MERGE_JOB_ROUTER_DEFAULT_ADS=True
 JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS_GENERATED)
 
+# Use JOB_ROUTER_DEFAULTS + JOB_ROUTER_ENTRIES by default instead of
+# the new-style job router transforms (HTCONDOR-243)
+JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = True
+
 
 #################################
 # Default Job Router Transforms #
