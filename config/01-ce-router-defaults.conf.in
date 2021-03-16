@@ -92,7 +92,7 @@ ROUTED_JOB_MAX_TIME = 4320
 JOB_ROUTER_NAME = htcondor-ce
 
 # The version of the HTCondor-CE.  Useful for debugging purposes.
-HTCondorCEVersion = "@HTCONDORCE_VERSION@"
+HTCondorCEVersion = @HTCONDORCE_VERSION@
 grid_resource = strcat("condor ", ifThenElse(size("$(SCHEDD_NAME)") > 0, "$(SCHEDD_NAME)", "$(FULL_HOSTNAME)"), " ", "$(COLLECTOR_HOST)")
 SCHEDD_ATTRS = $(SCHEDD_ATTRS) HTCondorCEVersion grid_resource
 
