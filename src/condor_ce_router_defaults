@@ -6,32 +6,24 @@ import pwd
 import classad
 from collections import OrderedDict
 
-JOB_TRANSFORM_DEFAULTS = """
-JOB_ROUTER_TRANSFORM_Env @=jt
-    default_env = @advertise_pilots@
+JOB_ROUTER_CONFIG = """JOB_ROUTER_TRANSFORM_Env @=jrt
+    default_env = {advertise_pilots}
     if $(USE_CE_HOME_DIR)
         EVALMACRO use_ce_home userHome(Owner, "/")
         default_env = $(default_env) HOME=$(use_ce_home)
     endif
 
-    SET osg_environment @osg_environment@
+    SET osg_environment {osg_environment}
     EVALSET environment mergeEnvironment("$(default_env)", \
                                          osg_environment, \
                                          orig_environment, \
                                          $(CONDORCE_PILOT_JOB_ENV), \
                                          $(default_pilot_job_env))
-@jt
+@jrt
 
-JOB_ROUTER_TRANSFORM_AccountingGroup @=jt
-    accounting_group_osg = @accounting_group@
-    EVALSET AccountingGroup  $(accounting_group_osg)
-@jt
-
-JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) AccountingGroup
 JOB_ROUTER_POST_ROUTE_TRANSFORMS = $(JOB_ROUTER_POST_ROUTE_TRANSFORMS) Env
-"""
 
-JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
+JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
     MaxJobs = $(CONDORCE_MAX_JOBS);
     /* by default, accept all jobs */
@@ -48,12 +40,12 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
 
     /* Set the environment */
     copy_environment = "orig_environment";
-    set_osg_environment = "@osg_environment@";
+    set_osg_environment = "{osg_environment}";
     eval_set_environment = mergeEnvironment(join(" ",
                                                  $(USE_CE_HOME_DIR) =?= True ?
                                                      strcat("HOME=", userHome(Owner, "/")) :
                                                      "",
-                                                 @advertise_pilots@),
+                                                 {advertise_pilots}),
                                             osg_environment,
                                             orig_environment,
                                             $(CONDORCE_PILOT_JOB_ENV),
@@ -183,11 +175,27 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                                                    orig_OnExitHoldSubCode,
                                                    1),
                                        42);
-
-    set_AccountingGroupOSG = @accounting_group@;
-    eval_set_AccountingGroup = AccountingGroupOSG;
   ]
   @jrd
+"""
+
+ACCOUNTING_GROUP_CONFIG = """
+JOB_ROUTER_TRANSFORM_AccountingGroup @=jrt
+    # Allow admins to set their own accounting group expressions
+    # that also include the ones set in 'AccountingGroupOSG' (SOFTWARE-2067)
+    SET AccountingGroupOSG {accounting_group}
+    SET AccountingGroup    MY.AccountingGroupOSG
+@jrt
+
+JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) AccountingGroup
+
+JOB_ROUTER_DEFAULTS_GENERATED @=jrd
+  $(JOB_ROUTER_DEFAULTS_GENERATED)
+  [
+    set_AccountingGroupOSG = {accounting_group};
+    eval_set_AccountingGroup = AccountingGroupOSG;
+  ]
+@jrd
 """
 
 osg_environment_files = ["/var/lib/osg/osg-job-environment.conf",
@@ -340,15 +348,14 @@ def main():
     # Construct HTCondor-formatted environment string
     env_string = " ".join(["%s=%s" % (i[0], i[1]) for i in osg_env.items()])
 
-    accounting_group_str = set_accounting_group()
+    advertise_pilots = advertise_pilots_value()
+    defaults = JOB_ROUTER_CONFIG.format(osg_environment=env_string, advertise_pilots=advertise_pilots)
 
-    defaults = JOB_ROUTER_DEFAULTS.replace("@osg_environment@", env_string)
-    defaults = defaults.replace("@advertise_pilots@", advertise_pilots_value())
+    accounting_group_expr = set_accounting_group()
+    if accounting_group_expr:
+        defaults += ACCOUNTING_GROUP_CONFIG.format(accounting_group=accounting_group_expr)
 
-    try:
-        print(defaults.replace("@accounting_group@", accounting_group_str))
-    except TypeError:  # if no accounting group mappings, remove them from the classad
-        print(re.sub(r'.*AccountingGroupOSG.*\n', '', defaults))
+    print(defaults)
 
 
 if __name__ == "__main__":
