@@ -66,7 +66,7 @@ REMOVE_CLAUSE_4 = (JobUniverse == 5 && \
                        maxWalltime is undefined ? (BatchRuntime is undefined ? $(ROUTED_JOB_MAX_TIME)*60 : BatchRuntime) : maxWalltime*60 )
 REMOVE_REASON_4 = strcat("job exceeded allowed walltime: ", \
                          maxWalltime is undefined ? (BatchRuntime is undefined ? $(ROUTED_JOB_MAX_TIME)*60 : BatchRuntime) : maxWalltime*60, \
-                         "min")
+                         " minutes.")
 
 SYSTEM_PERIODIC_REMOVE =  $(REMOVE_CLAUSE_1) || \
                           $(REMOVE_CLAUSE_2) || \
