@@ -19,9 +19,6 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: cmake
 BuildRequires: openssl
 BuildRequires: python-srpm-macros
 BuildRequires: python-rpm-macros
@@ -208,8 +205,7 @@ Conflicts: %{name}
 %setup -q
 
 %build
-%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python3_sitelib}
-make %{?_smp_mflags}
+make install %{?_smp_mflags} DESTDIR=$RPM_BUILD_ROOT
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
