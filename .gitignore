@@ -1,6 +1,5 @@
 *.tar.gz
 src/.*
 release_dir
-config/01-ce-router-defaults.conf
 src/htcondorce/*.pyc
 tmp
