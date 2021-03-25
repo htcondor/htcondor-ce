@@ -200,16 +200,17 @@ Conflicts: %{name}
 
 %define plugins_dir %{_datadir}/condor-ce/ceview-plugins
 
+%if 0%{?rhel} >= 8
+  %define __python /usr/libexec/platform-python
+%else
+  %define __python /usr/bin/python3
+%endif
 
 %prep
 %setup -q
 
-%build
-make install %{?_smp_mflags} DESTDIR=$RPM_BUILD_ROOT
-
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/%{plugins_dir}
+make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
 
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
