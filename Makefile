@@ -276,6 +276,9 @@ entrypoint: client _view
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_LIB_DIR)/systemd/system/		$(CE_SERVICE_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_LIB_DIR)/tmpfiles.d/		$(CE_TMPFILE_FILES)
 
+	sed -i -e 's/@HTCONDORCE_VERSION@/$(VERSION)/g' \
+		$(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/config.d/01-ce-router-defaults.conf
+
 collector: client _view
 	@echo ""
 	@echo "Installing Central Collector files"
