@@ -38,8 +38,7 @@ install(PROGRAMS
   src/gratia_cleanup.py
   src/condor_ce_create_password
   contrib/apelscripts/condor_ce_apel.sh
-  contrib/apelscripts/condor_blah.sh
-  contrib/apelscripts/condor_batch.sh
+  contrib/apelscripts/condor_batch_blah.sh
   contrib/bdii/htcondor-ce-provider
   contrib/bosco/bosco-cluster-remote-hosts.py
   contrib/bosco/bosco-cluster-remote-hosts.sh
