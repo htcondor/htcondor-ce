@@ -141,6 +141,7 @@ CE_DEFAULT_CONFIG_FILES := \
 	contrib/apelscripts/50-ce-apel-defaults.conf
 
 CE_CONDOR_CONFIG_FILES := \
+	config/50-condor-ce-defaults.conf \
 	contrib/apelscripts/50-condor-apel.conf \
 	contrib/bdii/50-ce-bdii-defaults.conf \
 	contrib/bdii/99-ce-bdii.conf
