@@ -6,7 +6,7 @@ import pwd
 import classad
 from collections import OrderedDict
 
-JOB_ROUTER_CONFIG = """JOB_ROUTER_TRANSFORM_Env @=jrt
+JOB_ROUTER_CONFIG = r"""JOB_ROUTER_TRANSFORM_Env @=jrt
     default_env = {advertise_pilots}
     if $(USE_CE_HOME_DIR)
         EVALMACRO use_ce_home userHome(Owner, "/")
