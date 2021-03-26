@@ -106,7 +106,9 @@ CE_SHARE_FILES := \
 	src/local-wrapper \
 	contrib/apelscripts/condor_batch_blah.sh \
 	contrib/apelscripts/condor_ce_apel.sh \
-	contrib/bdii/htcondor-ce-provider
+	contrib/bdii/htcondor-ce-provider \
+	contrib/bosco/bosco-cluster-remote-hosts.py \
+	contrib/bosco/bosco-cluster-remote-hosts.sh
 
 CE_USER_MAP_FILES := \
 	config/uid_acct_group.map \
