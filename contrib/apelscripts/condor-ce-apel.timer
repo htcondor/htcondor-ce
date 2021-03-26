@@ -4,7 +4,7 @@ After=network-online.target
 
 [Timer]
 OnBootSec=5min
-OnUnitActiveSec=24h
+OnUnitActiveSec=1h
 RandomizedDelaySec=3min
 Unit=condor-ce-apel.service
 
