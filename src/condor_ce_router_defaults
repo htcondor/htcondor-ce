@@ -189,6 +189,8 @@ JOB_ROUTER_TRANSFORM_AccountingGroup @=jrt
 
 JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) AccountingGroup
 
+# Also append the accounting group routing rules to the old job router syntax
+# since it's still the default syntax
 JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   $(JOB_ROUTER_DEFAULTS_GENERATED)
   [
