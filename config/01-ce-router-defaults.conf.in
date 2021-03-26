@@ -253,20 +253,21 @@ JOB_ROUTER_TRANSFORM_BatchRuntime @=jrt
     # 'BatchRuntime' is in seconds but admins configure 'default_maxWallTime' and 'ROUTED_JOB_MAX_TIME' and remote
     # submitters set 'maxWallTime' in minutes. Remote submitters set 'BatchRuntime' in minutes
     # Set the remote batch runtime used by non-HTCondor batch systems to one of the following, in order:
-    # 1. 'maxWalltime' (seconds) from the source job
-    # 2. 'BatchRuntime' (minutes) from the source job
-    # 3. 'default_maxWallTime' (seconds) from the route
+    # 1. 'maxWalltime' (minutes) from the source job
+    # 2. 'BatchRuntime' (seconds) from the source job
+    # 3. 'default_maxWallTime' (minutes) from the route
     # 4. 'ROUTED_JOB_MAX_TIME' (minutes) from the config
-    def_walltime = 60*$(ROUTED_JOB_MAX_TIME)
-    if defined default_maxWallTime
-        def_walltime = 60*$(default_maxWallTime)
-    endif
-
-    if defined MY.orig_BatchRuntime
+    if defined MY.maxWallTime
+        def_walltime = 60*$(MY.maxWallTime)
+    elif defined MY.org_BatchRuntime
         def_walltime = orig_BatchRuntime
+    elif defined default_maxWallTime
+        def_walltime = 60*$(default_maxWallTime)
+    else
+        def_walltime = 60*$(ROUTED_JOB_MAX_TIME)
     endif
 
-    SET BatchRuntime (60*MY.maxWallTime) ?: $(def_walltime)
+    SET BatchRuntime $(def_walltime)
 @jrt
 
 
