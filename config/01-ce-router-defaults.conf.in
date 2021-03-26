@@ -267,7 +267,7 @@ JOB_ROUTER_TRANSFORM_BatchRuntime @=jrt
         def_walltime = 60*$(ROUTED_JOB_MAX_TIME)
     endif
 
-    SET BatchRuntime $(def_walltime)
+    SET BatchRuntime $(def_walltime) ?: 259200
 @jrt
 
 
