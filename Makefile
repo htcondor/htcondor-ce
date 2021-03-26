@@ -85,8 +85,6 @@ CLIENT_DEFAULT_MAP_FILES := \
 
 CE_PYTHON_FILES         := src/htcondorce/audit_payloads.py
 
-CE_SERVICE_FILES	:= config/condor-ce.service
-
 CE_SYSCONFIG_FILES	:= config/condor-ce
 
 CE_TMPFILE_FILES	:= config/condor-ce.conf
@@ -97,10 +95,18 @@ CE_BIN_FILES := \
 	src/condor_ce_register \
 	src/condor_ce_router_q
 
+CE_SERVICE_FILES := \
+	config/condor-ce.service \
+	contrib/apelscripts/condor-ce-apel.service \
+	contrib/apelscripts/condor-ce-apel.timer
+
 CE_SHARE_FILES := \
 	src/condor_ce_router_defaults \
 	src/gratia_cleanup.py \
-	src/local-wrapper
+	src/local-wrapper \
+	contrib/apelscripts/condor_batch_blah.sh \
+	contrib/apelscripts/condor_ce_apel.sh \
+	contrib/bdii/htcondor-ce-provider
 
 CE_USER_MAP_FILES := \
 	config/uid_acct_group.map \
@@ -116,7 +122,8 @@ CE_CONFIG_FILES := \
 	config/02-ce-pbs.conf \
 	config/02-ce-sge.conf \
 	config/02-ce-slurm.conf \
-	config/03-managed-fork.conf
+	config/03-managed-fork.conf \
+	contrib/apelscripts/50-ce-apel.conf
 
 CE_DEFAULT_CONFIG_FILES := \
 	config/01-ce-audit-payloads-defaults.conf \
@@ -130,7 +137,15 @@ CE_DEFAULT_CONFIG_FILES := \
 	config/02-ce-sge-defaults.conf \
 	config/02-ce-slurm-defaults.conf \
 	config/03-managed-fork-defaults.conf \
-        config/05-ce-health-defaults.conf
+        config/05-ce-health-defaults.conf \
+	contrib/apelscripts/50-ce-apel-defaults.conf
+
+CE_CONDOR_CONFIG_FILES := \
+	contrib/apelscripts/50-condor-apel.conf \
+	contrib/bdii/50-ce-bdii-defaults.conf \
+	contrib/bdii/99-ce-bdii.conf
+
+CE_APEL_README_FILES := contrib/apelscripts/README.md
 
 # ------------------------------------------------------------------------------
 # Central Collector files
@@ -234,7 +249,7 @@ _mkdirs:
 	@echo ""
 
 	mkdir -p $(DESTDIR)/$(INSTALL_BIN_DIR)
-	mkdir -p $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/{ceview-plugins,config.d,mapfiles.d,plugins,templates}
+	mkdir -p $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/{apel,ceview-plugins,config.d,mapfiles.d,plugins,templates}
 	mkdir -p $(DESTDIR)/$(INSTALL_PYTHON_DIR)/htcondorce/static
 	mkdir -p $(DESTDIR)/$(INSTALL_WSGI_DIR)/htcondor-ce/
 
@@ -247,6 +262,7 @@ _mkdirs:
 	mkdir -p $(DESTDIR)/$(INSTALL_STATE_DIR)/{lock,log}/condor-ce/user
 	mkdir -p $(DESTDIR)/$(INSTALL_STATE_DIR)/run/condor-ce/
 
+	mkdir -p $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor/config.d/
 	mkdir -p $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/{config.d,mapfiles.d,metrics.d,passwords.d,tokens.d,webapp.tokens.d}
 	mkdir -p $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/httpd/conf.d/
 	mkdir -p $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/sysconfig
@@ -296,6 +312,7 @@ entrypoint: client _view
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/config.d/	$(CE_CONFIG_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/sysconfig/		$(CE_SYSCONFIG_FILES)
 
+	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/apel		$(CE_APEL_README_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/config.d/	$(CE_DEFAULT_CONFIG_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_PYTHON_DIR)/htcondorce/		$(CE_PYTHON_FILES)
 
