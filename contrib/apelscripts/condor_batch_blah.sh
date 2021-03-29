@@ -27,6 +27,7 @@ OUTPUT_DATETIME=`date '+%Y%m%d-%H%M'`
 
 safe_config_val HISTORY_DIR PER_JOB_HISTORY_DIR
 QUARANTINE_DIR=$HISTORY_DIR/quarantine
+mkdir -p "$QUARANTINE_DIR"
 [[ -d $QUARANTINE_DIR && -w $QUARANTINE_DIR ]] || fail "Cannot write to $QUARANTINE_DIR"
 
 CONDOR_Q_EXTRA_ARGS=(-format "\n" EMPTY)
@@ -47,14 +48,13 @@ do
 
     # Check if $file is a valid history file by looking for a ClusterId value
     # If not found, assume the file is invalid and move to quarantine folder
-    if [[ -z `condor_q -job $file -format \"%s\" ClusterId` ]]; then
-        mv $file $QUARANTINE_DIR
+    if [[ -z `condor_q -job $file -format "%s" GlobalJobId` ]]; then
+        mv "$file" "$QUARANTINE_DIR"
         continue
     fi
 
-    batch_record=`TZ=GMT condor_q -job $file \
-        -format "%s" ClusterId \
-        -format ".%s_${BATCH_HOST}|" ProcId \
+    batch_record=`TZ=GMT condor_q -job "$file" \
+        -format "%s|" GlobalJobId \
         -format "%s|" Owner \
         -format "%d|" RemoteWallClockTime \
         -format "%d|" RemoteUserCpu \
@@ -66,19 +66,18 @@ do
         -format "%d|" RequestCpus \
         "${CONDOR_Q_EXTRA_ARGS[@]}"`
     OUTPUT_FILE="$OUTPUT_DIR/batch-${OUTPUT_DATETIME}-$(hostname -s)"
-    echo $batch_record >> $OUTPUT_FILE
+    echo "$batch_record" >> "$OUTPUT_FILE"
 
-    blah_record=`TZ=GMT condor_q -job $file \
+    blah_record=`TZ=GMT condor_q -job "$file" \
         -format "\"timestamp=%s\" " 'formatTime(EnteredCurrentStatus, "%Y-%m-%d %H:%M:%S")' \
         -format "\"userDN=%s\" " x509userproxysubject \
         -format "\"userFQAN=%s\" " x509UserProxyFirstFQAN \
         -format "\"ceID=${CE_ID}\" " EMPTY \
         -format "\"jobID=%v_${CE_HOST}\" " RoutedFromJobId \
-        -format "\"lrmsID=%v" ClusterId \
-        -format ".%v_${BATCH_HOST}\" " ProcId \
+        -format "\"lrmsID=%s\" " GlobalJobId \
         -format "\"localUser=%s\"\n" Owner`
     OUTPUT_FILE="$OUTPUT_DIR/blah-${OUTPUT_DATETIME}-$(hostname -s)"
-    echo $blah_record >> $OUTPUT_FILE
+    echo "$blah_record" >> "$OUTPUT_FILE"
 
-    rm $file
+    rm "$file"
 done
