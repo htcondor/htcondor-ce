@@ -16,11 +16,6 @@ execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "from distutils.sysconfig impo
 set(PYTHON_SITELIB "${DETECTED_PYTHON_SITELIB}" CACHE PATH "Base directory for python libraries")
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/config/01-ce-router.conf.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf"
-)
-
-configure_file (
   "${PROJECT_SOURCE_DIR}/config/01-ce-router-defaults.conf.in"
   "${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router-defaults.conf"
 )
@@ -123,7 +118,7 @@ install(FILES
 install(FILES
   config/01-ce-auth.conf
   config/01-ce-collector.conf
-  ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
+  config/01-ce-router.conf
   config/01-pilot-env.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf
