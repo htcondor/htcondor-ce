@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.5.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 4.5.1
+Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -520,6 +520,10 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> 3.6-2
+- Fix an issue with an overly aggressive default SYSTEM_PERIODIC_REMOVE (HTCONDOR-350)
+- Use the GlobalJobID attribute as the APEL record lrmsID (#426)
+
 * Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 4.5.0-1
 - Whole node jobs (HTCondor batch systems only) now make use of GPUs (HTCONDOR-103)
 - Added `USE_CE_HOME_DIR` configuration variable (default: `True`) to allow users to disable setting `$HOME` in the
