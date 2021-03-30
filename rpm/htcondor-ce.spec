@@ -520,7 +520,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> 3.6-2
+* Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> - 4.5.0-2
 - Fix an issue with an overly aggressive default SYSTEM_PERIODIC_REMOVE (HTCONDOR-350)
 - Use the GlobalJobID attribute as the APEL record lrmsID (#426)
 
