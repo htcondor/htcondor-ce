@@ -299,3 +299,41 @@ JOB_ROUTER_TRANSFORM_OnExitHold @=jrt
         SET OnExitHoldReason            CondorCE_OnExitHoldReason
     endif
 @jrt
+
+CLASSAD_USER_MAPFILE_UidAGMap = /etc/condor-ce/uid.map
+# to enable the uid -> accounting_group map, the admin should add these lines to their config
+#JOB_ROUTER_CLASSAD_USER_MAP_NAMES = $(JOB_ROUTER_CLASSAD_USER_MAP_NAMES) UidAGMap
+#JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) UidAcctGroup
+
+# If the /etc/condor-ce/uid.map has a mapping for this owner, set the AcctGroup and AccountingGroup attributes
+# 
+JOB_ROUTER_TRANSFORM_UidAcctGroup @=jrt
+   EVALMACRO uid_acct_groups UserMap("UidAGMap", Owner) ?: ""
+   if defined uid_acct_groups
+       EVALSET AcctGroup UserMap("UidAGMap", Owner, AcctGroup)
+       EVALSET AccountingGroup join(".", AcctGroup, Owner)
+   endif
+@jrt
+
+CLASSAD_USER_MAPFILE_x509AGMap = /etc/condor-ce/x509.map
+# to enable the x509 -> accounting_group map, the admin should add these lines to their config
+#JOB_ROUTER_CLASSAD_USER_MAP_NAMES = $(JOB_ROUTER_CLASSAD_USER_MAP_NAMES) x509AGMap
+#JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) x509AcctGroup
+
+# If the /etc/condor-ce/x509.map has a mapping for this x509 Subject or FQAN
+# set the AcctGroup and AccountingGroup attributes
+#
+JOB_ROUTER_TRANSFORM_x509AcctGroup @=jrt
+   EVALMACRO x509_acct_groups UserMap("x509AGMap", x509UserProxySubject) ?: ""
+   if defined x509_acct_groups
+       EVALSET AcctGroup UserMap("x509AGMap", x509UserProxySubject, AcctGroup)
+       EVALSET AccountingGroup join(".", AcctGroup, Owner)
+   elif defined MY.x509UserProxyFirstFQAN
+      EVALMACRO x509_acct_groups UserMap("x509AGMap", x509UserProxyFirstFQAN) ?: ""
+      if defined x509_acct_groups
+         EVALSET AcctGroup UserMap("x509AGMap", x509UserProxyFirstFQAN, AcctGroup)
+         EVALSET AccountingGroup join(".", AcctGroup, Owner)
+      endif
+   endif
+@jrt
+
