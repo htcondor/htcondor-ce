@@ -20,7 +20,7 @@ jobs:
         run: |
           docker run --detach --env "container=docker" \
                  --name $GITHUB_SHA \
-                 --volume `pwd`:/htcondor-ce:rw \
+                 --volume "$PWD":/htcondor-ce:rw \
                  centos:centos${{ matrix.dver }} \
                  /usr/sbin/init
 
