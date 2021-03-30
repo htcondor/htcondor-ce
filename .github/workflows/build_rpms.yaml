@@ -1,9 +1,5 @@
-name: Build and upload HTCondor-CE RPMs
-on:
-  release:
-    # there seems to be contention between 'published' vs 'created' here
-    # 'published' occurs with a GitHub release
-    types: [published]
+name: Test building of HTCondor-CE RPMs
+on: [pull_request]
 
 jobs:
   build-rpms-and-upload:
@@ -24,7 +20,7 @@ jobs:
         run: |
           docker run --detach --env "container=docker" \
                  --name $GITHUB_SHA \
-                 --volume `pwd`:/htcondor-ce:rw \
+                 --volume "$PWD":/htcondor-ce:rw \
                  centos:centos${{ matrix.dver }} \
                  /usr/sbin/init
 
@@ -35,11 +31,3 @@ jobs:
                    "/htcondor-ce/tests/build_rpms.sh \
                      ${{ matrix.dver }} \
                      uw_build"
-
-      - name: Upload CHTC EL${{ matrix.dver }} RPMs
-        run: |
-          ssh-agent -a "$SSH_AUTH_SOCK" > /dev/null
-          ssh-add - <<< "${{ secrets.CI_XFER_KEY }}"
-          tests/sftp_upload.sh
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
