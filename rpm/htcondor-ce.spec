@@ -200,11 +200,7 @@ Conflicts: %{name}
 
 %define plugins_dir %{_datadir}/condor-ce/ceview-plugins
 
-%if 0%{?rhel} >= 8
-  %define __python /usr/libexec/platform-python
-%else
-  %define __python /usr/bin/python3
-%endif
+%define __python /usr/bin/python3
 
 %prep
 %setup -q
