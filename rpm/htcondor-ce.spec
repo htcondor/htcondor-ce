@@ -206,7 +206,7 @@ Requires: %{name}-client = %{version}-%{release}
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
-Requires: mod_wsgi
+Requires: python3-mod_wsgi
 
 %if 0%{?rhel} >= 8
 Requires: python3-flask

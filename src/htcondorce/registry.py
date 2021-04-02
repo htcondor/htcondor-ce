@@ -10,11 +10,11 @@ from urllib.request import urlopen
 from urllib.error import URLError
 
 from flask import Flask, Config, url_for, make_response, request
-import genshi.template
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 import subprocess
 from tools import to_str
 
-_loader = None
+_jinja_env = None
 
 TOPOLOGY_RG = "https://topology.opensciencegrid.org/rgsummary/xml"
 
@@ -139,9 +139,11 @@ def create_app(test_config = None):
     else:
         app.config.update(test_config)
 
-    global _loader
+    global _jinja_env
     template_location = app.config.get('HTCONDORCE_TEMPLATES', '/usr/share/condor-ce/templates')
-    _loader = genshi.template.TemplateLoader(template_location, auto_reload=True)
+    _jinja_env = Environment(loader=FileSystemLoader(template_location),
+                             autoescape=select_autoescape(['html', 'xml']),
+                             auto_reload=True)
 
     @app.route("/code", methods=['GET', 'POST'])
     def code():
@@ -149,73 +151,73 @@ def create_app(test_config = None):
         if request.method == 'POST':
             return code_submit()
 
-        tmpl = _loader.load('code.html')
+        tmpl = _jinja_env.get_template('code.html')
         info = {
             'pin_js': url_for('static', filename='bootstrap-pincode-input.js'),
             'pin_css': url_for('static', filename='bootstrap-pincode-input.css'),
             'code_submit': url_for('code')
         }
-        response = make_response(tmpl.generate(**info).render('html', doctype='html'))
+        response = make_response(tmpl.render(**info).encode('utf-8'))
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['Content-Security-Policy'] = "frame-ancestors 'none';"
         return response
 
     def code_submit():
         if 'code' not in request.form:
-            tmpl = _loader.load('code_submit_failure.html')
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
             info = {'info': "The code parameter is missing"}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+            return make_response(tmpl.render(**info).encode('utf-8'), 400)
         osgid = request.environ.get('OIDC_CLAIM_osgid')
         if not osgid:
-            tmpl = _loader.load('code_submit_failure.html')
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
             info = {'info': "User is not registered with the OSG"}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 401)
+            return make_response(tmpl.render(**info).encode('utf-8'), 401)
         try:
             result = fetch_tokens(request.form.get('code'), app.config)
         except CondorToolException as cte:
-            tmpl = _loader.load('code_submit_failure.html')
-            return make_response(tmpl.generate(info=str(cte)).render('html', doctype='html'), 400)
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
+            return make_response(tmpl.render(info=str(cte)).encode('utf-8'), 400)
 
         if not result:
-            tmpl = _loader.load('code_submit_failure.html')
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
             info = {'info': "Request %s is unknown" % request.form.get('code')}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+            return make_response(tmpl.render(**info).encode('utf-8'), 400)
         result = result[0]
 
         authz = result.get('LimitAuthorization')
         if authz != 'ADVERTISE_SCHEDD':
-            tmpl = _loader.load('code_submit_failure.html')
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
             info = {'info': "Token must be limited to the ADVERTISE_SCHEDD authorization"}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+            return make_response(tmpl.render(**info).encode('utf-8'), 400)
 
-        tmpl = _loader.load('code_submit_failure.html')
+        tmpl = _jinja_env.get_template('code_submit_failure.html')
         try:
             allowed_identity = osgid_to_ce(osgid)
         except TopologyError as exc:
             info = {'info': exc}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+            return make_response(tmpl.render(**info).encode('utf-8'), 400)
 
         if not allowed_identity:
             info = {'info': "OSG registration not associated with any CE"}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+            return make_response(tmpl.render(**info).encode('utf-8'), 400)
 
         if result.get("RequestedIdentity") not in [hostname + "@users.htcondor.org" for hostname in allowed_identity]:
-            tmpl = _loader.load('code_submit_failure.html')
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
             info = {'info': "Requested identity (%s) not in the list of allowed CEs (%s)" % \
                 (result.get("RequestedIdentity"), ", ".join(allowed_identity))}
-            return make_response(tmpl.generate(**info).render('html', doctype='html'), 400)
+            return make_response(tmpl.render(**info).encode('utf-8'), 400)
 
         try:
             approve_token(request.form.get('code'), app.config)
         except CondorToolException as cte:
-            tmpl = _loader.load('code_submit_failure.html')
-            return make_response(tmpl.generate(info=str(cte)).render('html', doctype='html'), 400)
+            tmpl = _jinja_env.get_template('code_submit_failure.html')
+            return make_response(tmpl.render(info=str(cte)).encode('utf-8'), 400)
 
-        tmpl = _loader.load('code_submit.html')
+        tmpl = _jinja_env.get_template('code_submit.html')
         info = {
             'info': "Request approved."
         }
-        response = make_response(tmpl.generate(**info).render('html', doctype='html'))
+        response = make_response(tmpl.render(**info).encode('utf-8'))
         return response
 
     return app
