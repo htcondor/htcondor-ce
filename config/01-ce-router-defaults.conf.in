@@ -144,7 +144,7 @@ JOB_ROUTER_TRANSFORM_OrigRequests @=jrt
 
     # Support whole node job requests against HTCondor pools if the source job specifies 'WantWholeNode = True'
     # 'if' can't handle complex expressions yet so we evaluate it here for use in post-transforms
-    EVALMACRO test_want_whole_node $(MY.WantWholeNode : False)
+    EVALMACRO test_want_whole_node $(MY.WantWholeNode:False)
 @jrt
 
 
@@ -165,11 +165,11 @@ JOB_ROUTER_TRANSFORM_Cpus @=jrt
         SET RequestCpus            TARGET.TotalCpus ?: JobCpus
     endif
 
-    EVALMACRO test_xcount $(MY.xcount : 0) > 1
+    EVALMACRO test_xcount $(MY.xcount:0) > 1
     if $(test_xcount)
         cpus = $(MY.xcount)
     else
-        EVALMACRO test_orig_RequestCpus $(MY.orig_RequestCpus : 0) > 1
+        EVALMACRO test_orig_RequestCpus $(MY.orig_RequestCpus:0) > 1
         if $(test_orig_RequestCpus)
             cpus = $(MY.orig_RequestCpus)
          else
@@ -177,9 +177,9 @@ JOB_ROUTER_TRANSFORM_Cpus @=jrt
          endif
     endif
 
-    EVALSET OriginalCpus           $(cpus : 1)
-    EVALSET remote_SMPGranularity  $(cpus : 1)
-    EVALSET remote_NodeNumber      $(cpus : 1)
+    EVALSET OriginalCpus           $(cpus:1)
+    EVALSET remote_SMPGranularity  $(cpus:1)
+    EVALSET remote_NodeNumber      $(cpus:1)
 
     DEFAULT JobIsRunning           (JobStatus =!= 1) && (JobStatus =!= 5)
     DEFAULT JobCpus                OriginalCpus
@@ -217,11 +217,11 @@ JOB_ROUTER_TRANSFORM_Memory @=jrt
         SET RequestMemory          TARGET.TotalMemory ? TotalMemory*95/100 : JobMemory
     endif
 
-    EVALMACRO test_maxmemory $(MY.maxMemory : 0) > 1
+    EVALMACRO test_maxmemory $(MY.maxMemory:0) > 1
     if $(test_maxmemory)
         mem = $(MY.maxMemory)
     else
-        EVALMACRO test_orig_RequestMemory $(MY.orig_RequestMemory : 0) > 1
+        EVALMACRO test_orig_RequestMemory $(MY.orig_RequestMemory:0) > 1
         if $(test_orig_RequestMemory)
             mem = $(MY.orig_RequestMemory)
          else
@@ -229,8 +229,8 @@ JOB_ROUTER_TRANSFORM_Memory @=jrt
          endif
     endif
 
-    EVALSET OriginalMemory         $(mem : 2000)
-    EVALSET remote_OriginalMemory  $(mem : 2000)
+    EVALSET OriginalMemory         $(mem:2000)
+    EVALSET remote_OriginalMemory  $(mem:2000)
 
     DEFAULT JobMemory              OriginalMemory
     DEFAULT RequestMemory          OriginalMemory
@@ -243,9 +243,13 @@ JOB_ROUTER_TRANSFORM_Queue @=jrt
     # 2. 'queue' from the source job
     # 3. 'default_queue' from the route
     # 4. Empty string
-    EVALSET remote_queue $(MY.batch_queue) ?: \
-                           $(MY.queue) ?: \
-                           "$(default_queue)"
+    if defined MY.batch_queue
+       EVALSET remote_queue MY.batch_queue
+    elif defined MY.queue
+       EVALSET remote_queue MY.queue
+    else
+       EVALSET remote_queue "$(default_queue)"
+    endif
 @jrt
 
 
@@ -258,46 +262,40 @@ JOB_ROUTER_TRANSFORM_BatchRuntime @=jrt
     # 3. 'default_maxWallTime' (minutes) from the route
     # 4. 'ROUTED_JOB_MAX_TIME' (minutes) from the config
     if defined MY.maxWallTime
-        def_walltime = 60*$(MY.maxWallTime)
+        SET BatchRuntime 60*maxWallTime
     elif defined MY.org_BatchRuntime
-        def_walltime = orig_BatchRuntime
+        # do nothing, BatchRuntime already set
     elif defined default_maxWallTime
-        def_walltime = 60*$(default_maxWallTime)
+        # default_maxWallTime can be an attribute reference here
+        SET BatchRuntime 60*$(default_maxWallTime)
     else
-        def_walltime = 60*$(ROUTED_JOB_MAX_TIME)
+        EVALSET BatchRuntime 60*$(ROUTED_JOB_MAX_TIME:4320)
     endif
-
-    SET BatchRuntime $(def_walltime) ?: 259200
 @jrt
 
 
 JOB_ROUTER_TRANSFORM_CERequirements @=jrt
     SET CondorCE 1
-
-    ce_reqs = "CondorCE"
-    if defined default_CERequirements
-        ce_reqs = $(default_CERequirements),$(ce_reqs)
-    endif
-
-    EVALSET CERequirements $(ce_reqs)
+    EVALSET CERequirements join(",", split("$F(default_CERequirements),CondorCE"))
 @jrt
 
 
 JOB_ROUTER_TRANSFORM_OnExitHold @=jrt
-    SET CondorCE_OnExitHold            ((MY.minWalltime isnt undefined && MY.RemoteWallClockTime isnt undefined) ? \
-                                            (MY.RemoteWallClockTime < 60*MY.minWallTime) : \
-                                            False)
+    # transform only if the route specifed a minimum walltime
+    REQUIREMENTS minWalltime isnt undefined
 
-    EVALMACRO test_orig_OnExitHold      $(MY.orig_OnExitHold : False)
-
-    if $(test_orig_OnExitHold)
-        SET CondorCE_OnExitHoldReason   "The on_exit_hold expression ($(orig_OnExitHold)) evaluated to TRUE."
-        SET OnExitHoldSubcode           MY.orig_OnExitHoldSubcode ?: 1
-        SET OnExitHoldReason            MY.orig_OnExitHoldReason ?: MY.CondorCE_OnExitHoldReason
+    SET CondorCE_OnExitHold            RemoteWallClockTime < 60*minWallTime
+    SET CondorCE_OnExitHoldSubcode     IfThenElse(CondorCE_OnExitHold ?: False, 42, 1)
+    SET CondorCE_OnExitHoldReason      IfThenElse(CondorCE_OnExitHold ?: False, \
+                                         "The job's wall clock time is less than the minimum specified by the job ($(MY.minWalltime)) min", \
+                                         "Job held for unknown reason.")
+    if defined MY.orig_OnExitHold
+        SET OnExitHold                  (orig_OnExitHold ?: False) || CondorCE_OnExitHold
+        SET OnExitHoldSubcode           IfThenElse(orig_OnExitHold ?: False, orig_OnExitHoldSubcode, CondorCE_OnExitHoldSubcode)
+        SET OnExitHoldReason            IfThenElse(orig_OnExitHold ?: False, orig_OnExitHoldReason, CondorCE_OnExitHoldReason)
+    else
+        SET OnExitHold                  CondorCE_OnExitHold
+        SET OnExitHoldSubcode           CondorCE_OnExitHoldSubcode
+        SET OnExitHoldReason            CondorCE_OnExitHoldReason
     endif
-
-    SET OnExitHold                      (MY.orig_OnExitHold ?: False) || MY.CondorCE_OnExitHold
-    DEFAULT CondorCE_OnExitHoldReason   "The job's wall clock time $(MY.RemoteWallClockTime/60) min, is less than the minimum specified by the job ($(minWalltime))"
-    DEFAULT OnExitHoldSubcode           42
-    DEFAULT OnExitHoldReason            MY.CondorCE_OnExitHold ? MY.CondorCE_OnExitHoldReason : "Job held for unknown reason."
 @jrt
