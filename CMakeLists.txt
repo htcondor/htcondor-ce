@@ -87,6 +87,8 @@ install(FILES
 install(FILES
   config/condor_config
   config/condor_mapfile
+  config/uid_acct_group.map
+  config/x509_acct_group.map
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
 
 install(FILES

@@ -436,6 +436,8 @@ fi
 %files condor
 %defattr(-,root,root,-)
 
+%config(noreplace) %{_sysconfdir}/condor-ce/uid_acct_group.map
+%config(noreplace) %{_sysconfdir}/condor-ce/x509_acct_group.map
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
 %{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
 %{_sysconfdir}/condor/config.d/50-condor-ce-defaults.conf
