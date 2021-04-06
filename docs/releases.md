@@ -41,6 +41,13 @@ HTCondor-CE 5 Version History
 This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 5.1.0 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0) includes the following bug-fixes:
+
+-   APEL reporting scripts now use `PER_JOB_HISTORY_DIR` to collect job data. 
+    ([HTCONDOR_293](https://opensciencegrid.atlassian.net/browse/HTCONDOR-293))
+
 ### 5.0.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.0.0) includes the following new features:

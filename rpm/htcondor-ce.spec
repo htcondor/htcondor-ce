@@ -206,7 +206,7 @@ Requires: %{name}-client = %{version}-%{release}
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
-Requires: mod_wsgi
+Requires: python3-mod_wsgi
 
 %if 0%{?rhel} >= 8
 Requires: python3-flask
@@ -563,6 +563,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue Mar 30 2021 Mark Coatsworth <coatsworth@cs.wisc.edu> - 5.1.0-1
+- APEL reporting scripts now use PER_JOB_HISTORY_DIR to collect job data. (HTCONDOR-293)
+
 * Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-1
 - Add Python 3 and EL8 support (HTCondor-13)
 - Whole node jobs (HTCondor batch systems only) now make use of GPUs (HTCONDOR-103)
