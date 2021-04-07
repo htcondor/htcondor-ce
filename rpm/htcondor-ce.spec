@@ -496,7 +496,7 @@ fi
 %dir %{_datadir}/condor-ce/mapfiles.d
 %config %{_datadir}/condor-ce/mapfiles.d/50-common-default.conf
 
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
+%config %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
