@@ -1,7 +1,6 @@
 ---
 hide:
   - navigation
-  - toc
 ---
 
 HTCondor-CE
@@ -26,6 +25,14 @@ Community Webinar Programme:
 </iframe>
 
 Or visit the [overview page](v5/overview.md) for more details on the features and architecture of HTCondor-CE.
+
+Getting HTCondor-CE
+-------------------
+
+HTCondor-CE is distributed via RPM and are available from the following Yum repositories:
+
+- [HTCondor development](https://research.cs.wisc.edu/htcondor/yum/)
+- [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
 
 Contact Us
 ----------
