@@ -12,19 +12,19 @@ extra_css:
   - css/extra.css
 
 nav:
+- Home: 'index.md'
 - HTCondor-CE 5:
-  - Home: 'index.md'
-  - Overview: 'overview.md'
-  - Installation: 'installation/htcondor-ce.md'
-  - Batch System Integration: 'batch-system-integration.md'
-  - Verification: 'verification.md'
-  - Troubleshooting: 'troubleshooting/troubleshooting.md'
-  - Releases: 'releases.md'
+  - Overview: 'v5/overview.md'
+  - Installation: 'v5/installation/htcondor-ce.md'
+  - Batch System Integration: 'v5/batch-system-integration.md'
+  - Verification: 'v5/verification.md'
+  - Troubleshooting: 'v5/troubleshooting/troubleshooting.md'
   - Central Grid Operations:
-    - Submit Jobs Remotely: 'remote-job-submission.md'
-    - Remote Troubleshooting: 'troubleshooting/remote-troubleshooting.md'
-    - Install a Central Collector: 'installation/central-collector.md'
-  - Reference: 'reference.md'
+    - Submit Jobs Remotely: 'v5/remote-job-submission.md'
+    - Remote Troubleshooting: 'v5/troubleshooting/remote-troubleshooting.md'
+    - Install a Central Collector: 'v5/installation/central-collector.md'
+  - Releases: 'v5/releases.md'
+  - Reference: 'v5/reference.md'
 - HTCondor-CE 4:
   - Home: 'v4/index.md'
   - Overview: 'v4/overview.md'
