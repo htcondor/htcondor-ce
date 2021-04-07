@@ -122,6 +122,14 @@ HTCondor-CE 4 Version History
 This section contains release notes for each version of HTCondor-CE 4.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 4.5.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.5.1) includes the following changes:
+
+-   Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE`
+    ([HTCONDOR-350](https://opensciencegrid.atlassian.net/browse/HTCONDOR-350))
+-   Use the `GlobalJobID` attribute as the APEL record `lrmsID` (#426)
+
 ### 4.5.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.5.0) includes the following new features:
