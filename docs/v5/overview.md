@@ -63,7 +63,7 @@ Thus, there are three representations of your job, each with its own ID (see dia
 -   HTCondor-CE: the incoming pilot job’s ID
 -   HTCondor batch system: the routed job’s ID
 
-![HTCondor-CE with an HTCondor batch system](img/condor_batch.png)
+![HTCondor-CE with an HTCondor batch system](../img/condor_batch.png)
 
 In an HTCondor-CE/HTCondor setup, file transfer is handled natively between the two sets of daemons by the underlying
 HTCondor software.
@@ -84,7 +84,7 @@ Thus, there are four representations of your job, each with its own ID (see diag
 
 Although the following figure specifies the PBS case, it applies to all non-HTCondor batch systems:
 
-![HTCondor-CE with other batch systems](img/other_batch.png)
+![HTCondor-CE with other batch systems](../img/other_batch.png)
 
 With non-HTCondor batch systems, HTCondor-CE cannot use internal HTCondor protocols to transfer files so its "spool"
 directory must be exported to a shared file system that is mounted on the batch system’s worker nodes.
@@ -96,7 +96,7 @@ offered by a central grid operations team.
 Hosted CEs submit jobs to remote clusters over SSH, providing a simple starting point for opportunistic resource
 owners that want to start contributing to a computing grid with minimal effort.
 
-![HTCondor-CE-Bosco](img/bosco.png)
+![HTCondor-CE-Bosco](../img/bosco.png)
 
 If your site intends to run over 10,000 concurrent pilot jobs, you will need to host your own
 [HTCondor-CE](installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
