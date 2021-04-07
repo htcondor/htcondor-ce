@@ -9,7 +9,7 @@ HTCondor-CE is a special configuration of the HTCondor software designed as a Co
 grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
 It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
-See the [home page](../index.md) for more details on the features and architecture of HTCondor-CE.
+See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
 Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
