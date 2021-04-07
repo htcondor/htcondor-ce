@@ -1,7 +1,7 @@
-HTCondor-CE 4 and 5
-===================
+HTCondor-CE
+===========
 
-The [HTCondor-CE](overview) software is a *Compute Entrypoint* (CE) based on [HTCondor](http://htcondor.org) for sites
+The [HTCondor-CE](v5/overview.md) software is a *Compute Entrypoint* (CE) based on [HTCondor](http://htcondor.org) for sites
 that are part of a larger computing grid
 (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
 As such, HTCondor-CE serves as a "door" for incoming resource allocation requests — it handles authorization and
@@ -19,7 +19,7 @@ Community Webinar Programme:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6IWaMbofG7M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 
-Or visit the [overview page](overview.md) for more details on the features and architecture of HTCondor-CE.
+Or visit the [overview page](v5/overview.md) for more details on the features and architecture of HTCondor-CE.
 
 Contact Us
 ----------

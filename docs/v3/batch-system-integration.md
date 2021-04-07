@@ -677,7 +677,7 @@ This results in the following being appended to the script that gets submitted t
 Getting Help
 ------------
 
-If you have any questions or issues with configuring job routes, please [contact us](index.md#contact-us) for assistance.
+If you have any questions or issues with configuring job routes, please [contact us](../index.md#contact-us) for assistance.
 
 Reference
 ---------

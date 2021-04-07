@@ -136,4 +136,4 @@ More information about authorization methods can be found
 Getting Help
 ------------
 
-If you have any questions about the architecture of HTCondor-CE, please [contact us](index.md#contact-us) for assistance.
+If you have any questions about the architecture of HTCondor-CE, please [contact us](../index.md#contact-us) for assistance.

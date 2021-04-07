@@ -416,4 +416,4 @@ Otherwise, continue to the [this document](../verification.md) to start the rele
 Getting Help
 ------------
 
-If you have any questions or issues with the installation process, please [contact us](../index.md#contact-us) for assistance.
+If you have any questions or issues with the installation process, please [contact us](../../index.md#contact-us) for assistance.

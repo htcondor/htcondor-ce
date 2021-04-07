@@ -130,4 +130,4 @@ HTCondor-CE also supports callouts to external authorization technoligies such a
 Getting Help
 ------------
 
-If you have any questions about the architecture of HTCondor-CE, please [contact us](index.md#contact-us) for assistance.
+If you have any questions about the architecture of HTCondor-CE, please [contact us](../index.md#contact-us) for assistance.

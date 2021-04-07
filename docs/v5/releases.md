@@ -271,4 +271,4 @@ Getting Help
 ------------
 
 If you have any questions about the release process or run into issues with an upgrade, please
-[contact us](index.md#contact-us) for assistance.
+[contact us](../index.md#contact-us) for assistance.

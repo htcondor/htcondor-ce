@@ -26,7 +26,6 @@ nav:
   - Releases: 'v5/releases.md'
   - Reference: 'v5/reference.md'
 - HTCondor-CE 4:
-  - Home: 'v4/index.md'
   - Overview: 'v4/overview.md'
   - Installation: 'v4/installation/htcondor-ce.md'
   - Batch System Integration: 'v4/batch-system-integration.md'
@@ -39,7 +38,6 @@ nav:
   - Releases: 'v4/releases.md'
   - Reference: 'v4/reference.md'
 - HTCondor-CE 3:
-  - Home: 'v3/index.md'
   - Overview: 'v3/overview.md'
   - Installation: 'v3/installation/htcondor-ce.md'
   - Batch System Integration: 'v3/batch-system-integration.md'

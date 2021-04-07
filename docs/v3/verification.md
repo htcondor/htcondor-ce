@@ -50,4 +50,4 @@ Getting Help
 ------------
 
 If any of the above validation steps fail, consult the [troubleshooting guide](troubleshooting/troubleshooting.md).
-If that still doesn't resolve your issue, please [contact us](index.md#contact-us) for assistance.
+If that still doesn't resolve your issue, please [contact us](../index.md#contact-us) for assistance.
