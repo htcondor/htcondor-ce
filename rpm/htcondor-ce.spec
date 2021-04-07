@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.0.0
+Version: 5.1.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -496,7 +496,7 @@ fi
 %dir %{_datadir}/condor-ce/mapfiles.d
 %config %{_datadir}/condor-ce/mapfiles.d/50-common-default.conf
 
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
+%config %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
@@ -564,7 +564,15 @@ fi
 
 %changelog
 * Tue Mar 30 2021 Mark Coatsworth <coatsworth@cs.wisc.edu> - 5.1.0-1
-- APEL reporting scripts now use PER_JOB_HISTORY_DIR to collect job data. (HTCONDOR-293)
+- Fix an issue where the CE removed running jobs prematurely (HTCONDOR-350)
+- Add optional job router transform syntax (HTCONDOR-243)
+- Add username and X.509 accounting group mapfiles for use by job router transforms (HTCONDOR-187)
+- Replace custom mappings in condor_mapfile with /etc/condor-ce/mapfiles.d/ (HTCONDOR-244)
+- Require regular expressions in the second field of the unified mapfile be enclosed by '/'(HTCONDOR-244)
+- Update maxWallTime logic to accept BatchRuntime (HTCONDOR-80)
+- Append SSL to the default authentication methods list (HTCONDOR-366)
+- APEL reporting scripts now use the local HTCondor's PER_JOB_HISTORY_DIR to collect job data. (HTCONDOR-293)
+- Update HTCondor-CE registry app to Python 3 (HTCONDOR-307)
 
 * Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-1
 - Add Python 3 and EL8 support (HTCondor-13)
