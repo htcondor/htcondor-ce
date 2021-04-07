@@ -5,12 +5,12 @@ Installing an HTCondor-CE
     If you are installing an HTCondor-CE for the Open Science Grid (OSG), consult the
     [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
-The [HTCondor-CE](../overview.md) software is a *job gateway* based on [HTCondor](http://htcondor.org) for Compute Entrypoints
-(CE) belonging to a computing grid
+The [HTCondor-CE](../../index.md#what-is-htcondor-ce) software is a *job gateway* based on [HTCondor](http://htcondor.org)
+for Compute Entrypoints (CE) belonging to a computing grid
 (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
 As such, HTCondor-CE serves as an entry point for incoming grid jobs — it handles authorization and delegation of jobs
 to a grid site's local batch system.
-See the [overview page](../overview.md) for more details on the features and architecture of HTCondor-CE.
+See the [overview page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
 Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).

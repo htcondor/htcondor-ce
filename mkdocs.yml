@@ -14,7 +14,6 @@ extra_css:
 nav:
 - Home: 'index.md'
 - HTCondor-CE 5:
-  - Overview: 'v5/overview.md'
   - Installation: 'v5/installation/htcondor-ce.md'
   - Batch System Integration: 'v5/batch-system-integration.md'
   - Verification: 'v5/verification.md'
@@ -26,7 +25,6 @@ nav:
   - Releases: 'v5/releases.md'
   - Reference: 'v5/reference.md'
 - HTCondor-CE 4:
-  - Overview: 'v4/overview.md'
   - Installation: 'v4/installation/htcondor-ce.md'
   - Batch System Integration: 'v4/batch-system-integration.md'
   - Verification: 'v4/verification.md'
@@ -38,7 +36,6 @@ nav:
   - Releases: 'v4/releases.md'
   - Reference: 'v4/reference.md'
 - HTCondor-CE 3:
-  - Overview: 'v3/overview.md'
   - Installation: 'v3/installation/htcondor-ce.md'
   - Batch System Integration: 'v3/batch-system-integration.md'
   - Verification: 'v3/verification.md'
