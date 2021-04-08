@@ -55,8 +55,15 @@ jobs:
       env:
         PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
         PYTHON_FILES: ${{ needs.python-files.outputs.filelist }}
+      # HACK: in newer versions of HTCondor (at least 8.9.11+),
+      # classad/htcondor modules are placed in python packages where
+      # straight 'import htcondor' works but this causes problems for
+      # pylint unless you use 'from htcondor import htcondor'. Older
+      # versions of HTCondor don't work with the latter so instead of
+      # adding a version requirement to HTCondor-CE, we'll just ignore
+      # these errors
       run: |
-        pylint --errors-only $PYTHON_FILES
+        pylint --errors-only --disable no-member $PYTHON_FILES
 
   flake8:
     runs-on: ubuntu-latest
