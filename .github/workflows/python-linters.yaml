@@ -12,6 +12,7 @@ jobs:
     - id: python-files
       run:
         echo "::set-output name=filelist::src/*.py
+               contrib/bdii/htcondor-ce-provider
                src/htcondorce/*
                src/collector_to_agis
                src/condor_ce_metric
