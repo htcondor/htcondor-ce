@@ -4,7 +4,7 @@ import json
 import socket
 import traceback
 
-from classad import classad
+import classad
 htcondor = None
 
 def check_htcondor():

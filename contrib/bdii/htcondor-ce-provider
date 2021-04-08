@@ -14,8 +14,8 @@ from datetime import datetime
 import subprocess
 from collections import defaultdict, namedtuple
 import signal
-from htcondor import htcondor
-from classad import classad as ca
+import htcondor
+import classad as ca
 
 SERVICE_LDIF = """dn: GLUE2ServiceID={central_manager},GLUE2GroupID=resource,o=glue
 GLUE2ServiceID: {central_manager}

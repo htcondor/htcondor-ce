@@ -37,7 +37,7 @@
 # Written by Dave Dykstra, June 2017
 #
 
-from htcondor import htcondor
+import htcondor
 import time
 import re
 from collections import OrderedDict

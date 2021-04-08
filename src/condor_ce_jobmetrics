@@ -40,8 +40,8 @@ def _newstat():
     return {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
 
 def process_one_schedd(ad):
-    from htcondor import htcondor
-    from classad import classad
+    import htcondor
+    import classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
     status_map = {1: "Idle", 2: "Running", 5: "Held"}

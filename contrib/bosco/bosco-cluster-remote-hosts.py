@@ -5,8 +5,8 @@ import subprocess
 import sys
 
 try:
-    from classad import classad
-    from htcondor import htcondor
+    import classad
+    import htcondor
 except ImportError:
     sys.exit("ERROR: Could not load HTCondor Python bindings. "
              "Ensure the 'htcondor' and 'classad' are in PYTHONPATH")

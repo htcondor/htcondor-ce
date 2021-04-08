@@ -1,5 +1,5 @@
-from classad import classad
-from htcondor import htcondor
+import classad
+import htcondor
 
 import logging
 _logger = logging.getLogger(__name__)

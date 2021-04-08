@@ -8,7 +8,7 @@ import socket
 import optparse
 import traceback
 
-from htcondor import htcondor
+import htcondor
 import htcondorce.tools as ce
 
 # HTCondor-CE simple run script.
