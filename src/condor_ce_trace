@@ -211,9 +211,9 @@ def check_job_submit(job_info, schedd_ad):
     ad_results = []
     try:
         cluster = schedd.submit(job_ad, 1, True, ad_results)
-    except RuntimeError as e:
+    except RuntimeError as exc:
         raise ce.CondorRunException("- Failed to submit job to %s due to the following error:\n%s" \
-                                    % (schedd_ad['Machine'], e))
+                                    % (schedd_ad['Machine'], exc))
 
     print(f"- Successful submission; cluster ID {cluster}")
 
@@ -222,7 +222,7 @@ def check_job_submit(job_info, schedd_ad):
     print(f"Spooling cluster {cluster} files to schedd {schedd_ad['MyAddress']}")
     try:
         schedd.spool(ad_results)
-    except RuntimeError as e:
+    except RuntimeError as exc:
         raise ce.CondorRunException(f"- Failed to spool files to {schedd_ad['Machine']} due to the following error:\n{exc}")
 
     print("- Successful spooling")
