@@ -9,6 +9,7 @@ import optparse
 
 os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
 from htcondor import htcondor
+from htcondorce.tools import to_str
 
 from socket import AF_INET, AF_INET6, inet_ntop
 from ctypes import (
@@ -235,7 +236,7 @@ def iface_matches(network_iface, pattern):
     `network_iface` matches `pattern`, False otherwise
 
     """
-    if fnmatch.fnmatch(network_iface.name, pattern):
+    if fnmatch.fnmatch(to_str(network_iface.name), pattern):
         return True
     for family, addrs in network_iface.addresses.items():
         if fnmatch.filter(addrs, pattern):
