@@ -103,7 +103,6 @@ def check_initialized(environ):
         _jinja_env = Environment(loader=FileSystemLoader(template_path),
                                  autoescape=select_autoescape(['html', 'xml']))
 
-        ce_config = environ.get('htcondorce.config', '/etc/condor-ce/condor_config')
         htcondor = htcondorce.web_utils.check_htcondor()
 
         # Show different page titles and tables for central collectors vs standalone CEs
@@ -265,9 +264,6 @@ def statuses_json(environ, start_response):
     return [htcondorce.web_utils.dump_json_utf8(response)]
 
 def jobs_json(environ, start_response):
-    response = {}
-
-
     parsed_qs = parse.parse_qs(environ['QUERY_STRING'])
 
     if 'projection' in parsed_qs:

@@ -345,7 +345,7 @@ if __name__ == '__main__':
                 F.close()
                 ce.print_formatted_msg('Uncaught exception, please send %s to %s with a description of the issue.' %
                                        (STACK_FILE, ce.HELP_EMAIL))
-            except OSError as write_exc:
+            except OSError:
                 ce.print_formatted_msg("Unable to write stackfile due to the following error:\n%s"
                                        % traceback.format_exc())
         sys.exit(1)
