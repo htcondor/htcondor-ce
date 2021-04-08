@@ -10,7 +10,7 @@ from urllib import parse
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-import classad
+from classad import classad
 htcondor = None
 
 import htcondorce.rrd

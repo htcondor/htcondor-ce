@@ -3,7 +3,7 @@
 import os
 import re
 import pwd
-import classad
+from classad import classad
 from collections import OrderedDict
 
 JOB_ROUTER_CONFIG = r"""JOB_ROUTER_TRANSFORM_Env @=jrt

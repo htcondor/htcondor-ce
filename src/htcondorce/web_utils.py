@@ -6,7 +6,7 @@ import time
 import socket
 import traceback
 
-import classad
+from classad import classad
 htcondor = None
 
 def check_htcondor():

@@ -6,7 +6,7 @@ import socket
 import subprocess
 import sys
 
-import htcondor
+from htcondor import htcondor
 
 DEFAULT_COLLECTOR_PORT="9619"
 

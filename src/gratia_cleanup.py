@@ -5,7 +5,7 @@ import datetime
 
 os.environ['CONDOR_CONFIG'] = '/etc/condor-ce/condor_config'
 
-import htcondor
+from htcondor import htcondor
 
 GRATIA_DIR = htcondor.param['PER_JOB_HISTORY_DIR']
 HISTORY_FILES = [os.path.join(GRATIA_DIR, x) for x in os.listdir(GRATIA_DIR)]
