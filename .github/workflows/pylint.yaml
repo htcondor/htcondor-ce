@@ -1,0 +1,43 @@
+name: Run pylint
+
+on: [push, pull_request]
+
+jobs:
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - uses: actions/cache@v2
+      with:
+        path: ~/pip-cache
+        key: pip-3.6-${{ github.sha }}
+        # allow cache hits from previous runs of the current branch,
+        # parent branch, then upstream branches, in that order
+        restore-keys: |
+          pip-3.6-
+    - name: Install Requirements
+      run: |
+        python -m pip install --upgrade pip
+        pip --cache-dir ~/pip-cache install pylint htcondor flask jinja2 gunicorn
+    - name: Run Pylint
+      env:
+        PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
+      run: |
+        pylint --errors-only \
+               src/*.py \
+               src/htcondorce/* \
+               src/collector_to_agis \
+               src/condor_ce_metric \
+               src/condor_ce_host_network_check \
+               src/condor_ce_info_status \
+               src/condor_ce_jobmetrics \
+               src/condor_ce_register \
+               src/condor_ce_router_defaults \
+               src/condor_ce_run \
+               src/condor_ce_scitoken_exchange \
+               src/condor_ce_trace \
+               src/condor_ce_view
