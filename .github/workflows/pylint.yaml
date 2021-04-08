@@ -1,9 +1,9 @@
-name: Run pylint
+name: Run Python linters
 
 on: [push, pull_request]
 
 jobs:
-  pylint:
+  python-linters:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -22,7 +22,7 @@ jobs:
     - name: Install Requirements
       run: |
         python -m pip install --upgrade pip
-        pip --cache-dir ~/pip-cache install pylint htcondor flask jinja2 gunicorn
+        pip --cache-dir ~/pip-cache install pylint flake8 htcondor flask jinja2 gunicorn
     - id: python-files
       run:
         echo "::set-output name=filelist::src/*.py
@@ -44,3 +44,10 @@ jobs:
         PYTHON_FILES: ${{ steps.python-files.outputs.filelist }}
       run: |
         pylint --errors-only $PYTHON_FILES
+
+    - name: Run flake8
+      env:
+        PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
+        PYTHON_FILES: ${{ steps.python-files.outputs.filelist }}
+      run: |
+        flake8 --select F $PYTHON_FILES
