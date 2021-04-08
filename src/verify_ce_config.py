@@ -85,7 +85,7 @@ def main():
             # The job router can function this way but it's likely a config error
             route_order = htcondor.param.get('JOB_ROUTER_ROUTE_NAMES', '')
             if route_order:
-                missing_route_def = set(route_order).difference(set(parse_route_names(config_val)))
+                missing_route_def = set(route_order.replace(',',' ').split()).difference(set(parse_route_names(config_val)))
                 if missing_route_def:
                     warn("The following are specified in JOB_ROUTER_ROUTE_NAMES "
                          "but cannot be found in JOB_ROUTER_ENTRIES: %s"
