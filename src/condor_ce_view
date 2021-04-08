@@ -15,7 +15,6 @@ import gunicorn.glogging
 
 from htcondor import htcondor
 import htcondorce.web
-import htcondorce.tools as ce
 
 ALIVE_HEARTBEAT = 60
 def send_heartbeat():
