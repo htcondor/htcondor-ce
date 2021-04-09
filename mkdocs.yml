@@ -12,7 +12,9 @@ extra_css:
   - css/extra.css
 
 nav:
-- Home: 'index.md'
+- Home:
+  - 'Overview': 'index.md'
+  - 'Architecture': 'architecture.md'
 - HTCondor-CE 5:
   - Installation: 'v5/installation/htcondor-ce.md'
   - Batch System Integration: 'v5/batch-system-integration.md'
