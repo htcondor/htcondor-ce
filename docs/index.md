@@ -29,13 +29,10 @@ and ultimately run within the pilot job.
 CEs are made up of a thin layer of software that you install on a machine that already has the ability to submit and
 manage jobs in your local batch system.
 
-The Compute Entrypoint was previously known as the "Compute Element".
-
 What is HTCondor-CE?
 --------------------
 
-HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
-grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
+HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint.
 It is configured to use the HTCondor [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 
