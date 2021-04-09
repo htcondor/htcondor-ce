@@ -1,7 +1,7 @@
 Releases
 ========
 
-HTCondor-CE 4 and 5 are distributed via RPM and are available from the following Yum repositories:
+HTCondor-CE 4 are distributed via RPM and are available from the following Yum repositories:
 
 - [HTCondor development](https://research.cs.wisc.edu/htcondor/yum/)
 - [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
@@ -20,107 +20,19 @@ HTCondor-CE 4 and 5 are distributed via RPM and are available from the following
         # yum install htcondor-ce-4.3.0
 
 
-Updating to HTCondor-CE 5
--------------------------
-
-!!! note "Updating from HTCondor-CE <=3"
-    If updating to HTCondor-CE 5 from HTCondor-CE <= 3, be sure to also consult the HTCondor-CE 4 upgrade instructions
-    [below](#updating-to-htcondor-ce-4).
-
-HTCondor-CE 5 is a major release that adds many features and overhauls the default configuration.
-As such, upgrades from older versions of HTCondor-CE may require manual intervention:
-
-### No longer set `$HOME` by default ###
-
-Older versions of HTCondor-CE set `$HOME` in the routed job to the user's `$HOME` directory on the HTCondor-CE.
-To re-enable this behavior, set `USE_CE_HOME_DIR = True` in `/etc/condor-ce/config.d/`.
-
-HTCondor-CE 5 Version History
------------------------------
-
-This section contains release notes for each version of HTCondor-CE 5.
-Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
-
-### 5.1.0 ###
-
-[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0) includes the following bug-fixes:
-
--   APEL reporting scripts now use `PER_JOB_HISTORY_DIR` to collect job data. 
-    ([HTCONDOR_293](https://opensciencegrid.atlassian.net/browse/HTCONDOR-293))
-
-### 5.0.0 ###
-
-[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.0.0) includes the following new features:
-
--   Python 3 and Enterprise Linux 8 support
-    ([HTCONDOR_13](https://opensciencegrid.atlassian.net/browse/HTCONDOR-13))
--   HTCondor-CE no longer sets `$HOME` in routed jobs by default
-    ([HTCONDOR-176](https://opensciencegrid.atlassian.net/browse/HTCONDOR-176))
--   Whole node jobs (local HTCondor batch systems only) now make use of GPUs
-    ([HTCONDOR-103](https://opensciencegrid.atlassian.net/browse/HTCONDOR-103))
--   HTCondor-CE Central Collectors now prefer GSI over SSL authentication
-    ([HTCONDOR-237](https://opensciencegrid.atlassian.net/browse/HTCONDOR-237))
--   HTCondor-CE registry now validates the value of submitted client codes
-    ([HTCONDOR-241](https://opensciencegrid.atlassian.net/browse/HTCONDOR-241))
--   Automatically remove CE jobs that exceed their `maxWalltime` (if defined) or the configuration value of
-    `ROUTED_JOB_MAX_TIME` (default: 4320 sec/72 hrs)
-
-This release also includes the following bug-fixes:
-
--   Fix a circular configuration definition in the HTCondor-CE View that resulted in 100% CPU usage by the
-    `condor_gangliad` daemon ([HTCONDOR-161](https://opensciencegrid.atlassian.net/browse/HTCONDOR-161))
-
-Updating to HTCondor-CE 4
--------------------------
-
-HTCondor-CE 4 is a major release that adds many features and overhauls the default configuration.
-As such, upgrades from older versions of HTCondor-CE may require manual intervention:
-
-### Disabled job retries by default ###
-
-Since most jobs submitted through HTCondor-CEs are actually resource requests (i.e. pilot jobs) instead of jobs
-containing user payloads.
-Therefore, it's preferred to prevent these jobs from retrying and instead wait for additional resource requests to be
-submitted.
-To re-enable job retries, set the following in your configuration:
-
-    ENABLE_JOB_RETRIES = True
-
-### Simplified remote CE requirements format ###
-
-[remote CE requirements](batch-system-integration.md#setting-batch-system-directives) are a way to specify batch system
-directives that aren't directly supported in the job router for non-HTCondor batch systems.
-In the past, specifying these directives were often quite complicated. For example, a snippet from an example job route:
-
-    set_default_remote_cerequirements = strcat("Walltime == 3600 && AccountingGroup =="",
-                                               x509UserProxyFirstFQAN,
-                                               "\"");
-
-The HTCondor 8.8 series allows users to specify the same logic using a simplified format within job routes.
-The same expression above can be written as the following snippet:
-
-    set_WallTime = 3600;
-    set_AccountingGroup = x509UserProxyFirstFQAN;
-    set_default_CERequirements = "Walltime,AccountingGroup";
-
-### Reorganized HTCondor-CE configuration: ###
-
-Configuration that admins are expected to change is in `/etc/condor-ce/config.d/`, other configuration is in `/usr`.
-Watch out for `*.rpmnew` files and merge changes into your existing configuration, especially
-`/etc/condor-ce/condor_mapfile.rpmnew`.
-
-### OSG domain changes ###
-
-OSG builds of HTCondor-CE now use the standard `htcondor.org` domain for mapped principles.
-For example, `UID_DOMAIN` is now `users.htcondor.org` instead of `users.opensciencegrid.org`.
-If you've made changes to the default HTCondor-CE security configuration (check with `condor_ce_config_val -dump`),
-you may need to update any configuration to use `*.htcondor.org` instead of `*.opensciencegrid.org`.
-
 HTCondor-CE 4 Version History
 -----------------------------
 
 This section contains release notes for each version of HTCondor-CE 4.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
+
+### 4.5.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v4.5.1) includes the following changes:
+
+-   Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE`
+    ([HTCONDOR-350](https://opensciencegrid.atlassian.net/browse/HTCONDOR-350))
+-   Use the `GlobalJobID` attribute as the APEL record `lrmsID` (#426)
 
 ### 4.5.0 ###
 
@@ -263,4 +175,4 @@ Getting Help
 ------------
 
 If you have any questions about the release process or run into issues with an upgrade, please
-[contact us](index.md#contact-us) for assistance.
+[contact us](../index.md#contact-us) for assistance.

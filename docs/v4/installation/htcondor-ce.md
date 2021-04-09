@@ -1,23 +1,27 @@
-Installing HTCondor-CE 3
+Installing HTCondor-CE 4
 ========================
 
-!!! warning "HTCondor-CE 3 end-of-life: October 2021"
-    HTCondor-CE 3 is distributed alongside HTCondor 8.8 in the [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
-    so HTCondor-CE 3 will reach it's end-of-life in October 2021.
-    Consider [updating to HTCondor-CE 5](../../v5/releases.md#updating-to-htcondor-ce-5) at your earliest convenience.
+!!! warning "Update to HTCondor-CE 5"
+    In the [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/), HTCondor-CE 4 is distributed
+    alongside the HTCondor 8.9
+    [development release series](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series),
+    which has been turned into the HTCondor 9.0
+    [stable release series](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series).
+    Security and other bug-fixes that would have been targeted for 8.9 will now only be available in 9.0 or 8.8.
+    Consider [updating to HTCondor-CE 5](../../v5/releases.md#updating-to-htcondor-ce-5) and HTCondor 9.0 at your
+    earliest convenience.
 
 !!! tip "Joining the Open Science Grid (OSG)?"
     If you are installing an HTCondor-CE for the OSG, consult the
     [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
-The [HTCondor-CE](../../index.md#what-is-htcondor-ce) software is a *job gateway* based on [HTCondor](http://htcondor.org)
-for Compute Entrypoints (CE) belonging to a computing grid
-(e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-As such, HTCondor-CE serves as an entry point for incoming grid jobs — it handles authorization and delegation of jobs
-to a grid site's local batch system.
-See the [overview page](../../index.md) for more details on the features and architecture of HTCondor-CE.
+HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
+grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
+It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
+to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
+See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
-Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 3 from the
+Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 4 from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
 
 Before Starting
@@ -27,8 +31,7 @@ Before starting the installation process, consider the following points
 (consulting [the reference page](../reference.md) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
--   **SSL certificate:** The HTCondor-CE service uses a host certificate at `/etc/grid-security/hostcert.pem` and an
-    accompanying key at `/etc/grid-security/hostkey.pem`
+-   **SSL certificate:** The HTCondor-CE service uses a host certificate and key for SSL and GSI authentication
 -   **DNS entries:** Forward and reverse DNS must resolve for the HTCondor-CE host
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
@@ -40,7 +43,7 @@ There are some one-time (per host) steps to prepare in advance:
 
 - Ensure the host has a supported operating system (Red Hat Enterprise Linux variant 7)
 - Obtain root access to the host
-- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor](https://research.cs.wisc.edu/htcondor/yum/) Yum
+- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor Development](https://research.cs.wisc.edu/htcondor/yum/) Yum
   repositories
 - Install CA certificates and VO data into `/etc/grid-security/certificates` and `/etc/grid-security/vomsdir`,
   respectively
@@ -96,8 +99,11 @@ For more advanced configuration, see the section on [optional configurations](#o
 
 To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
 [built-in mapfile](#built-in-mapfile) or to make [Globus callouts](#globus-callout) to an external service like Argus
-or LCMAPS. THe former option is simpler but the latter option may be preferred if your grid supports it or your site
-already runs such a service.
+or LCMAPS.
+The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
+such a service.
+
+Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SSL and GSI authentication.
 
 #### Built-in mapfile ####
 
@@ -115,7 +121,7 @@ To configure authorization for users submitting jobs with an X.509 proxy certifi
 of the following format:
 
 ```
-GSI "^<DISTINGUISHED NAME>$" <USERNAME>@users.htcondor.org
+GSI "^<DISTINGUISHED NAME>$" <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME`> (escaping any '/' with '\/') and `<USERNAME`> with the distinguished name of the
@@ -124,7 +130,7 @@ incoming certificate and the unix account under which the job should run, respec
 VOMS attributes of incoming X.509 proxy certificates can also be used for mapping:
 
 ```
-GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>@users.htcondor.org
+GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME`> (escaping any '/' with '\/'), `<VOMSFQAN`> fields, and `<USERNAME`> with the
@@ -135,7 +141,7 @@ Additionally, you can use regular expressions for mapping certificate and VOMS a
 For example, to map any certificate from the `GLOW` VO with the `htpc` role to the `glow` user, add the following line:
 
 ```
-GSI ".*,\/GLOW\/Role=htpc.*" glow@users.htcondor.org
+GSI ".*,\/GLOW\/Role=htpc.*" glow
 ```
 
 !!! warning
@@ -145,7 +151,7 @@ GSI ".*,\/GLOW\/Role=htpc.*" glow@users.htcondor.org
         CLAIMTOBE .* anonymous@claimtobe
         FS (.*) \1
 
-#### Globus Callout ####
+#### Globus callout ####
 
 To use a Globus callout to a service like LCMAPS or Argus, you will need to have the relevant library installed as well
 as the following HTCondor-CE configuration:
@@ -163,6 +169,53 @@ as the following HTCondor-CE configuration:
     - For Argus:
 
             globus_mapping /usr/lib64/libgsi_pep_callout.so argus_pep_callout
+
+#### Configuring certificates ####
+
+HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SSL and GSI connections.
+By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating SSL
+connections, i.e. for SciTokens or SSL authentication methods.
+But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
+certificates issued by [IGTF CAs](https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in)) located
+in `/etc/grid-security/`.
+
+Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:
+
+- If your SSL or SciTokens clients will be interacting with your CE using grid certificates or you are using a grid
+  certificate as your host certificate:
+
+    1. Set the following configuration in `/etc/condor-ce/config.d/01-ce-auth.conf`:
+
+            AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
+            AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
+            AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
+            AUTH_SSL_SERVER_CAFILE =
+            AUTH_SSL_CLIENT_CERTFILE = /etc/grid-security/hostcert.pem
+            AUTH_SSL_CLIENT_KEYFILE = /etc/grid-security/hostkey.pem
+            AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+            AUTH_SSL_CLIENT_CAFILE =
+
+    1. Install your host certificate and key into `/etc/grid-security/hostcert.pem` and `/etc/grid-security/hostkey.pem`,
+       respectively
+
+    1. Set the ownership and Unix permissions of the host certificate and key
+
+            :::console
+            root@host # chown root:root /etc/grid-security/hostcert.pem /etc/grid-security/hostkey.pem
+            root@host # chmod 644 /etc/grid-security/hostcert.pem
+            root@host # chmod 600 /etc/grid-security/hostkey.pem
+
+- Otherwise, use the default system locations:
+
+    1. Install your host certificate and key into `/etc/pki/tls/certs/localhost.crt` and
+       `/etc/pki/tls/private/localhost.key`, respectively
+
+    1. Set the ownership and Unix permissions of the host certificate and key
+
+            :::console
+            root@host # chown root:root /etc/pki/tls/certs/localhost.crt /etc/pki/tls/private/localhost.key
+            root@host # chmod 644 /etc/pki/tls/certs/localhost.crt
+            root@host # chmod 600 /etc/pki/tls/private/localhost.key
 
 ### Configuring the batch system ###
 
@@ -298,18 +351,17 @@ To run the HTCondor-CE View, install the appropriate package and set the relevan
         :::console
         root@host # yum install htcondor-ce-view
 
-2.  Next, uncomment the `DAEMON_LIST` configuration located at `/etc/condor-ce/config.d/05-ce-view.conf`:
+1.  Restart the `condor-ce` service
 
-        DAEMON_LIST = $(DAEMON_LIST), CEVIEW, GANGLIAD, SCHEDD
-
-3.  Restart the `condor-ce` service
-
-4.  Verify the service by entering your CE's hostname into your web browser
+1.  Verify the service by entering your CE's hostname into your web browser
 
 The website is served on port 80 by default.
 To change this default, edit the value of `HTCONDORCE_VIEW_PORT` in `/etc/condor-ce/config.d/05-ce-view.conf`.
 
 #### Uploading accounting records to APEL ####
+
+!!! note "Batch System Support"
+    HTCondor-CE only supports generation of APEL accounting records for HTCondor batch systems.
 
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
 blah APEL records for HTCondor batch systems:
@@ -330,10 +382,13 @@ blah APEL records for HTCondor batch systems:
     - Records are written to `APEL_OUTPUT_DIR` in the HTCondor-CE configuration (default: `/var/lib/condor-ce/apel/`)
     - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
 
-1. Start and enable the `condor-ce-apel` [services](../verification.md#managing-htcondor-ce-services) appropriate for your
-   operating system.
+1. Start and enable the `condor-ce-apel` and `condor-ce-apel.timer`
+   [services](../verification.md#managing-htcondor-ce-services)
 
 #### Enabling BDII integration ####
+
+!!! note "Batch System Support"
+    HTCondor-CE only supports reporting BDII information for HTCondor batch systems.
 
 HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
 batch system.
@@ -362,13 +417,13 @@ root@host # yum install htcondor-ce-bdii
 Next Steps
 ----------
 
-At this point, you should have an installation of HTCondor-CE that will forward grid jobs into your site's batch system
+At this point, you should have an installation of HTCondor-CE that will forward pilot jobs into your site's batch system
 unchanged.
-If you need to transform incoming grid jobs (e.g. by setting a partition, queue, or accounting group), configure the
+If you need to transform incoming pilot jobs (e.g. by setting a partition, queue, or accounting group), configure the
 [HTCondor-CE Job Router](../batch-system-integration.md).
 Otherwise, continue to the [this document](../verification.md) to start the relevant services and verify your installation.
 
 Getting Help
 ------------
 
-If you have any questions or issues with the installation process, please [contact us](../../index.md#contact-us) for assistance,
+If you have any questions or issues with the installation process, please [contact us](../../index.md#contact-us) for assistance.

@@ -1,48 +1,3 @@
-Overview
-========
-
-This document serves as an introduction to HTCondor-CE and how it works.
-Before continuing with the overview, make sure that you are familiar with the following concepts:
-
--   What is a batch system and which one will you use
-    ([HTCondor](http://htcondor.org),
-    [Grid Engine](http://www.univa.com/products/),
-    [LSF](https://www.ibm.com/us-en/marketplace/hpc-workload-management),
-    [PBS Pro](https://www.altair.com/pbs-professional/)/[Torque](https://adaptivecomputing.com/cherry-services/torque-resource-manager/),
-    and [Slurm](https://slurm.schedmd.com/))?
--   Pilot jobs and factories (e.g., [GlideinWMS](http://glideinwms.fnal.gov/doc.prd/index.html),
-    [PanDA](http://news.pandawms.org/), [DIRAC](https://dirac.readthedocs.io/en/latest/index.html))
-
-What is a Compute Entrypoint?
------------------------------
-
-A Compute Entrypoint (CE) is the door for remote organizations to submit requests to temporarily allocate local compute
-resources.
-These resource allocation requests are submitted as **pilot jobs** that create an environment for end-user jobs to match
-and ultimately run within the pilot job.
-CEs are made up of a thin layer of software that you install on a machine that already has the ability to submit and
-manage jobs in your local batch system.
-
-!!! note
-    The Compute Entrypoint was previously known as the "Compute Element".
-
-What is HTCondor-CE?
---------------------
-
-HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
-grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
-to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
-
-Benefits of running the HTCondor-CE:
-
--   **Scalability:** HTCondor-CE is capable of supporting ~16k concurrent RARs
--   **Debugging tools:** HTCondor-CE offers
-    [many tools to help troubleshoot](troubleshooting/troubleshooting.md#htcondor-ce-troubleshooting-tools) issues with RARs
--   **Routing as configuration:** HTCondor-CE’s mechanism to transform and submit RARs is customized via configuration
-    variables, which means that customizations will persist across upgrades and will not involve modification of
-    software internals to route jobs
-
 How Jobs Run
 ------------
 
@@ -99,12 +54,12 @@ owners that want to start contributing to a computing grid with minimal effort.
 ![HTCondor-CE-Bosco](img/bosco.png)
 
 If your site intends to run over 10,000 concurrent pilot jobs, you will need to host your own
-[HTCondor-CE](installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
+[HTCondor-CE](v5/installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
 
 How the CE is Customized
 ------------------------
 
-Aside from the [basic configuration](installation/htcondor-ce.md#configuring-htcondor-ce) required in the CE
+Aside from the [basic configuration](v5/installation/htcondor-ce.md#configuring-htcondor-ce) required in the CE
 installation, there are two main ways to customize your CE (if you decide any customization is required at all):
 
 -   **Deciding which Virtual Organizations (VOs) are allowed to run at your site:** HTCondor-CE leverages HTCondor's
@@ -112,7 +67,7 @@ installation, there are two main ways to customize your CE (if you decide any cu
     Additionally, HTCondor may be configured to callout to external authentication services like Argus or LCMAPS. 
 -   **How to filter and transform the pilot jobs to be run on your batch system:** Filtering and transforming pilot jobs
     (i.e., setting site-specific attributes or resource limits), requires configuration of your site’s job routes.
-    For examples of common job routes, consult the [batch system integration](batch-system-integration.md)
+    For examples of common job routes, consult the [batch system integration](v5/batch-system-integration.md)
     page.
 
 How Security Works
@@ -126,8 +81,3 @@ cross-checking their certificates with the signing CA and establishing trust.
 In its default configuration, HTCondor-CE supports token-based and GSI-based authentication and authorization to the
 remote submitter's credentials.
 HTCondor-CE also supports callouts to external authorization technoligies such as LCMAPS or Argus.
-
-Getting Help
-------------
-
-If you have any questions about the architecture of HTCondor-CE, please [contact us](index.md#contact-us) for assistance.

@@ -229,4 +229,4 @@ A more comprehensive list of submit file commands specific to HTCondor can be fo
 Getting Help
 ------------
 
-If you have any questions or issues with job submission, please [contact us](index.md#contact-us) for assistance.
+If you have any questions or issues with job submission, please [contact us](../index.md#contact-us) for assistance.

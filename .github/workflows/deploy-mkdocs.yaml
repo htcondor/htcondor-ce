@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
       - name: Deploy MkDocs pages
         if: startsWith(github.repository, 'htcondor/')
-        uses: docker://squidfunk/mkdocs-material:6.2.8
+        uses: docker://squidfunk/mkdocs-material:7.1.0
         with:
           args: >-
             gh-deploy

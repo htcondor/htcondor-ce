@@ -1130,7 +1130,6 @@ Reference
 
 Here are some other HTCondor-CE documents that might be helpful:
 
--   [HTCondor-CE overview and architecture](../overview.md)
 -   [Installing HTCondor-CE](../installation/htcondor-ce.md)
 -   [Configuring HTCondor-CE job routes](../batch-system-integration.md)
 -   [Submitting jobs to HTCondor-CE](../remote-job-submission.md)

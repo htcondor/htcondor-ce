@@ -1,7 +1,7 @@
 Writing Routes For HTCondor-CE
 ==============================
 
-The [JobRouter](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html) is at the heart of HTCondor-CE
+The [JobRouter](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html) is at the heart of HTCondor-CE
 and allows admins to transform and direct jobs to specific batch systems.
 Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
 If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
@@ -26,7 +26,7 @@ Quirks and Pitfalls
 How Job Routes are Constructed
 ------------------------------
 
-Each job route’s [ClassAd](https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html) is constructed by combining each entry from the `JOB_ROUTER_ENTRIES` with the `JOB_ROUTER_DEFAULTS`. Attributes that are [set_*](#setting-attributes) in `JOB_ROUTER_ENTRIES` will override those [set_*](#setting-attributes) in `JOB_ROUTER_DEFAULTS`
+Each job route’s [ClassAd](http://research.cs.wisc.edu/htcondor/manual/v8.6/4_1HTCondor_s_ClassAd.html) is constructed by combining each entry from the `JOB_ROUTER_ENTRIES` with the `JOB_ROUTER_DEFAULTS`. Attributes that are [set_*](#setting-attributes) in `JOB_ROUTER_ENTRIES` will override those [set_*](#setting-attributes) in `JOB_ROUTER_DEFAULTS`
 
 ### JOB_ROUTER_ENTRIES
 
@@ -64,13 +64,13 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 | If your version of HTCondor is... | Then the route is chosen by...                                                                                               |
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
 | < 8.7.1                           | **Round-robin** between all matching routes. In this case, we recommend making each route's requirements mutually exclusive. |
-| >= 8.7.1, < 8.8.7                 | **First matching route** where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive. |
-| >= 8.8.7                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/stable/admin-manual/configuration-macros.html#index-863) |
+| >= 8.7.1, < 8.9.5                 | **First matching route** where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive. |
+| >= 8.9.5                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES) |
 
 !!! bug "Job Route Order"
-    For HTCondor versions < 8.8.7 (as well as versions >= 8.9.0 and < 8.9.5) the order of job routes does not match the
+    For HTCondor versions < 8.9.5 (as well as versions >= 8.7.1 and < 8.8.7) the order of job routes does not match the
     order in which they are configured.
-    As a result, we recommend updating to HTCondor 8.8.7 (or 8.9.5) and specifying the names of your routes in
+    As a result, we recommend updating to at least HTCondor 8.9.5 (or 8.8.7) and specifying the names of your routes in
     `JOB_ROUTER_ROUTE_NAMES` in the order that you'd like them considered.
 
 If you are using HTCondor >= 8.7.1 and would like to use round-robin matching, add the following text to a file in
@@ -200,8 +200,8 @@ To filter jobs, use the `Requirements` attribute.
 Jobs will evaluate against the ClassAd expression set in the `Requirements` and if the expression evaluates to `TRUE`,
 the route will match.
 More information on the syntax of ClassAd's can be found in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html).
-For an example on how incoming jobs interact with filtering in job routes, consult [this document](job-submission.md).
+[HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html).
+For an example on how incoming jobs interact with filtering in job routes, consult [this document](remote-job-submission.md).
 
 When setting requirements, you need to prefix job attributes that you are filtering with `TARGET.` so that the job route
 knows to compare the attribute of the incoming job rather than the route’s own attribute.
@@ -221,7 +221,7 @@ JOB_ROUTER_ENTRIES @=jre
 This is because when evaluating the route requirement, the job route will compare its own `queue` attribute to "analy"
 and see that it does not match.
 You can read more about comparing two ClassAds in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html#classad-operators).
+[HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators).
 
 !!! note
     If you have an HTCondor batch system, note the difference with [set\_requirements](#setting-routed-job-requirements).
@@ -289,7 +289,7 @@ JOB_ROUTER_ENTRIES @=jre
 
 ### Setting a default…
 
-This section outlines how to set default job limits, memory, cores, and maximum walltime.
+This section outlines how to set default job limits, memory, cores, and maximum walltime. For an example on how users can override these defaults, consult [this document](remote-job-submission.md#submit-the-job).
 
 #### Maximum number of jobs
 
@@ -432,7 +432,7 @@ The following functions are operations that affect job attributes and are evalua
 
 After each job route’s ClassAd is [constructed](#how-job-routes-are-constructed), the above operations are evaluated in order. For example, if the attribute `foo` is set using `eval_set_foo` in the `JOB_ROUTER_DEFAULTS`, you'll be unable to use `delete_foo` to remove it from your jobs since the attribute is set using `eval_set_foo` after the deletion occurs according to the order of operations. To get around this, we can take advantage of the fact that operations defined in `JOB_ROUTER_DEFAULTS` get overridden by the same operation in `JOB_ROUTER_ENTRIES`. So to 'delete' `foo`, we would add `eval_set_foo = ""` to the route in the `JOB_ROUTER_ENTRIES`, resulting in `foo` being absent from the routed job.
 
-More documentation can be found in the [HTCondor manual](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html#routing-table-entry-classad-attributes).
+More documentation can be found in the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#SECTION00644000000000000000).
 
 #### Copying attributes
 
@@ -502,11 +502,11 @@ JOB_ROUTER_ENTRIES @=jre
 This section outlines how to limit the number of total or idle jobs in a specific route (i.e., if this limit is reached, jobs will no longer be placed in this route).
 
 !!! note
-    If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution: HTCondor manages fair share on its own via [user priorities and group accounting](https://htcondor.readthedocs.io/en/stable/admin-manual/user-priorities-negotiation.html).
+    If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution: HTCondor manages fair share on its own via [user priorities and group accounting](http://research.cs.wisc.edu/htcondor/manual/v8.6/3_6User_Priorities.html).
 
 #### Total jobs
 
-To set a limit on the number of jobs for a specific route, set the [MaxJobs](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html#routing-table-entry-classad-attributes) attribute:
+To set a limit on the number of jobs for a specific route, set the [MaxJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134) attribute:
 
 ```hl_lines="6 12"
 JOB_ROUTER_ENTRIES @=jre
@@ -527,7 +527,7 @@ JOB_ROUTER_ENTRIES @=jre
 
 #### Idle jobs
 
-To set a limit on the number of idle jobs for a specific route, set the [MaxIdleJobs](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html#routing-table-entry-classad-attributes) attribute:
+To set a limit on the number of idle jobs for a specific route, set the [MaxIdleJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135) attribute:
 
 ```hl_lines="5 10"
 JOB_ROUTER_ENTRIES @=jre
@@ -595,7 +595,7 @@ JOB_ROUTER_ENTRIES @=jre
 
 ### Setting routed job requirements
 
-If you need to set requirements on your routed job, you will need to use `set_Requirements` instead of `Requirements`. The `Requirements` attribute filters jobs coming into your CE into different job routes whereas `set_Requirements` will set conditions on the routed job that must be met by the worker node it lands on. For more information on requirements, consult the [HTCondor manual](https://htcondor.readthedocs.io/en/stable/users-manual/submitting-a-job.html#about-requirements-and-rank).
+If you need to set requirements on your routed job, you will need to use `set_Requirements` instead of `Requirements`. The `Requirements` attribute filters jobs coming into your CE into different job routes whereas `set_Requirements` will set conditions on the routed job that must be met by the worker node it lands on. For more information on requirements, consult the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/2_5Submitting_Job.html#SECTION00357000000000000000).
 
 To ensure that your job lands on a Linux machine in your pool:
 
@@ -641,25 +641,31 @@ JOB_ROUTER_ENTRIES @=jre
 
 ### Setting batch system directives
 
-To write batch system directives that are not supported in the route examples above, you will need to edit the job submit script for your local batch system in `/etc/blahp/` (e.g., if your local batch system is PBS, edit `/etc/blahp/pbs_local_submit_attributes.sh`). This file is sourced during submit time and anything printed to stdout is appended to the batch system job submit script. ClassAd attributes can be passed from the routed job to the local submit attributes script via the `default_remote_cerequirements` attribute, which can take the following form:
+To write batch system directives that are not supported in the route examples above, you will need to edit the job submit script for your local batch system in `/etc/blahp/` (e.g., if your local batch system is PBS, edit `/etc/blahp/pbs_local_submit_attributes.sh`). This file is sourced during submit time and anything printed to stdout is appended to the batch system job submit script. ClassAd attributes can be passed from the routed job to the local submit attributes script via `set_default_CERequirements`, which takes a comma-separated list of other attributes:
 
 ```
-default_remote_cerequirements = "foo == X && bar == \"Y\" && ..."
+set_foo = X;
+set_bar = "Y";
+set_default_CERequirements = "foo,bar";
 ```
 
-This sets `foo` to value `X` and `bar` to the string `Y` (escaped double-quotes are required for string values) in the environment of the local submit attributes script. The following example sets the maximum walltime to 1 hour and the accounting group to the `x509UserProxyFirstFQAN` attribute of the job submitted to a PBS batch system
+This sets `foo` to value `X` and `bar` to the string `Y` in the environment of the local submit attributes script.
+
+The following example sets the maximum walltime to 1 hour and the accounting group to the `x509UserProxyFirstFQAN` attribute of the job submitted to a PBS batch system:
 
 ```hl_lines="5"
 JOB_ROUTER_ENTRIES @=jre [
      GridResource = "batch pbs";
      TargetUniverse = 9;
      name = "Setting job submit variables";
-     set_default_remote_cerequirements = strcat("Walltime == 3600 && AccountingGroup =="", x509UserProxyFirstFQAN, "\"");
+     set_Walltime = 3600;
+     set_AccountingGroup = x509UserProxyFirstFQAN;
+     set_default_CERequirements = "WallTime,AccountingGroup";
 ]
 @jre
 ```
 
-With `/etc/blahp/pbs_local_submit_attributes.sh` containing.
+With `/etc/blahp/pbs_local_submit_attributes.sh` containing:
 
 ```
 #!/bin/bash
@@ -688,7 +694,7 @@ Here are some example HTCondor-CE job routes:
 
 Atlas AGLT2 is using an HTCondor batch system. Here are some things to note about their routes.
 
--   Setting various HTCondor-specific attributes like `Rank`, `AccountingGroup`, `JobPrio` and `Periodic_Remove` (see the [HTCondor manual](https://htcondor.readthedocs.io/en/stable/classad-attributes/index.html) for more). Some of these are site-specific like `LastandFrac`, `IdleMP8Pressure`, `localQue`, `IsAnalyJob` and `JobMemoryLimit`.
+-   Setting various HTCondor-specific attributes like `Rank`, `AccountingGroup`, `JobPrio` and `Periodic_Remove` (see the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/12_Appendix_A.html) for more). Some of these are site-specific like `LastandFrac`, `IdleMP8Pressure`, `localQue`, `IsAnalyJob` and `JobMemoryLimit`.
 -   There is a difference between `Requirements` and `set_requirements`. The `Requirements` attribute matches jobs to specific routes while the `set_requirements` sets the `Requirements` attribute on the *routed* job, which confines which machines that the routed job can land on.
 
 Source: <https://www.aglt2.org/wiki/bin/view/AGLT2/CondorCE#The_JobRouter_configuration_file_content>

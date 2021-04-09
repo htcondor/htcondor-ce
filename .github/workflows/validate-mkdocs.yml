@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build MkDocs pages
-        uses: docker://squidfunk/mkdocs-material:6.2.8
+        uses: docker://squidfunk/mkdocs-material:7.1.0
         timeout-minutes: 1
         with:
           args: >-
