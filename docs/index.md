@@ -9,7 +9,7 @@ HTCondor-CE
 The [HTCondor-CE](#what-is-htcondor-ce) software is a *Compute Entrypoint* (CE) based on [HTCondor](http://htcondor.org) for sites
 that are part of a larger computing grid
 (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-As such, HTCondor-CE serves as a "door" for incoming resource allocation requests — it handles authorization and
+As such, HTCondor-CE serves as a "door" for incoming resource allocation requests (RARs) — it handles authorization and
 delegation of these requests to a grid site's local batch system.
 Supported batch systems include
 [Grid Engine](http://www.univa.com/products/),
