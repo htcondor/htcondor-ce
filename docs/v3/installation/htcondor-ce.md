@@ -1,8 +1,13 @@
-Installing an HTCondor-CE
-=========================
+Installing HTCondor-CE 3
+========================
 
-!!! note
-    If you are installing an HTCondor-CE for the Open Science Grid (OSG), consult the
+!!! warning "HTCondor-CE 3 end-of-life: October 2021"
+    HTCondor-CE 3 is distributed alongside HTCondor 8.8 in the [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
+    so HTCondor-CE 3 will reach it's end-of-life in October 2021.
+    Consider [updating to HTCondor-CE 5](../../v5/releases.md#updating-to-htcondor-ce-5) at your earliest convenience.
+
+!!! tip "Joining the Open Science Grid (OSG)?"
+    If you are installing an HTCondor-CE for the OSG, consult the
     [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
 The [HTCondor-CE](../../index.md#what-is-htcondor-ce) software is a *job gateway* based on [HTCondor](http://htcondor.org)
@@ -12,7 +17,7 @@ As such, HTCondor-CE serves as an entry point for incoming grid jobs — it hand
 to a grid site's local batch system.
 See the [overview page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
-Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
+Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 3 from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
 
 Before Starting

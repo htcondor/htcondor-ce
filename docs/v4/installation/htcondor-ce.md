@@ -1,8 +1,18 @@
-Installing an HTCondor-CE
-=========================
+Installing HTCondor-CE 4
+========================
 
-!!! note
-    If you are installing an HTCondor-CE for the Open Science Grid (OSG), consult the
+!!! warning "Update to HTCondor-CE 5"
+    In the [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/), HTCondor-CE 4 is distributed
+    alongside the HTCondor 8.9
+    [development release series](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series),
+    which has been turned into the HTCondor 9.0
+    [stable release series](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series).
+    Security and other bug-fixes that would have been targeted for 8.9 will now only be available in 9.0 or 8.8.
+    Consider [updating to HTCondor-CE 5](../../v5/releases.md#updating-to-htcondor-ce-5) and HTCondor 9.0 at your
+    earliest convenience.
+
+!!! tip "Joining the Open Science Grid (OSG)?"
+    If you are installing an HTCondor-CE for the OSG, consult the
     [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
 
 HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
@@ -11,7 +21,7 @@ It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
-Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE from the
+Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 4 from the
 [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
 
 Before Starting
