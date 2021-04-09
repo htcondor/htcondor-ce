@@ -1,79 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
-     <loc>http://htcondor-ce.org/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/overview/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/architecture/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/installation/htcondor-ce/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/installation/htcondor-ce/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/batch-system-integration/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/batch-system-integration/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/verification/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/verification/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/troubleshooting/troubleshooting/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/troubleshooting/troubleshooting/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/releases/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/remote-job-submission/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/remote-job-submission/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/troubleshooting/remote-troubleshooting/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/troubleshooting/remote-troubleshooting/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/installation/central-collector/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/installation/central-collector/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/releases/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/reference/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v5/reference/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/installation/htcondor-ce/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/overview/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/batch-system-integration/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/installation/htcondor-ce/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/verification/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/batch-system-integration/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/troubleshooting/troubleshooting/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/verification/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/remote-job-submission/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/troubleshooting/troubleshooting/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/troubleshooting/remote-troubleshooting/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/releases/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/installation/central-collector/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://htcondor-ce.org/v3/reference/</loc>
-     <lastmod>2021-04-06</lastmod>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/releases/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v4/reference/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v3/installation/htcondor-ce/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v3/batch-system-integration/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v3/verification/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v3/troubleshooting/troubleshooting/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v3/releases/</loc>
+     <lastmod>2021-04-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce-ce/v3/reference/</loc>
+     <lastmod>2021-04-09</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>

@@ -1,0 +1,1212 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce-ce/v4/troubleshooting/remote-troubleshooting/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>Remote Troubleshooting - HTCondor-CE Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/superfences.css">
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#troubleshooting-remote-htcondor-ces" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="HTCondor-CE Documentation" class="md-header__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HTCondor-CE Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Remote Troubleshooting
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../v5/installation/htcondor-ce/" class="md-tabs__link">
+        HTCondor-CE 5
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+        HTCondor-CE 4
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../v3/installation/htcondor-ce/" class="md-tabs__link">
+        HTCondor-CE 3
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    HTCondor-CE Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      <label class="md-nav__link" for="__nav_1">
+        Home
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        Architecture
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        HTCondor-CE 5
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 5" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 5
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      <label class="md-nav__link" for="__nav_2_5">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/troubleshooting/remote-troubleshooting/" class="md-nav__link">
+        Remote Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/installation/central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        HTCondor-CE 4
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 4" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 4
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" checked>
+      
+      <label class="md-nav__link" for="__nav_3_5">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_5">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Remote Troubleshooting
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Remote Troubleshooting
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-network-connectivity" class="md-nav__link">
+    Verifying Network Connectivity
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying Network Connectivity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verifying-dns" class="md-nav__link">
+    Verifying DNS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifying-service-connectivity" class="md-nav__link">
+    Verifying service connectivity
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-configuration" class="md-nav__link">
+    Verifying Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inspecting-daemons" class="md-nav__link">
+    Inspecting daemons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspecting-resource-requests" class="md-nav__link">
+    Inspecting resource requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retrieving-htcondor-ce-configuration" class="md-nav__link">
+    Retrieving HTCondor-CE configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-resource-request-submission" class="md-nav__link">
+    Verifying Resource Request Submission
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying Resource Request Submission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verifying-authentication" class="md-nav__link">
+    Verifying authentication
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#submitting-a-trace-request" class="md-nav__link">
+    Submitting a trace request
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-troubleshooting" class="md-nav__link">
+    Advanced Troubleshooting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        HTCondor-CE 3
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 3" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/master/docs/v4/troubleshooting/remote-troubleshooting.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="troubleshooting-remote-htcondor-ces">Troubleshooting Remote HTCondor-CEs<a class="headerlink" href="#troubleshooting-remote-htcondor-ces" title="Permanent link">&para;</a></h1>
+<p>Since HTCondor-CE is built on top of HTCondor, it's possible to perform quite a bit of troubleshooting from a remote
+client with access to the HTCondor command-line tools.
+For testing end-to-end resource request submission or remote interactive-like access, a grid operator will need access
+to a host with the <code>htcondor-ce-client</code> installed.
+This document outlines the steps that a grid operator can perform in order to troubleshoot a remote HTCondor-CE.</p>
+<h2 id="verifying-network-connectivity">Verifying Network Connectivity<a class="headerlink" href="#verifying-network-connectivity" title="Permanent link">&para;</a></h2>
+<p>Before performing any troubleshooting of the remote HTCondor-CE service, it's important to verify that the HTCondor-CE
+can be contacted on its HTCondor-CE port (default: <code>9619</code>) at the specified fully qualified domain name (FQDN).</p>
+<h3 id="verifying-dns">Verifying DNS<a class="headerlink" href="#verifying-dns" title="Permanent link">&para;</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Reverse DNS and GSI authentication</p>
+<p>GSI authentication requires that the HTCondor-CE host has a reverse DNS record but that record is not required to
+match the forward DNS record! For example, if you have an <code>A</code> record <code>htcondor-ce.chtc.wisc.edu -&gt; 123.4.5.678</code>, a
+<code>PTR</code> of <code>123.4.5.678 -&gt; chtc.wisc.edu</code> would satisfy the GSI authentication requirement.</p>
+</div>
+<p>As noted in the <a href="../../installation/htcondor-ce/">HTCondor-CE installation document</a>, an HTCondor-CE must have forward
+and reverse DNS records.
+To verify DNS, use a tool like <code>nslookup</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>nslookup htcondor-ce.chtc.wisc.edu
+<span class="go">Server:     144.92.254.254</span>
+<span class="go">Address:    144.92.254.254#53</span>
+
+<span class="go">Non-authoritative answer:</span>
+<span class="go">Name:   htcondor-ce.chtc.wisc.edu</span>
+<span class="go">Address: 128.104.100.65</span>
+<span class="go">Name:   htcondor-ce.chtc.wisc.edu</span>
+<span class="go">Address: 2607:f388:107c:501:216:3eff:fe89:aa3</span>
+
+<span class="gp">$ </span>nslookup <span class="m">128</span>.104.100.65
+<span class="go">65.100.104.128.in-addr.arpa name = htcondor-ce.chtc.wisc.edu.</span>
+
+<span class="go">Authoritative answers can be found from:</span>
+<span class="go">104.128.in-addr.arpa    nameserver = dns2.itd.umich.edu.</span>
+<span class="go">104.128.in-addr.arpa    nameserver = adns1.doit.wisc.edu.</span>
+<span class="go">104.128.in-addr.arpa    nameserver = adns3.doit.wisc.edu.</span>
+<span class="go">104.128.in-addr.arpa    nameserver = adns2.doit.wisc.edu.</span>
+<span class="go">adns2.doit.wisc.edu internet address = 144.92.20.99</span>
+<span class="go">dns2.itd.umich.edu  internet address = 192.12.80.222</span>
+<span class="go">adns3.doit.wisc.edu internet address = 144.92.104.21</span>
+<span class="go">adns1.doit.wisc.edu internet address = 144.92.9.21</span>
+<span class="go">adns2.doit.wisc.edu has AAAA address 2607:f388:d:2::1006</span>
+<span class="go">adns2.doit.wisc.edu has AAAA address 2607:f388::a53:2</span>
+<span class="go">adns3.doit.wisc.edu has AAAA address 2607:f388:2:2001::100b</span>
+<span class="go">adns3.doit.wisc.edu has AAAA address 2607:f388::a53:3</span>
+<span class="go">adns1.doit.wisc.edu has AAAA address 2607:f388:2:2001::100a</span>
+<span class="go">adns1.doit.wisc.edu has AAAA address 2607:f388::a53:1</span>
+</code></pre></div>
+<p>If not, the HTCondor-CE administrator will have to register the appropriate DNS records.</p>
+<h3 id="verifying-service-connectivity">Verifying service connectivity<a class="headerlink" href="#verifying-service-connectivity" title="Permanent link">&para;</a></h3>
+<p>After verifying DNS, check to see if the remote HTCondor-CE is listening on the appropriate port:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>telnet htcondor-ce.chtc.wisc.edu <span class="m">9619</span>
+<span class="go">Trying 128.104.100.65...</span>
+<span class="go">Connected to htcondor-ce.chtc.wisc.edu.</span>
+<span class="go">Escape character is &#39;^]&#39;.</span>
+</code></pre></div>
+<p>If not, the HTCondor-CE administrator will have to ensure that the service is running and/or open up their firewall.</p>
+<h2 id="verifying-configuration">Verifying Configuration<a class="headerlink" href="#verifying-configuration" title="Permanent link">&para;</a></h2>
+<p>Once you've verified network connectivity, you can start verifying the HTCondor-CE daemons.</p>
+<h3 id="inspecting-daemons">Inspecting daemons<a class="headerlink" href="#inspecting-daemons" title="Permanent link">&para;</a></h3>
+<p>To inspect the running daemons of a remote HTCondor-CE,
+use <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_status.html">condor_status</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_status -any -pool htcondor-ce.chtc.wisc.edu:9619
+<span class="go">MyType             TargetType         Name</span>
+
+<span class="go">Collector          None               My Pool - htcondor-ce.chtc.wisc.edu@htcondor-ce.c</span>
+<span class="go">Job_Router         None               htcondor-ce@htcondor-ce.chtc.wisc.edu</span>
+<span class="go">Scheduler          None               htcondor-ce.chtc.wisc.edu</span>
+<span class="go">DaemonMaster       None               htcondor-ce.chtc.wisc.edu</span>
+<span class="go">Submitter          None               nu_lhcb@users.htcondor.org</span>
+</code></pre></div>
+<p>If you don't see the appropriate daemons, ask the administrator to following
+<a href="../troubleshooting/#daemons-fail-to-start">these troubleshooting steps</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Submitter ad</p>
+<p>When querying daemons for an HTCondor-CE, you may see <code>Submitter</code> ads for each user with jobs in the queue.
+These ads are used to collect per-user stats that are available to the HTCondor-CE administrator.</p>
+</div>
+<p>You can inspect the details of a specific daemon with per-daemon and <code>-long</code> options:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_status -pool htcondor-ce.chtc.wisc.edu:9619 -collector -long
+<span class="go">ActiveQueryWorkers = 0</span>
+<span class="go">ActiveQueryWorkersPeak = 1</span>
+<span class="go">AddressV1 = &quot;{[ p=\&quot;primary\&quot;; a=\&quot;128.104.100.65\&quot;; port=9619; n=\&quot;Internet\&quot;; alias=\&quot;htcondor-ce.chtc.wisc.edu\&quot;; spid=\&quot;collector\&quot;; noUDP=true; ], [ p=\&quot;IPv4\&quot;; a=\&quot;128.104.100.65\&quot;; port=9619; n=\&quot;Internet\&quot;; alias=\&quot;htcondor-ce.chtc.wisc.edu\&quot;; spid=\&quot;collector\&quot;; noUDP=true; ], [ p=\&quot;IPv6\&quot;; a=\&quot;2607:f388:107c:501:216:3eff:fe89:aa3\&quot;; port=9619; n=\&quot;Internet\&quot;; alias=\&quot;htcondor-ce.chtc.wisc.edu\&quot;; spid=\&quot;collector\&quot;; noUDP=true; ]}&quot;</span>
+<span class="go">CollectorIpAddr = &quot;&lt;128.104.100.65:9619?addrs=128.104.100.65-9619+[2607-f388-107c-501-216-3eff-fe89-aa3]-9619&amp;alias=htcondor-ce.chtc.wisc.edu&amp;noUDP&amp;sock=collector&gt;&quot;</span>
+<span class="go">CondorAdmin = &quot;root@htcondor-ce.chtc.wisc.edu&quot;</span>
+<span class="go">CondorPlatform = &quot;$CondorPlatform: x86_64_CentOS7 $&quot;</span>
+<span class="go">CondorVersion = &quot;$CondorVersion: 8.9.8 Jun 29 2020 BuildID: 508520 PackageID: 8.9.8-0.508520 $&quot;</span>
+<span class="go">CurrentJobsRunningAll = 0</span>
+<span class="go">CurrentJobsRunningGrid = 0</span>
+<span class="go">CurrentJobsRunningJava = 0</span>
+</code></pre></div>
+<h3 id="inspecting-resource-requests">Inspecting resource requests<a class="headerlink" href="#inspecting-resource-requests" title="Permanent link">&para;</a></h3>
+<p>To inspect resource requests submitted to a remote HTCondor-CE,
+use <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_q.html">condor_q</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_q -all -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619
+
+<span class="go">-- Schedd: htcondor-ce.chtc.wisc.edu : &lt;128.104.100.65:9619?... @ 10/29/20 15:31:45</span>
+<span class="go">OWNER   BATCH_NAME    SUBMITTED   DONE   RUN    IDLE   HOLD  TOTAL JOB_IDS</span>
+<span class="go">nu_lhcb ID: 24631   10/18 12:06     33      _      _      _     35 24631.5-15</span>
+<span class="go">nu_lhcb ID: 24632   10/18 12:23      7      _      _      _      9 24632.2-4</span>
+<span class="go">nu_lhcb ID: 24635   10/18 14:23      3      _      _      _      5 24635.0-1</span>
+<span class="go">nu_lhcb ID: 24636   10/18 14:40      5      _      _      _      9 24636.0-6</span>
+<span class="go">nu_lhcb ID: 24637   10/18 14:58      7      _      _      _      8 24637.2</span>
+<span class="go">nu_lhcb ID: 24638   10/18 15:15      7      _      _      _      8 24638.1</span>
+</code></pre></div>
+<p>You can inspect the details of a specific resource request with the <code>-long</code> option:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_q -all -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -long <span class="m">24631</span>.5
+<span class="go">Arguments = &quot;&quot;</span>
+<span class="go">BufferBlockSize = 32768</span>
+<span class="go">BufferSize = 524288</span>
+<span class="go">BytesRecvd = 58669.0</span>
+<span class="go">BytesSent = 184201.0</span>
+<span class="go">ClusterId = 24631</span>
+<span class="go">Cmd = &quot;DIRAC_Ullq7V_pilotwrapper.py&quot;</span>
+<span class="go">CommittedSlotTime = 0</span>
+<span class="go">CommittedSuspensionTime = 0</span>
+<span class="go">CommittedTime = 0</span>
+</code></pre></div>
+<h3 id="retrieving-htcondor-ce-configuration">Retrieving HTCondor-CE configuration<a class="headerlink" href="#retrieving-htcondor-ce-configuration" title="Permanent link">&para;</a></h3>
+<p>To verify a remote HTCondor-CE configuration,
+use <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_config_val.html">condor_config_val</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_config_val -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -dump
+<span class="gp"># </span>Configuration from master on htcondor-ce.chtc.wisc.edu &lt;<span class="m">128</span>.104.100.65:9619?addrs<span class="o">=</span><span class="m">128</span>.104.100.65-9619+<span class="o">[</span><span class="m">2607</span>-f388-107c-501-216-3eff-fe89-aa3<span class="o">]</span>-9619<span class="p">&amp;</span><span class="nv">alias</span><span class="o">=</span>htcondor-ce.chtc.wisc.edu<span class="p">&amp;</span>noUDP<span class="p">&amp;</span><span class="nv">sock</span><span class="o">=</span>master_1744571_b0a0&gt;
+<span class="go">ABORT_ON_EXCEPTION = false</span>
+<span class="go">ACCOUNTANT_HOST = </span>
+<span class="go">ACCOUNTANT_LOCAL_DOMAIN = </span>
+<span class="go">ActivationTimer = ifThenElse(JobStart =!= UNDEFINED, (time() - JobStart), 0)</span>
+<span class="go">ActivityTimer = (time() - EnteredCurrentActivity)</span>
+<span class="go">ADD_WINDOWS_FIREWALL_EXCEPTION = $(CondorIsAdmin)</span>
+<span class="go">ADVERTISE_IPV4_FIRST = $(PREFER_IPV4)</span>
+<span class="go">ALL_DEBUG = D:CAT D_ALWAYS:2</span>
+<span class="go">ALLOW_ADMIN_COMMANDS = true</span>
+</code></pre></div>
+<p>If you know the name of the configuration variable, you can query for it directly:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_config_val -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -verbose JOB_ROUTER_SCHEDD2_NAME
+<span class="go">JOB_ROUTER_SCHEDD2_NAME = htcondor-ce.chtc.wisc.edu</span>
+<span class="gp"> # </span>at: /etc/condor-ce/config.d/02-ce-condor.conf, line <span class="m">20</span>
+<span class="gp"> # </span>raw: <span class="nv">JOB_ROUTER_SCHEDD2_NAME</span> <span class="o">=</span> <span class="k">$(</span>FULL_HOSTNAME<span class="k">)</span>
+</code></pre></div>
+<h2 id="verifying-resource-request-submission">Verifying Resource Request Submission<a class="headerlink" href="#verifying-resource-request-submission" title="Permanent link">&para;</a></h2>
+<p>After verifying that all the remote HTCondor-CE <a href="#inspecting-daemons">daemons are up</a>,
+you can start submitting resource requests!</p>
+<h3 id="verifying-authentication">Verifying authentication<a class="headerlink" href="#verifying-authentication" title="Permanent link">&para;</a></h3>
+<p>Before submitting a successful resource request, you will want to verify that you have submit privileges.
+For this, you will need a credential such as a grid proxy:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>voms-proxy-info
+<span class="go">subject   : /DC=org/DC=cilogon/C=US/O=University of Wisconsin-Madison/CN=Brian Lin A2266246/CN=41319870</span>
+<span class="go">issuer    : /DC=org/DC=cilogon/C=US/O=University of Wisconsin-Madison/CN=Brian Lin A2266246</span>
+<span class="go">identity  : /DC=org/DC=cilogon/C=US/O=University of Wisconsin-Madison/CN=Brian Lin A2266246</span>
+<span class="go">type      : RFC compliant proxy</span>
+<span class="go">strength  : 1024 bits</span>
+<span class="go">path      : /tmp/x509up_u1000</span>
+<span class="go">timeleft  : 3:55:22</span>
+</code></pre></div>
+<p>After you have retrieved your credential, verify that you have the ability to submit requests to the remote HTCondor-CE
+(i.e., <code>WRITE</code> access) with <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_ping.html">condor_ping</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span> <span class="nv">_condor_SEC_CLIENT_AUTHENTICATION_METHODS</span><span class="o">=</span>SCITOKENS,GSI
+<span class="gp">$ </span><span class="nb">export</span> <span class="nv">_condor_SEC_TOOL_DEBUG</span><span class="o">=</span>D_SECURITY:2  <span class="c1"># Extremely verbose debugging for troubleshooting authentication issues</span>
+<span class="gp">$ </span>condor_ping -name htcondor-ce.chtc.wisc.edu <span class="se">\</span>
+<span class="go">              -pool htcondor-ce.chtc.wisc.edu:9619 \</span>
+<span class="go">              -verbose \</span>
+<span class="go">              -debug \</span>
+<span class="go">               WRITE</span>
+<span class="go">[...]</span>
+<span class="go">Remote Version:              $CondorVersion: 8.9.8 Jun 29 2020 BuildID: 508520 PackageID: 8.9.8-0.508520 $</span>
+<span class="go">Local  Version:              $CondorVersion: 8.9.9 Aug 26 2020 BuildID: 515894 PackageID: 8.9.9-0.515894 PRE-RELEASE-UWCS $</span>
+<span class="go">Session ID:                  htcondor-ce:2980451:1604006441:0</span>
+<span class="go">Instruction:                 WRITE</span>
+<span class="go">Command:                     60021</span>
+<span class="go">Encryption:                  none</span>
+<span class="go">Integrity:                   MD5</span>
+<span class="go">Authenticated using:         GSI</span>
+<span class="go">All authentication methods:  FS,GSI</span>
+<span class="go">Remote Mapping:              blin@users.htcondor.org</span>
+<span class="go">Authorized:                  TRUE</span>
+</code></pre></div>
+<p>If <code>condor_ping</code> fails,
+ask the administrator to follow <a href="../troubleshooting/#jobs-fail-to-submit-to-the-ce">this troubleshooting section</a>,
+set <code>SCHEDD_DEBUG = $(SCHEDD_DEBUG) D_SECURITY:2</code>,
+and cross-check the <a href="../troubleshooting/#schedlog">HTCondor-CE SchedLog</a> for authentication issues.</p>
+<h3 id="submitting-a-trace-request">Submitting a trace request<a class="headerlink" href="#submitting-a-trace-request" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">HTCondor-CE client</p>
+<p>This section requires an installation of the <code>htcondor-ce-client</code>.</p>
+</div>
+<p>The easiest way to troubleshoot end-to-end resource request submission is <code>condor_ce_trace</code>,
+available in the <code>htcondor-ce-client</code>.
+Follow <a href="../../remote-job-submission/#submission-with-debugging-tools">this documentation</a> for detailed instructions for
+installing and using <code>condor_ce_trace</code>.</p>
+<h2 id="advanced-troubleshooting">Advanced Troubleshooting<a class="headerlink" href="#advanced-troubleshooting" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">HTCondor-CE client</p>
+<p>This section requires an installation of the <code>htcondor-ce-client</code>.</p>
+</div>
+<p>If the issue at hand is complicated or the communication turnaround time with the administrator is too long,
+it is often more expedient to grant the operator direct access to the HTCondor-CE host.
+Instead of direct login access, HTCondor-CE has the ability to allow a remote operator to run commands on the host as an
+unprivileged user.
+This requires <a href="#verifying-authentication">permission to submit resource requests</a> as well as an HTCondor-CE that is
+configured to run local universe jobs:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_config_val -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -verbose START_LOCAL_UNIVERSE
+<span class="go">START_LOCAL_UNIVERSE = TotalLocalJobsRunning + TotalSchedulerJobsRunning &lt; 20</span>
+<span class="gp"> # </span>at: /etc/condor-ce/config.d/03-managed-fork.conf, line <span class="m">11</span>
+<span class="gp"> # </span>raw: <span class="nv">START_LOCAL_UNIVERSE</span> <span class="o">=</span> TotalLocalJobsRunning + TotalSchedulerJobsRunning &lt; <span class="m">20</span>
+<span class="gp"> # </span>default: TotalLocalJobsRunning &lt; <span class="m">200</span>
+</code></pre></div>
+<p>After verifying that you can submit resource requests and that the HTCondor-CE supports local universe,
+use <a href="../troubleshooting/#condor_ce_run">condor_ce_run</a> to run commands on the remote HTCondor-CE host:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_ce_run -lr htcondor-ce.chtc.wisc.edu /bin/sh -c <span class="s1">&#39;condor_q -all&#39;</span>
+
+<span class="go">-- Schedd: htcondor-ce.chtc.wisc.edu : &lt;128.104.100.65:9618?... @ 10/29/20 17:42:27</span>
+<span class="go">OWNER   BATCH_NAME    SUBMITTED   DONE   RUN    IDLE   HOLD  TOTAL JOB_IDS</span>
+<span class="go">nu_lhcb ID: 530251   7/13 22:20      _      _      _      _      1 530251.0</span>
+<span class="go">nu_lhcb ID: 586158  10/28 05:15      _      _      _      1      1 586158.0</span>
+<span class="go">nu_lhcb ID: 586213  10/28 06:23      _      1      _      _      1 586213.0</span>
+<span class="go">nu_lhcb ID: 586228  10/28 06:23      _      1      _      _      1 586228.0</span>
+<span class="go">nu_lhcb ID: 586254  10/28 06:23      _      1      _      _      1 586254.0</span>
+<span class="go">nu_lhcb ID: 586289  10/28 07:58      _      _      _      1      1 586289.0</span>
+</code></pre></div>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions or issues about troubleshooting remote HTCondor-CEs, please <a href="/#contact-us">contact us</a> for
+assistance.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../remote-job-submission/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Submit Jobs Remotely
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../../installation/central-collector/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Install a Central Collector
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>

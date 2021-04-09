@@ -1,0 +1,1522 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce-ce/v4/installation/htcondor-ce/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>Installation - HTCondor-CE Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/superfences.css">
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installing-htcondor-ce-4" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="HTCondor-CE Documentation" class="md-header__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HTCondor-CE Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Installation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../v5/installation/htcondor-ce/" class="md-tabs__link">
+        HTCondor-CE 5
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        HTCondor-CE 4
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../v3/installation/htcondor-ce/" class="md-tabs__link">
+        HTCondor-CE 3
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    HTCondor-CE Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/htcondor/htcondor-ce/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      <label class="md-nav__link" for="__nav_1">
+        Home
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        Architecture
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        HTCondor-CE 5
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 5" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 5
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      <label class="md-nav__link" for="__nav_2_5">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/troubleshooting/remote-troubleshooting/" class="md-nav__link">
+        Remote Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/installation/central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v5/reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        HTCondor-CE 4
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 4" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 4
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Installation
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#before-starting" class="md-nav__link">
+    Before Starting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-htcondor-ce" class="md-nav__link">
+    Installing HTCondor-CE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-htcondor-ce" class="md-nav__link">
+    Configuring HTCondor-CE
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring HTCondor-CE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuring-authentication" class="md-nav__link">
+    Configuring authentication
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#built-in-mapfile" class="md-nav__link">
+    Built-in mapfile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#globus-callout" class="md-nav__link">
+    Globus callout
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-certificates" class="md-nav__link">
+    Configuring certificates
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-the-batch-system" class="md-nav__link">
+    Configuring the batch system
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring the batch system">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#htcondor-batch-systems" class="md-nav__link">
+    HTCondor batch systems
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-htcondor-batch-systems" class="md-nav__link">
+    Non-HTCondor batch systems
+  </a>
+  
+    <nav class="md-nav" aria-label="Non-HTCondor batch systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuring-the-blahp" class="md-nav__link">
+    Configuring the BLAHP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sharing-the-spool-directory" class="md-nav__link">
+    Sharing the SPOOL directory
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-configuration" class="md-nav__link">
+    Optional Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuring-for-multiple-network-interfaces" class="md-nav__link">
+    Configuring for multiple network interfaces
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limiting-or-disabling-locally-running-jobs-on-the-ce" class="md-nav__link">
+    Limiting or disabling locally running jobs on the CE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-the-monitoring-web-interface" class="md-nav__link">
+    Enabling the monitoring web interface
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uploading-accounting-records-to-apel" class="md-nav__link">
+    Uploading accounting records to APEL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-bdii-integration" class="md-nav__link">
+    Enabling BDII integration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    Next Steps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      <label class="md-nav__link" for="__nav_3_5">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_5">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/remote-troubleshooting/" class="md-nav__link">
+        Remote Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        HTCondor-CE 3
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 3" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/batch-system-integration/" class="md-nav__link">
+        Batch System Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/verification/" class="md-nav__link">
+        Verification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/troubleshooting/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v3/reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/master/docs/v4/installation/htcondor-ce.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="installing-htcondor-ce-4">Installing HTCondor-CE 4<a class="headerlink" href="#installing-htcondor-ce-4" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Update to HTCondor-CE 5</p>
+<p>In the <a href="http://research.cs.wisc.edu/htcondor/instructions/">HTCondor Yum repositories</a>, HTCondor-CE 4 is distributed
+alongside the HTCondor 8.9
+<a href="https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series">development release series</a>,
+which has been turned into the HTCondor 9.0
+<a href="https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series">stable release series</a>.
+Security and other bug-fixes that would have been targeted for 8.9 will now only be available in 9.0 or 8.8.
+Consider <a href="../../../v5/releases/#updating-to-htcondor-ce-5">updating to HTCondor-CE 5</a> and HTCondor 9.0 at your
+earliest convenience.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Joining the Open Science Grid (OSG)?</p>
+<p>If you are installing an HTCondor-CE for the OSG, consult the
+<a href="https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/">OSG-specific documentation</a>.</p>
+</div>
+<p>HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
+grids (e.g. <a href="https://www.egi.eu/">European Grid Infrastructure</a>, <a href="https://opensciencegrid.org/">Open Science Grid</a>).
+It is configured to use the <a href="https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html">Job Router daemon</a>
+to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
+See the <a href="../../..">home page</a> for more details on the features and architecture of HTCondor-CE.</p>
+<p>Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 4 from the
+<a href="http://research.cs.wisc.edu/htcondor/instructions/">HTCondor Yum repositories</a>.</p>
+<h2 id="before-starting">Before Starting<a class="headerlink" href="#before-starting" title="Permanent link">&para;</a></h2>
+<p>Before starting the installation process, consider the following points
+(consulting <a href="../../reference/">the reference page</a> as necessary):</p>
+<ul>
+<li><strong>User IDs:</strong> If they do not exist already, the installation will create the <code>condor</code> Linux user (UID 4716)</li>
+<li><strong>SSL certificate:</strong> The HTCondor-CE service uses a host certificate and key for SSL and GSI authentication</li>
+<li><strong>DNS entries:</strong> Forward and reverse DNS must resolve for the HTCondor-CE host</li>
+<li><strong>Network ports:</strong> The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)</li>
+<li><strong>Submit host:</strong> HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
+    local cluster running supported batch system software (Grid Engine, HTCondor, LSF, PBS/Torque, Slurm) </li>
+<li><strong>File Systems</strong>: Non-HTCondor batch systems require a <a href="#sharing-the-spool-directory">shared file system</a>
+    between the HTCondor-CE host and the batch system worker nodes.</li>
+</ul>
+<p>There are some one-time (per host) steps to prepare in advance:</p>
+<ul>
+<li>Ensure the host has a supported operating system (Red Hat Enterprise Linux variant 7)</li>
+<li>Obtain root access to the host</li>
+<li>Prepare the <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a> and <a href="https://research.cs.wisc.edu/htcondor/yum/">HTCondor Development</a> Yum
+  repositories</li>
+<li>Install CA certificates and VO data into <code>/etc/grid-security/certificates</code> and <code>/etc/grid-security/vomsdir</code>,
+  respectively</li>
+</ul>
+<h2 id="installing-htcondor-ce">Installing HTCondor-CE<a class="headerlink" href="#installing-htcondor-ce" title="Permanent link">&para;</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>HTCondor-CE must be installed on a host that is configured to submit jobs to your batch system.
+The details of this setup is site-specific by nature and therefore beyond the scope of this document.</p>
+</div>
+<ol>
+<li>
+<p>Clean yum cache:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum clean all --enablerepo<span class="o">=</span>*
+</code></pre></div>
+
+</li>
+<li>
+<p>Update software:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum update
+</code></pre></div>
+
+<p>This command will update <strong>all</strong> packages</p>
+</li>
+<li>
+<p>Install the <code>fetch-crl</code> package, available from the EPEL repositories.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install fetch-crl
+</code></pre></div>
+
+</li>
+<li>
+<p>Select the appropriate convenience RPM:</p>
+<table>
+<thead>
+<tr>
+<th align="left">If your batch system is...</th>
+<th align="left">Then use the following package...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Grid Engine</td>
+<td align="left"><code>htcondor-ce-sge</code></td>
+</tr>
+<tr>
+<td align="left">HTCondor</td>
+<td align="left"><code>htcondor-ce-condor</code></td>
+</tr>
+<tr>
+<td align="left">LSF</td>
+<td align="left"><code>htcondor-ce-lsf</code></td>
+</tr>
+<tr>
+<td align="left">PBS/Torque</td>
+<td align="left"><code>htcondor-ce-pbs</code></td>
+</tr>
+<tr>
+<td align="left">SLURM</td>
+<td align="left"><code>htcondor-ce-slurm</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Install the CE software:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install &lt;PACKAGE&gt;
+</code></pre></div>
+
+<p>Where <code>&lt;PACKAGE&gt;</code> is the package you selected in the above step.</p>
+</li>
+</ol>
+<h2 id="configuring-htcondor-ce">Configuring HTCondor-CE<a class="headerlink" href="#configuring-htcondor-ce" title="Permanent link">&para;</a></h2>
+<p>There are a few required configuration steps to connect HTCondor-CE with your batch system and authentication method.
+For more advanced configuration, see the section on <a href="#optional-configuration">optional configurations</a>.</p>
+<h3 id="configuring-authentication">Configuring authentication<a class="headerlink" href="#configuring-authentication" title="Permanent link">&para;</a></h3>
+<p>To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
+<a href="#built-in-mapfile">built-in mapfile</a> or to make <a href="#globus-callout">Globus callouts</a> to an external service like Argus
+or LCMAPS.
+The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
+such a service.</p>
+<p>Additionally, the HTCondor-CE service uses <a href="#configuring-certificates">X.509 certificates</a> for SSL and GSI authentication.</p>
+<h4 id="built-in-mapfile">Built-in mapfile<a class="headerlink" href="#built-in-mapfile" title="Permanent link">&para;</a></h4>
+<p>The built-in mapfile is a
+<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication">unified HTCondor mapfile</a>
+located at <code>/etc/condor-ce/condor_mapfile</code>.
+This file is parsed in line-by-line order and HTCondor-CE will use the first line that matches.
+Therefore, mappings should be added to the top of the file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code>condor_mapfile.rpmnew</code> files may be generated upon HTCondor-CE version updates and they should be merged into
+<code>condor_mapfile</code>.</p>
+</div>
+<p>To configure authorization for users submitting jobs with an X.509 proxy certificate to your HTCondor-CE, add lines
+of the following format:</p>
+<div class="highlight"><pre><span></span><code>GSI &quot;^&lt;DISTINGUISHED NAME&gt;$&quot; &lt;USERNAME&gt;
+</code></pre></div>
+<p>Replacing <code>&lt;DISTINGUISHED NAME</code>&gt; (escaping any '/' with '\/') and <code>&lt;USERNAME</code>&gt; with the distinguished name of the
+incoming certificate and the unix account under which the job should run, respectively.</p>
+<p>VOMS attributes of incoming X.509 proxy certificates can also be used for mapping:</p>
+<div class="highlight"><pre><span></span><code>GSI &quot;&lt;DISTINGUISHED NAME&gt;,&lt;VOMS FQAN 1&gt;,&lt;VOMS FQAN 2&gt;,...,&lt;VOMSFQAN N&gt;&quot; &lt;USERNAME&gt;
+</code></pre></div>
+<p>Replacing <code>&lt;DISTINGUISHED NAME</code>&gt; (escaping any '/' with '\/'), <code>&lt;VOMSFQAN</code>&gt; fields, and <code>&lt;USERNAME</code>&gt; with the
+distinguished name of the incoming certificate, the VOMS roles and groups, and the unix account under which the job
+should run, respectively.</p>
+<p>Additionally, you can use regular expressions for mapping certificate and VOMS attribute credentials.
+For example, to map any certificate from the <code>GLOW</code> VO with the <code>htpc</code> role to the <code>glow</code> user, add the following line:</p>
+<div class="highlight"><pre><span></span><code>GSI &quot;.*,\/GLOW\/Role=htpc.*&quot; glow
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should only add mappings to the mapfile. Do not remove any of the default mappings:</p>
+<div class="codehilite"><pre><span></span><code>GSI &quot;(/CN=[-.A-Za-z0-9/= ]+)&quot; \1@unmapped.htcondor.org
+CLAIMTOBE .* anonymous@claimtobe
+FS (.*) \1
+</code></pre></div>
+
+</div>
+<h4 id="globus-callout">Globus callout<a class="headerlink" href="#globus-callout" title="Permanent link">&para;</a></h4>
+<p>To use a Globus callout to a service like LCMAPS or Argus, you will need to have the relevant library installed as well
+as the following HTCondor-CE configuration:</p>
+<ol>
+<li>
+<p>Add the following line to the top of <code>/etc/condor-ce/condor_mapfile</code>:</p>
+<div class="codehilite"><pre><span></span><code>GSI (.*) GSS_ASSIST_GRIDMAP
+</code></pre></div>
+
+</li>
+<li>
+<p>Create <code>/etc/grid-security/gsi-authz.conf</code> with the following content:</p>
+<ul>
+<li>
+<p>For LCMAPS:</p>
+<div class="codehilite"><pre><span></span><code>globus_mapping liblcas_lcmaps_gt4_mapping.so lcmaps_callout
+</code></pre></div>
+
+</li>
+<li>
+<p>For Argus:</p>
+<div class="codehilite"><pre><span></span><code>globus_mapping /usr/lib64/libgsi_pep_callout.so argus_pep_callout
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="configuring-certificates">Configuring certificates<a class="headerlink" href="#configuring-certificates" title="Permanent link">&para;</a></h4>
+<p>HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SSL and GSI connections.
+By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating SSL
+connections, i.e. for SciTokens or SSL authentication methods.
+But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
+certificates issued by <a href="https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in">IGTF CAs</a>) located
+in <code>/etc/grid-security/</code>.</p>
+<p>Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:</p>
+<ul>
+<li>
+<p>If your SSL or SciTokens clients will be interacting with your CE using grid certificates or you are using a grid
+  certificate as your host certificate:</p>
+<ol>
+<li>
+<p>Set the following configuration in <code>/etc/condor-ce/config.d/01-ce-auth.conf</code>:</p>
+<div class="codehilite"><pre><span></span><code>AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
+AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
+AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
+AUTH_SSL_SERVER_CAFILE =
+AUTH_SSL_CLIENT_CERTFILE = /etc/grid-security/hostcert.pem
+AUTH_SSL_CLIENT_KEYFILE = /etc/grid-security/hostkey.pem
+AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+AUTH_SSL_CLIENT_CAFILE =
+</code></pre></div>
+
+</li>
+<li>
+<p>Install your host certificate and key into <code>/etc/grid-security/hostcert.pem</code> and <code>/etc/grid-security/hostkey.pem</code>,
+   respectively</p>
+</li>
+<li>
+<p>Set the ownership and Unix permissions of the host certificate and key</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>chown root:root /etc/grid-security/hostcert.pem /etc/grid-security/hostkey.pem
+<span class="gp">root@host # </span>chmod <span class="m">644</span> /etc/grid-security/hostcert.pem
+<span class="gp">root@host # </span>chmod <span class="m">600</span> /etc/grid-security/hostkey.pem
+</code></pre></div>
+
+</li>
+</ol>
+</li>
+<li>
+<p>Otherwise, use the default system locations:</p>
+<ol>
+<li>
+<p>Install your host certificate and key into <code>/etc/pki/tls/certs/localhost.crt</code> and
+   <code>/etc/pki/tls/private/localhost.key</code>, respectively</p>
+</li>
+<li>
+<p>Set the ownership and Unix permissions of the host certificate and key</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>chown root:root /etc/pki/tls/certs/localhost.crt /etc/pki/tls/private/localhost.key
+<span class="gp">root@host # </span>chmod <span class="m">644</span> /etc/pki/tls/certs/localhost.crt
+<span class="gp">root@host # </span>chmod <span class="m">600</span> /etc/pki/tls/private/localhost.key
+</code></pre></div>
+
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="configuring-the-batch-system">Configuring the batch system<a class="headerlink" href="#configuring-the-batch-system" title="Permanent link">&para;</a></h3>
+<p>Before HTCondor-CE can submit jobs to your local batch system, it has to be configured to do so.
+The configuration will differ depending on if your local batch system is HTCondor or one of the other supported batch
+systems.
+Choose the section corresponding to your batch system below.</p>
+<h4 id="htcondor-batch-systems">HTCondor batch systems<a class="headerlink" href="#htcondor-batch-systems" title="Permanent link">&para;</a></h4>
+<p>To configure HTCondor-CE for an HTCondor batch system, set <code>JOB_ROUTER_SCHEDD2_POOL</code> to your site's central manager host
+and port:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_SCHEDD2_POOL = cm.chtc.wisc.edu:9618
+</code></pre></div>
+<p>Additionally, set <code>JOB_ROUTER_SCHEDD2_SPOOL</code> to the location of the local batch <code>SPOOL</code> directory on the CE host if it
+is different than the default location (<code>/var/lib/condor/spool</code>).</p>
+<h4 id="non-htcondor-batch-systems">Non-HTCondor batch systems<a class="headerlink" href="#non-htcondor-batch-systems" title="Permanent link">&para;</a></h4>
+<h5 id="configuring-the-blahp">Configuring the BLAHP<a class="headerlink" href="#configuring-the-blahp" title="Permanent link">&para;</a></h5>
+<p>HTCondor-CE uses the Batch Language ASCII Helper Protocol (BLAHP) to submit and track jobs to non-HTCondor batch systems.
+To work with the HTCondor-CE, modify <code>/usr/libexec/condor/glite/etc/batch_gahp.config</code> using the following steps:</p>
+<ol>
+<li>
+<p>Disable BLAHP handling of certificate proxies:</p>
+<div class="codehilite"><pre><span></span><code>blah_disable_wn_proxy_renewal=yes
+blah_delegate_renewed_proxies=no
+blah_disable_limited_proxy=yes
+</code></pre></div>
+
+</li>
+<li>
+<p><strong>(Optional)</strong> If your batch system tools are installed in a non-standard location (i.e., outside of <code>/usr/bin/</code>),
+   set the corresponding <code>*_binpath</code> variable to the directory containing your batch system tools:</p>
+<table>
+<thead>
+<tr>
+<th><strong>If your batch system is...</strong></th>
+<th><strong>Then change the following configuration variable...</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LSF</td>
+<td><code>lsf_binpath</code></td>
+</tr>
+<tr>
+<td>PBS/Torque</td>
+<td><code>pbs_binpath</code></td>
+</tr>
+<tr>
+<td>SGE</td>
+<td><code>sge_binpath</code></td>
+</tr>
+<tr>
+<td>Slurm</td>
+<td><code>slurm_binpath</code></td>
+</tr>
+</tbody>
+</table>
+<p>For example, if your Slurm binaries (e.g. <code>sbatch</code>) exist in <code>/opt/slurm/bin</code>, you would set the following:</p>
+<div class="codehilite"><pre><span></span><code>slurm_binpath=/opt/slurm/bin/
+</code></pre></div>
+
+</li>
+</ol>
+<h5 id="sharing-the-spool-directory">Sharing the SPOOL directory<a class="headerlink" href="#sharing-the-spool-directory" title="Permanent link">&para;</a></h5>
+<p>Non-HTCondor batch systems require a shared file system configuration to support file transfer from the HTCondor-CE to
+your site's worker nodes.
+The current recommendation is to run a dedicated NFS server on the <strong>CE host</strong>.
+In this setup, HTCondor-CE writes to the local spool directory, the NFS server shares the directory, and each worker
+node mounts the directory in the same location as on the CE.
+For example, if your spool directory is <code>/var/lib/condor-ce</code> (the default), you must mount the shared directory to
+<code>/var/lib/condor-ce</code> on the worker nodes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you choose not to host the NFS server on your CE, you will need to turn off root squash so that the HTCondor-CE
+daemons can write to the spool directory.</p>
+</div>
+<p>You can control the value of the spool directory by setting <code>SPOOL</code> in <code>/etc/condor-ce/config.d/99-local.conf</code> (create
+this file if it doesn't exist).
+For example, the following sets the <code>SPOOL</code> directory to <code>/home/condor</code>:</p>
+<div class="highlight"><pre><span></span><code>SPOOL = /home/condor
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The shared spool directory must be readable and writeable by the <code>condor</code> user for HTCondor-CE to function correctly.</p>
+</div>
+<h3 id="optional-configuration">Optional Configuration<a class="headerlink" href="#optional-configuration" title="Permanent link">&para;</a></h3>
+<p>The following configuration steps are optional and will not be required for all sites.
+If you do not need any of the following special configurations, skip to
+<a href="#next-steps">the section on next steps</a>.</p>
+<h4 id="configuring-for-multiple-network-interfaces">Configuring for multiple network interfaces<a class="headerlink" href="#configuring-for-multiple-network-interfaces" title="Permanent link">&para;</a></h4>
+<p>If you have multiple network interfaces with different hostnames, the HTCondor-CE daemons need to know which hostname
+and interface to use when communicating with each other.
+Set <code>NETWORK_HOSTNAME</code> and <code>NETWORK_INTERFACE</code> to the hostname and IP address of your public interface, respectively, in
+<code>/etc/condor-ce/config.d/99-local.conf</code> directory with the line:</p>
+<div class="highlight"><pre><span></span><code>NETWORK_HOSTNAME = condorce.example.com
+NETWORK_INTERFACE = 127.0.0.1
+</code></pre></div>
+<p>Replacing <code>condorce.example.com</code> text with your public interface’s hostname and <code>127.0.0.1</code> with your public interface’s
+IP address.</p>
+<h4 id="limiting-or-disabling-locally-running-jobs-on-the-ce">Limiting or disabling locally running jobs on the CE<a class="headerlink" href="#limiting-or-disabling-locally-running-jobs-on-the-ce" title="Permanent link">&para;</a></h4>
+<p>If you want to limit or disable jobs running locally on your CE, you will need to configure HTCondor-CE's local and
+scheduler universes.
+Local and scheduler universes allow jobs to be run on the CE itself, mainly for remote troubleshooting.
+Pilot jobs will not run as local/scheduler universe jobs so leaving them enabled does NOT turn your CE into another
+worker node.</p>
+<p>The two universes are effectively the same (scheduler universe launches a starter process for each job), so we will be
+configuring them in unison.</p>
+<ul>
+<li>
+<p><strong>To change the default limit</strong> on the number of locally run jobs (the current default is 20), add the following to
+  <code>/etc/condor-ce/config.d/99-local.conf</code>:</p>
+<div class="codehilite"><pre><span></span><code>START_LOCAL_UNIVERSE = TotalLocalJobsRunning + TotalSchedulerJobsRunning &lt; &lt;JOB-LIMIT&gt;
+START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+</code></pre></div>
+
+<p>Where <code>&lt;JOB-LIMIT&gt;</code> is the maximum number of jobs allowed to run locally</p>
+</li>
+<li>
+<p><strong>To only allow a specific user</strong> to start locally run jobs, add the following to
+  <code>/etc/condor-ce/config.d/99-local.conf</code>:</p>
+<div class="codehilite"><pre><span></span><code>START_LOCAL_UNIVERSE = target.Owner =?= &quot;&lt;USERNAME&gt;&quot;
+START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+</code></pre></div>
+
+</li>
+</ul>
+<p>Change <code>&lt;USERNAME&gt;</code> for the username allowed to run jobs locally</p>
+<ul>
+<li><strong>To disable</strong> locally run jobs, add the following to <code>/etc/condor-ce/config.d/99-local.conf</code>:<div class="codehilite"><pre><span></span><code>START_LOCAL_UNIVERSE = False
+START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
+</code></pre></div>
+
+</li>
+</ul>
+<h4 id="enabling-the-monitoring-web-interface">Enabling the monitoring web interface<a class="headerlink" href="#enabling-the-monitoring-web-interface" title="Permanent link">&para;</a></h4>
+<p>The HTCondor-CE View is an optional web interface to the status of your CE.
+To run the HTCondor-CE View, install the appropriate package and set the relevant configuration.</p>
+<ol>
+<li>
+<p>Begin by installing the <code>htcondor-ce-view</code> package:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install htcondor-ce-view
+</code></pre></div>
+
+</li>
+<li>
+<p>Restart the <code>condor-ce</code> service</p>
+</li>
+<li>
+<p>Verify the service by entering your CE's hostname into your web browser</p>
+</li>
+</ol>
+<p>The website is served on port 80 by default.
+To change this default, edit the value of <code>HTCONDORCE_VIEW_PORT</code> in <code>/etc/condor-ce/config.d/05-ce-view.conf</code>.</p>
+<h4 id="uploading-accounting-records-to-apel">Uploading accounting records to APEL<a class="headerlink" href="#uploading-accounting-records-to-apel" title="Permanent link">&para;</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Batch System Support</p>
+<p>HTCondor-CE only supports generation of APEL accounting records for HTCondor batch systems.</p>
+</div>
+<p>For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
+blah APEL records for HTCondor batch systems:</p>
+<ol>
+<li>
+<p>Install the HTCondor-CE APEL package on your CE host:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install htcondor-ce-apel
+</code></pre></div>
+
+</li>
+<li>
+<p>On each worker node, set the appropriate scaling factor in the HTCondor configuration (i.e. <code>/etc/condor/config.d/</code>)
+   and advertise it in the startd ad:</p>
+<div class="codehilite"><pre><span></span><code>ApelScaling = &lt;SCALING FACTOR&gt;  # For example, 1.062
+STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
+</code></pre></div>
+
+</li>
+<li>
+<p>Configure the APEL parser, client, and SSM</p>
+<ul>
+<li>Records are written to <code>APEL_OUTPUT_DIR</code> in the HTCondor-CE configuration (default: <code>/var/lib/condor-ce/apel/</code>)</li>
+<li>Batch and blah record filenames are prefixed <code>batch-</code> and <code>blah-</code>, respectively</li>
+</ul>
+</li>
+<li>
+<p>Start and enable the <code>condor-ce-apel</code> and <code>condor-ce-apel.timer</code>
+   <a href="../../verification/#managing-htcondor-ce-services">services</a></p>
+</li>
+</ol>
+<h4 id="enabling-bdii-integration">Enabling BDII integration<a class="headerlink" href="#enabling-bdii-integration" title="Permanent link">&para;</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Batch System Support</p>
+<p>HTCondor-CE only supports reporting BDII information for HTCondor batch systems.</p>
+</div>
+<p>HTCondor-CE supports reporting BDII information for all HTCondor-CE endpoints and batch information for an HTCondor
+batch system.
+To make this information available, perform the following instructions on your site BDII host.</p>
+<ol>
+<li>
+<p>Install the HTCondor-CE BDII package:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install htcondor-ce-bdii
+</code></pre></div>
+
+</li>
+<li>
+<p>Configure HTCondor (<code>/etc/condor/config.d/</code>) on your site BDII host to point to your central manager:</p>
+<div class="codehilite"><pre><span></span><code>CONDOR_HOST = &lt;CENTRAL MANAGER&gt;
+</code></pre></div>
+
+<p>Replacing <code>&lt;CENTRAL MANAGER&gt;</code> with the hostname of your HTCondor central manager</p>
+</li>
+<li>
+<p>Configure BDII static information by modifying <code>/etc/condor/config.d/99-ce-bdii.conf</code></p>
+</li>
+</ol>
+<p>Additionally, install the HTCondor-CE BDII package on each of your HTCondor-CE hosts:</p>
+<div class="highlight"><pre><span></span><code>root@host # yum install htcondor-ce-bdii
+</code></pre></div>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>At this point, you should have an installation of HTCondor-CE that will forward pilot jobs into your site's batch system
+unchanged.
+If you need to transform incoming pilot jobs (e.g. by setting a partition, queue, or accounting group), configure the
+<a href="../../batch-system-integration/">HTCondor-CE Job Router</a>.
+Otherwise, continue to the <a href="../../verification/">this document</a> to start the relevant services and verify your installation.</p>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions or issues with the installation process, please <a href="../../..#contact-us">contact us</a> for assistance.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../../v5/reference/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Reference
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../../batch-system-integration/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Batch System Integration
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>
