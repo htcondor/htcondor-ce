@@ -5,7 +5,8 @@ repo_url: https://github.com/htcondor/htcondor-ce/
 theme:
   name: material
   features:
-    - navigation.tabs
+    - navigation.tabs  # Split top-level nav items into their own menu at the top of the pages
+    - toc.integrate    # integrate the table of contents into the left nav
 
 extra_css:
   - css/superfences.css
