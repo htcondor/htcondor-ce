@@ -29,7 +29,7 @@ Getting HTCondor-CE
 
 HTCondor-CE is distributed via RPM and are available from the following Yum repositories:
 
-- [HTCondor development](https://research.cs.wisc.edu/htcondor/yum/)
+- [HTCondor](https://research.cs.wisc.edu/htcondor/yum/)
 - [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
 
 What is a Compute Entrypoint?
