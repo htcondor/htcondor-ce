@@ -73,7 +73,7 @@ transition to ClassAd transforms at their own pace.
 For new HTCondor-CEs, it's recommended that administrators start with ClassAd transforms.
 The [ClassAd transform](#classad-transform) syntax provides many benefits including:
 
--   Statements being evaluated in the order they are written
+-   Statements being evaluated in [the order they are written](writing-job-routes.md#editing-attributes)
 -   Use of variables that are not included in the resultant job ad
 -   Use of simple case statements
 

@@ -1,21 +1,117 @@
 Writing Job Routes
 ==================
 
-Generic Routes
---------------
+This document contains documentation for HTCondor-CE Job Router configurations with equivalent examples for the
+[ClassAd transform](job-router-overview.md#classad-transforms) and
+[deprecated](job-router-overview.md#deprecated-syntax) syntaxes.
+Configuration from this page should be written to files in `/etc/condor-ce/config.d/`, whose contents are parsed in
+lexicographic order with subsequent variables overriding earlier ones.
 
-This section contains general information about job routes that can be used regardless of the type of batch system at
-your site.
-New routes should be placed in `/etc/condor-ce/config.d/99-local.conf`, not the original `02-ce-*.conf`.
+Each example is displayed in code blocks with tabs to switch between the two syntaxes:
 
-### Required fields
+=== "ClassAd Transform"
+
+    ```
+    This is an example for the ClassAd transform syntax
+    ```
+
+=== "Deprecated syntax"
+
+    ```
+    This is an example for the deprecated syntax
+    ```
+
+Syntax Differences
+------------------
+
+In HTCondor-CE 5, the [deprecated syntax](job-router-overview.md#deprecated-syntax) continues to be the default and
+administrator's can move to the [ClassAd transform syntax](job-router-overview.md#classad-transforms) by setting the
+following in a file in `/etc/condor-ce/config.d/`:
+
+```
+JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False
+```
+
+The [ClassAd transform](job-router-overview.md#classad-transform) syntax provides many benefits including:
+
+-   Statements being evaluated in [the order they are written](#editing-attributes)
+-   Use of variables that are not included in the resultant job ad
+-   Use of simple case statements
+
+Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
+including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
+respectively.
+
+For examples of the ClassAd transform syntax, you can inspect default job router transforms packaged with HTCondor-CE
+with the following command:
+
+``` bash
+user@host $ condor_ce_config_val -dump JOB_ROUTER_TRANSFORM_
+```
+
+### Differences in `MY.` and `TARGET.` ###
+
+In addition to the above, the behavior of the `MY.` and `TARGET.` ClassAd attribute prefixes has changed between the two
+different syntaxes:
+
+-   **In ClassAd transform syntax,** `MY.` always refers to the incoming job's attributes and can be referenced within
+    `$()`, e.g. `$(MY.Owner)` refers to the mapped user of the incoming job.
+    `TARGET` is only used in [SET](#setting-attributes) expressions to refer to attributes in the slot ad (HTCondor
+    pools only).
+-   **In the deprecated syntax,** `MY.` refers to attributes in the job route and `TARGET.` refers to attributes in the
+    incoming job ad for [copy\_](#copying-attributes), [delete\_](#removing-attrributes), and
+    [eval\_set\_](#setting-attributes-with-classad-expressions) functions.
+    However, in expressions defined by [set\_*](#setting-attributes), `MY.` refers to the attributes in the incoming job
+    ad and `TARGET.` refers to the attribute in the slot ad (HTCondor pools only).
+
+Required Fields
+---------------
 
 The minimum requirements for a route are that you specify the type of batch system that jobs should be routed to and a
 name for each route.
 Default routes can be found in `/usr/share/condor-ce/config.d/02-ce-<batch system>-defaults.conf`, provided by the
 `htcondor-ce-<batch system>` packages.
 
-#### Batch system
+### Route name
+
+To identify routes, you will need to assign a name to the route, either in the name of the configuration macro
+(i.e., `JOB_ROUTER_ROUTE_<name>`) for the ClassAd transform syntax or with the `name` attribute for the deprecated syntax:
+
+=== "ClassAd Transform"
+
+    ```hl_lines="1"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated syntax"
+
+    ```hl_lines="4"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+!!! warning "Naming restrictions"
+    -   Route names should only contain alphanumeric, `-`, and `_` characters.
+    -   Routes specified by `JOB_ROUTER_ROUTE_*` will override routes with the same name in `JOB_ROUTER_ENTRIES`
+
+The name of the route will be useful in debugging since it shows up in the output of
+[condor\_ce\_job\_router\_info](../troubleshooting/troubleshooting.md#condor_ce_job_router_info);
+the [JobRouterLog](../troubleshooting/troubleshooting.md#jobrouterlog);
+in the ClassAd of the routed job, which can be viewed with `condor_q` and `condor_history` for HTCondor batch systems;
+and in the ClassAd of the routed job, which can be vieweed with 
+[condor\_ce\_q](../troubleshooting/troubleshooting.md#condor_ce_q) or
+[condor\_ce\_history](../troubleshooting/troubleshooting.md#condor_ce_history) for non-HTCondor batch systems.
+
+### Batch system
 
 Each route needs to indicate the type of batch system that jobs should be routed to.
 For HTCondor batch systems, the `TargetUniverse` attribute needs to be set to `5` or `"vanilla"`.
@@ -23,82 +119,148 @@ For all other batch systems, the `TargetUniverse` attribute needs to be set to `
 attribute needs to be set to `"batch <batch system>"` (where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or
 `sge`).
 
-```hl_lines="3 7 8"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Route jobs to HTCondor";
-]
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Route jobs to PBS";
-]
-@jre
-```
 
-#### Route name
+=== "ClassAd Transform"
 
-To identify routes, you will need to assign a name to the route with the `name` attribute:
+    ```hl_lines="2 6 7"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+    @jrt
 
-```hl_lines="4"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Route jobs to HTCondor";
-]
-@jre
-```
+    JOB_ROUTER_ROUTE_My_Slurm @=jrt
+      TargetUniverse = 9
+      GridResource = "batch slurm"
+    @jrt
 
-The name of the route will be useful in debugging since it shows up in the output of
-[condor\_ce\_job\_router\_info](../troubleshooting/troubleshooting.md#condor_ce_job_router_info),
-the [JobRouterLog](../troubleshooting/troubleshooting.md#jobrouterlog),
-and in the ClassAd of the routed job, which can be viewed with
-[condor\_ce\_q](../troubleshooting/troubleshooting.md#condor_ce_q) or
-[condor\_ce\_history](../troubleshooting/troubleshooting.md#condor_ce_history).
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
+    ```
 
-### Writing multiple routes
+=== "Deprecated syntax"
 
-!!! note
-    Before writing multiple routes, consider the details of [how jobs match to job routes](#how-jobs-match-to-job-routes)
+    ```hl_lines="3 7 8"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+    [
+      GridResource = "batch slurm";
+      TargetUniverse = 9;
+      name = "My_Slurm";
+    ]
+    @jre
 
-If your batch system needs incoming jobs to be sorted (e.g. if different VO's need to go to separate queues),
-you will need to write multiple job routes where each route is enclosed by square brackets.
-The following routes takes incoming jobs that have a `queue` attribute set to `"analy"` and routes them to the site's
-HTCondor batch system.
-Any other jobs will be sent to that site's PBS batch system.
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
+    ```
 
-```hl_lines="2 6 7 12"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Route jobs to HTCondor";
-  Requirements = (TARGET.queue =?= "analy");
-]
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Route jobs to PBS";
-  Requirements = (TARGET.queue =!= "analy");
-]
-@jre
-```
+Writing Multiple Routes
+-----------------------
 
-### Writing comments
+If your batch system needs incoming jobs to be sorted (e.g. if different VO's need to go to separate queues), you will
+need to write multiple job routes where each route is a separate `JOB_ROUTER_ROUTE_*` macro in the ClassAd transform
+syntax and enclosed by square brackets in the deprecated syntax.
+Additionally, the route names must be added to `JOB_ROUTER_ROUTE_NAMES` in the order that you want their requirements
+statements compared to incoming jobs.
+
+The following routes takes incoming jobs that have a `queue` attribute set to `"prod"` and sets `IsProduction = True`.
+All other jobs will be routed with `IsProduction = False`.
+
+=== "ClassAd Transform"
+
+    ```hl_lines="1 7 12"
+    JOB_ROUTER_ROUTE_Production_Jobs @=jrt
+      REQUIREMENTS TARGET.queue == "prod"
+      TargetUniverse = 5
+      SET IsProduction True
+    @jrt
+
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      SET IsProduction False
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
+    ```
+
+=== "Deprecated syntax"
+
+    ```hl_lines="2 7 8 12 15"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      Requirements = (TARGET.queue == "prod");
+      TargetUniverse = 5;
+      set_IsProduction = True;
+      name = "Production_Jobs";
+    ]
+    [
+      TargetUniverse = 5;
+      set_IsProduction = False;
+      name = "Condor_Pool";
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
+    ```
+
+Writing Comments
+----------------
 
 To write comments you can use `#` to comment a line:
 
-```hl_lines="5"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "# comments";
-  # This is a comment
-]
-@jre
+=== "ClassAd Transform"
+
+    ```hl_lines="2"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      # This is a comment
+      TargetUniverse = 5
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated syntax"
+
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      # This is a comment
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+Setting Attributes for All Routes
+---------------------------------
+
+### ClassAd transform
+
+With the ClassAd transform syntax, any function from the [Editing Attributes section](#editing-attributes) can be
+applied before or after your routes are considered by appending the names of transforms specified by
+`JOB_ROUTER_TRANSFORM_<name>` to the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and
+`JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES`,
+respectively.
+The following configuration sets the `Periodic_Hold` attribute for all routed jobs before any route transforms are
+applied:
+
+```
+JOB_ROUTER_TRANSFORM_Periodic_Hold
+  SET Periodic_Hold = (NumJobStarts >= 1 && JobStatus == 1) || NumJobStarts > 1
+@jrt
+
+JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES) Periodic_Hold
 ```
 
-### Setting attributes for all routes
+To apply the same transform after your pre-route and route transforms, append the name of the transform to
+`JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES` instead:
+
+```
+JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES) Periodic_Hold
+```
+
+### Deprecated syntax
 
 To set an attribute that will be applied to all routes, you will need to ensure that `MERGE_JOB_ROUTER_DEFAULT_ADS` is
 set to `True` (check the value with [condor\_ce\_config\_val](../troubleshooting/troubleshooting.md#condor_ce_config_val))
@@ -115,29 +277,48 @@ MERGE_JOB_ROUTER_DEFAULT_ADS=True
 JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS) [set_Periodic_Hold = (NumJobStarts >= 1 && JobStatus == 1) || NumJobStarts > 1;]
 ```
 
-### Filtering jobs based on…
+Filtering Jobs Based On…
+------------------------
 
-To filter jobs, use the `Requirements` attribute.
-Jobs will evaluate against the ClassAd expression set in the `Requirements` and if the expression evaluates to `TRUE`,
-the route will match.
+To filter jobs, use the route's `REQUIREMENTS` or `Requirements` attribute for ClassAd transforms and deprecated
+syntaxes, respectively.
+Incoming jobs will be evaluated against the ClassAd expression set in the route's requirements and if the expression
+evaluates to `TRUE`, the route will match.
 More information on the syntax of ClassAd's can be found in the
 [HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html).
-For an example on how incoming jobs interact with filtering in job routes, consult [this document](../remote-job-submission.md).
+For an example on how incoming jobs interact with filtering in job routes, consult
+[this document](../remote-job-submission.md).
 
 When setting requirements, you need to prefix job attributes that you are filtering with `TARGET.` so that the job route
 knows to compare the attribute of the incoming job rather than the route’s own attribute.
-For example, if an incoming job has a `queue = "analy"` attribute, then the following job route will not match:
+For example, if an incoming job has a `queue = "prod"` attribute, then the following job route will not match:
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Filtering by queue";
-  queue = "not-analy";
-  Requirements = (queue =?= "analy");
-]
-@jre
-```
+=== "ClassAd Transform"
+
+    ```
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      queue = "analysis"
+      REQUIREMENTS  queue == "prod"
+      TargetUniverse = 5
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated syntax"
+
+    ```
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      queue = "analysis";
+      Requirements = (queue == "prod");
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
 This is because when evaluating the route requirement, the job route will compare its own `queue` attribute to "analy"
 and see that it does not match.
@@ -145,133 +326,250 @@ You can read more about comparing two ClassAds in the
 [HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators).
 
 !!! note
-    If you have an HTCondor batch system, note the difference with [set\_requirements](#setting-routed-job-requirements).
+    If you have an HTCondor batch system, note the difference with
+    [set\_requirements](htcondor-routes.md#setting-routed-job-requirements):
 
-!!! note
-    Before writing multiple routes, consider the details of [how jobs match to job routes](#how-jobs-match-to-job-routes).
+### Pilot job queue ###
 
-#### Glidein queue
-
-To filter jobs based on their glidein queue attribute, your routes will need a `Requirements` expression using the
+To filter jobs based on their pilot job queue attribute, your routes will need a requirements expression using the
 incoming job's `queue` attribute.
 The following entry routes jobs to HTCondor if the incoming job (specified by `TARGET`) is an `analy` (Analysis) glidein:
 
-```hl_lines="5"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Filtering by queue";
-  Requirements = (TARGET.queue =?= "analy");
-]
-@jre
-```
+=== "ClassAd Transform"
 
-#### Job submitter
+    ```hl_lines="2"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      REQUIREMENTS  TARGET.queue == "prod"
+      TargetUniverse = 5
+    @jrt
 
-To filter jobs based on who submitted it, your routes will need a `Requirements` expression using the incoming job's `Owner` attribute. The following entry routes jobs to the HTCondor batch system if the submitter is `usatlas2`:
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-```hl_lines="5"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Filtering by job submitter";
-  Requirements = (TARGET.Owner =?= "usatlas2");
-]
-@jre
-```
+=== "Deprecated syntax"
 
-Alternatively, you can match based on regular expression. The following entry routes jobs to the PBS batch system if the submitter's name begins with `usatlas`:
+    ```hl_lines="3"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      Requirements = (TARGET.queue == "prod");
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+    @jre
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Filtering by job submitter (regular expression)";
-  Requirements = regexp("^usatlas", TARGET.Owner);
-]
-@jre
-```
+    JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
+    ```
 
-#### VOMS attribute
+### Mapped user ###
 
-To filter jobs based on the subject of the job's proxy, your routes will need a `Requirements` expression using the incoming job's `x509UserProxyFirstFQAN` attribute. The following entry routes jobs to the PBS batch system if the proxy subject contains `/cms/Role=Pilot`:
+To filter jobs based on what local account the incoming job was mapped to, your routes will need a requirements
+expression using the incoming job's `Owner` attribute.
+The following entry routes jobs to the HTCondor batch system if the mapped user is `usatlas2`:
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Filtering by VOMS attribute (regex)";
-  Requirements = regexp("\/cms\/Role\=pilot", TARGET.x509UserProxyFirstFQAN);
-]
-@jre
-```
+=== "ClassAd Transform"
 
-### Setting a default…
+    ```hl_lines="2"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      REQUIREMENTS  TARGET.Owner == "usatlas2"
+      TargetUniverse = 5
+    @jrt
 
-This section outlines how to set default job limits, memory, cores, and maximum walltime. For an example on how users can override these defaults, consult [this document](../remote-job-submission.md#submit-the-job).
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-#### Maximum number of jobs
+=== "Deprecated syntax"
 
-To set a default limit to the maximum number of jobs per route, you can edit the configuration variable `CONDORCE_MAX_JOBS` in `/etc/condor-ce/config.d/01-ce-router.conf`:
+    ```hl_lines="3"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      Requirements = (TARGET.Owner == "usatlas2");
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
+    ```
+
+Alternatively, you can match based on regular expression.
+The following entry routes jobs to the HTCondor batch system if the mapped user begins with `usatlas`:
+
+=== "ClassAd Transform"
+
+    ```hl_lines="2"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      REQUIREMENTS regexp("^usatlas", TARGET.Owner)
+      TargetUniverse = 5
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated syntax"
+
+    ```hl_lines="3"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      Requirements = regexp("^usatlas", TARGET.Owner);
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
+    ```
+
+### VOMS attribute ###
+
+To filter jobs based on the subject of the job's proxy, your routes will need a requirements expression using the
+incoming job's `x509UserProxyFirstFQAN` attribute.
+The following entry routes jobs to the HTCondor batch system if the proxy subject contains `/cms/Role=Pilot`:
+
+
+=== "ClassAd Transform"
+
+    ```hl_lines="2"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      REQUIREMENTS regexp("\/cms\/Role\=pilot", TARGET.x509UserProxyFirstFQAN)
+      TargetUniverse = 5
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated syntax"
+
+    ```hl_lines="3"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      Requirements = regexp("\/cms\/Role\=pilot", TARGET.x509UserProxyFirstFQAN);
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
+    ```
+
+Setting a Default…
+------------------
+
+This section outlines how to set default job limits, memory, cores, and maximum walltime.
+For an example on how users can override these defaults, consult
+[this document](../remote-job-submission.md#submit-the-job).
+
+### Maximum number of jobs ###
+
+To set a default limit to the maximum number of jobs per route, you can edit the configuration variable
+`CONDORCE_MAX_JOBS` in `/etc/condor-ce/config.d/01-ce-router.conf`:
 
 ```
 CONDORCE_MAX_JOBS = 10000
 ```
 
 !!! note
-    The above configuration is to be placed directly into the HTCondor-CE configuration, not into a job route.
+    The above configuration is to be placed directly into the HTCondor-CE configuration instead of a job route or
+    transform.
 
-#### Maximum memory
+### Maximum memory ###
 
-To set a default maximum memory (in MB) for routed jobs, set the attribute `default_maxMemory`:
+To set a default maximum memory (in MB) for routed jobs, set the variable or attribute `default_maxMemory` for the
+ClassAd transform and deprecated syntax, respectively:
 
-```hl_lines="7"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Request memory";
-  # Set the requested memory to 1 GB
-  set_default_maxMemory = 1000;
-]
-@jre
-```
+=== "ClassAd Transform"
 
-#### Number of cores to request
+    ```hl_lines="4"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      # Set the requested memory to 1 GB
+      default_maxMemory = 1000
+    @jrt
 
-To set a default number of cores for routed jobs, set the attribute `default_xcount`:
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-```hl_lines="7"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Request CPU";
-  # Set the requested cores to 8
-  set_default_xcount = 8;
-]
-@jre
-```
+=== "Deprecated Syntax"
 
-#### Maximum walltime
+    ```hl_lines="6"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      # Set the requested memory to 1 GB
+      set_default_maxMemory = 1000;
+    ]
+    @jre
 
-To set a default maximum walltime (in minutes) for routed jobs, set the attribute `default_maxWallTime`:
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-```hl_lines="7"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Setting WallTime";
-  # Set the max walltime to 1 hr
-  set_default_maxWallTime = 60;
-]
-@jre
-```
+### Number of cores to request ###
 
-### Setting job environments ###
+To set a default number of cores for routed jobs, set the variable or attribute `default_xcount` for the ClassAd
+transform and deprecated syntax, respectively:
+
+
+=== "ClassAd Transform"
+
+    ```hl_lines="4"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      # Set the requested memory to 1 GB
+      default_xcount = 8
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="6"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      # Set the requested cores to 8
+      set_default_xcount = 8;
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+### Maximum walltime ###
+
+To set a default number of cores for routed jobs, set the variable or attribute `default_maxWallTime` for the ClassAd
+transform and deprecated syntax, respectively:
+
+=== "ClassAd Transform"
+
+    ```hl_lines="4"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      # Set the max walltime to 1 hr
+      default_maxWallTime = 60
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="6"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      # Set the max walltime to 1 hr
+      set_default_maxWallTime = 60;
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+Setting Job Environments
+------------------------
 
 HTCondor-CE offers two different methods for setting environment variables of routed jobs:
 
@@ -287,187 +585,329 @@ Both of these methods use the new HTCondor format of the
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
-``` tab="HTCondor-CE Configuration"
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
-```
 
-```bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-```
+=== "HTCondor-CE Configuration"
+
+    ```
+    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
+    ```
+
+=== "Resulting Environment"
+
+    ```bash
+    WN_SCRATCH_DIR=/nobackup/
+    http_proxy=proxy.wisc.edu
+    ```
 
 Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
 [$() macro expansion](https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros).
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
-``` tab="HTCondor-CE Configuration"
-LOCAL_PROXY = proxy.wisc.edu
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
-```
+=== "HTCondor-CE Configuration"
 
-```bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-```
+    ```
+    LOCAL_PROXY = proxy.wisc.edu
+    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
+    ```
+
+=== "Resulting Environment"
+
+    ```bash
+    WN_SCRATCH_DIR=/nobackup/
+    http_proxy=proxy.wisc.edu
+    ```
 
 To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 `set_default_pilot_job_env` to your job route configuration.
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:
 
-``` tab="HTCondor-CE Configuration" hl_lines="5 6 7" 
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Local_Condor";
-  set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
-                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                     " ACCOUNTING_GROUP=", toLower(JOB_VO));
-]
-@jre
-```
+=== "ClassAd Transform"
 
-``` tab="Incoming Job Attributes"
-JOB_COLLECTOR = "collector.wisc.edu"
-JOB_VO = "GLOW"
-```
+    ```hl_lines="3 4 5" 
+    JOB_ROUTER_Condor_Pool @=jrt
+      TargetUniverse = 5
+      SET default_pilot_job_env strcat("WN_SCRATCH_DIR=/nobackup",
+                                       " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                       " ACCOUNTING_GROUP=", toLower(JOB_VO))
+    @jrt
 
-``` bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-PILOT_COLLECTOR=collector.wisc.edu
-ACCOUNTING_GROUP=glow
-```
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="5 6 7" 
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                         " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                         " ACCOUNTING_GROUP=", toLower(JOB_VO));
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Incoming Job Attributes"
+
+    ```
+    JOB_COLLECTOR = "collector.wisc.edu"
+    JOB_VO = "GLOW"
+    ```
+
+=== "Resulting Environment"
+
+    ```bash 
+    WN_SCRATCH_DIR=/nobackup/
+    PILOT_COLLECTOR=collector.wisc.edu
+    ACCOUNTING_GROUP=glow
+    ```
 
 !!!tip "Debugging job route environment expressions"
     While constructing `set_default_pilot_job_env` expressions, try wrapping your expression in
     [debug()](#debugging-routes) to help with any issues that may arise.
     Make sure to remove `debug()` after you're done!
 
-### Editing attributes…
+Editing Attributes…
+-------------------
 
-The following functions are operations that affect job attributes and are evaluated in the following order:
+The following functions are operations that can be used to take incoming job attributes and modify them for the routed
+job for the ClassAd transform and deprecated syntax, respectively:
 
-1.  `copy_*`
-2.  `delete_*`
-3.  `set_*`
-4.  `eval_set_*`
+1.  `COPY`, `copy_*`
+2.  `DELETE`, `delete_*`
+3.  `SET`, `set_*`
+4.  `EVALSET`, `eval_set_*`
 
-After each job route’s ClassAd is [constructed](#how-job-routes-are-constructed), the above operations are evaluated in order. For example, if the attribute `foo` is set using `eval_set_foo` in the `JOB_ROUTER_DEFAULTS`, you'll be unable to use `delete_foo` to remove it from your jobs since the attribute is set using `eval_set_foo` after the deletion occurs according to the order of operations. To get around this, we can take advantage of the fact that operations defined in `JOB_ROUTER_DEFAULTS` get overridden by the same operation in `JOB_ROUTER_ENTRIES`. So to 'delete' `foo`, we would add `eval_set_foo = ""` to the route in the `JOB_ROUTER_ENTRIES`, resulting in `foo` being absent from the routed job.
+After each job route’s ClassAd is [constructed](job-router-overview.md#how-job-routes-are-constructed), the above operations are
+evaluated in order differently depending on your chosen syntax:
 
-More documentation can be found in the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#SECTION00644000000000000000).
+-   **If you are using ClassAd transforms**, each function is evaluated in order of appearance.
+    For example, the following will set `FOO` in the routed job to the incoming job's `Owner` attribute and then
+    subsequently remove `FOO` from the routed job:
 
-#### Copying attributes
+        JOB_ROUTER_Condor_Pool @=jrt
+          EVALSET FOO "$(MY.Owner)"
+          DELETE FOO
+        @jrt
 
-To copy the value of an attribute of the incoming job to an attribute of the routed job, use `copy_`. The following route copies the `environment` attribute of the incoming job and sets the attribute `Original_Environment` on the routed job to the same value:
+-   **If you are using the deprecated syntax**, each class of operations is evaluated in the order specified above,
+    i.e. all `copy_*`, before `delete_*`, etc.
+    For example, if the attribute `FOO` is set using `eval_set_FOO` in the `JOB_ROUTER_DEFAULTS`, you'll be unable to use
+    `delete_foo` to remove it from your jobs since the attribute is set using `eval_set_foo` after the deletion occurs
+    according to the order of operations.
+    To get around this, we can take advantage of the fact that operations defined in `JOB_ROUTER_DEFAULTS` get
+    overridden by the same operation in `JOB_ROUTER_ENTRIES`.
+    So to 'delete' `FOO`, you could add `eval_set_foo = ""` to the route in the `JOB_ROUTER_ENTRIES`, resulting in `foo`
+    being set to the empty string in the routed job.
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Copying attributes";
-  copy_environment = "Original_Environment";
-]
-@jre
-```
+More documentation can be found in the
+[HTCondor manual](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#routing-table-entry-commands-and-macro-values)
 
-#### Removing attributes
+### Copying attributes
 
-To remove an attribute of the incoming job from the routed job, use `delete_`. The following route removes the `environment` attribute from the routed job:
+To copy the value of an attribute of the incoming job to an attribute of the routed job, use `COPY` or `copy_` for
+ClassAd transform and deprecated syntaxes, respectively..
+The following route copies the `Environment` attribute of the incoming job and sets the attribute `Original_Environment`
+on the routed job to the same value:
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Copying attributes";
-  delete_environment = True;
-]
-@jre
-```
 
-#### Setting attributes
+=== "ClassAd Transform"
 
-To set an attribute on the routed job, use `set_`. The following route sets the Job's `Rank` attribute to 5:
+    ```hl_lines="3"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      COPY Environment Original_Environment
+    @jrt
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Setting an attribute";
-  set_Rank = 5;
-]
-@jre
-```
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-#### Setting attributes with ClassAd expressions
+=== "Deprecated Syntax"
 
-To set an attribute to a ClassAd expression to be evaluated, use `eval_set`. The following route sets the `Experiment` attribute to `atlas.osguser` if the Owner of the incoming job is `osguser`:
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      copy_Environment = "Original_Environment";
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+### Removing attributes
+
+To remove an attribute of the incoming job from the routed job, use `DELETE` or `delete_` for ClassAd transform and
+deprecated syntaxes, respectively.
+The following route removes the `Environment` attribute from the routed job:
+
+
+=== "ClassAd Transform"
+
+    ```hl_lines="3"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      DELETE Environment
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      delete_Environment = True;
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+### Setting attributes
+
+To set an attribute on the routed job, use `SET` or `set_` for ClassAd transform and deprecated syntaxes, respectively.
+The following route sets the Job's `Rank` attribute to 5:
+
+=== "ClassAd Transform"
+
+    ```hl_lines="3"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      SET Rank 5
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      set_Rank = 5;
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+### Setting attributes with ClassAd expressions
+
+To set an attribute to a ClassAd expression to be evaluated, use `EVALSET` or `eval_set` for ClassAd transform and
+deprecated syntaxes, respectively.
+The following route sets the `Experiment` attribute to `atlas.osguser` if the Owner of the incoming job is `osguser`:
+
+=== "ClassAd Transform"
+
+    ```hl_lines="3"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      TargetUniverse = 5
+      EVALSET Experiment strcat("atlas.", Owner)
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      eval_set_Experiment = strcat("atlas.", Owner);
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+Limiting the Number of Jobs
+---------------------------
+
+This section outlines how to limit the number of total or idle jobs in a specific route
+(i.e., if this limit is reached, jobs will no longer be placed in this route).
 
 !!! note
-    If a value is set in JOB\_ROUTER\_DEFAULTS with `eval_set_<variable>`, override it by using `eval_set_<variable>` in the `JOB_ROUTER_ENTRIES`.
+    If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution:
+    HTCondor manages fair share on its own via
+    [user priorities and group accounting](http://research.cs.wisc.edu/htcondor/manual/v8.6/3_6User_Priorities.html).
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Setting an attribute with a !ClassAd expression";
-  eval_set_Experiment = strcat("atlas.", Owner);
-]
-@jre
-```
+### Total jobs
 
-### Limiting the number of jobs
+To set a limit on the number of jobs for a specific route,
+set the [MaxJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134) attribute:
 
-This section outlines how to limit the number of total or idle jobs in a specific route (i.e., if this limit is reached, jobs will no longer be placed in this route).
+=== "ClassAd Transform"
 
-!!! note
-    If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution: HTCondor manages fair share on its own via [user priorities and group accounting](http://research.cs.wisc.edu/htcondor/manual/v8.6/3_6User_Priorities.html).
+    ```hl_lines="3"
+    JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+      TargetUniverse = 5
+      MaxJobs = 100
+    @jrt
 
-#### Total jobs
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-To set a limit on the number of jobs for a specific route, set the [MaxJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134) attribute:
+=== "Deprecated Syntax"
 
-```hl_lines="6 12"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Limit the total number of jobs to 100";
-  MaxJobs = 100;
-]
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Limit the total number of jobs to 75";
-  MaxJobs = 75;
-]
-@jre
-```
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      MaxJobs = 100;
+    ]
+    @jre
 
-#### Idle jobs
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
-To set a limit on the number of idle jobs for a specific route, set the [MaxIdleJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135) attribute:
+### Idle jobs
 
-```hl_lines="5 10"
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Limit the total number of idle jobs to 100";
-  MaxIdleJobs = 100;
-]
-[
-  TargetUniverse = 5;
-  name = "Limit the total number of idle jobs to 75";
-  MaxIdleJobs = 75;
-]
-@jre
-```
+To set a limit on the number of idle jobs for a specific route,
+set the [MaxIdleJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135) attribute:
 
-### Debugging routes
+=== "ClassAd Transform"
 
-To help debug expressions in your routes, you can use the `debug()` function. First, set the debug mode for the JobRouter by editing a file in `/etc/condor-ce/config.d/` to read
+    ```hl_lines="3"
+    JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+      TargetUniverse = 5
+      MaxIdleJobs = 100
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="5"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Condor_Pool";
+      MaxIdleJobs = 100;
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+Debugging Routes
+----------------
+
+To help debug expressions in your routes, you can use the `debug()` function.
+First, set the debug mode for the JobRouter by editing a file in `/etc/condor-ce/config.d/` to read
 
 ```
 JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
@@ -475,16 +915,29 @@ JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
 
 Then wrap the problematic attribute in `debug()`:
 
-```hl_lines="6"
-JOB_ROUTER_ENTRIES @=jre
-[
-  GridResource = "batch pbs";
-  TargetUniverse = 9;
-  name = "Debugging a difficult !ClassAd expression";
-  eval_set_Experiment = debug(strcat("atlas", Name));
-]
-@jre
-```
+=== "ClassAd Transform"
+
+    ```hl_lines="2"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      EVALSET Experiment debug(strcat("atlas", Name))
+
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+=== "Deprecated Syntax"
+
+    ```hl_lines="4"
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      name = "Condor_Pool";
+      eval_set_Experiment = debug(strcat("atlas", Name));
+    ]
+    @jre
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
 
 You will find the debugging output in `/var/log/condor-ce/JobRouterLog`.
 
