@@ -9,7 +9,7 @@
       
       
       
-        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce-ce/v5/releases/">
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v5/releases/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
@@ -507,6 +507,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#support-for-classad-transforms-added-to-the-jobrouter" class="md-nav__link">
+    Support for ClassAd transforms added to the JobRouter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#no-longer-set-home-by-default" class="md-nav__link">
     No longer set $HOME by default
   </a>
@@ -876,6 +883,42 @@
 </div>
 <p>HTCondor-CE 5 is a major release that adds many features and overhauls the default configuration.
 As such, upgrades from older versions of HTCondor-CE may require manual intervention:</p>
+<h3 id="support-for-classad-transforms-added-to-the-jobrouter">Support for ClassAd transforms added to the JobRouter<a class="headerlink" href="#support-for-classad-transforms-added-to-the-jobrouter" title="Permanent link">&para;</a></h3>
+<div class="admonition danger">
+<p class="admonition-title">Transforms will override <code>JOB_ROUTER_ENTRIES</code> routes with the same name</p>
+<p>Even if you do not plan on immediately using the new syntax, it's important to note that route transforms will
+override <code>JOB_ROUTER_ENTRIES</code> routes with the same name.
+In other words, the route transform names returned by <code>condor_ce_config_val -dump -v JOB_ROUTER_ROUTE_</code> should only
+appear in your list of used routes returned by <code>condor_ce_config_val JOB_ROUTER_ROUTE_NAMES</code> if you
+intend to use the new transform syntax.</p>
+</div>
+<p>HTCondor-CE now includes default <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html">ClassAd transforms</a>
+equivalent to its <code>JOB_ROUTER_DEFAULTS</code>, allowing administrators to write job routes using the transform synatx.
+The old syntax continues to be the default in HTCondor-CE 5.
+Writing routes in the new syntax provides many benefits including:</p>
+<ul>
+<li>Statements being evaluated in the order they are written</li>
+<li>Use of variables that are not included in the resultant job ad</li>
+<li>Use of simple case statements.</li>
+</ul>
+<p>Additionally, it is now easier to include transforms that should be evaluated before or after your routes by including
+transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORMS</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORMS</code>, respectively.
+To use the new transform syntax:</p>
+<ol>
+<li>
+<p>Disable use of <code>JOB_ROUTER_ENTRIES</code> by setting the following in <code>/etc/condor-ce/config.d/</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="go">JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>Set <code>JOB_ROUTER_ROUTE_&lt;ROUTE_NAME&gt;</code> to a job route in the new transform syntax where <code>&lt;ROUTE_NAME&gt;</code> is the name of
+    the route that you'd like to be reflected in logs and tool output.</p>
+</li>
+<li>
+<p>Add the above <code>&lt;ROUTE_NAME&gt;</code> to the list of routes in <code>JOB_ROUTER_ROUTE_NAMES</code></p>
+</li>
+</ol>
 <h3 id="no-longer-set-home-by-default">No longer set <code>$HOME</code> by default<a class="headerlink" href="#no-longer-set-home-by-default" title="Permanent link">&para;</a></h3>
 <p>Older versions of HTCondor-CE set <code>$HOME</code> in the routed job to the user's <code>$HOME</code> directory on the HTCondor-CE.
 To re-enable this behavior, set <code>USE_CE_HOME_DIR = True</code> in <code>/etc/condor-ce/config.d/</code>.</p>
@@ -883,7 +926,12 @@ To re-enable this behavior, set <code>USE_CE_HOME_DIR = True</code> in <code>/et
 <p>This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on <a href="https://github.com/htcondor/htcondor-ce/releases">GitHub</a>.</p>
 <h3 id="510">5.1.0<a class="headerlink" href="#510" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0">This release</a> includes the following bug-fixes:</p>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0">This release</a> includes the following new features:</p>
+<ul>
+<li>Add support for <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html">ClassAd transforms</a>
+    to the JobRouter (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-243">HTCONDOR-243</a>)</li>
+</ul>
+<p>This release also includes the following bug-fixes:</p>
 <ul>
 <li>APEL reporting scripts now use <code>PER_JOB_HISTORY_DIR</code> to collect job data. 
     (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-293">HTCONDOR_293</a>)</li>
