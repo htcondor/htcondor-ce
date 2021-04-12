@@ -122,8 +122,8 @@ def main():
 
         # Ensure that users don't set the job environment in the Job Router
         if is_osg and any(x.endswith('environment') for x in entry.keys()):
-            error("Do not use the Job Router to set the environment. Place variables under "
-                  + "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
+            error("Do not use the Job Router to set the environment. See documentation for more details: "
+                  + "https://htcondor.github.io/htcondor-ce/v5/configuration/writing-job-routes/#setting-job-environments")
 
         # Warn users about eval_set_ default attributes in the ENTRIES since their
         # evaluation may occur after the eval_set_ expressions containg them in the
