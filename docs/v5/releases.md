@@ -66,11 +66,33 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 
 -   Add support for [ClassAd transforms](https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html)
     to the JobRouter ([HTCONDOR-243](https://opensciencegrid.atlassian.net/browse/HTCONDOR-243))
+-   Add mapped user and X.509 attribute to local HTCondor pool AccountingGroup mappings to Job Routers configured to use
+    the ClassAd transform syntax ([HTCONDOR-187](https://opensciencegrid.atlassian.net/browse/HTCONDOR-187))
+-   Accept `BatchRuntime` attributes from incoming jobs to set their maximum walltime
+    ([HTCONDOR-80](https://opensciencegrid.atlassian.net/browse/HTCONDOR-80))
+-   Update the HTCondor-CE registry to Python 3
+    ([HTCONDOR-307](https://opensciencegrid.atlassian.net/browse/HTCONDOR-307))
+-   Enable SSL authentication by default for `READ`/`WRITE` authorization levels
+    ([HTCONDOR-366](https://opensciencegrid.atlassian.net/browse/HTCONDOR-366))
+-   APEL reporting scripts now use history files in the local HTCondor `PER_JOB_HISTORY_DIR` to collect job data.
+    ([HTCONDOR_293](https://opensciencegrid.atlassian.net/browse/HTCONDOR-293))
+-   Use the `GlobalJobID` attribute as the APEL record `lrmsID`
+    ([#426](https://github.com/htcondor/htcondor-ce/pull/426))
+-   Downgrade errors in the configuration verification startup script to support routes written in the transform syntax
+    ([#465](https://github.com/htcondor/htcondor-ce/pull/465))
+-   Allow required directories to be owned by non-`condor` groups
+    ([#451](https://github.com/htcondor/htcondor-ce/pull/451/files))
 
 This release also includes the following bug-fixes:
 
--   APEL reporting scripts now use `PER_JOB_HISTORY_DIR` to collect job data. 
-    ([HTCONDOR_293](https://opensciencegrid.atlassian.net/browse/HTCONDOR-293))
+-   Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE`
+    ([HTCONDOR-350](https://opensciencegrid.atlassian.net/browse/HTCONDOR-350))
+-   Fix incorrect path to Python 3 Collector plugin
+    ([HTCONDOR-400](https://opensciencegrid.atlassian.net/browse/HTCONDOR-400))
+-   Fix faulty validation of `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ENTRIES` in the startup script
+    ([HTCONDOR-406](https://opensciencegrid.atlassian.net/browse/HTCONDOR-406))
+-   Fix various Python 3 incompatibilities
+    ([#460](https://github.com/htcondor/htcondor-ce/pull/460))
 
 ### 5.0.0 ###
 
