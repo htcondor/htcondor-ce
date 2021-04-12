@@ -187,7 +187,7 @@ def main():
 
     if socket.AF_INET6 in families:
         bind_ipv6_only = os.path.exists(bindonly) and open(bindonly).read() == "1"
-        wsgi_opts['bind'].append(f"::1:{port}")
+        wsgi_opts['bind'].append(f"[::]:{port}")
 
     if (socket.AF_INET in families) and \
        ((bind_ipv6_only) or (socket.AF_INET6 not in families)):
