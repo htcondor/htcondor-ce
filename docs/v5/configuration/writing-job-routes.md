@@ -32,7 +32,7 @@ following in a file in `/etc/condor-ce/config.d/`:
 JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False
 ```
 
-The [ClassAd transform](job-router-overview.md#classad-transform) syntax provides many benefits including:
+The [ClassAd transform](job-router-overview.md#classad-transforms) syntax provides many benefits including:
 
 -   Statements being evaluated in [the order they are written](#editing-attributes)
 -   Use of variables that are not included in the resultant job ad
@@ -59,7 +59,7 @@ different syntaxes:
     `TARGET` is only used in [SET](#setting-attributes) expressions to refer to attributes in the slot ad (HTCondor
     pools only).
 -   **In the deprecated syntax,** `MY.` refers to attributes in the job route and `TARGET.` refers to attributes in the
-    incoming job ad for [copy\_](#copying-attributes), [delete\_](#removing-attrributes), and
+    incoming job ad for [copy\_](#copying-attributes), [delete\_](#removing-attributes), and
     [eval\_set\_](#setting-attributes-with-classad-expressions) functions.
     However, in expressions defined by [set\_*](#setting-attributes), `MY.` refers to the attributes in the incoming job
     ad and `TARGET.` refers to the attribute in the slot ad (HTCondor pools only).
@@ -681,8 +681,7 @@ job for the ClassAd transform and deprecated syntax, respectively:
 3.  `SET`, `set_*`
 4.  `EVALSET`, `eval_set_*`
 
-After each job route’s ClassAd is [constructed](job-router-overview.md#how-job-routes-are-constructed), the above operations are
-evaluated in order differently depending on your chosen syntax:
+The above operations are evaluated in order differently depending on your chosen syntax:
 
 -   **If you are using ClassAd transforms**, each function is evaluated in order of appearance.
     For example, the following will set `FOO` in the routed job to the incoming job's `Owner` attribute and then

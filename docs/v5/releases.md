@@ -12,7 +12,7 @@ Updating to HTCondor-CE 5
 
 !!! note "Updating from HTCondor-CE < 4"
     If updating to HTCondor-CE 5 from HTCondor-CE < 4, be sure to also consult the HTCondor-CE 4
-    [upgrade instructions](../v4/releases.md#updating-to-htcondor-ce-4).
+    [upgrade instructions](../v4/releases.md#400).
 
 !!! tip "Finding relevant configuration changes"
     When updating HTCondor-CE RPMs, `.rpmnew` and `.rpmsave` files may be created containing new defaults that you

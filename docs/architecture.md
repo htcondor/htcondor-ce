@@ -67,7 +67,7 @@ installation, there are two main ways to customize your CE (if you decide any cu
     Additionally, HTCondor may be configured to callout to external authentication services like Argus or LCMAPS. 
 -   **How to filter and transform the pilot jobs to be run on your batch system:** Filtering and transforming pilot jobs
     (i.e., setting site-specific attributes or resource limits), requires configuration of your site’s job routes.
-    For examples of common job routes, consult the [batch system integration](v5/batch-system-integration.md)
+    For examples of common job routes, consult the [batch system integration](v5/configuration/job-router-overview.md)
     page.
 
 How Security Works

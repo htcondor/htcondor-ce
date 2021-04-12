@@ -61,8 +61,8 @@ Take care when modifying attributes in `JOB_ROUTER_DEFAULTS`: you may
 !!! danger "The following may break your HTCondor-CE"
     -   Do **not** set the `JOB_ROUTER_DEFAULTS` configuration variable yourself. This will cause the CE to stop
         functioning.
-    -   If a value is set in [JOB\_ROUTER\_DEFAULTS](#job_router_defaults) with `eval_set_<variable>`, override it by
-        using `eval_set_<variable>` in the `JOB_ROUTER_ENTRIES`.
+    -   If a value is set in `JOB_ROUTER_DEFAULTS` with `eval_set_<variable>`, override it by using
+        `eval_set_<variable>` in the `JOB_ROUTER_ENTRIES`.
         Do this at your own risk as it may cause the CE to break.
 
 ### Choosing a syntax ###
@@ -71,7 +71,7 @@ For existing HTCondor-CEs, it's recommended that administrators continue to use 
 transition to ClassAd transforms at their own pace.
 
 For new HTCondor-CEs, it's recommended that administrators start with ClassAd transforms.
-The [ClassAd transform](#classad-transform) syntax provides many benefits including:
+The [ClassAd transform](#classad-transforms) syntax provides many benefits including:
 
 -   Statements being evaluated in [the order they are written](writing-job-routes.md#editing-attributes)
 -   Use of variables that are not included in the resultant job ad
