@@ -19,11 +19,11 @@ As such, upgrades from older versions of HTCondor-CE may require manual interven
 
 ### Support for ClassAd transforms added to the JobRouter ###
 
-!!! danger "Rename `Local_*_Transform` routes"
-    Even if you do not plan to use the new syntax, you must rename any existing routes in `JOB_ROUTER_ENTRIES` named
-    `Local_*_Transform` where `*` is the name of your batch system.
-    In other words, the route transform configurations returned by `condor_ce_config_val -dump -v JOB_ROUTER_ROUTE_`
-    should only appear in your list of used routes returned by `condor_ce_config_val JOB_ROUTER_ROUTE_NAMES` if you
+!!! danger "Transforms will override `JOB_ROUTER_ENTRIES` routes with the same name"
+    Even if you do not plan on immediately using the new syntax, it's important to note that route transforms will
+    override `JOB_ROUTER_ENTRIES` routes with the same name.
+    In other words, the route transform names returned by `condor_ce_config_val -dump -v JOB_ROUTER_ROUTE_` should only
+    appear in your list of used routes returned by `condor_ce_config_val JOB_ROUTER_ROUTE_NAMES` if you
     intend to use the new transform syntax.
 
 HTCondor-CE now includes default [ClassAd transforms](https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html)
