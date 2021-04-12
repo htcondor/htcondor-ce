@@ -297,7 +297,7 @@ def get_ce_jobs(ce_schedd_ad, time_out):
                 idle_vo_jobs[job['x509userproxyvoname']] += 1
             elif job['JobStatus'] == 2:
                 running_vo_jobs[job['x509userproxyvoname']] += 1
-    except TimeoutError as exc:
+    except TimeoutError:
         sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_fqdn, time_out)
         raise
 

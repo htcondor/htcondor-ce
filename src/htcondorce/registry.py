@@ -12,7 +12,7 @@ from urllib.error import URLError
 from flask import Flask, Config, url_for, make_response, request
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import subprocess
-from tools import to_str
+from htcondorce.tools import to_str
 
 _jinja_env = None
 
