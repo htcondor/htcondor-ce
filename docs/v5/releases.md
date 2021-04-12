@@ -49,6 +49,52 @@ To use the new transform syntax:
 
 1.  Add the above `<ROUTE_NAME>` to the list of routes in `JOB_ROUTER_ROUTE_NAMES`
 
+### New `condor_mapfile` format and locations  ###
+
+HTCondor-CE 5 separates its
+[unified mapfile](https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication)
+used for authentication between multiple files across multiple directories.
+Additionally, any regular expressions in the second field must be enclosed by `/`.
+To update your mappings to the new format and location, perform the following actions:
+
+1.  Upon upgrade, your existing mapfile will be moved to `/etc/condor-ce/condor_mapfile.rpmsave`.
+    Remove any of the following lines provided by default in the HTCondor-CE packaging:
+
+        GSI (.*) GSS_ASSIST_GRIDMAP
+        SSL "[-.A-Za-z0-9/= ]*/CN=([-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
+        CLAIMTOBE .* anonymous@claimtobe
+        FS "^(root|condor)$" \1@daemon.htcondor.org
+        FS "(.*)" \1
+
+1.  Copy the remaining contents of `/etc/condor-ce/condor_mapfile.rpmsave` to a file ending in `*.conf` in
+    `/etc/condor-ce/mapfiles.d/`.
+    Note that files in this folder are parsed in lexicographic order.
+
+1.  Update the second field of any existing mappings by enclosing any regular expressions in `/`, escaping any slashes
+    with a backslash (e.g. `\/`).
+
+    -    Consider converting any `GSI` mappings into Perl Compatible Regular Expressions (PCRE) since the authenticated
+         name of incoming proxies may contain additional VOMS FQANs in addition to the Distinguished Name (DN):
+
+            <DN>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>
+
+        For example, to accept a given DN with any VOMS attributes, the mapping should look like the following:
+
+            GSI /^\/DC=org\/DC=cilogon\/C=US\/O=University of Wisconsin-Madison\/CN=Brian Lin A226624,.*/ blin
+
+        Alternatively, to accept any DN from the OSG VO:
+
+            GSI /.*,\/osg\/Role=Pilot\/Capability=.*/ osg
+
+    -   Also consider converting `SCITOKENS` mappings to PCRE since the authenticated name of incoming tokens will
+        contain the token issuer (`iss`) and any token subject (`sub`) fields:
+
+            <TOKEN ISSUER>,<TOKEN SUB>
+
+        For example, to accept a token issued by the OSG VO with any subject, write the following mapping:
+
+            SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
+
 ### No longer set `$HOME` by default ###
 
 Older versions of HTCondor-CE set `$HOME` in the routed job to the user's `$HOME` directory on the HTCondor-CE.
