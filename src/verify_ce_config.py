@@ -8,6 +8,8 @@ import os
 import re
 import sys
 
+from collections import defaultdict
+
 
 def error(msg):
     """Exit with error 'msg'
@@ -19,6 +21,12 @@ def warn(msg):
     """Print warning 'msg'
     """
     print("WARNING: " + msg)
+
+
+def debug(msg):
+    """Print debug 'msg'
+    """
+    print("DEBUG: " + msg)
 
 
 def parse_route_names(entries_config):
@@ -54,12 +62,14 @@ def main():
     is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
 
     # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
-    parsed_jr_ads = {}
+    parsed_jr_ads = defaultdict(list)
     for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
         try:
             config_val = htcondor.param[attr]
         except KeyError:
-            error("Missing required %s configuration value" % attr)
+            debug("Missing %s configuration value. " % attr +
+                  "Can be safely ignored if using 'JOB_ROUTER_ROUTE_*' ClassAd transforms.")
+            continue
 
         # store the ads (iterating through ClassAdStringIterator consumes them)
         try:
@@ -67,11 +77,13 @@ def main():
         except ValueError:
             # We shouldn't ever get here since classad.parseAds() only raises ValueError when it's given
             # non-string/non-file output and htcondor.param shouldn't contain such values
-            error("Failed to parse %s configuration value" % attr)
+            debug("Failed to parse %s configuration value. " % attr +
+                  "Can be safely ignored if using 'JOB_ROUTER_ROUTE_*' ClassAd transforms.")
 
         # If JRD or JRE can't be parsed, the job router can't function
         if not parsed_jr_ads[attr]:
-            error("Could not read %s in the HTCondor-CE configuration." % attr)
+            debug("Could not read %s in the HTCondor-CE configuration. " % attr +
+                  "Can be safely ignored if using 'JOB_ROUTER_ROUTE_*' ClassAd transforms.")
 
         if attr == "JOB_ROUTER_ENTRIES":
             # Warn about routes we can find in the config that don't result in valid ads
@@ -110,8 +122,8 @@ def main():
 
         # Ensure that users don't set the job environment in the Job Router
         if is_osg and any(x.endswith('environment') for x in entry.keys()):
-            error("Do not use the Job Router to set the environment. Place variables under "
-                  + "[Local Settings] in /etc/osg/config.d/40-localsettings.ini")
+            error("Do not use the Job Router to set the environment. See documentation for more details: "
+                  + "https://htcondor.github.io/htcondor-ce/v5/configuration/writing-job-routes/#setting-job-environments")
 
         # Warn users about eval_set_ default attributes in the ENTRIES since their
         # evaluation may occur after the eval_set_ expressions containg them in the
