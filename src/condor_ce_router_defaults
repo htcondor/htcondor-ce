@@ -7,18 +7,18 @@ import classad
 from collections import OrderedDict
 
 JOB_ROUTER_CONFIG = r"""JOB_ROUTER_TRANSFORM_Env @=jrt
-    default_env = {advertise_pilots}
+    EVALMACRO default_env {advertise_pilots}
     if $(USE_CE_HOME_DIR)
         EVALMACRO use_ce_home userHome(Owner, "/")
         default_env = $(default_env) HOME=$(use_ce_home)
     endif
 
-    SET osg_environment {osg_environment}
+    SET osg_environment "{osg_environment}"
     EVALSET environment mergeEnvironment("$(default_env)", \
                                          osg_environment, \
                                          orig_environment, \
-                                         $(CONDORCE_PILOT_JOB_ENV), \
-                                         $(default_pilot_job_env))
+                                         "$(CONDORCE_PILOT_JOB_ENV)", \
+                                         "$(default_pilot_job_env)")
 @jrt
 
 JOB_ROUTER_POST_ROUTE_TRANSFORMS = $(JOB_ROUTER_POST_ROUTE_TRANSFORMS) Env
