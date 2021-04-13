@@ -16,7 +16,7 @@ Before attempting to submit jobs to an HTCondor-CE as documented below, ensure t
 
 -   The HTCondor-CE administrator has independently [verified their HTCondor-CE](verification.md)
 -   The HTCondor-CE administrator has added your credential information (e.g. SciToken or grid proxy) to the HTCondor-CE
-    [authentication configuration](installation/htcondor-ce.md#configuring-authentication)
+    [authentication configuration](configuration-authentication.md)
 -   Your credentials are valid and unexpired
 
 Submission with Debugging Tools

@@ -130,7 +130,7 @@ Daemon startup failure may manifest in many ways, the following are few symptoms
 
 **Next actions**
 
-1.  **If the MasterLog is filled with `ERROR:SECMAN...TCP connection to collector...failed`:** This is likely due to a misconfiguration for a host with multiple network interfaces. Verify that you have followed the instructions in [this](../installation/htcondor-ce.md#configuring-for-multiple-network-interfaces) section of the install guide.
+1.  **If the MasterLog is filled with `ERROR:SECMAN...TCP connection to collector...failed`:** This is likely due to a misconfiguration for a host with multiple network interfaces. Verify that you have followed the instructions in [this](../configuration/optional-configuration.md#configuring-for-multiple-network-interfaces) section of the install guide.
 2.  **If the MasterLog is filled with `DC_AUTHENTICATE` errors:** The HTCondor-CE daemons use the host certificate to authenticate with each other. Verify that your host certificate’s DN matches one of the regular expressions found in `/etc/condor-ce/condor_mapfile`.
 3.  **If the SchedLog is filled with `Can’t find address for negotiator`:** You can ignore this error! The negotiator daemon is used in HTCondor batch systems to match jobs with resources but since HTCondor-CE does not manage any resources directly, it does not run one.
 
@@ -150,7 +150,7 @@ You may see error messages like the following in your [SchedLog](#schedlog):
 **Next actions**
 
 1.  **Check voms-mapfile or grid-mapfile** and ensure that the user's DN or VOMS attributes are known to your
-    [authentication method](../installation/htcondor-ce.md#configuring-authentication), and that the mapped users exist
+    [authentication method](../configuration/authentication.md), and that the mapped users exist
     on your CE and cluster.
 1.  **Check for lcmaps errors** in `/var/log/messages`
 1.  **If you do not see helpful error messages in `/var/log/messages`,** adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and checking `/var/log/messages` for errors again.
@@ -267,7 +267,7 @@ ERROR: couldn't locate condorce.example.com!
 #### Remote idle jobs: Are you authorized to run jobs on the CE?
 
 The CE will only run jobs from users that authenticate through the
-[HTCondor-CE configuration](../installation/htcondor-ce.md#configuring-authentication).
+[HTCondor-CE configuration](../configuration/authentication.md).
 You can use [condor\_ce\_ping](#condor_ce_ping) to check if you are authorized and what user your proxy is being mapped
 to.
 
@@ -292,7 +292,7 @@ Notice the failures in the above message: `Remote Mapping: gsi@unmapped` and `Au
 
 **Next actions**
 
-1.  Verify that an [authentication method](../installation/htcondor-ce.md#configuring-authentication) is set up on the CE
+1.  Verify that an [authentication method](../configuration/authentication.md) is set up on the CE
 2.  Verify that your user DN is mapped to an existing system user
 
 ### Jobs go on hold
@@ -437,7 +437,7 @@ If you are not running an HTCondor batch system, the non-CE commands will return
 `condor_ce_trace` is a useful tool for testing end-to-end job submission. It contacts both the CE’s Schedd and Collector daemons to verify your permission to submit to the CE, displays the submit script that it submits to the CE, and tracks the resultant job.
 
 !!! note
-    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](../installation/htcondor-ce.md#configuring-authentication).
+    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](../configuration/authentication.md).
 
 ``` console
 user@host $ condor_ce_trace condorce.example.com
@@ -450,7 +450,7 @@ condor output.
 #### Troubleshooting
 
 1.  **If the command fails with “Failed ping…”:** Make sure that the HTCondor-CE daemons are running on the CE
-2.  **If you see “gsi@unmapped” in the “Remote Mapping” line:** Either your credentials are not mapped on the CE or authentication is not set up at all. To set up authentication, refer to our [installation document](../installation/htcondor-ce.md#configuring-authentication).
+2.  **If you see “gsi@unmapped” in the “Remote Mapping” line:** Either your credentials are not mapped on the CE or authentication is not set up at all. To set up authentication, refer to our [installation document](../configuration/authentication.md).
 3.  **If the job submits but does not complete:** Look at the status of the job and perform the relevant [troubleshooting steps](#htcondor-ce-troubleshooting-items).
 
 ### condor_ce_host_network_check
@@ -487,7 +487,7 @@ submitting jobs through your CE.
 To submit a job to the CE and run the `env` command on the remote batch system:
 
 !!! note
-    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](../installation/htcondor-ce.md#configuring-authentication).
+    You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your [chosen authentication method](../configuration/authentication.md).
 
 ``` console
 user@host $ condor_ce_run -r condorce.example.com:9619 /bin/env
@@ -504,7 +504,7 @@ user@host $ condor_ce_run -lr condorce.example.com:9619 cat /var/log/condor-ce/J
 
 Replacing the `condorce.example.com` text with the hostname of the CE. 
 To disable this feature on your CE, consult
-[this](../installation/htcondor-ce.md#limiting-or-disabling-locally-running-jobs-on-the-ce) section of the install documentation.
+[this](../configuration/optional-configuration.md#limiting-or-disabling-locally-running-jobs) section of the install documentation.
 
 #### Troubleshooting
 
@@ -555,7 +555,7 @@ Authorized:                  TRUE
 
     Then look in the [MasterLog](#masterlog) and [SchedLog](#schedlog) for any errors.
 
-2.  **If you see “gsi@unmapped” in the “Remote Mapping” line**, this means that either your credentials are not mapped on the CE or that authentication is not set up at all. To set up authentication, refer to our [installation document](../installation/htcondor-ce.md#configuring-authentication).
+2.  **If you see “gsi@unmapped” in the “Remote Mapping” line**, this means that either your credentials are not mapped on the CE or that authentication is not set up at all. To set up authentication, refer to our [installation document](../configuration/authentication.md).
 
 
 ### condor_ce_q
@@ -1073,7 +1073,7 @@ This log is a good place to check if experiencing connectivity issues with HTCon
 ### Messages log
 
 The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the [authentication setup](../installation/htcondor-ce.md#configuring-authentication), the errors may
+If there are issues with the [authentication setup](../configuration/authentication.md), the errors may
 appear here.
 
 - Location: `/var/log/messages`
