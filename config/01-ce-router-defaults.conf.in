@@ -113,8 +113,8 @@ JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = True
 # Default Job Router Transforms #
 #################################
 
-JOB_ROUTER_PRE_ROUTE_TRANSFORMS = Base Cleanup OrigRequests
-JOB_ROUTER_POST_ROUTE_TRANSFORMS = Cpus Gpus Memory Queue BatchRuntime CERequirements OnExitHold
+JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = Base Cleanup OrigRequests
+JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = Cpus Gpus Memory Queue BatchRuntime CERequirements OnExitHold
 
 JOB_ROUTER_TRANSFORM_Base @=jrt
     # Job Router special values
@@ -173,13 +173,13 @@ JOB_ROUTER_TRANSFORM_Cpus @=jrt
         if $(test_orig_RequestCpus)
             cpus = $(MY.orig_RequestCpus)
          else
-            cpus = $(default_xcount)
+            cpus = $(default_xcount:1)
          endif
     endif
 
-    EVALSET OriginalCpus           $(cpus:1)
-    EVALSET remote_SMPGranularity  $(cpus:1)
-    EVALSET remote_NodeNumber      $(cpus:1)
+    EVALSET OriginalCpus           $(cpus)
+    EVALSET remote_SMPGranularity  $(cpus)
+    EVALSET remote_NodeNumber      $(cpus)
 
     DEFAULT JobIsRunning           (JobStatus =!= 1) && (JobStatus =!= 5)
     DEFAULT JobCpus                OriginalCpus
@@ -225,12 +225,12 @@ JOB_ROUTER_TRANSFORM_Memory @=jrt
         if $(test_orig_RequestMemory)
             mem = $(MY.orig_RequestMemory)
          else
-            mem = $(default_maxMemory)
+            mem = $(default_maxMemory:2000)
          endif
     endif
 
-    EVALSET OriginalMemory         $(mem:2000)
-    EVALSET remote_OriginalMemory  $(mem:2000)
+    EVALSET OriginalMemory         $(mem)
+    EVALSET remote_OriginalMemory  $(mem)
 
     DEFAULT JobMemory              OriginalMemory
     DEFAULT RequestMemory          OriginalMemory
