@@ -21,7 +21,7 @@ JOB_ROUTER_CONFIG = r"""JOB_ROUTER_TRANSFORM_Env @=jrt
                                          "$(default_pilot_job_env)")
 @jrt
 
-JOB_ROUTER_POST_ROUTE_TRANSFORMS = $(JOB_ROUTER_POST_ROUTE_TRANSFORMS) Env
+JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES) Env
 
 JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
@@ -187,7 +187,7 @@ JOB_ROUTER_TRANSFORM_AccountingGroup @=jrt
     SET AccountingGroup    MY.AccountingGroupOSG
 @jrt
 
-JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) AccountingGroup
+JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES) AccountingGroup
 
 # Also append the accounting group routing rules to the old job router syntax
 # since it's still the default syntax

@@ -113,8 +113,8 @@ JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = True
 # Default Job Router Transforms #
 #################################
 
-JOB_ROUTER_PRE_ROUTE_TRANSFORMS = Base Cleanup OrigRequests
-JOB_ROUTER_POST_ROUTE_TRANSFORMS = Cpus Gpus Memory Queue BatchRuntime CERequirements OnExitHold
+JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = Base Cleanup OrigRequests
+JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = Cpus Gpus Memory Queue BatchRuntime CERequirements OnExitHold
 
 JOB_ROUTER_TRANSFORM_Base @=jrt
     # Job Router special values
