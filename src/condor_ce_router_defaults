@@ -180,15 +180,6 @@ JOB_ROUTER_DEFAULTS_GENERATED @=jrd
 """
 
 ACCOUNTING_GROUP_CONFIG = """
-JOB_ROUTER_TRANSFORM_AccountingGroup @=jrt
-    # Allow admins to set their own accounting group expressions
-    # that also include the ones set in 'AccountingGroupOSG' (SOFTWARE-2067)
-    SET AccountingGroupOSG {accounting_group}
-    SET AccountingGroup    MY.AccountingGroupOSG
-@jrt
-
-JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES) AccountingGroup
-
 # Also append the accounting group routing rules to the old job router syntax
 # since it's still the default syntax
 JOB_ROUTER_DEFAULTS_GENERATED @=jrd
