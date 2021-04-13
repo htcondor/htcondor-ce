@@ -14,6 +14,14 @@ Updating to HTCondor-CE 5
     If updating to HTCondor-CE 5 from HTCondor-CE < 4, be sure to also consult the HTCondor-CE 4
     [upgrade instructions](../v4/releases.md#updating-to-htcondor-ce-4).
 
+!!! tip "Finding relevant configuration changes"
+    When updating HTCondor-CE RPMs, `.rpmnew` and `.rpmsave` files may be created containing new defaults that you
+    should merge or new defaults that have replaced your customzations, respectively.
+    To find these files for HTCondor-CE, run the following command:
+
+        :::console
+        root@host # find /etc/condor-ce/ -name '*.rpmnew' -name '*.rpmsave'
+
 HTCondor-CE 5 is a major release that adds many features and overhauls the default configuration.
 As such, upgrades from older versions of HTCondor-CE may require manual intervention:
 
