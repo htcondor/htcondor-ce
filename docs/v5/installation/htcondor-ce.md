@@ -26,8 +26,9 @@ Before starting the installation process, consider the following points
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your
     local cluster running supported batch system software (Grid Engine, HTCondor, LSF, PBS/Torque, Slurm) 
--   **File Systems**: Non-HTCondor batch systems require a [shared file system](#sharing-the-spool-directory)
-    between the HTCondor-CE host and the batch system worker nodes.
+-   **File Systems**: Non-HTCondor batch systems require a
+    [shared file system](../configuration/local-batch-system.md#sharing-the-spool-directory) between the HTCondor-CE
+    host and the batch system worker nodes.
 
 There are some one-time (per host) steps to prepare in advance:
 

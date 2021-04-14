@@ -3,7 +3,7 @@ Optional Configuration
 
 The following configuration steps are optional and will not be required for all sites.
 If you do not need any of the following special configurations, skip to
-[the section on next steps](#next-steps).
+the page for [verifying your HTCondor-CE](../verification.md).
 
 Configuring for Multiple Network Interfaces
 -------------------------------------------

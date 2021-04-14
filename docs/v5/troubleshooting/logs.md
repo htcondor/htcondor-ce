@@ -64,7 +64,8 @@ It contains valuable information when trying to troubleshoot authentication issu
 
     In this example, the job is authorized with the job’s proxy subject using GSI and is mapped to the `glow` user.
 
--   [User job submission fails](#jobs-fail-to-submit-to-the-ce) due to improper authentication or authorization:
+-   [User job submission fails](common-issues.md#jobs-fail-to-submit-to-the-ce) due to improper authentication or
+    authorization:
 
         :::text
         08/30/16 16:52:56 DC_AUTHENTICATE: required authentication of 72.33.0.189
@@ -175,7 +176,7 @@ troubleshoot issues with job routing.
 
 -   If your job is not routed, there will not be any evidence of it within the log itself.
     To investigate why your jobs are not being considered for routing, use the
-    [condor\_ce\_job\_router\_info](#condor_ce_job_router_info)
+    [condor\_ce\_job\_router\_info](debugging-tools.md#condor_ce_job_router_info)
 -   **HTCondor batch systems only**: The following error occurs when the job router daemon cannot submit the routed job:
 
         :::text
@@ -270,7 +271,7 @@ Messages Log
 ------------
 
 The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the [authentication setup](../installation/htcondor-ce.md#configuring-authentication), the
+If there are issues with the [authentication setup](../configuration/authentication.md), the
 errors may appear here.
 
 - Location: `/var/log/messages`
@@ -309,3 +310,9 @@ submit file and proxy used.
     Whitespace is important so do not put any spaces around the = sign.
     In addition, the directory must be created and HTCondor-CE should have sufficient permissions to create directories
     within `<DIR_NAME>`.
+
+Getting Help
+------------
+
+If you have any questions or issues about troubleshooting remote HTCondor-CEs, please [contact us](/#contact-us) for
+assistance.

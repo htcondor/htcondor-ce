@@ -90,7 +90,7 @@ Before troubleshooting, we recommend increasing the log level:
 
 !!! note
     Before spending any time on troubleshooting, you should ensure that the state of configuration is as expected by
-    running [condor\_ce\_reconfig](#condor_ce_reconfig).
+    running [condor\_ce\_reconfig](debugging-tools.md#condor_ce_reconfig).
 
 ### Daemons fail to start
 
@@ -148,7 +148,7 @@ Daemon startup failure may manifest in many ways, the following are few symptoms
 
 If a user is having issues submitting jobs to the CE and you've ruled out general connectivity or firewalls as the
 culprit, then you may have encountered an authentication or authorization issue. 
-You may see error messages like the following in your [SchedLog](#schedlog):
+You may see error messages like the following in your [SchedLog](logs.md#schedlog):
 
 ```text
 08/30/16 16:52:56 DC_AUTHENTICATE: required authentication of 72.33.0.189 failed: AUTHENTICATE:1003:Failed to authenticate with any method|AUTHENTICATE:1004:Failed to authenticate using GSI|GSI:5002:Failed to authenticate because the remote (client) side was not able to acquire its credentials.|AUTHENTICATE:1004:Failed to authenticate using FS|FS:1004:Unable to lstat(/tmp/FS_XXXZpUlYa)
@@ -159,7 +159,7 @@ You may see error messages like the following in your [SchedLog](#schedlog):
 **Next actions**
 
 1.  **Check voms-mapfile or grid-mapfile** and ensure that the user's DN or VOMS attributes are known to your
-    [authentication method](../installation/htcondor-ce.md#configuring-authentication), and that the mapped users exist
+    [authentication method](../configuration/authentication.md), and that the mapped users exist
     on your CE and cluster.
 1.  **Check for lcmaps errors** in `/var/log/messages`
 1.  **If you do not see helpful error messages in `/var/log/messages`,** adjust the debug level by adding `export
@@ -193,25 +193,26 @@ Once you can run simple manual jobs on your batch system, try submitting to the 
 
 Jobs on the CE will be put on hold if they do not match any job routes after 30 minutes, but you can check a few things
 if you suspect that the jobs are not being matched. 
-Check if the JobRouter sees a job before that by looking at the [job router log](#jobrouterlog) and looking for the text
+Check if the JobRouter sees a job before that by looking at the [job router log](logs.md#jobrouterlog) and looking for the text
 `src=<JOB-ID>…claimed job`.
 
 **Next actions**
 
-Use [condor\_ce\_job\_router\_info](#condor_ce_job_router_info) to see why your idle job does not match any routes
+Use [condor\_ce\_job\_router\_info](debugging-tools.md#condor_ce_job_router_info) to see why your idle job does not
+match any routes
 
 #### Idle jobs on CE: Verify correct operation between the CE and your local batch system
 
 ##### For HTCondor batch systems
 
 HTCondor-CE submits jobs directly to an HTCondor batch system via the JobRouter, so any issues with the CE/local batch
-system interaction will appear in the [JobRouterLog](#jobrouterlog).
+system interaction will appear in the [JobRouterLog](logs.md#jobrouterlog).
 
 **Next actions**
 
-1.  Check the [JobRouterLog](#jobrouterlog) for failures.
+1.  Check the [JobRouterLog](logs.md#jobrouterlog) for failures.
 2.  Verify that the local HTCondor is functional.
-3.  Use [condor\_ce\_config\_val](#condor_ce_config_val) to verify that the `JOB_ROUTER_SCHEDD2_NAME`,
+3.  Use [condor\_ce\_config\_val](debugging-tools.md#condor_ce_config_val) to verify that the `JOB_ROUTER_SCHEDD2_NAME`,
     `JOB_ROUTER_SCHEDD2_POOL`, and `JOB_ROUTER_SCHEDD2_SPOOL` configuration variables are set to the hostname of your
     CE, the hostname and port of your local HTCondor’s collector, and the location of your local HTCondor’s spool
     directory, respectively.
@@ -220,14 +221,14 @@ system interaction will appear in the [JobRouterLog](#jobrouterlog).
 ##### For non-HTCondor batch systems
 
 HTCondor-CE submits jobs to a non-HTCondor batch system via the Gridmanager, so any issues with the CE/local batch
-system interaction will appear in the [GridmanagerLog](#gridmanagerlog). 
+system interaction will appear in the [GridmanagerLog](logs.md#gridmanagerlog). 
 Look for `gm state change…` lines to figure out where the issures are occuring.
 
 **Next actions**
 
 1. **If you see failures in the GridmanagerLog during job submission:**
-   Save the submit files by adding the appropriate entry to [blah.config](#blahp-configuration-file) and submit it
-   [manually](#idle-jobs-on-ce-make-sure-the-underlying-batch-system-can-run-jobs) to the batch system.
+   Save the submit files by adding the appropriate entry to [blah.config](logs.md#blahp-configuration-file) and submit
+   it [manually](#idle-jobs-on-ce-make-sure-the-underlying-batch-system-can-run-jobs) to the batch system.
    If that succeeds, make sure that the BLAHP knows where your binaries are located by setting the `<batch
    system>_binpath` in `/etc/blah.config`.
 2. **If you see failures in the GridmanagerLog during queries for job status:**
@@ -248,7 +249,7 @@ Look for `gm state change…` lines to figure out where the issures are occuring
 
 HTCondor-CE needs the ability to write and chown files in its `spool` directory and if it cannot, jobs will not run at
 all. 
-Spool permission errors can appear in the [SchedLog](#schedlog) and the [JobRouterLog](#jobrouterlog).
+Spool permission errors can appear in the [SchedLog](logs.md#schedlog) and the [JobRouterLog](logs.md#jobrouterlog).
 
 **Symptoms**
 
@@ -271,7 +272,7 @@ Note that jobs may take several minutes or longer if the CE is busy.
 
 #### Remote idle jobs: Can you contact the CE?
 
-To check basic connectivity to a CE, use [condor\_ce\_ping](#condor_ce_ping):
+To check basic connectivity to a CE, use [condor\_ce\_ping](debugging-tools.md#condor_ce_ping):
 
 **Symptoms**
 
@@ -282,7 +283,7 @@ ERROR: couldn't locate condorce.example.com!
 
 **Next actions**
 
-1.  Make sure that the HTCondor-CE daemons are running with [condor\_ce\_status](#condor_ce_status).
+1.  Make sure that the HTCondor-CE daemons are running with [condor\_ce\_status](debugging-tools.md#condor_ce_status).
 2.  Verify that your CE is reachable from your submit host, replacing `condorce.example.com` with the hostname of your CE:
 
         :::console
@@ -291,9 +292,9 @@ ERROR: couldn't locate condorce.example.com!
 #### Remote idle jobs: Are you authorized to run jobs on the CE?
 
 The CE will only run jobs from users that authenticate through the
-[HTCondor-CE configuration](../installation/htcondor-ce.md#configuring-authentication).
-You can use [condor\_ce\_ping](#condor_ce_ping) to check if you are authorized and what user your proxy is being mapped
-to.
+[HTCondor-CE configuration](../configuration/authentication.md).
+You can use [condor\_ce\_ping](debugging-tools.md#condor_ce_ping) to check if you are authorized and what user your
+proxy is being mapped to.
 
 **Symptoms**
 
@@ -316,12 +317,13 @@ Notice the failures in the above message: `Remote Mapping: gsi@unmapped` and `Au
 
 **Next actions**
 
-1.  Verify that an [authentication method](../installation/htcondor-ce.md#configuring-authentication) is set up on the CE
+1.  Verify that an [authentication method](../configuration/authentication.md) is set up on the CE
 2.  Verify that your user DN is mapped to an existing system user
 
 ### Jobs go on hold
 
-Jobs will be put on held with a `HoldReason` attribute that can be inspected with [condor\_ce\_q](#condor_ce_q):
+Jobs will be put on held with a `HoldReason` attribute that can be inspected with
+[condor\_ce\_q](debugging-tools.md#condor_ce_q):
 
 ``` console
 user@host $ condor_ce_q -l <JOB-ID> -attr HoldReason
@@ -334,14 +336,14 @@ Jobs on the CE will be put on hold if they are not claimed by the job router wit
 The most common cases for this behavior are as follows:
 
 - **The job does not match any job routes:**
-  use [condor\_ce\_job\_router\_info](#condor_ce_job_router_info) to see why your idle job does not match any
-  [routes](../configuration/job-router-overview.md#how-jobs-match-to-routes).
+  use [condor\_ce\_job\_router\_info](debugging-tools.md#condor_ce_job_router_info) to see why your idle job does not
+  match any [routes](../configuration/job-router-overview.md#how-jobs-match-to-routes).
 - **The route(s) that the job matches to are full:**
   See [limiting the number of jobs](../configuration/writing-job-routes.md#limiting-the-number-of-jobs).
 - **The job router is throttling submission to your batch system due to submission failures:**
   See the HTCondor manual for [FailureRateThreshold](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958).
-  Check for errors in the [JobRouterLog](#jobrouterlog) or [GridmanagerLog](#gridmanagerlog) for HTCondor and
-  non-HTCondor batch systems, respectively.
+  Check for errors in the [JobRouterLog](logs.md#jobrouterlog) or [GridmanagerLog](logs.md#gridmanagerlog) for HTCondor
+  and non-HTCondor batch systems, respectively.
 
 #### Held jobs: Missing/expired user proxy
 
@@ -381,7 +383,8 @@ The methods for finding the resultant job ID differs between batch systems.
 
 #### HTCondor batch systems
 
-1.  To inspect the CE’s job ad, use [condor\_ce\_q](#condor_ce_q) or [condor\_ce\_history](#condor_ce_history):
+1.  To inspect the CE’s job ad, use [condor\_ce\_q](debugging-tools.md#condor_ce_q) or
+    [condor\_ce\_history](debugging-tools.md#condor_ce_history):
 
     - Use `condor_ce_q` if the job is still in the CE’s queue:
 
@@ -393,7 +396,7 @@ The methods for finding the resultant job ID differs between batch systems.
             :::console
             user@host $ condor_ce_history <JOB-ID> -af RoutedToJobId
 
-2.  Parse the [JobRouterLog](#jobrouterlog) for the CE’s job ID.
+2.  Parse the [JobRouterLog](logs.md#jobrouterlog) for the CE’s job ID.
 
 #### Non-HTCondor batch systems
 
@@ -404,12 +407,12 @@ ID>`:
 lsf/20141206/482046
 ```
 
-1.  To inspect the CE’s job ad, use [condor\_ce\_q](#condor_ce_q):
+1.  To inspect the CE’s job ad, use [condor\_ce\_q](debugging-tools.md#condor_ce_q):
 
         :::console
         user@host $ condor_ce_q <JOB-ID> -af GridJobId
 
-2.  Parse the [GridmanagerLog](#gridmanagerlog) for the CE’s job ID.
+2.  Parse the [GridmanagerLog](logs.md#gridmanagerlog) for the CE’s job ID.
 
 ### Jobs removed from the local HTCondor pool become resubmitted (HTCondor batch systems only)
 
@@ -441,3 +444,10 @@ This means that the `condor_job_router_info` (note this is not the CE version), 
 1.  Either the condor RPM is missing or there are some other issues with it (try `rpm --verify condor`).
 2.  You have installed HTCondor in a non-standard location that is not in your `PATH`.
 3.  The `condor_job_router_info` tool itself wasn't available until Condor-8.2.3-1.1 (available in osg-upcoming).
+
+Getting Help
+------------
+
+If you have any questions or issues about troubleshooting remote HTCondor-CEs, please [contact us](/#contact-us) for
+assistance.
+
