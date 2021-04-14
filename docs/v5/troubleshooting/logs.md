@@ -310,3 +310,9 @@ submit file and proxy used.
     Whitespace is important so do not put any spaces around the = sign.
     In addition, the directory must be created and HTCondor-CE should have sufficient permissions to create directories
     within `<DIR_NAME>`.
+
+Getting Help
+------------
+
+If you have any questions or issues about troubleshooting remote HTCondor-CEs, please [contact us](/#contact-us) for
+assistance.

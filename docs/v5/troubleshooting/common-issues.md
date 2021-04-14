@@ -444,3 +444,10 @@ This means that the `condor_job_router_info` (note this is not the CE version), 
 1.  Either the condor RPM is missing or there are some other issues with it (try `rpm --verify condor`).
 2.  You have installed HTCondor in a non-standard location that is not in your `PATH`.
 3.  The `condor_job_router_info` tool itself wasn't available until Condor-8.2.3-1.1 (available in osg-upcoming).
+
+Getting Help
+------------
+
+If you have any questions or issues about troubleshooting remote HTCondor-CEs, please [contact us](/#contact-us) for
+assistance.
+

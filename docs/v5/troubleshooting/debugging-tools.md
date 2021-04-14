@@ -450,3 +450,9 @@ Using these commands directly gives you more fine-grained control over the behav
 
     This will cause HTCondor-CE to accept new jobs without starting them and will wait for currently running jobs to
     complete before shutting down.
+
+Getting Help
+------------
+
+If you have any questions or issues about troubleshooting remote HTCondor-CEs, please [contact us](/#contact-us) for
+assistance.
