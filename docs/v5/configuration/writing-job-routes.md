@@ -104,12 +104,12 @@ To identify routes, you will need to assign a name to the route, either in the n
     -   Routes specified by `JOB_ROUTER_ROUTE_*` will override routes with the same name in `JOB_ROUTER_ENTRIES`
 
 The name of the route will be useful in debugging since it shows up in the output of
-[condor\_ce\_job\_router\_info](../troubleshooting/troubleshooting.md#condor_ce_job_router_info);
-the [JobRouterLog](../troubleshooting/troubleshooting.md#jobrouterlog);
+[condor\_ce\_job\_router\_info](../troubleshooting/debugging-tools.md#condor_ce_job_router_info);
+the [JobRouterLog](../troubleshooting/logs.md#jobrouterlog);
 in the ClassAd of the routed job, which can be viewed with `condor_q` and `condor_history` for HTCondor batch systems;
 and in the ClassAd of the routed job, which can be vieweed with 
-[condor\_ce\_q](../troubleshooting/troubleshooting.md#condor_ce_q) or
-[condor\_ce\_history](../troubleshooting/troubleshooting.md#condor_ce_history) for non-HTCondor batch systems.
+[condor\_ce\_q](../troubleshooting/debugging-tools.md#condor_ce_q) or
+[condor\_ce\_history](../troubleshooting/debugging-tools.md#condor_ce_history) for non-HTCondor batch systems.
 
 ### Batch system
 
@@ -263,7 +263,7 @@ JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES)
 ### Deprecated syntax
 
 To set an attribute that will be applied to all routes, you will need to ensure that `MERGE_JOB_ROUTER_DEFAULT_ADS` is
-set to `True` (check the value with [condor\_ce\_config\_val](../troubleshooting/troubleshooting.md#condor_ce_config_val))
+set to `True` (check the value with [condor\_ce\_config\_val](../troubleshooting/debugging-tools.md#condor_ce_config_val))
 and use the [set_](#setting-attributes) function in the `JOB_ROUTER_DEFAULTS`.
 The following configuration sets the `Periodic_Hold` attribute for all routes:
 

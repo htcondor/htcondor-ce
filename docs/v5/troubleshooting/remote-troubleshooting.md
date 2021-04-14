@@ -92,7 +92,7 @@ Submitter          None               nu_lhcb@users.htcondor.org
 ```
 
 If you don't see the appropriate daemons, ask the administrator to following
-[these troubleshooting steps](troubleshooting.md#daemons-fail-to-start).
+[these troubleshooting steps](common-issues.md#daemons-fail-to-start).
 
 !!! note "Submitter ad"
     When querying daemons for an HTCondor-CE, you may see `Submitter` ads for each user with jobs in the queue.
@@ -224,9 +224,9 @@ Authorized:                  TRUE
 ```
 
 If `condor_ping` fails,
-ask the administrator to follow [this troubleshooting section](troubleshooting.md#jobs-fail-to-submit-to-the-ce),
+ask the administrator to follow [this troubleshooting section](common-issues.md#jobs-fail-to-submit-to-the-ce),
 set `SCHEDD_DEBUG = $(SCHEDD_DEBUG) D_SECURITY:2`,
-and cross-check the [HTCondor-CE SchedLog](troubleshooting.md#schedlog) for authentication issues.
+and cross-check the [HTCondor-CE SchedLog](logs.md#schedlog) for authentication issues.
 
 ### Submitting a trace request ###
 
@@ -260,7 +260,7 @@ START_LOCAL_UNIVERSE = TotalLocalJobsRunning + TotalSchedulerJobsRunning < 20
 ```
 
 After verifying that you can submit resource requests and that the HTCondor-CE supports local universe,
-use [condor_ce_run](troubleshooting.md#condor_ce_run) to run commands on the remote HTCondor-CE host:
+use [condor_ce_run](debugging-tools.md#condor_ce_run) to run commands on the remote HTCondor-CE host:
 
 ```console
 $ condor_ce_run -lr htcondor-ce.chtc.wisc.edu /bin/sh -c 'condor_q -all'

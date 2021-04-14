@@ -85,7 +85,7 @@ How Jobs Match to Routes
 ------------------------
 
 The Job Router considers incoming jobs in the HTCondor-CE SchedD (i.e., jobs visible in
-[condor_ce_q](../troubleshooting/troubleshooting.md#condor_ce_q)) that meet the following constraints:
+[condor_ce_q](../troubleshooting/debugging-tools.md#condor_ce_q)) that meet the following constraints:
 
 - The job has not already been considered by the Job Router
 - The job's universe is standard or vanilla

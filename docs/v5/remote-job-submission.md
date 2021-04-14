@@ -16,7 +16,7 @@ Before attempting to submit jobs to an HTCondor-CE as documented below, ensure t
 
 -   The HTCondor-CE administrator has independently [verified their HTCondor-CE](verification.md)
 -   The HTCondor-CE administrator has added your credential information (e.g. SciToken or grid proxy) to the HTCondor-CE
-    [authentication configuration](configuration-authentication.md)
+    [authentication configuration](configuration/authentication.md)
 -   Your credentials are valid and unexpired
 
 Submission with Debugging Tools
@@ -32,7 +32,7 @@ root@host # yum install htcondor-ce-client
 ### Verify end-to-end submission ###
 
 The HTCondor-CE client package includes a debugging tool that perform tests of end-to-end job submission called
-[condor\_ce\_trace](troubleshooting/troubleshooting.md#condor_ce_trace).
+[condor\_ce\_trace](troubleshooting/debugging-tools.md#condor_ce_trace).
 To submit a diagnostic job with `condor_ce_trace`, run the following command:
 
 ``` console
@@ -42,7 +42,7 @@ user@host $ condor_ce_trace --debug <CE HOST>
 Replacing `<CE HOST>` with the hostname of the CE you wish to test.
 On success, you will see `Job status: Completed` and the job's environment on the worker node where it ran.
 If you do not see the expected output, refer to the
-[troubleshooting guide](troubleshooting/troubleshooting.md#condor_ce_trace).
+[troubleshooting guide](troubleshooting/debugging-tools.md#condor_ce_trace).
 
 !!! note "CONDOR_CE_TRACE_ATTEMPTS"
     For a busy site cluster, it may take longer than the default 5 minutes to test end-to-end submission.
@@ -198,7 +198,7 @@ If there are issues contacting the HTCondor-CE, you will see error messages abou
 ```
 
 This indicates a communication issue with the HTCondor-CE that may be diagnosed with
-[condor\_ce\_ping](troubleshooting/troubleshooting.md#condor_ce_ping).
+[condor\_ce\_ping](troubleshooting/debugging-tools.md#condor_ce_ping).
 
 Submit File Commands
 --------------------
