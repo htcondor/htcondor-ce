@@ -499,6 +499,7 @@ fi
 
 %config %{_sysconfdir}/condor-ce/condor_mapfile
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
