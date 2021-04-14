@@ -27,9 +27,11 @@ nav:
       - For HTCondor Batch Systems: 'v5/configuration/htcondor-routes.md'
       - For Non-HTCondor Batch Systems: 'v5/configuration/non-htcondor-routes.md'
     - Optional Configuration: 'v5/configuration/optional-configuration.md'
-  - Batch System Integration: 'v5/batch-system-integration.md'
   - Verification: 'v5/verification.md'
-  - Troubleshooting: 'v5/troubleshooting/troubleshooting.md'
+  - Troubleshooting:
+    - Common Issues: 'v5/troubleshooting/common-issues.md'
+    - Debugging Tools: 'v5/troubleshooting/debugging-tools.md'
+    - Helpful Logs: 'v5/troubleshooting/logs.md'
   - Central Grid Operations:
     - Submit Jobs Remotely: 'v5/remote-job-submission.md'
     - Remote Troubleshooting: 'v5/troubleshooting/remote-troubleshooting.md'
