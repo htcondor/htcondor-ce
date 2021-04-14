@@ -717,6 +717,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1185,7 +1192,8 @@ It contains valuable information when trying to troubleshoot authentication issu
 <p>In this example, the job is authorized with the job’s proxy subject using GSI and is mapped to the <code>glow</code> user.</p>
 </li>
 <li>
-<p><a href="#jobs-fail-to-submit-to-the-ce">User job submission fails</a> due to improper authentication or authorization:</p>
+<p><a href="../common-issues/#jobs-fail-to-submit-to-the-ce">User job submission fails</a> due to improper authentication or
+    authorization:</p>
 <div class="codehilite"><pre><span></span><code>08/30/16 16:52:56 DC_AUTHENTICATE: required authentication of 72.33.0.189
                   failed: AUTHENTICATE:1003:Failed to authenticate with any
                   method|AUTHENTICATE:1004:Failed to authenticate using GSI|GSI:5002:Failed to
@@ -1317,7 +1325,7 @@ from your HTCondor configuration.</p>
 <li>
 <p>If your job is not routed, there will not be any evidence of it within the log itself.
     To investigate why your jobs are not being considered for routing, use the
-    <a href="#condor_ce_job_router_info">condor_ce_job_router_info</a></p>
+    <a href="../debugging-tools/#condor_ce_job_router_info">condor_ce_job_router_info</a></p>
 </li>
 <li><strong>HTCondor batch systems only</strong>: The following error occurs when the job router daemon cannot submit the routed job:<div class="codehilite"><pre><span></span><code>10/19/14 13:09:15 Can&#39;t resolve collector condorce.example.com; skipping
 10/19/14 13:09:15 ERROR (pool condorce.example.com) Can&#39;t find address of schedd
@@ -1429,7 +1437,7 @@ This log is a good place to check if experiencing connectivity issues with HTCon
 </ul>
 <h2 id="messages-log">Messages Log<a class="headerlink" href="#messages-log" title="Permanent link">&para;</a></h2>
 <p>The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the <a href="../../installation/htcondor-ce/#configuring-authentication">authentication setup</a>, the
+If there are issues with the <a href="../../configuration/authentication/">authentication setup</a>, the
 errors may appear here.</p>
 <ul>
 <li>Location: <code>/var/log/messages</code></li>
@@ -1462,6 +1470,9 @@ submit file and proxy used.</p>
 In addition, the directory must be created and HTCondor-CE should have sufficient permissions to create directories
 within <code>&lt;DIR_NAME&gt;</code>.</p>
 </div>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions or issues about troubleshooting remote HTCondor-CEs, please <a href="/#contact-us">contact us</a> for
+assistance.</p>
                 
               
               

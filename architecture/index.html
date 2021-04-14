@@ -1075,16 +1075,17 @@ owners that want to start contributing to a computing grid with minimal effort.<
 <p>If your site intends to run over 10,000 concurrent pilot jobs, you will need to host your own
 <a href="../v5/installation/htcondor-ce/">HTCondor-CE</a> because the Hosted CE has not yet been optimized for such loads.</p>
 <h2 id="how-the-ce-is-customized">How the CE is Customized<a class="headerlink" href="#how-the-ce-is-customized" title="Permanent link">&para;</a></h2>
-<p>Aside from the <a href="../v5/installation/htcondor-ce/#configuring-htcondor-ce">basic configuration</a> required in the CE
-installation, there are two main ways to customize your CE (if you decide any customization is required at all):</p>
+<p>Aside from the [basic configuration] required in the CE installation, there are two main ways to customize your CE (if
+you decide any customization is required at all):</p>
 <ul>
 <li><strong>Deciding which Virtual Organizations (VOs) are allowed to run at your site:</strong> HTCondor-CE leverages HTCondor's
-    built-in ability to authenticate incoming jobs based on their GSI or OAuth token credentials.
+    built-in ability to <a href="../v5/configuration/authentication/">authenticate incoming jobs</a> based on their GSI or OAuth
+    token credentials.
     Additionally, HTCondor may be configured to callout to external authentication services like Argus or LCMAPS. </li>
 <li><strong>How to filter and transform the pilot jobs to be run on your batch system:</strong> Filtering and transforming pilot jobs
     (i.e., setting site-specific attributes or resource limits), requires configuration of your site’s job routes.
-    For examples of common job routes, consult the <a href="../v5/configuration/job-router-overview/">batch system integration</a>
-    page.</li>
+    For examples of common job routes, consult the <a href="../v5/configuration/job-router-overview/">job router configuration</a>
+    pages.</li>
 </ul>
 <h2 id="how-security-works">How Security Works<a class="headerlink" href="#how-security-works" title="Permanent link">&para;</a></h2>
 <p>In the grid, security depends on a PKI infrastructure involving Certificate Authorities (CAs) where CAs sign and issue

@@ -918,8 +918,22 @@
     Setting job environments
   </a>
   
-    <nav class="md-nav" aria-label="Setting job environments">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#editing-attributes" class="md-nav__link">
+    Editing attributes…
+  </a>
+  
+    <nav class="md-nav" aria-label="Editing attributes…">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#copying-attributes" class="md-nav__link">
+    Copying attributes
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#removing-attributes" class="md-nav__link">
@@ -1642,75 +1656,84 @@ The following entry routes jobs to HTCondor if the incoming job (specified by <c
 <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<p>``` tab="HTCondor-CE Configuration"
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
-<div class="highlight"><pre><span></span><code>```bash tab=&quot;Resulting Environment&quot;
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-</code></pre></div></p>
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu&quot;
+</code></pre></div>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Resulting Environment</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
+<span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
+</code></pre></div>
+</div>
+</div>
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
 <a href="https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<p>``` tab="HTCondor-CE Configuration"
-LOCAL_PROXY = proxy.wisc.edu
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
-<div class="highlight"><pre><span></span><code>```bash tab=&quot;Resulting Environment&quot;
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-</code></pre></div></p>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
+CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)&quot;
+</code></pre></div>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Resulting Environment</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
+<span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
+</code></pre></div>
+</div>
+</div>
 <p>To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 <code>set_default_pilot_job_env</code> to your job route configuration.
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:</p>
-<p>``` tab="HTCondor-CE Configuration" hl_lines="5 6 7" 
-JOB_ROUTER_ENTRIES @=jre
+<div class="tabbed-set" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
-  name = "Local_Condor";
-  set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
-                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                     " ACCOUNTING_GROUP=", toLower(JOB_VO));
-]
+  name = &quot;Local_Condor&quot;;
+<span class="hll">  set_default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
+</span><span class="hll">                                     &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
+</span><span class="hll">                                     &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO));
+</span>]
 @jre
-<div class="highlight"><pre><span></span><code>``` tab=&quot;Incoming Job Attributes&quot;
-JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
+</code></pre></div>
+</div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Incoming Job Attributes</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
 JOB_VO = &quot;GLOW&quot;
-</code></pre></div></p>
-<p>``` bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-PILOT_COLLECTOR=collector.wisc.edu
-ACCOUNTING_GROUP=glow
-<div class="highlight"><pre><span></span><code>!!!tip &quot;Debugging job route environment expressions&quot;
-    While constructing `set_default_pilot_job_env` expressions, try wrapping your expression in
-    [debug()](#debugging-routes) to help with any issues that may arise.
-    Make sure to remove `debug()` after you&#39;re done!
-
-### Editing attributes…
-
-The following functions are operations that affect job attributes and are evaluated in the following order:
-
-1.  `copy_*`
-2.  `delete_*`
-3.  `set_*`
-4.  `eval_set_*`
-
-After each job route’s ClassAd is [constructed](#how-job-routes-are-constructed), the above operations are evaluated in order. For example, if the attribute `foo` is set using `eval_set_foo` in the `JOB_ROUTER_DEFAULTS`, you&#39;ll be unable to use `delete_foo` to remove it from your jobs since the attribute is set using `eval_set_foo` after the deletion occurs according to the order of operations. To get around this, we can take advantage of the fact that operations defined in `JOB_ROUTER_DEFAULTS` get overridden by the same operation in `JOB_ROUTER_ENTRIES`. So to &#39;delete&#39; `foo`, we would add `eval_set_foo = &quot;&quot;` to the route in the `JOB_ROUTER_ENTRIES`, resulting in `foo` being absent from the routed job.
-
-More documentation can be found in the [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#SECTION00644000000000000000).
-
-#### Copying attributes
-
-To copy the value of an attribute of the incoming job to an attribute of the routed job, use `copy_`. The following route copies the `environment` attribute of the incoming job and sets the attribute `Original_Environment` on the routed job to the same value:
-
-```hl_lines=&quot;6&quot;
-JOB_ROUTER_ENTRIES @=jre
+</code></pre></div>
+</div>
+<input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><label for="__tabbed_3_3">Resulting Environment</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
+<span class="nv">PILOT_COLLECTOR</span><span class="o">=</span>collector.wisc.edu
+<span class="nv">ACCOUNTING_GROUP</span><span class="o">=</span>glow
+</code></pre></div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Debugging job route environment expressions</p>
+<p>While constructing <code>set_default_pilot_job_env</code> expressions, try wrapping your expression in
+<a href="#debugging-routes">debug()</a> to help with any issues that may arise.
+Make sure to remove <code>debug()</code> after you're done!</p>
+</div>
+<h3 id="editing-attributes">Editing attributes…<a class="headerlink" href="#editing-attributes" title="Permanent link">&para;</a></h3>
+<p>The following functions are operations that affect job attributes and are evaluated in the following order:</p>
+<ol>
+<li><code>copy_*</code></li>
+<li><code>delete_*</code></li>
+<li><code>set_*</code></li>
+<li><code>eval_set_*</code></li>
+</ol>
+<p>After each job route’s ClassAd is <a href="#how-job-routes-are-constructed">constructed</a>, the above operations are evaluated in order. For example, if the attribute <code>foo</code> is set using <code>eval_set_foo</code> in the <code>JOB_ROUTER_DEFAULTS</code>, you'll be unable to use <code>delete_foo</code> to remove it from your jobs since the attribute is set using <code>eval_set_foo</code> after the deletion occurs according to the order of operations. To get around this, we can take advantage of the fact that operations defined in <code>JOB_ROUTER_DEFAULTS</code> get overridden by the same operation in <code>JOB_ROUTER_ENTRIES</code>. So to 'delete' <code>foo</code>, we would add <code>eval_set_foo = ""</code> to the route in the <code>JOB_ROUTER_ENTRIES</code>, resulting in <code>foo</code> being absent from the routed job.</p>
+<p>More documentation can be found in the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#SECTION00644000000000000000">HTCondor manual</a>.</p>
+<h4 id="copying-attributes">Copying attributes<a class="headerlink" href="#copying-attributes" title="Permanent link">&para;</a></h4>
+<p>To copy the value of an attribute of the incoming job to an attribute of the routed job, use <code>copy_</code>. The following route copies the <code>environment</code> attribute of the incoming job and sets the attribute <code>Original_Environment</code> on the routed job to the same value:</p>
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   GridResource = &quot;batch pbs&quot;;
   TargetUniverse = 9;
   name = &quot;Copying attributes&quot;;
-  copy_environment = &quot;Original_Environment&quot;;
-]
+<span class="hll">  copy_environment = &quot;Original_Environment&quot;;
+</span>]
 @jre
-</code></pre></div></p>
+</code></pre></div>
 <h4 id="removing-attributes">Removing attributes<a class="headerlink" href="#removing-attributes" title="Permanent link">&para;</a></h4>
 <p>To remove an attribute of the incoming job from the routed job, use <code>delete_</code>. The following route removes the <code>environment</code> attribute from the routed job:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre

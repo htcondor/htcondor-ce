@@ -823,6 +823,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1305,7 +1312,7 @@ Before troubleshooting, we recommend increasing the log level:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Before spending any time on troubleshooting, you should ensure that the state of configuration is as expected by
-running <a href="#condor_ce_reconfig">condor_ce_reconfig</a>.</p>
+running <a href="../debugging-tools/#condor_ce_reconfig">condor_ce_reconfig</a>.</p>
 </div>
 <h3 id="daemons-fail-to-start">Daemons fail to start<a class="headerlink" href="#daemons-fail-to-start" title="Permanent link">&para;</a></h3>
 <p>If there are errors in your configuration of HTCondor-CE, this may cause some of its required daemons to fail to
@@ -1361,7 +1368,7 @@ Check the following subsections in order:</p>
 <h3 id="jobs-fail-to-submit-to-the-ce">Jobs fail to submit to the CE<a class="headerlink" href="#jobs-fail-to-submit-to-the-ce" title="Permanent link">&para;</a></h3>
 <p>If a user is having issues submitting jobs to the CE and you've ruled out general connectivity or firewalls as the
 culprit, then you may have encountered an authentication or authorization issue. 
-You may see error messages like the following in your <a href="#schedlog">SchedLog</a>:</p>
+You may see error messages like the following in your <a href="../logs/#schedlog">SchedLog</a>:</p>
 <div class="highlight"><pre><span></span><code>08/30/16 16:52:56 DC_AUTHENTICATE: required authentication of 72.33.0.189 failed: AUTHENTICATE:1003:Failed to authenticate with any method|AUTHENTICATE:1004:Failed to authenticate using GSI|GSI:5002:Failed to authenticate because the remote (client) side was not able to acquire its credentials.|AUTHENTICATE:1004:Failed to authenticate using FS|FS:1004:Unable to lstat(/tmp/FS_XXXZpUlYa)
 08/30/16 16:53:12 PERMISSION DENIED to gsi@unmapped from host 72.33.0.189 for command 60021 (DC_NOP_WRITE), access level WRITE: reason: WRITE authorization policy contains no matching ALLOW entry for this request; identifiers used for this host: 72.33.0.189,dyn-72-33-0-189.uwnet.wisc.edu, hostname size = 1, original ip address = 72.33.0.189
 08/30/16 16:53:12 DC_AUTHENTICATE: Command not authorized, done!
@@ -1369,7 +1376,7 @@ You may see error messages like the following in your <a href="#schedlog">SchedL
 <p><strong>Next actions</strong></p>
 <ol>
 <li><strong>Check voms-mapfile or grid-mapfile</strong> and ensure that the user's DN or VOMS attributes are known to your
-    <a href="../../installation/htcondor-ce/#configuring-authentication">authentication method</a>, and that the mapped users exist
+    <a href="../../configuration/authentication/">authentication method</a>, and that the mapped users exist
     on your CE and cluster.</li>
 <li><strong>Check for lcmaps errors</strong> in <code>/var/log/messages</code></li>
 <li><strong>If you do not see helpful error messages in <code>/var/log/messages</code>,</strong> adjust the debug level by adding <code>export
@@ -1396,19 +1403,20 @@ Once you can run simple manual jobs on your batch system, try submitting to the 
 <h4 id="idle-jobs-on-ce-is-the-job-router-handling-the-incoming-job">Idle jobs on CE: Is the job router handling the incoming job?<a class="headerlink" href="#idle-jobs-on-ce-is-the-job-router-handling-the-incoming-job" title="Permanent link">&para;</a></h4>
 <p>Jobs on the CE will be put on hold if they do not match any job routes after 30 minutes, but you can check a few things
 if you suspect that the jobs are not being matched. 
-Check if the JobRouter sees a job before that by looking at the <a href="#jobrouterlog">job router log</a> and looking for the text
+Check if the JobRouter sees a job before that by looking at the <a href="../logs/#jobrouterlog">job router log</a> and looking for the text
 <code>src=&lt;JOB-ID&gt;…claimed job</code>.</p>
 <p><strong>Next actions</strong></p>
-<p>Use <a href="#condor_ce_job_router_info">condor_ce_job_router_info</a> to see why your idle job does not match any routes</p>
+<p>Use <a href="../debugging-tools/#condor_ce_job_router_info">condor_ce_job_router_info</a> to see why your idle job does not
+match any routes</p>
 <h4 id="idle-jobs-on-ce-verify-correct-operation-between-the-ce-and-your-local-batch-system">Idle jobs on CE: Verify correct operation between the CE and your local batch system<a class="headerlink" href="#idle-jobs-on-ce-verify-correct-operation-between-the-ce-and-your-local-batch-system" title="Permanent link">&para;</a></h4>
 <h5 id="for-htcondor-batch-systems">For HTCondor batch systems<a class="headerlink" href="#for-htcondor-batch-systems" title="Permanent link">&para;</a></h5>
 <p>HTCondor-CE submits jobs directly to an HTCondor batch system via the JobRouter, so any issues with the CE/local batch
-system interaction will appear in the <a href="#jobrouterlog">JobRouterLog</a>.</p>
+system interaction will appear in the <a href="../logs/#jobrouterlog">JobRouterLog</a>.</p>
 <p><strong>Next actions</strong></p>
 <ol>
-<li>Check the <a href="#jobrouterlog">JobRouterLog</a> for failures.</li>
+<li>Check the <a href="../logs/#jobrouterlog">JobRouterLog</a> for failures.</li>
 <li>Verify that the local HTCondor is functional.</li>
-<li>Use <a href="#condor_ce_config_val">condor_ce_config_val</a> to verify that the <code>JOB_ROUTER_SCHEDD2_NAME</code>,
+<li>Use <a href="../debugging-tools/#condor_ce_config_val">condor_ce_config_val</a> to verify that the <code>JOB_ROUTER_SCHEDD2_NAME</code>,
     <code>JOB_ROUTER_SCHEDD2_POOL</code>, and <code>JOB_ROUTER_SCHEDD2_SPOOL</code> configuration variables are set to the hostname of your
     CE, the hostname and port of your local HTCondor’s collector, and the location of your local HTCondor’s spool
     directory, respectively.</li>
@@ -1416,13 +1424,13 @@ system interaction will appear in the <a href="#jobrouterlog">JobRouterLog</a>.<
 </ol>
 <h5 id="for-non-htcondor-batch-systems">For non-HTCondor batch systems<a class="headerlink" href="#for-non-htcondor-batch-systems" title="Permanent link">&para;</a></h5>
 <p>HTCondor-CE submits jobs to a non-HTCondor batch system via the Gridmanager, so any issues with the CE/local batch
-system interaction will appear in the <a href="#gridmanagerlog">GridmanagerLog</a>. 
+system interaction will appear in the <a href="../logs/#gridmanagerlog">GridmanagerLog</a>. 
 Look for <code>gm state change…</code> lines to figure out where the issures are occuring.</p>
 <p><strong>Next actions</strong></p>
 <ol>
 <li><strong>If you see failures in the GridmanagerLog during job submission:</strong>
-   Save the submit files by adding the appropriate entry to <a href="#blahp-configuration-file">blah.config</a> and submit it
-   <a href="#idle-jobs-on-ce-make-sure-the-underlying-batch-system-can-run-jobs">manually</a> to the batch system.
+   Save the submit files by adding the appropriate entry to <a href="../logs/#blahp-configuration-file">blah.config</a> and submit
+   it <a href="#idle-jobs-on-ce-make-sure-the-underlying-batch-system-can-run-jobs">manually</a> to the batch system.
    If that succeeds, make sure that the BLAHP knows where your binaries are located by setting the <code>&lt;batch
    system&gt;_binpath</code> in <code>/etc/blah.config</code>.</li>
 <li>
@@ -1442,7 +1450,7 @@ Look for <code>gm state change…</code> lines to figure out where the issures a
 <h4 id="idle-jobs-on-ce-verify-ability-to-change-permissions-on-key-files">Idle jobs on CE: Verify ability to change permissions on key files<a class="headerlink" href="#idle-jobs-on-ce-verify-ability-to-change-permissions-on-key-files" title="Permanent link">&para;</a></h4>
 <p>HTCondor-CE needs the ability to write and chown files in its <code>spool</code> directory and if it cannot, jobs will not run at
 all. 
-Spool permission errors can appear in the <a href="#schedlog">SchedLog</a> and the <a href="#jobrouterlog">JobRouterLog</a>.</p>
+Spool permission errors can appear in the <a href="../logs/#schedlog">SchedLog</a> and the <a href="../logs/#jobrouterlog">JobRouterLog</a>.</p>
 <p><strong>Symptoms</strong></p>
 <div class="highlight"><pre><span></span><code>09/17/14 14:45:42 Error: Unable to chown &#39;/var/lib/condor-ce/spool/1/0/cluster1.proc0.subproc0/env&#39; from 12345 to 54321
 </code></pre></div>
@@ -1458,14 +1466,14 @@ see a resultant job in the CE's queue, this means that your job cannot contact t
 authorized to run there. 
 Note that jobs may take several minutes or longer if the CE is busy.</p>
 <h4 id="remote-idle-jobs-can-you-contact-the-ce">Remote idle jobs: Can you contact the CE?<a class="headerlink" href="#remote-idle-jobs-can-you-contact-the-ce" title="Permanent link">&para;</a></h4>
-<p>To check basic connectivity to a CE, use <a href="#condor_ce_ping">condor_ce_ping</a>:</p>
+<p>To check basic connectivity to a CE, use <a href="../debugging-tools/#condor_ce_ping">condor_ce_ping</a>:</p>
 <p><strong>Symptoms</strong></p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ping -verbose -name condorce.example.com -pool condorce.example.com:9619 WRITE
 <span class="go">ERROR: couldn&#39;t locate condorce.example.com!</span>
 </code></pre></div>
 <p><strong>Next actions</strong></p>
 <ol>
-<li>Make sure that the HTCondor-CE daemons are running with <a href="#condor_ce_status">condor_ce_status</a>.</li>
+<li>Make sure that the HTCondor-CE daemons are running with <a href="../debugging-tools/#condor_ce_status">condor_ce_status</a>.</li>
 <li>Verify that your CE is reachable from your submit host, replacing <code>condorce.example.com</code> with the hostname of your CE:<div class="codehilite"><pre><span></span><code><span class="gp">user@host $ </span>ping condorce.example.com
 </code></pre></div>
 
@@ -1473,9 +1481,9 @@ Note that jobs may take several minutes or longer if the CE is busy.</p>
 </ol>
 <h4 id="remote-idle-jobs-are-you-authorized-to-run-jobs-on-the-ce">Remote idle jobs: Are you authorized to run jobs on the CE?<a class="headerlink" href="#remote-idle-jobs-are-you-authorized-to-run-jobs-on-the-ce" title="Permanent link">&para;</a></h4>
 <p>The CE will only run jobs from users that authenticate through the
-<a href="../../installation/htcondor-ce/#configuring-authentication">HTCondor-CE configuration</a>.
-You can use <a href="#condor_ce_ping">condor_ce_ping</a> to check if you are authorized and what user your proxy is being mapped
-to.</p>
+<a href="../../configuration/authentication/">HTCondor-CE configuration</a>.
+You can use <a href="../debugging-tools/#condor_ce_ping">condor_ce_ping</a> to check if you are authorized and what user your
+proxy is being mapped to.</p>
 <p><strong>Symptoms</strong></p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ping -verbose -name condorce.example.com -pool condorce.example.com:9619 WRITE
 <span class="go">Remote Version:              $CondorVersion: 8.0.7 Sep 24 2014 $</span>
@@ -1493,11 +1501,12 @@ to.</p>
 <p>Notice the failures in the above message: <code>Remote Mapping: gsi@unmapped</code> and <code>Authorized: FALSE</code></p>
 <p><strong>Next actions</strong></p>
 <ol>
-<li>Verify that an <a href="../../installation/htcondor-ce/#configuring-authentication">authentication method</a> is set up on the CE</li>
+<li>Verify that an <a href="../../configuration/authentication/">authentication method</a> is set up on the CE</li>
 <li>Verify that your user DN is mapped to an existing system user</li>
 </ol>
 <h3 id="jobs-go-on-hold">Jobs go on hold<a class="headerlink" href="#jobs-go-on-hold" title="Permanent link">&para;</a></h3>
-<p>Jobs will be put on held with a <code>HoldReason</code> attribute that can be inspected with <a href="#condor_ce_q">condor_ce_q</a>:</p>
+<p>Jobs will be put on held with a <code>HoldReason</code> attribute that can be inspected with
+<a href="../debugging-tools/#condor_ce_q">condor_ce_q</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_q -l &lt;JOB-ID&gt; -attr HoldReason
 <span class="go">HoldReason = &quot;CE job in status 5 put on hold by SYSTEM_PERIODIC_HOLD due to no matching routes, route job limit, or route failure threshold.&quot;</span>
 </code></pre></div>
@@ -1506,14 +1515,14 @@ to.</p>
 The most common cases for this behavior are as follows:</p>
 <ul>
 <li><strong>The job does not match any job routes:</strong>
-  use <a href="#condor_ce_job_router_info">condor_ce_job_router_info</a> to see why your idle job does not match any
-  <a href="../../configuration/job-router-overview/#how-jobs-match-to-routes">routes</a>.</li>
+  use <a href="../debugging-tools/#condor_ce_job_router_info">condor_ce_job_router_info</a> to see why your idle job does not
+  match any <a href="../../configuration/job-router-overview/#how-jobs-match-to-routes">routes</a>.</li>
 <li><strong>The route(s) that the job matches to are full:</strong>
   See <a href="../../configuration/writing-job-routes/#limiting-the-number-of-jobs">limiting the number of jobs</a>.</li>
 <li><strong>The job router is throttling submission to your batch system due to submission failures:</strong>
   See the HTCondor manual for <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958">FailureRateThreshold</a>.
-  Check for errors in the <a href="#jobrouterlog">JobRouterLog</a> or <a href="#gridmanagerlog">GridmanagerLog</a> for HTCondor and
-  non-HTCondor batch systems, respectively.</li>
+  Check for errors in the <a href="../logs/#jobrouterlog">JobRouterLog</a> or <a href="../logs/#gridmanagerlog">GridmanagerLog</a> for HTCondor
+  and non-HTCondor batch systems, respectively.</li>
 </ul>
 <h4 id="held-jobs-missingexpired-user-proxy">Held jobs: Missing/expired user proxy<a class="headerlink" href="#held-jobs-missingexpired-user-proxy" title="Permanent link">&para;</a></h4>
 <p>HTCondor-CE requires a valid user proxy for each job that is submitted. 
@@ -1546,7 +1555,8 @@ The methods for finding the resultant job ID differs between batch systems.</p>
 <h4 id="htcondor-batch-systems">HTCondor batch systems<a class="headerlink" href="#htcondor-batch-systems" title="Permanent link">&para;</a></h4>
 <ol>
 <li>
-<p>To inspect the CE’s job ad, use <a href="#condor_ce_q">condor_ce_q</a> or <a href="#condor_ce_history">condor_ce_history</a>:</p>
+<p>To inspect the CE’s job ad, use <a href="../debugging-tools/#condor_ce_q">condor_ce_q</a> or
+    <a href="../debugging-tools/#condor_ce_history">condor_ce_history</a>:</p>
 <ul>
 <li>
 <p>Use <code>condor_ce_q</code> if the job is still in the CE’s queue:</p>
@@ -1563,7 +1573,7 @@ The methods for finding the resultant job ID differs between batch systems.</p>
 </ul>
 </li>
 <li>
-<p>Parse the <a href="#jobrouterlog">JobRouterLog</a> for the CE’s job ID.</p>
+<p>Parse the <a href="../logs/#jobrouterlog">JobRouterLog</a> for the CE’s job ID.</p>
 </li>
 </ol>
 <h4 id="non-htcondor-batch-systems">Non-HTCondor batch systems<a class="headerlink" href="#non-htcondor-batch-systems" title="Permanent link">&para;</a></h4>
@@ -1573,13 +1583,13 @@ ID&gt;</code>:</p>
 </code></pre></div>
 <ol>
 <li>
-<p>To inspect the CE’s job ad, use <a href="#condor_ce_q">condor_ce_q</a>:</p>
+<p>To inspect the CE’s job ad, use <a href="../debugging-tools/#condor_ce_q">condor_ce_q</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_q &lt;JOB-ID&gt; -af GridJobId
 </code></pre></div>
 
 </li>
 <li>
-<p>Parse the <a href="#gridmanagerlog">GridmanagerLog</a> for the CE’s job ID.</p>
+<p>Parse the <a href="../logs/#gridmanagerlog">GridmanagerLog</a> for the CE’s job ID.</p>
 </li>
 </ol>
 <h3 id="jobs-removed-from-the-local-htcondor-pool-become-resubmitted-htcondor-batch-systems-only">Jobs removed from the local HTCondor pool become resubmitted (HTCondor batch systems only)<a class="headerlink" href="#jobs-removed-from-the-local-htcondor-pool-become-resubmitted-htcondor-batch-systems-only" title="Permanent link">&para;</a></h3>
@@ -1610,6 +1620,9 @@ If you are trying to use HTCondor-CE tools and you see the following error:</p>
 <li>You have installed HTCondor in a non-standard location that is not in your <code>PATH</code>.</li>
 <li>The <code>condor_job_router_info</code> tool itself wasn't available until Condor-8.2.3-1.1 (available in osg-upcoming).</li>
 </ol>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions or issues about troubleshooting remote HTCondor-CEs, please <a href="/#contact-us">contact us</a> for
+assistance.</p>
                 
               
               
