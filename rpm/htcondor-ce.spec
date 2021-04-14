@@ -28,9 +28,10 @@ BuildRequires: python-rpm-macros
 BuildRequires: python3-devel
 BuildRequires: python3-rpm-macros
 
-# CE collector plugin needs the Python 3 support available in the 8.9 series:
-# https://opensciencegrid.atlassian.net/browse/HTCONDOR-13
-Requires:  condor >= 8.9.7
+# Mapfiles.d changes require 8.9.13 but 8.9.13 has known bugs
+# affecting the Job Router and Python 3 collector plugin
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-244
+Requires:  condor >= 9.0.0
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
