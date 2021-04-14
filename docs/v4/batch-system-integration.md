@@ -366,55 +366,69 @@ Both of these methods use the new HTCondor format of the
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
-``` tab="HTCondor-CE Configuration"
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
-```
+=== "HTCondor-CE Configuration"
 
-```bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-```
+    ```
+    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
+    ```
+
+=== "Resulting Environment"
+
+    ```bash
+    WN_SCRATCH_DIR=/nobackup/
+    http_proxy=proxy.wisc.edu
+    ```
 
 Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
 [$() macro expansion](https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros).
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
-``` tab="HTCondor-CE Configuration"
-LOCAL_PROXY = proxy.wisc.edu
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
-```
+=== "HTCondor-CE Configuration"
 
-```bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-```
+    ```
+    LOCAL_PROXY = proxy.wisc.edu
+    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
+    ```
+
+=== "Resulting Environment"
+
+    ```bash 
+    WN_SCRATCH_DIR=/nobackup/
+    http_proxy=proxy.wisc.edu
+    ```
 
 To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 `set_default_pilot_job_env` to your job route configuration.
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:
 
-``` tab="HTCondor-CE Configuration" hl_lines="5 6 7" 
-JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = "Local_Condor";
-  set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
-                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                     " ACCOUNTING_GROUP=", toLower(JOB_VO));
-]
-@jre
-```
+=== "HTCondor-CE Configuration"
 
-``` tab="Incoming Job Attributes"
-JOB_COLLECTOR = "collector.wisc.edu"
-JOB_VO = "GLOW"
-```
+    ```hl_lines="5 6 7" 
+    JOB_ROUTER_ENTRIES @=jre
+    [
+      TargetUniverse = 5;
+      name = "Local_Condor";
+      set_default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                         " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                         " ACCOUNTING_GROUP=", toLower(JOB_VO));
+    ]
+    @jre
+    ```
 
-``` bash tab="Resulting Environment"
-WN_SCRATCH_DIR=/nobackup/
-PILOT_COLLECTOR=collector.wisc.edu
-ACCOUNTING_GROUP=glow
-```
+=== "Incoming Job Attributes"
+
+    ```
+    JOB_COLLECTOR = "collector.wisc.edu"
+    JOB_VO = "GLOW"
+    ```
+
+=== "Resulting Environment"
+
+    ```bash
+    WN_SCRATCH_DIR=/nobackup/
+    PILOT_COLLECTOR=collector.wisc.edu
+    ACCOUNTING_GROUP=glow
+    ```
 
 !!!tip "Debugging job route environment expressions"
     While constructing `set_default_pilot_job_env` expressions, try wrapping your expression in
