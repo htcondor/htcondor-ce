@@ -18,6 +18,10 @@ nav:
   - 'Architecture': 'architecture.md'
 - HTCondor-CE 5:
   - Installation: 'v5/installation/htcondor-ce.md'
+  - Configuration:
+      - Authentication: 'v5/configuration/authentication.md'
+      - Local Batch System: 'v5/configuration/local-batch-system.md'
+      - Optional Configuration: 'v5/configuration/optional-configuration.md'
   - Batch System Integration: 'v5/batch-system-integration.md'
   - Verification: 'v5/verification.md'
   - Troubleshooting: 'v5/troubleshooting/troubleshooting.md'
