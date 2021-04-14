@@ -877,9 +877,18 @@
 </ul>
 <h2 id="updating-to-htcondor-ce-5">Updating to HTCondor-CE 5<a class="headerlink" href="#updating-to-htcondor-ce-5" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
-<p class="admonition-title">Updating from HTCondor-CE &lt;=3</p>
-<p>If updating to HTCondor-CE 5 from HTCondor-CE &lt;= 3, be sure to also consult the HTCondor-CE 4
+<p class="admonition-title">Updating from HTCondor-CE &lt; 4</p>
+<p>If updating to HTCondor-CE 5 from HTCondor-CE &lt; 4, be sure to also consult the HTCondor-CE 4
 <a href="../../v4/releases/#updating-to-htcondor-ce-4">upgrade instructions</a>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Finding relevant configuration changes</p>
+<p>When updating HTCondor-CE RPMs, <code>.rpmnew</code> and <code>.rpmsave</code> files may be created containing new defaults that you
+should merge or new defaults that have replaced your customzations, respectively.
+To find these files for HTCondor-CE, run the following command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>find /etc/condor-ce/ -name <span class="s1">&#39;*.rpmnew&#39;</span> -name <span class="s1">&#39;*.rpmsave&#39;</span>
+</code></pre></div>
+
 </div>
 <p>HTCondor-CE 5 is a major release that adds many features and overhauls the default configuration.
 As such, upgrades from older versions of HTCondor-CE may require manual intervention:</p>
@@ -930,11 +939,33 @@ Full HTCondor-CE version history can be found on <a href="https://github.com/htc
 <ul>
 <li>Add support for <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html">ClassAd transforms</a>
     to the JobRouter (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-243">HTCONDOR-243</a>)</li>
+<li>Add mapped user and X.509 attribute to local HTCondor pool AccountingGroup mappings to Job Routers configured to use
+    the ClassAd transform syntax (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-187">HTCONDOR-187</a>)</li>
+<li>Accept <code>BatchRuntime</code> attributes from incoming jobs to set their maximum walltime
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-80">HTCONDOR-80</a>)</li>
+<li>Update the HTCondor-CE registry to Python 3
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-307">HTCONDOR-307</a>)</li>
+<li>Enable SSL authentication by default for <code>READ</code>/<code>WRITE</code> authorization levels
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-366">HTCONDOR-366</a>)</li>
+<li>APEL reporting scripts now use history files in the local HTCondor <code>PER_JOB_HISTORY_DIR</code> to collect job data.
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-293">HTCONDOR_293</a>)</li>
+<li>Use the <code>GlobalJobID</code> attribute as the APEL record <code>lrmsID</code>
+    (<a href="https://github.com/htcondor/htcondor-ce/pull/426">#426</a>)</li>
+<li>Downgrade errors in the configuration verification startup script to support routes written in the transform syntax
+    (<a href="https://github.com/htcondor/htcondor-ce/pull/465">#465</a>)</li>
+<li>Allow required directories to be owned by non-<code>condor</code> groups
+    (<a href="https://github.com/htcondor/htcondor-ce/pull/451/files">#451</a>)</li>
 </ul>
 <p>This release also includes the following bug-fixes:</p>
 <ul>
-<li>APEL reporting scripts now use <code>PER_JOB_HISTORY_DIR</code> to collect job data. 
-    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-293">HTCONDOR_293</a>)</li>
+<li>Fix an issue with an overly aggressive default <code>SYSTEM_PERIODIC_REMOVE</code>
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-350">HTCONDOR-350</a>)</li>
+<li>Fix incorrect path to Python 3 Collector plugin
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-400">HTCONDOR-400</a>)</li>
+<li>Fix faulty validation of <code>JOB_ROUTER_ROUTE_NAMES</code> and <code>JOB_ROUTER_ENTRIES</code> in the startup script
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-406">HTCONDOR-406</a>)</li>
+<li>Fix various Python 3 incompatibilities
+    (<a href="https://github.com/htcondor/htcondor-ce/pull/460">#460</a>)</li>
 </ul>
 <h3 id="500">5.0.0<a class="headerlink" href="#500" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.0.0">This release</a> includes the following new features:</p>
