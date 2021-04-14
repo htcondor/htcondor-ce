@@ -19,9 +19,14 @@ nav:
 - HTCondor-CE 5:
   - Installation: 'v5/installation/htcondor-ce.md'
   - Configuration:
-      - Authentication: 'v5/configuration/authentication.md'
-      - Local Batch System: 'v5/configuration/local-batch-system.md'
-      - Optional Configuration: 'v5/configuration/optional-configuration.md'
+    - Authentication: 'v5/configuration/authentication.md'
+    - Local Batch System: 'v5/configuration/local-batch-system.md'
+    - Job Router:
+      - Overview: 'v5/configuration/job-router-overview.md'
+      - Writing Job Routes: 'v5/configuration/writing-job-routes.md'
+      - For HTCondor Batch Systems: 'v5/configuration/htcondor-routes.md'
+      - For Non-HTCondor Batch Systems: 'v5/configuration/non-htcondor-routes.md'
+    - Optional Configuration: 'v5/configuration/optional-configuration.md'
   - Batch System Integration: 'v5/batch-system-integration.md'
   - Verification: 'v5/verification.md'
   - Troubleshooting: 'v5/troubleshooting/troubleshooting.md'
@@ -56,4 +61,5 @@ markdown_extensions:
       guess_lang: False
   - toc:
       permalink: True
+  - pymdownx.tabbed
   - pymdownx.superfences

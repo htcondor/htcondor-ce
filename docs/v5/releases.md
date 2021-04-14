@@ -12,7 +12,7 @@ Updating to HTCondor-CE 5
 
 !!! note "Updating from HTCondor-CE < 4"
     If updating to HTCondor-CE 5 from HTCondor-CE < 4, be sure to also consult the HTCondor-CE 4
-    [upgrade instructions](../v4/releases.md#updating-to-htcondor-ce-4).
+    [upgrade instructions](../v4/releases.md#400).
 
 !!! tip "Finding relevant configuration changes"
     When updating HTCondor-CE RPMs, `.rpmnew` and `.rpmsave` files may be created containing new defaults that you
@@ -44,8 +44,8 @@ Writing routes in the new syntax provides many benefits including:
 -   Use of simple case statements.
 
 Additionally, it is now easier to include transforms that should be evaluated before or after your routes by including
-transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORMS` and `JOB_ROUTER_PRE_ROUTE_TRANSFORMS`, respectively.
-To use the new transform syntax:
+transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
+respectively.  To use the new transform syntax:
 
 1.  Disable use of `JOB_ROUTER_ENTRIES` by setting the following in `/etc/condor-ce/config.d/`:
 

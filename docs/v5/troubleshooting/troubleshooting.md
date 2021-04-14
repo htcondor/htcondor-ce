@@ -11,7 +11,7 @@ Known Issues
 
 If you are adding attributes to jobs submitted to your HTCondor pool with `SUBMIT_ATTRS`, these will *not* be applied to
 jobs that are entering your pool from the HTCondor-CE. 
-To get around this, you will want to add the attributes to your [job routes](../batch-system-integration.md). 
+To get around this, you will want to add the attributes to your [job routes](../configuration/job-router-overview.md).
 If the CE is the only entry point for jobs into your pool, you can get rid of `SUBMIT_ATTRS` on your backend. Otherwise,
 you will have to maintain your list of attributes both in your list of routes and in your `SUBMIT_ATTRS`.
 
@@ -311,9 +311,9 @@ The most common cases for this behavior are as follows:
 
 - **The job does not match any job routes:**
   use [condor\_ce\_job\_router\_info](#condor_ce_job_router_info) to see why your idle job does not match any
-  [routes](/batch-system-integration#how-job-routes-are-constructed).
+  [routes](../configuration/writing-job-routes.md#filtering-jobs-based-on).
 - **The route(s) that the job matches to are full:**
-  See [limiting the number of jobs](/batch-system-integration#limiting-the-number-of-jobs).
+  See [limiting the number of jobs](../configuration/writing-job-routes.md#limiting-the-number-of-jobs).
 - **The job router is throttling submission to your batch system due to submission failures:**
   See the HTCondor manual for [FailureRateThreshold](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958).
   Check for errors in the [JobRouterLog](#jobrouterlog) or [GridmanagerLog](#gridmanagerlog) for HTCondor and
@@ -642,7 +642,7 @@ user@host $ condor_ce_history -name condorce.example.com -pool condorce.example.
 
 Use the `condor_ce_job_router_info` command to help troubleshoot your routes and how jobs will match to them. 
 To see all of your routes (the output is long because it combines your routes with the
-[JOB\_ROUTER\_DEFAULTS](../batch-system-integration.md#job_router_defaults) configuration variable):
+[JOB\_ROUTER\_DEFAULTS](../configuration/job-router-overview.md#deprecated-syntax) configuration variable):
 
 ``` console
 root@host # condor_ce_job_router_info -config
@@ -699,9 +699,9 @@ root@host # condor_ce_job_router_info -match-jobs -ignore-prior-routing -jobads 
         target.RoutedBy isnt "htcondor-ce")
 
 
-    Both routes evaluate to `true` for the job’s ClassAd because it contained `osgTestPBS = true`. Make sure your routes are mutually exclusive, otherwise you may have jobs routed incorrectly! See the [job route configuration page](../batch-system-integration.md) for more details.
+    Both routes evaluate to `true` for the job’s ClassAd because it contained `osgTestPBS = true`. Make sure your routes are mutually exclusive, otherwise you may have jobs routed incorrectly! See the [job route configuration page](../configuration/job-router-overview.md) for more details.
 
-3.  **If it is unclear why jobs are matching a route:** wrap the route's requirements expression in [debug()](../batch-system-integration.md#debugging-routes) and check the [JobRouterLog](#jobrouterlog) for more information.
+3.  **If it is unclear why jobs are matching a route:** wrap the route's requirements expression in [debug()](../configuration/writing-job-routes.md#debugging-routes) and check the [JobRouterLog](#jobrouterlog) for more information.
 
 
 ### condor_ce_router_q
@@ -1131,5 +1131,5 @@ Reference
 Here are some other HTCondor-CE documents that might be helpful:
 
 -   [Installing HTCondor-CE](../installation/htcondor-ce.md)
--   [Configuring HTCondor-CE job routes](../batch-system-integration.md)
+-   [Configuring HTCondor-CE job routes](../configuration/job-router-overview.md)
 -   [Submitting jobs to HTCondor-CE](../remote-job-submission.md)

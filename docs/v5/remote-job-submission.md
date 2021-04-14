@@ -79,7 +79,7 @@ For a list of other attributes that can be set with the `--attribute` option, co
 
 !!! note
     Non-HTCondor batch systems may need additional HTCondor-CE configuration to support these job attributes.
-    See the [batch system integration](batch-system-integration.md#setting-batch-system-directives)
+    See the [batch system integration](configuration/non-htcondor-routes.md#setting-batch-system-directives)
     for details on how to support them.
 
 Submission with HTCondor Submit
