@@ -44,8 +44,8 @@ Writing routes in the new syntax provides many benefits including:
 -   Use of simple case statements.
 
 Additionally, it is now easier to include transforms that should be evaluated before or after your routes by including
-transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORMS` and `JOB_ROUTER_PRE_ROUTE_TRANSFORMS`, respectively.
-To use the new transform syntax:
+transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
+respectively.  To use the new transform syntax:
 
 1.  Disable use of `JOB_ROUTER_ENTRIES` by setting the following in `/etc/condor-ce/config.d/`:
 
