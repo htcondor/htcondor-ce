@@ -1,60 +1,69 @@
 Configuring Authentication
 ==========================
 
-To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use a
-[built-in mapfile](#built-in-mapfile) or to make [Globus callouts](#globus-callout) to an external service like Argus
+To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use
+[built-in mapfiles](#built-in-mapfiles) or to make [Globus callouts](#globus-callout) to an external service like Argus
 or LCMAPS.
 The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
 such a service.
 
-Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SSL and GSI authentication.
+Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SciTokens, SSL, and GSI
+authentication.
 
-Built-in Mapfile
+Built-in Mapfiles
 ----------------
 
-The built-in mapfile is a
-[unified HTCondor mapfile](https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication)
-located at `/etc/condor-ce/condor_mapfile`.
-This file is parsed in line-by-line order and HTCondor-CE will use the first line that matches.
-Therefore, mappings should be added to the top of the file.
+HTCondor-CE uses
+[unified HTCondor mapfiles](https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication)
+stored in `/etc/condor-ce/mapfiles.d/*.conf` to map incoming jobs with credentials to local Unix accounts.
+These files are parsed in lexicographic order and HTCondor-CE will use the first line that matches for the
+authentication method that the client and your HTCondor-CE negotiates.
 
-!!! warning
-    `condor_mapfile.rpmnew` files may be generated upon HTCondor-CE version updates and they should be merged into
-    `condor_mapfile`.
+!!! tip "Rich mappings with regular expressions"
+    Mapfiles can be written using Perl Compatible Regular Expressions (PCRE) if enclosed by `/`.
 
-To configure authorization for users submitting jobs with an X.509 proxy certificate to your HTCondor-CE, add lines
-of the following format:
+### SciTokens ###
+
+To allow clients with SciToken or WLCG tokens to submit jobs to your HTCondor-CE, add lines of the following format:
 
 ```
-GSI "^<DISTINGUISHED NAME>$" <USERNAME>
+SCITOKENS /<TOKEN ISSUER>,<TOKEN SUBJECT>/ <USERNAME>
 ```
 
-Replacing `<DISTINGUISHED NAME`> (escaping any '/' with '\/') and `<USERNAME`> with the distinguished name of the
+Replacing `<TOKEN ISSUER>` (escaping any `/` with `\/`, `<TOKEN SUBJECT>`, and `<USERNAME>` with the token issuer
+(`iss`), token subject (`sub`), and the unix account under which the job should run, respectively.
+For example, to map any token from the `OSG` VO regardless of the token `sub`, add the following line to a `*.conf` file
+in `/etc/condor-ce/mapfiles.d/`:
+
+```
+SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
+```
+
+### GSI ###
+
+To allow clients with GSI proxies with to submit jobs to your HTCondor-CE, add lines of the following format:
+
+```
+GSI /^<DISTINGUISHED NAME>,.*/ <USERNAME>
+```
+
+Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`) and `<USERNAME>` with the distinguished name of the
 incoming certificate and the unix account under which the job should run, respectively.
-
 VOMS attributes of incoming X.509 proxy certificates can also be used for mapping:
 
 ```
 GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>
 ```
 
-Replacing `<DISTINGUISHED NAME`> (escaping any '/' with '\/'), `<VOMSFQAN`> fields, and `<USERNAME`> with the
+Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`), `<VOMSFQAN>` fields, and `<USERNAME>` with the
 distinguished name of the incoming certificate, the VOMS roles and groups, and the unix account under which the job
 should run, respectively.
-
-Additionally, you can use regular expressions for mapping certificate and VOMS attribute credentials.
-For example, to map any certificate from the `GLOW` VO with the `htpc` role to the `glow` user, add the following line:
+For example, to map any certificate from the `GLOW` VO with the `htpc` role to the `glow` user, add the following line
+to a `*.conf` file in `/etc/condor-ce/mapfiles.d/`:
 
 ```
-GSI ".*,\/GLOW\/Role=htpc.*" glow
+GSI /.*,\/GLOW\/Role=htpc.*/ glow
 ```
-
-!!! warning
-    You should only add mappings to the mapfile. Do not remove any of the default mappings:
-
-        GSI "(/CN=[-.A-Za-z0-9/= ]+)" \1@unmapped.htcondor.org
-        CLAIMTOBE .* anonymous@claimtobe
-        FS (.*) \1
 
 Globus Callout
 --------------
@@ -64,7 +73,7 @@ as the following HTCondor-CE configuration:
 
 1. Add the following line to the top of `/etc/condor-ce/condor_mapfile`:
 
-        GSI (.*) GSS_ASSIST_GRIDMAP
+        GSI /(.*)/ GSS_ASSIST_GRIDMAP
 
 1. Create `/etc/grid-security/gsi-authz.conf` with the following content:
 
