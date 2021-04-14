@@ -44,7 +44,15 @@
      <lastmod>2021-04-14</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://htcondor.github.io/htcondor-ce/v5/troubleshooting/troubleshooting/</loc>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/troubleshooting/common-issues/</loc>
+     <lastmod>2021-04-14</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/troubleshooting/debugging-tools/</loc>
+     <lastmod>2021-04-14</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/troubleshooting/logs/</loc>
      <lastmod>2021-04-14</lastmod>
      <changefreq>daily</changefreq>
     </url><url>

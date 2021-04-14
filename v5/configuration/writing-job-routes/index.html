@@ -794,32 +794,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../batch-system-integration.md" class="md-nav__link">
-        Batch System Integration
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../verification/" class="md-nav__link">
         Verification
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../troubleshooting/troubleshooting/" class="md-nav__link">
-        Troubleshooting
       </a>
     </li>
   
@@ -833,14 +809,77 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
       
-      <label class="md-nav__link" for="__nav_2_6">
+      <label class="md-nav__link" for="__nav_2_4">
+        Troubleshooting
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Troubleshooting
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/common-issues/" class="md-nav__link">
+        Common Issues
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/debugging-tools/" class="md-nav__link">
+        Debugging Tools
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/logs/" class="md-nav__link">
+        Helpful Logs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      <label class="md-nav__link" for="__nav_2_5">
         Central Grid Operations
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_6">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           Central Grid Operations
         </label>
@@ -1286,12 +1325,12 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </ul>
 </div>
 <p>The name of the route will be useful in debugging since it shows up in the output of
-<a href="../../troubleshooting/troubleshooting/#condor_ce_job_router_info">condor_ce_job_router_info</a>;
-the <a href="../../troubleshooting/troubleshooting/#jobrouterlog">JobRouterLog</a>;
+<a href="../../troubleshooting/debugging-tools/#condor_ce_job_router_info">condor_ce_job_router_info</a>;
+the <a href="../../troubleshooting/logs/#jobrouterlog">JobRouterLog</a>;
 in the ClassAd of the routed job, which can be viewed with <code>condor_q</code> and <code>condor_history</code> for HTCondor batch systems;
 and in the ClassAd of the routed job, which can be vieweed with 
-<a href="../../troubleshooting/troubleshooting/#condor_ce_q">condor_ce_q</a> or
-<a href="../../troubleshooting/troubleshooting/#condor_ce_history">condor_ce_history</a> for non-HTCondor batch systems.</p>
+<a href="../../troubleshooting/debugging-tools/#condor_ce_q">condor_ce_q</a> or
+<a href="../../troubleshooting/debugging-tools/#condor_ce_history">condor_ce_history</a> for non-HTCondor batch systems.</p>
 <h3 id="batch-system">Batch system<a class="headerlink" href="#batch-system" title="Permanent link">&para;</a></h3>
 <p>Each route needs to indicate the type of batch system that jobs should be routed to.
 For HTCondor batch systems, the <code>TargetUniverse</code> attribute needs to be set to <code>5</code> or <code>"vanilla"</code>.
@@ -1415,7 +1454,7 @@ JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES) P
 </code></pre></div>
 <h3 id="deprecated-syntax">Deprecated syntax<a class="headerlink" href="#deprecated-syntax" title="Permanent link">&para;</a></h3>
 <p>To set an attribute that will be applied to all routes, you will need to ensure that <code>MERGE_JOB_ROUTER_DEFAULT_ADS</code> is
-set to <code>True</code> (check the value with <a href="../../troubleshooting/troubleshooting/#condor_ce_config_val">condor_ce_config_val</a>)
+set to <code>True</code> (check the value with <a href="../../troubleshooting/debugging-tools/#condor_ce_config_val">condor_ce_config_val</a>)
 and use the <a href="#setting-attributes">set_</a> function in the <code>JOB_ROUTER_DEFAULTS</code>.
 The following configuration sets the <code>Periodic_Hold</code> attribute for all routes:</p>
 <div class="highlight"><pre><span></span><code># Use the defaults generated by the condor_ce_router_defaults script.  To add

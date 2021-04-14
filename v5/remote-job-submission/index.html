@@ -507,18 +507,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../batch-system-integration.md" class="md-nav__link">
-        Batch System Integration
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../verification/" class="md-nav__link">
         Verification
       </a>
@@ -530,10 +518,61 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../troubleshooting/troubleshooting/" class="md-nav__link">
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      <label class="md-nav__link" for="__nav_2_4">
         Troubleshooting
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Troubleshooting
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/common-issues/" class="md-nav__link">
+        Common Issues
       </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/debugging-tools/" class="md-nav__link">
+        Debugging Tools
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/logs/" class="md-nav__link">
+        Helpful Logs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -548,14 +587,14 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" checked>
       
-      <label class="md-nav__link" for="__nav_2_6">
+      <label class="md-nav__link" for="__nav_2_5">
         Central Grid Operations
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_6">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           Central Grid Operations
         </label>
@@ -1043,7 +1082,7 @@
 <ul>
 <li>The HTCondor-CE administrator has independently <a href="../verification/">verified their HTCondor-CE</a></li>
 <li>The HTCondor-CE administrator has added your credential information (e.g. SciToken or grid proxy) to the HTCondor-CE
-    <a href="configuration-authentication.md">authentication configuration</a></li>
+    <a href="../configuration/authentication/">authentication configuration</a></li>
 <li>Your credentials are valid and unexpired</li>
 </ul>
 <h2 id="submission-with-debugging-tools">Submission with Debugging Tools<a class="headerlink" href="#submission-with-debugging-tools" title="Permanent link">&para;</a></h2>
@@ -1053,14 +1092,14 @@ To use these tools, install the RPM package from the <a href="../releases/">rele
 </code></pre></div>
 <h3 id="verify-end-to-end-submission">Verify end-to-end submission<a class="headerlink" href="#verify-end-to-end-submission" title="Permanent link">&para;</a></h3>
 <p>The HTCondor-CE client package includes a debugging tool that perform tests of end-to-end job submission called
-<a href="../troubleshooting/troubleshooting/#condor_ce_trace">condor_ce_trace</a>.
+<a href="../troubleshooting/debugging-tools/#condor_ce_trace">condor_ce_trace</a>.
 To submit a diagnostic job with <code>condor_ce_trace</code>, run the following command:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_trace --debug &lt;CE HOST&gt;
 </code></pre></div>
 <p>Replacing <code>&lt;CE HOST&gt;</code> with the hostname of the CE you wish to test.
 On success, you will see <code>Job status: Completed</code> and the job's environment on the worker node where it ran.
 If you do not see the expected output, refer to the
-<a href="../troubleshooting/troubleshooting/#condor_ce_trace">troubleshooting guide</a>.</p>
+<a href="../troubleshooting/debugging-tools/#condor_ce_trace">troubleshooting guide</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">CONDOR_CE_TRACE_ATTEMPTS</p>
 <p>For a busy site cluster, it may take longer than the default 5 minutes to test end-to-end submission.
@@ -1192,7 +1231,7 @@ This includes acknowledgement of the job in your local queue, connection to the 
     GridResource: condor ce.htcondor.org ce.htcondor.org:9619
 </code></pre></div>
 <p>This indicates a communication issue with the HTCondor-CE that may be diagnosed with
-<a href="../troubleshooting/troubleshooting/#condor_ce_ping">condor_ce_ping</a>.</p>
+<a href="../troubleshooting/debugging-tools/#condor_ce_ping">condor_ce_ping</a>.</p>
 <h2 id="submit-file-commands">Submit File Commands<a class="headerlink" href="#submit-file-commands" title="Permanent link">&para;</a></h2>
 <p>The following table is a reference of commands that are commonly included in HTCondor submit files used for HTCondor-CE
 resource allocation requests.
@@ -1280,7 +1319,7 @@ A more comprehensive list of submit file commands specific to HTCondor can be fo
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../troubleshooting/troubleshooting/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../troubleshooting/logs/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1289,7 +1328,7 @@ A more comprehensive list of submit file commands specific to HTCondor can be fo
               <span class="md-footer__direction">
                 Previous
               </span>
-              Troubleshooting
+              Helpful Logs
             </div>
           </div>
         </a>

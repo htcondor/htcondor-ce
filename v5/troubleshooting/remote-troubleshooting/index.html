@@ -507,18 +507,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../batch-system-integration.md" class="md-nav__link">
-        Batch System Integration
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../verification/" class="md-nav__link">
         Verification
       </a>
@@ -530,10 +518,61 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../troubleshooting/" class="md-nav__link">
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      <label class="md-nav__link" for="__nav_2_4">
         Troubleshooting
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Troubleshooting
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-issues/" class="md-nav__link">
+        Common Issues
       </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging-tools/" class="md-nav__link">
+        Debugging Tools
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        Helpful Logs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -548,14 +587,14 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" checked>
       
-      <label class="md-nav__link" for="__nav_2_6">
+      <label class="md-nav__link" for="__nav_2_5">
         Central Grid Operations
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_6">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           Central Grid Operations
         </label>
@@ -1122,7 +1161,7 @@ use <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_status.h
 <span class="go">Submitter          None               nu_lhcb@users.htcondor.org</span>
 </code></pre></div>
 <p>If you don't see the appropriate daemons, ask the administrator to following
-<a href="../troubleshooting/#daemons-fail-to-start">these troubleshooting steps</a>.</p>
+<a href="../common-issues/#daemons-fail-to-start">these troubleshooting steps</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Submitter ad</p>
 <p>When querying daemons for an HTCondor-CE, you may see <code>Submitter</code> ads for each user with jobs in the queue.
@@ -1227,9 +1266,9 @@ For this, you will need a credential such as a grid proxy:</p>
 <span class="go">Authorized:                  TRUE</span>
 </code></pre></div>
 <p>If <code>condor_ping</code> fails,
-ask the administrator to follow <a href="../troubleshooting/#jobs-fail-to-submit-to-the-ce">this troubleshooting section</a>,
+ask the administrator to follow <a href="../common-issues/#jobs-fail-to-submit-to-the-ce">this troubleshooting section</a>,
 set <code>SCHEDD_DEBUG = $(SCHEDD_DEBUG) D_SECURITY:2</code>,
-and cross-check the <a href="../troubleshooting/#schedlog">HTCondor-CE SchedLog</a> for authentication issues.</p>
+and cross-check the <a href="../logs/#schedlog">HTCondor-CE SchedLog</a> for authentication issues.</p>
 <h3 id="submitting-a-trace-request">Submitting a trace request<a class="headerlink" href="#submitting-a-trace-request" title="Permanent link">&para;</a></h3>
 <div class="admonition note">
 <p class="admonition-title">HTCondor-CE client</p>
@@ -1257,7 +1296,7 @@ configured to run local universe jobs:</p>
 <span class="gp"> # </span>default: TotalLocalJobsRunning &lt; <span class="m">200</span>
 </code></pre></div>
 <p>After verifying that you can submit resource requests and that the HTCondor-CE supports local universe,
-use <a href="../troubleshooting/#condor_ce_run">condor_ce_run</a> to run commands on the remote HTCondor-CE host:</p>
+use <a href="../debugging-tools/#condor_ce_run">condor_ce_run</a> to run commands on the remote HTCondor-CE host:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_ce_run -lr htcondor-ce.chtc.wisc.edu /bin/sh -c <span class="s1">&#39;condor_q -all&#39;</span>
 
 <span class="go">-- Schedd: htcondor-ce.chtc.wisc.edu : &lt;128.104.100.65:9618?... @ 10/29/20 17:42:27</span>
