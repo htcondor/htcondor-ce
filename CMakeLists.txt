@@ -93,6 +93,7 @@ install(FILES
 
 install(FILES
   config/mapfiles.d/10-gsi.conf
+  config/mapfiles.d/10-scitokens.conf
   config/mapfiles.d/50-gsi-callout.conf
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/mapfiles.d)
 
