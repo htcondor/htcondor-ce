@@ -368,6 +368,69 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+      
+      <label class="md-nav__link" for="__nav_2_2">
+        Configuration
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Configuration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/authentication/" class="md-nav__link">
+        Authentication
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/local-batch-system/" class="md-nav__link">
+        Local Batch System
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/optional-configuration/" class="md-nav__link">
+        Optional Configuration
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../batch-system-integration/" class="md-nav__link">
         Batch System Integration
@@ -1147,14 +1210,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
       
-      <label class="md-nav__link" for="__nav_2_5">
+      <label class="md-nav__link" for="__nav_2_6">
         Central Grid Operations
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_5">
+        <label class="md-nav__title" for="__nav_2_6">
           <span class="md-nav__icon md-icon"></span>
           Central Grid Operations
         </label>
@@ -1622,7 +1685,7 @@ Check the following subsections in order:</p>
 </ul>
 <p><strong>Next actions</strong></p>
 <ol>
-<li><strong>If the MasterLog is filled with <code>ERROR:SECMAN...TCP connection to collector...failed</code>:</strong> This is likely due to a misconfiguration for a host with multiple network interfaces. Verify that you have followed the instructions in <a href="../../installation/htcondor-ce/#configuring-for-multiple-network-interfaces">this</a> section of the install guide.</li>
+<li><strong>If the MasterLog is filled with <code>ERROR:SECMAN...TCP connection to collector...failed</code>:</strong> This is likely due to a misconfiguration for a host with multiple network interfaces. Verify that you have followed the instructions in <a href="../../configuration/optional-configuration/#configuring-for-multiple-network-interfaces">this</a> section of the install guide.</li>
 <li><strong>If the MasterLog is filled with <code>DC_AUTHENTICATE</code> errors:</strong> The HTCondor-CE daemons use the host certificate to authenticate with each other. Verify that your host certificate’s DN matches one of the regular expressions found in <code>/etc/condor-ce/condor_mapfile</code>.</li>
 <li><strong>If the SchedLog is filled with <code>Can’t find address for negotiator</code>:</strong> You can ignore this error! The negotiator daemon is used in HTCondor batch systems to match jobs with resources but since HTCondor-CE does not manage any resources directly, it does not run one.</li>
 </ol>
@@ -1637,7 +1700,7 @@ You may see error messages like the following in your <a href="#schedlog">SchedL
 <p><strong>Next actions</strong></p>
 <ol>
 <li><strong>Check voms-mapfile or grid-mapfile</strong> and ensure that the user's DN or VOMS attributes are known to your
-    <a href="../../installation/htcondor-ce/#configuring-authentication">authentication method</a>, and that the mapped users exist
+    <a href="../../configuration/authentication/">authentication method</a>, and that the mapped users exist
     on your CE and cluster.</li>
 <li><strong>Check for lcmaps errors</strong> in <code>/var/log/messages</code></li>
 <li><strong>If you do not see helpful error messages in <code>/var/log/messages</code>,</strong> adjust the debug level by adding <code>export LCMAPS_DEBUG_LEVEL=5</code> to <code>/etc/sysconfig/condor-ce</code>, restarting the condor-ce service, and checking <code>/var/log/messages</code> for errors again.</li>
@@ -1726,7 +1789,7 @@ Note that jobs may take several minutes or longer if the CE is busy.</p>
 </ol>
 <h4 id="remote-idle-jobs-are-you-authorized-to-run-jobs-on-the-ce">Remote idle jobs: Are you authorized to run jobs on the CE?<a class="headerlink" href="#remote-idle-jobs-are-you-authorized-to-run-jobs-on-the-ce" title="Permanent link">&para;</a></h4>
 <p>The CE will only run jobs from users that authenticate through the
-<a href="../../installation/htcondor-ce/#configuring-authentication">HTCondor-CE configuration</a>.
+<a href="../../configuration/authentication/">HTCondor-CE configuration</a>.
 You can use <a href="#condor_ce_ping">condor_ce_ping</a> to check if you are authorized and what user your proxy is being mapped
 to.</p>
 <p><strong>Symptoms</strong></p>
@@ -1746,7 +1809,7 @@ to.</p>
 <p>Notice the failures in the above message: <code>Remote Mapping: gsi@unmapped</code> and <code>Authorized: FALSE</code></p>
 <p><strong>Next actions</strong></p>
 <ol>
-<li>Verify that an <a href="../../installation/htcondor-ce/#configuring-authentication">authentication method</a> is set up on the CE</li>
+<li>Verify that an <a href="../../configuration/authentication/">authentication method</a> is set up on the CE</li>
 <li>Verify that your user DN is mapped to an existing system user</li>
 </ol>
 <h3 id="jobs-go-on-hold">Jobs go on hold<a class="headerlink" href="#jobs-go-on-hold" title="Permanent link">&para;</a></h3>
@@ -1877,7 +1940,7 @@ If you are not running an HTCondor batch system, the non-CE commands will return
 <p><code>condor_ce_trace</code> is a useful tool for testing end-to-end job submission. It contacts both the CE’s Schedd and Collector daemons to verify your permission to submit to the CE, displays the submit script that it submits to the CE, and tracks the resultant job.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You must have generated a proxy (e.g., <code>voms-proxy-init</code>) and your DN must be added to your <a href="../../installation/htcondor-ce/#configuring-authentication">chosen authentication method</a>.</p>
+<p>You must have generated a proxy (e.g., <code>voms-proxy-init</code>) and your DN must be added to your <a href="../../configuration/authentication/">chosen authentication method</a>.</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_trace condorce.example.com
 </code></pre></div>
@@ -1887,7 +1950,7 @@ condor output.</p>
 <h4 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h4>
 <ol>
 <li><strong>If the command fails with “Failed ping…”:</strong> Make sure that the HTCondor-CE daemons are running on the CE</li>
-<li><strong>If you see “gsi@unmapped” in the “Remote Mapping” line:</strong> Either your credentials are not mapped on the CE or authentication is not set up at all. To set up authentication, refer to our <a href="../../installation/htcondor-ce/#configuring-authentication">installation document</a>.</li>
+<li><strong>If you see “gsi@unmapped” in the “Remote Mapping” line:</strong> Either your credentials are not mapped on the CE or authentication is not set up at all. To set up authentication, refer to our <a href="../../configuration/authentication/">installation document</a>.</li>
 <li><strong>If the job submits but does not complete:</strong> Look at the status of the job and perform the relevant <a href="#htcondor-ce-troubleshooting-items">troubleshooting steps</a>.</li>
 </ol>
 <h3 id="condor_ce_host_network_check">condor_ce_host_network_check<a class="headerlink" href="#condor_ce_host_network_check" title="Permanent link">&para;</a></h3>
@@ -1915,7 +1978,7 @@ submitting jobs through your CE.
 To submit a job to the CE and run the <code>env</code> command on the remote batch system:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You must have generated a proxy (e.g., <code>voms-proxy-init</code>) and your DN must be added to your <a href="../../installation/htcondor-ce/#configuring-authentication">chosen authentication method</a>.</p>
+<p>You must have generated a proxy (e.g., <code>voms-proxy-init</code>) and your DN must be added to your <a href="../../configuration/authentication/">chosen authentication method</a>.</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_run -r condorce.example.com:9619 /bin/env
 </code></pre></div>
@@ -1927,7 +1990,7 @@ The following example outputs the JobRouterLog of the CE in question:</p>
 </code></pre></div>
 <p>Replacing the <code>condorce.example.com</code> text with the hostname of the CE. 
 To disable this feature on your CE, consult
-<a href="../../installation/htcondor-ce/#limiting-or-disabling-locally-running-jobs-on-the-ce">this</a> section of the install documentation.</p>
+<a href="../../configuration/optional-configuration/#limiting-or-disabling-locally-running-jobs">this</a> section of the install documentation.</p>
 <h4 id="troubleshooting_2">Troubleshooting<a class="headerlink" href="#troubleshooting_2" title="Permanent link">&para;</a></h4>
 <ol>
 <li><strong>If you do not see any results:</strong> <code>condor_ce_run</code> does not display results until the job completes on the CE, which may take several minutes or longer if the CE is busy. In the meantime, can use <a href="#condor_ce_q">condor_ce_q</a> in a separate terminal to track the job on the CE. If you never see any results, use <a href="#condor_ce_trace">condor_ce_trace</a> to pinpoint errors.</li>
@@ -1970,7 +2033,7 @@ SCHEDD_DEBUG = D_ALWAYS:2 D_CAT
 <p>Then look in the <a href="#masterlog">MasterLog</a> and <a href="#schedlog">SchedLog</a> for any errors.</p>
 </li>
 <li>
-<p><strong>If you see “gsi@unmapped” in the “Remote Mapping” line</strong>, this means that either your credentials are not mapped on the CE or that authentication is not set up at all. To set up authentication, refer to our <a href="../../installation/htcondor-ce/#configuring-authentication">installation document</a>.</p>
+<p><strong>If you see “gsi@unmapped” in the “Remote Mapping” line</strong>, this means that either your credentials are not mapped on the CE or that authentication is not set up at all. To set up authentication, refer to our <a href="../../configuration/authentication/">installation document</a>.</p>
 </li>
 </ol>
 <h3 id="condor_ce_q">condor_ce_q<a class="headerlink" href="#condor_ce_q" title="Permanent link">&para;</a></h3>
@@ -2475,7 +2538,7 @@ This log is a good place to check if experiencing connectivity issues with HTCon
 </ul>
 <h3 id="messages-log">Messages log<a class="headerlink" href="#messages-log" title="Permanent link">&para;</a></h3>
 <p>The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the <a href="../../installation/htcondor-ce/#configuring-authentication">authentication setup</a>, the errors may
+If there are issues with the <a href="../../configuration/authentication/">authentication setup</a>, the errors may
 appear here.</p>
 <ul>
 <li>Location: <code>/var/log/messages</code></li>

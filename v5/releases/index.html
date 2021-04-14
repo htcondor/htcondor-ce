@@ -368,6 +368,69 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+      
+      <label class="md-nav__link" for="__nav_2_2">
+        Configuration
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Configuration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/authentication/" class="md-nav__link">
+        Authentication
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/local-batch-system/" class="md-nav__link">
+        Local Batch System
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/optional-configuration/" class="md-nav__link">
+        Optional Configuration
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
     <li class="md-nav__item">
       <a href="../batch-system-integration/" class="md-nav__link">
         Batch System Integration
@@ -408,14 +471,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
       
-      <label class="md-nav__link" for="__nav_2_5">
+      <label class="md-nav__link" for="__nav_2_6">
         Central Grid Operations
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_5">
+        <label class="md-nav__title" for="__nav_2_6">
           <span class="md-nav__icon md-icon"></span>
           Central Grid Operations
         </label>
@@ -509,6 +572,13 @@
           <li class="md-nav__item">
   <a href="#support-for-classad-transforms-added-to-the-jobrouter" class="md-nav__link">
     Support for ClassAd transforms added to the JobRouter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-condor_mapfile-format-and-locations" class="md-nav__link">
+    New condor_mapfile format and locations
   </a>
   
 </li>
@@ -926,6 +996,62 @@ To use the new transform syntax:</p>
 </li>
 <li>
 <p>Add the above <code>&lt;ROUTE_NAME&gt;</code> to the list of routes in <code>JOB_ROUTER_ROUTE_NAMES</code></p>
+</li>
+</ol>
+<h3 id="new-condor_mapfile-format-and-locations">New <code>condor_mapfile</code> format and locations<a class="headerlink" href="#new-condor_mapfile-format-and-locations" title="Permanent link">&para;</a></h3>
+<p>HTCondor-CE 5 separates its
+<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication">unified mapfile</a>
+used for authentication between multiple files across multiple directories.
+Additionally, any regular expressions in the second field must be enclosed by <code>/</code>.
+To update your mappings to the new format and location, perform the following actions:</p>
+<ol>
+<li>
+<p>Upon upgrade, your existing mapfile will be moved to <code>/etc/condor-ce/condor_mapfile.rpmsave</code>.
+    Remove any of the following lines provided by default in the HTCondor-CE packaging:</p>
+<div class="codehilite"><pre><span></span><code>GSI (.*) GSS_ASSIST_GRIDMAP
+SSL &quot;[-.A-Za-z0-9/= ]*/CN=([-.A-Za-z0-9/= ]+)&quot; \1@unmapped.htcondor.org
+CLAIMTOBE .* anonymous@claimtobe
+FS &quot;^(root|condor)$&quot; \1@daemon.htcondor.org
+FS &quot;(.*)&quot; \1
+</code></pre></div>
+
+</li>
+<li>
+<p>Copy the remaining contents of <code>/etc/condor-ce/condor_mapfile.rpmsave</code> to a file ending in <code>*.conf</code> in
+    <code>/etc/condor-ce/mapfiles.d/</code>.
+    Note that files in this folder are parsed in lexicographic order.</p>
+</li>
+<li>
+<p>Update the second field of any existing mappings by enclosing any regular expressions in <code>/</code>, escaping any slashes
+    with a backslash (e.g. <code>\/</code>).</p>
+<ul>
+<li>
+<p>Consider converting any <code>GSI</code> mappings into Perl Compatible Regular Expressions (PCRE) since the authenticated
+     name of incoming proxies may contain additional VOMS FQANs in addition to the Distinguished Name (DN):</p>
+<div class="codehilite"><pre><span></span><code>&lt;DN&gt;,&lt;VOMS FQAN 1&gt;,&lt;VOMS FQAN 2&gt;,...,&lt;VOMSFQAN N&gt;
+</code></pre></div>
+
+<p>For example, to accept a given DN with any VOMS attributes, the mapping should look like the following:</p>
+<div class="codehilite"><pre><span></span><code>GSI /^\/DC=org\/DC=cilogon\/C=US\/O=University of Wisconsin-Madison\/CN=Brian Lin A226624,.*/ blin
+</code></pre></div>
+
+<p>Alternatively, to accept any DN from the OSG VO:</p>
+<div class="codehilite"><pre><span></span><code>GSI /.*,\/osg\/Role=Pilot\/Capability=.*/ osg
+</code></pre></div>
+
+</li>
+<li>
+<p>Also consider converting <code>SCITOKENS</code> mappings to PCRE since the authenticated name of incoming tokens will
+    contain the token issuer (<code>iss</code>) and any token subject (<code>sub</code>) fields:</p>
+<div class="codehilite"><pre><span></span><code>&lt;TOKEN ISSUER&gt;,&lt;TOKEN SUB&gt;
+</code></pre></div>
+
+<p>For example, to accept a token issued by the OSG VO with any subject, write the following mapping:</p>
+<div class="codehilite"><pre><span></span><code>SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
+</code></pre></div>
+
+</li>
+</ul>
 </li>
 </ol>
 <h3 id="no-longer-set-home-by-default">No longer set <code>$HOME</code> by default<a class="headerlink" href="#no-longer-set-home-by-default" title="Permanent link">&para;</a></h3>
