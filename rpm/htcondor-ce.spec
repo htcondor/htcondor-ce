@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.1.0
-Release: 0.rc3%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -28,9 +28,10 @@ BuildRequires: python-rpm-macros
 BuildRequires: python3-devel
 BuildRequires: python3-rpm-macros
 
-# CE collector plugin needs the Python 3 support available in the 8.9 series:
-# https://opensciencegrid.atlassian.net/browse/HTCONDOR-13
-Requires:  condor >= 8.9.7
+# Mapfiles.d changes require 8.9.13 but 8.9.13 has known bugs
+# affecting the Job Router and Python 3 collector plugin
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-244
+Requires:  condor >= 9.0.0
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -572,7 +573,15 @@ fi
 - Update maxWallTime logic to accept BatchRuntime (HTCONDOR-80)
 - Append SSL to the default authentication methods list (HTCONDOR-366)
 - APEL reporting scripts now use the local HTCondor's PER_JOB_HISTORY_DIR to collect job data. (HTCONDOR-293)
+- Use the `GlobalJobID` attribute as the APEL record `lrmsID` (#426)
 - Update HTCondor-CE registry app to Python 3 (HTCONDOR-307)
+- Enable SSL authentication by default for `READ`/`WRITE` authorization levels (HTCONDOR-366)
+- Downgrade errors in the configuration verification startup script to support routes written in the transform syntax (#465)
+- Allow required directories to be owned by non-`condor` groups (#451)
+- Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE` (HTCONDOR-350)
+- Fix incorrect path to Python 3 Collector plugin (HTCONDOR-400)
+- Fix faulty validation of `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ENTRIES` in the startup script (HTCONDOR-406)
+- Fix various Python 3 incompatibilities (#460)
 
 * Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-1
 - Add Python 3 and EL8 support (HTCondor-13)
