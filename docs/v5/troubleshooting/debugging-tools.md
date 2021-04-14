@@ -39,7 +39,7 @@ condor output.
     To set up authentication, refer to our
     [configuration document](../configuration/authentication.md).
 3.  **If the job submits but does not complete:** Look at the status of the job and perform the relevant
-    [troubleshooting steps](#htcondor-ce-troubleshooting-items).
+    [troubleshooting steps](common-issues.md).
 
 condor_ce_host_network_check
 ----------------------------
@@ -78,7 +78,7 @@ To submit a job to the CE and run the `env` command on the remote batch system:
 
 !!! note
     You must have generated a proxy (e.g., `voms-proxy-init`) and your DN must be added to your
-    [chosen authentication method](../installation/htcondor-ce.md#configuring-authentication).
+    [chosen authentication method](../configuration/authentication.md).
 
 ``` console
 user@host $ condor_ce_run -r condorce.example.com:9619 /bin/env
@@ -155,7 +155,7 @@ Authorized:                  TRUE
         MASTER_DEBUG = D_ALWAYS:2 D_CAT
         SCHEDD_DEBUG = D_ALWAYS:2 D_CAT
 
-    Then look in the [MasterLog](#masterlog) and [SchedLog](#schedlog) for any errors.
+    Then look in the [MasterLog](logs.md#masterlog) and [SchedLog](logs.md#schedlog) for any errors.
 
 2.  **If you see “gsi@unmapped” in the “Remote Mapping” line**, this means that either your credentials are not mapped
     on the CE or that authentication is not set up at all.
@@ -200,7 +200,7 @@ If the jobs that you are submiting to a CE are not completing, `condor_ce_q` can
         :::console
         root@host # condor_ce_reconfig
 
-    Then look in the [MasterLog](#masterlog) and [SchedLog](#schedlog) on the CE for any errors.
+    Then look in the [MasterLog](logs.md#masterlog) and [SchedLog](logs.md#schedlog) on the CE for any errors.
 
 1.  **If there are issues with contacting the collector:** You will see the following message:
 
@@ -328,7 +328,7 @@ root@host # condor_ce_job_router_info -match-jobs -ignore-prior-routing -jobads 
 
 3.  **If it is unclear why jobs are matching a route:** wrap the route's requirements expression in
     [debug()](../configuration/writing-job-routes.md#debugging-routes) and check the
-    [JobRouterLog](#jobrouterlog) for more information.
+    [JobRouterLog](logs.md#jobrouterlog) for more information.
 
 
 condor_ce_router_q
@@ -376,8 +376,7 @@ If the output of `condor_ce_status -any` does not show at least the following da
 - DaemonMaster
 - Job_Router
 
-Increase the [debug level](#htcondor-ce-troubleshooting-items) and consult the
-[HTCondor-CE logs](#htcondor-ce-troubleshooting-data) for errors.
+Increase the [debug level](common-issues.md) and consult the [HTCondor-CE logs](logs.md) for errors.
 
 condor_ce_config_val
 --------------------

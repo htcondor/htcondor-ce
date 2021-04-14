@@ -22,7 +22,7 @@ Before Starting
 ---------------
 
 Before starting the installation process, consider the following points
-(consulting [the reference page](/reference) as necessary):
+(consulting [the reference page](../reference.md) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
 -   **SSL certificate:** The HTCondor-CE Central Collector service uses a host certificate and key for SSL and GSI
