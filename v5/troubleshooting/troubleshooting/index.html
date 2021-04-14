@@ -413,6 +413,81 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_3" type="checkbox" id="__nav_2_2_3" >
+      
+      <label class="md-nav__link" for="__nav_2_2_3">
+        Job Router
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Job Router" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Job Router
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/job-router-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/writing-job-routes/" class="md-nav__link">
+        Writing Job Routes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/htcondor-routes/" class="md-nav__link">
+        For HTCondor Batch Systems
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/non-htcondor-routes/" class="md-nav__link">
+        For Non-HTCondor Batch Systems
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
@@ -432,7 +507,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../batch-system-integration/" class="md-nav__link">
+      <a href="../../batch-system-integration.md" class="md-nav__link">
         Batch System Integration
       </a>
     </li>
@@ -1586,7 +1661,7 @@ common issues with suggested troubleshooting steps.</p>
 <h3 id="submit_attrs-are-not-applied-to-jobs-on-the-local-htcondor">SUBMIT_ATTRS are not applied to jobs on the local HTCondor<a class="headerlink" href="#submit_attrs-are-not-applied-to-jobs-on-the-local-htcondor" title="Permanent link">&para;</a></h3>
 <p>If you are adding attributes to jobs submitted to your HTCondor pool with <code>SUBMIT_ATTRS</code>, these will <em>not</em> be applied to
 jobs that are entering your pool from the HTCondor-CE. 
-To get around this, you will want to add the attributes to your <a href="../../batch-system-integration/">job routes</a>. 
+To get around this, you will want to add the attributes to your <a href="../../configuration/job-router-overview/">job routes</a>.
 If the CE is the only entry point for jobs into your pool, you can get rid of <code>SUBMIT_ATTRS</code> on your backend. Otherwise,
 you will have to maintain your list of attributes both in your list of routes and in your <code>SUBMIT_ATTRS</code>.</p>
 <h2 id="general-troubleshooting-items">General Troubleshooting Items<a class="headerlink" href="#general-troubleshooting-items" title="Permanent link">&para;</a></h2>
@@ -1823,9 +1898,9 @@ The most common cases for this behavior are as follows:</p>
 <ul>
 <li><strong>The job does not match any job routes:</strong>
   use <a href="#condor_ce_job_router_info">condor_ce_job_router_info</a> to see why your idle job does not match any
-  <a href="/batch-system-integration#how-job-routes-are-constructed">routes</a>.</li>
+  <a href="../../configuration/writing-job-routes/#filtering-jobs-based-on">routes</a>.</li>
 <li><strong>The route(s) that the job matches to are full:</strong>
-  See <a href="/batch-system-integration#limiting-the-number-of-jobs">limiting the number of jobs</a>.</li>
+  See <a href="../../configuration/writing-job-routes/#limiting-the-number-of-jobs">limiting the number of jobs</a>.</li>
 <li><strong>The job router is throttling submission to your batch system due to submission failures:</strong>
   See the HTCondor manual for <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958">FailureRateThreshold</a>.
   Check for errors in the <a href="#jobrouterlog">JobRouterLog</a> or <a href="#gridmanagerlog">GridmanagerLog</a> for HTCondor and
@@ -2103,7 +2178,7 @@ SCHEDD_DEBUG = D_ALWAYS:2 D_CAT
 <h4 id="usage_6">Usage<a class="headerlink" href="#usage_6" title="Permanent link">&para;</a></h4>
 <p>Use the <code>condor_ce_job_router_info</code> command to help troubleshoot your routes and how jobs will match to them. 
 To see all of your routes (the output is long because it combines your routes with the
-<a href="../../batch-system-integration/#job_router_defaults">JOB_ROUTER_DEFAULTS</a> configuration variable):</p>
+<a href="../../configuration/job-router-overview/#deprecated-syntax">JOB_ROUTER_DEFAULTS</a> configuration variable):</p>
 <div class="highlight"><pre><span></span><code><span class="gp">root@host # </span>condor_ce_job_router_info -config
 </code></pre></div>
 <p>To see how the job router is handling a job that is currently in the CE’s queue, analyze the output of <code>condor_ce_q</code>
@@ -2146,10 +2221,10 @@ target.Owner isnt Undefined &amp;&amp;
 target.RoutedBy isnt &quot;htcondor-ce&quot;)
 </code></pre></div>
 
-<p>Both routes evaluate to <code>true</code> for the job’s ClassAd because it contained <code>osgTestPBS = true</code>. Make sure your routes are mutually exclusive, otherwise you may have jobs routed incorrectly! See the <a href="../../batch-system-integration/">job route configuration page</a> for more details.</p>
+<p>Both routes evaluate to <code>true</code> for the job’s ClassAd because it contained <code>osgTestPBS = true</code>. Make sure your routes are mutually exclusive, otherwise you may have jobs routed incorrectly! See the <a href="../../configuration/job-router-overview/">job route configuration page</a> for more details.</p>
 </li>
 <li>
-<p><strong>If it is unclear why jobs are matching a route:</strong> wrap the route's requirements expression in <a href="../../batch-system-integration/#debugging-routes">debug()</a> and check the <a href="#jobrouterlog">JobRouterLog</a> for more information.</p>
+<p><strong>If it is unclear why jobs are matching a route:</strong> wrap the route's requirements expression in <a href="../../configuration/writing-job-routes/#debugging-routes">debug()</a> and check the <a href="#jobrouterlog">JobRouterLog</a> for more information.</p>
 </li>
 </ol>
 <h3 id="condor_ce_router_q">condor_ce_router_q<a class="headerlink" href="#condor_ce_router_q" title="Permanent link">&para;</a></h3>
@@ -2592,7 +2667,7 @@ submit file and proxy used.</p>
 <p>Here are some other HTCondor-CE documents that might be helpful:</p>
 <ul>
 <li><a href="../../installation/htcondor-ce/">Installing HTCondor-CE</a></li>
-<li><a href="../../batch-system-integration/">Configuring HTCondor-CE job routes</a></li>
+<li><a href="../../configuration/job-router-overview/">Configuring HTCondor-CE job routes</a></li>
 <li><a href="../../remote-job-submission/">Submitting jobs to HTCondor-CE</a></li>
 </ul>
                 

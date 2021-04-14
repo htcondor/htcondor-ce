@@ -413,6 +413,81 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_3" type="checkbox" id="__nav_2_2_3" >
+      
+      <label class="md-nav__link" for="__nav_2_2_3">
+        Job Router
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Job Router" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Job Router
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/job-router-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/writing-job-routes/" class="md-nav__link">
+        Writing Job Routes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/htcondor-routes/" class="md-nav__link">
+        For HTCondor Batch Systems
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/non-htcondor-routes/" class="md-nav__link">
+        For Non-HTCondor Batch Systems
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
     <li class="md-nav__item">
       <a href="../configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
@@ -432,7 +507,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../batch-system-integration/" class="md-nav__link">
+      <a href="../batch-system-integration.md" class="md-nav__link">
         Batch System Integration
       </a>
     </li>
@@ -949,7 +1024,7 @@
 <div class="admonition note">
 <p class="admonition-title">Updating from HTCondor-CE &lt; 4</p>
 <p>If updating to HTCondor-CE 5 from HTCondor-CE &lt; 4, be sure to also consult the HTCondor-CE 4
-<a href="../../v4/releases/#updating-to-htcondor-ce-4">upgrade instructions</a>.</p>
+<a href="../../v4/releases/#400">upgrade instructions</a>.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Finding relevant configuration changes</p>
@@ -981,8 +1056,8 @@ Writing routes in the new syntax provides many benefits including:</p>
 <li>Use of simple case statements.</li>
 </ul>
 <p>Additionally, it is now easier to include transforms that should be evaluated before or after your routes by including
-transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORMS</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORMS</code>, respectively.
-To use the new transform syntax:</p>
+transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code>,
+respectively.  To use the new transform syntax:</p>
 <ol>
 <li>
 <p>Disable use of <code>JOB_ROUTER_ENTRIES</code> by setting the following in <code>/etc/condor-ce/config.d/</code>:</p>

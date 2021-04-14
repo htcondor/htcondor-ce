@@ -20,11 +20,23 @@
      <lastmod>2021-04-14</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://htcondor.github.io/htcondor-ce/v5/configuration/optional-configuration/</loc>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/configuration/job-router-overview/</loc>
      <lastmod>2021-04-14</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://htcondor.github.io/htcondor-ce/v5/batch-system-integration/</loc>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/configuration/writing-job-routes/</loc>
+     <lastmod>2021-04-14</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/configuration/htcondor-routes/</loc>
+     <lastmod>2021-04-14</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/configuration/non-htcondor-routes/</loc>
+     <lastmod>2021-04-14</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://htcondor.github.io/htcondor-ce/v5/configuration/optional-configuration/</loc>
      <lastmod>2021-04-14</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
