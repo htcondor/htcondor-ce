@@ -122,6 +122,8 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
     to the JobRouter ([HTCONDOR-243](https://opensciencegrid.atlassian.net/browse/HTCONDOR-243))
 -   Add mapped user and X.509 attribute to local HTCondor pool AccountingGroup mappings to Job Routers configured to use
     the ClassAd transform syntax ([HTCONDOR-187](https://opensciencegrid.atlassian.net/browse/HTCONDOR-187))
+-   Split `condor_mapfile` into files that use regular expressions in `/etc/condor-ce/mapfiles.d/*.conf`
+    ([HTCONDOR-244](https://opensciencegrid.atlassian.net/browse/HTCONDOR-244))
 -   Accept `BatchRuntime` attributes from incoming jobs to set their maximum walltime
     ([HTCONDOR-80](https://opensciencegrid.atlassian.net/browse/HTCONDOR-80))
 -   Update the HTCondor-CE registry to Python 3
