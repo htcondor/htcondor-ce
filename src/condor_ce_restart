@@ -1,5 +1,0 @@
-#!/bin/sh
-
-. /usr/share/condor-ce/condor_ce_env_bootstrap
-export GSI_AUTHZ_CONF=/dev/null
-exec condor_restart "$@"

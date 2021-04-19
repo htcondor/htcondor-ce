@@ -1,7 +1,0 @@
-#!/bin/sh
-
-. /usr/share/condor-ce/condor_ce_env_bootstrap
-export GSI_AUTHZ_CONF=/dev/null
-
-echo "\$HTCondorCEVersion: $(condor_ce_config_val HTCondorCEVersion | tr -d \") \$"
-exec condor_version "$@"
