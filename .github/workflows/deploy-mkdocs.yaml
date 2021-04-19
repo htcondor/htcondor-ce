@@ -2,7 +2,7 @@ name: Deploy static MkDocs pages
 on:
   push:
     branches:
-      - 'V5-branch'
+      - 'docs'
     paths:
       - 'mkdocs.yml'
       - 'docs/**'
