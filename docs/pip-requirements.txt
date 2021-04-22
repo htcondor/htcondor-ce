@@ -1,6 +1,0 @@
-Markdown==2.6.11  # Backversioned due to https://github.com/Python-Markdown/markdown/issues/725
-pymdown-extensions==5.0  # The latest versions requires Markdown>=3.0.1
-mkdocs==0.17.5
-linkchecker; python_version < '3.0'
-requests==2.9.2 # https://github.com/wummel/linkchecker/issues/649
-mkdocs-material==2.9.4
