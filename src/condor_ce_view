@@ -8,6 +8,15 @@ import socket
 import time
 import optparse
 
+# It looks like HTCondor spawns "daemon core" processes with a signal
+# mask set, probably because it doesn't want to get signals between the
+# fork() (clone()?) and exec().  These two lines of code unblock all
+# signals.  This doesn't cause this program to respond as you'd gunicorn
+# to, but they may be a problem with this script, instead.  (It would
+# have to forward signals along to the 'server' process, at the least.)
+import signal
+signal.pthread_sigmask(signal.SIG_UNBLOCK, range(1, signal.NSIG))
+
 os.environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
 
 import gunicorn.app.base
