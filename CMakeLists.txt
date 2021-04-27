@@ -3,7 +3,7 @@ project(condor-ce NONE)
 
 cmake_minimum_required(VERSION 2.6)
 
-set( HTCONDORCE_VERSION "5.0.0" CACHE INTERNAL "Version of the HTCondor-CE" )
+set( HTCONDORCE_VERSION "5.1.0" CACHE INTERNAL "Version of the HTCondor-CE" )
 
 find_package(PkgConfig)
 
@@ -14,11 +14,6 @@ set(STATE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/var" CACHE PATH "Base directory f
 include(FindPythonInterp)
 execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib().replace('/usr', '${CMAKE_INSTALL_PREFIX}', 1))" OUTPUT_VARIABLE DETECTED_PYTHON_SITELIB OUTPUT_STRIP_TRAILING_WHITESPACE )
 set(PYTHON_SITELIB "${DETECTED_PYTHON_SITELIB}" CACHE PATH "Base directory for python libraries")
-
-configure_file (
-  "${PROJECT_SOURCE_DIR}/config/01-ce-router.conf.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf"
-)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/config/01-ce-router-defaults.conf.in"
@@ -38,8 +33,7 @@ install(PROGRAMS
   src/gratia_cleanup.py
   src/condor_ce_create_password
   contrib/apelscripts/condor_ce_apel.sh
-  contrib/apelscripts/condor_blah.sh
-  contrib/apelscripts/condor_batch.sh
+  contrib/apelscripts/condor_batch_blah.sh
   contrib/bdii/htcondor-ce-provider
   contrib/bosco/bosco-cluster-remote-hosts.py
   contrib/bosco/bosco-cluster-remote-hosts.sh
@@ -93,9 +87,20 @@ install(FILES
 install(FILES
   config/condor_config
   config/condor_mapfile
-  config/condor_mapfile.central_collector
-  config/condor_mapfile.osg
+  config/uid_acct_group.map
+  config/x509_acct_group.map
   DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce)
+
+install(FILES
+  config/mapfiles.d/10-gsi.conf
+  config/mapfiles.d/10-scitokens.conf
+  config/mapfiles.d/50-gsi-callout.conf
+  DESTINATION ${SYSCONF_INSTALL_DIR}/condor-ce/mapfiles.d)
+
+install(FILES
+  config/mapfiles.d/50-central-collector.conf
+  config/mapfiles.d/50-common-default.conf
+  DESTINATION ${SHARE_INSTALL_PREFIX}/condor-ce/mapfiles.d)
 
 install(FILES config/htcondorce_registry.conf DESTINATION ${SYSCONF_INSTALL_DIR}/httpd/conf.d)
 # This file should contain various OIDC secrets; should not be world-readable.
@@ -115,7 +120,7 @@ install(FILES
 install(FILES
   config/01-ce-auth.conf
   config/01-ce-collector.conf
-  ${CMAKE_CURRENT_BINARY_DIR}/config/01-ce-router.conf
+  config/01-ce-router.conf
   config/01-pilot-env.conf
   config/02-ce-condor.conf
   config/02-ce-pbs.conf

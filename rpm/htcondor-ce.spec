@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.0.0
+Version: 5.1.0
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -28,9 +28,10 @@ BuildRequires: python-rpm-macros
 BuildRequires: python3-devel
 BuildRequires: python3-rpm-macros
 
-# CE collector plugin needs the Python 3 support available in the 8.9 series:
-# https://opensciencegrid.atlassian.net/browse/HTCONDOR-13
-Requires:  condor >= 8.9.7
+# Mapfiles.d changes require 8.9.13 but 8.9.13 has known bugs
+# affecting the Job Router and Python 3 collector plugin
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-244
+Requires:  condor >= 9.0.0
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -206,7 +207,7 @@ Requires: %{name}-client = %{version}-%{release}
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
-Requires: mod_wsgi
+Requires: python3-mod_wsgi
 
 %if 0%{?rhel} >= 8
 Requires: python3-flask
@@ -242,8 +243,7 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/README.md
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
-rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
-rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
 rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
 rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
@@ -271,14 +271,6 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.os
 # Gratia accounting cleanup
 %if ! 0%{?osg}
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
-%endif
-
-%if 0%{?uw_build}
-# Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
-# GSI auth lines since they don't necessarily use GT callouts
-rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
-%else
-mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
@@ -382,8 +374,7 @@ fi
 
 %files apel
 %{_datadir}/condor-ce/apel/README.md
-%{_datadir}/condor-ce/condor_blah.sh
-%{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/condor_batch_blah.sh
 %{_datadir}/condor-ce/condor_ce_apel.sh
 %{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf
@@ -409,6 +400,7 @@ fi
 %{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.js
 %{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
+%dir %{_datadir}/condor-ce/templates
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
 %{_datadir}/condor-ce/templates/metrics.html
@@ -445,6 +437,8 @@ fi
 %files condor
 %defattr(-,root,root,-)
 
+%config(noreplace) %{_sysconfdir}/condor-ce/uid_acct_group.map
+%config(noreplace) %{_sysconfdir}/condor-ce/x509_acct_group.map
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
 %{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
 %{_sysconfdir}/condor/config.d/50-condor-ce-defaults.conf
@@ -492,11 +486,21 @@ fi
 %config %{_sysconfdir}/condor-ce/condor_config
 %attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
 %attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
+
+%dir %{_datadir}/condor-ce/
+%dir %{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
 %{_datadir}/condor-ce/pilot-status.cpf
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
+
+%dir %{_datadir}/condor-ce/mapfiles.d
+%config %{_datadir}/condor-ce/mapfiles.d/50-common-default.conf
+
+%config %{_sysconfdir}/condor-ce/condor_mapfile
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
@@ -534,6 +538,7 @@ fi
 
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/mapfiles.d/50-central-collector.conf
 %{_datadir}/condor-ce/condor_ce_create_password
 
 %{_unitdir}/condor-ce-collector.service
@@ -541,7 +546,6 @@ fi
 
 %config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config %{_datadir}/condor-ce/config.d/05-ce-collector-auth.conf
-%config %{_sysconfdir}/condor-ce/condor_mapfile.central_collector
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d
@@ -561,6 +565,25 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue Mar 30 2021 Mark Coatsworth <coatsworth@cs.wisc.edu> - 5.1.0-1
+- Fix an issue where the CE removed running jobs prematurely (HTCONDOR-350)
+- Add optional job router transform syntax (HTCONDOR-243)
+- Add username and X.509 accounting group mapfiles for use by job router transforms (HTCONDOR-187)
+- Replace custom mappings in condor_mapfile with /etc/condor-ce/mapfiles.d/ (HTCONDOR-244)
+- Require regular expressions in the second field of the unified mapfile be enclosed by '/'(HTCONDOR-244)
+- Update maxWallTime logic to accept BatchRuntime (HTCONDOR-80)
+- Append SSL to the default authentication methods list (HTCONDOR-366)
+- APEL reporting scripts now use the local HTCondor's PER_JOB_HISTORY_DIR to collect job data. (HTCONDOR-293)
+- Use the `GlobalJobID` attribute as the APEL record `lrmsID` (#426)
+- Update HTCondor-CE registry app to Python 3 (HTCONDOR-307)
+- Enable SSL authentication by default for `READ`/`WRITE` authorization levels (HTCONDOR-366)
+- Downgrade errors in the configuration verification startup script to support routes written in the transform syntax (#465)
+- Allow required directories to be owned by non-`condor` groups (#451)
+- Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE` (HTCONDOR-350)
+- Fix incorrect path to Python 3 Collector plugin (HTCONDOR-400)
+- Fix faulty validation of `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ENTRIES` in the startup script (HTCONDOR-406)
+- Fix various Python 3 incompatibilities (#460)
+
 * Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-1
 - Add Python 3 and EL8 support (HTCondor-13)
 - Whole node jobs (HTCondor batch systems only) now make use of GPUs (HTCONDOR-103)

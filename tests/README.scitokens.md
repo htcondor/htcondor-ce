@@ -2,7 +2,7 @@
 Testing Use of SciTokens with HTCondor-CE
 =========================================
 
-(SciTokens)[https://scitokens.org] provide an alternate authorization mechanism to access
+[SciTokens](https://scitokens.org) provide an alternate authorization mechanism to access
 the HTCondor-CE beyond the legacy GSI authentication.  This document aims to provide
 developers with the background knowledge necessary to generate a SciToken and use it to
 access a test CE.
