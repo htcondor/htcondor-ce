@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.5.1
-Release: 2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 4.5.2
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -520,6 +520,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue Apr 27 2021 Brian Lin <blin@cs.wisc.edu> - 4.5.2-1
+- Use the `GlobalJobID` attribute as the APEL record `lrmsID` (#426)
+- Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE` (HTCONDOR-350)
+- Fix faulty validation of `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ENTRIES` in the startup script (HTCONDOR-406)
+
 * Tue Mar 30 2021 Brian Lin <blin@cs.wisc.edu> - 4.5.0-2
 - Fix an issue with an overly aggressive default SYSTEM_PERIODIC_REMOVE (HTCONDOR-350)
 - Use the GlobalJobID attribute as the APEL record lrmsID (#426)
