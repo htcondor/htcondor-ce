@@ -62,7 +62,7 @@ if [[ $BUILD_ENV == osg ]]; then
 else
     # This is currently tracking the 9.0 stable release.
     # For the stable release series the version number is required.
-    # The the feature series, one can either use the version number (i.e. 9.1)
+    # For the feature series, one can either use the version number (i.e. 9.1)
     # or 'current' which tracks the latest feature series
     yum install -y https://research.cs.wisc.edu/htcondor/repo/9.0/htcondor-release-current.el${OS_VERSION}.noarch.rpm
 fi
