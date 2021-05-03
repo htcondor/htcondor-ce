@@ -263,7 +263,7 @@ JOB_ROUTER_TRANSFORM_BatchRuntime @=jrt
     # 4. 'ROUTED_JOB_MAX_TIME' (minutes) from the config
     if defined MY.maxWallTime
         SET BatchRuntime 60*maxWallTime
-    elif defined MY.org_BatchRuntime
+    elif defined MY.orig_BatchRuntime
         # do nothing, BatchRuntime already set
     elif defined default_maxWallTime
         # default_maxWallTime can be an attribute reference here
