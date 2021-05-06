@@ -4,9 +4,6 @@ repo_url: https://github.com/htcondor/htcondor-ce/
 
 theme:
   name: material
-  custom_dir: overwrite_theme
-  static_templates:
-    - main.html
 
 extra_css:
   - css/superfences.css
