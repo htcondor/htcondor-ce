@@ -100,7 +100,7 @@ To identify routes, you will need to assign a name to the route, either in the n
     ```
 
 !!! warning "Naming restrictions"
-    -   Route names should only contain alphanumeric, `-`, and `_` characters.
+    -   Route names should only contain alphanumeric and `_` characters.
     -   Routes specified by `JOB_ROUTER_ROUTE_*` will override routes with the same name in `JOB_ROUTER_ENTRIES`
 
 The name of the route will be useful in debugging since it shows up in the output of
