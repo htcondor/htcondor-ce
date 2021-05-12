@@ -169,7 +169,7 @@ All other jobs will be routed with `IsProduction = False`.
 
     ```hl_lines="1 7 12"
     JOB_ROUTER_ROUTE_Production_Jobs @=jrt
-      REQUIREMENTS TARGET.queue == "prod"
+      REQUIREMENTS queue == "prod"
       TargetUniverse = 5
       SET IsProduction True
     @jrt
@@ -297,7 +297,6 @@ For example, if an incoming job has a `queue = "prod"` attribute, then the follo
 
     ```
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      queue = "analysis"
       REQUIREMENTS  queue == "prod"
       TargetUniverse = 5
     @jrt
@@ -311,7 +310,7 @@ For example, if an incoming job has a `queue = "prod"` attribute, then the follo
     JOB_ROUTER_ENTRIES @=jre
     [
       queue = "analysis";
-      Requirements = (queue == "prod");
+      Requirements = (TARGET.queue == "prod");
       TargetUniverse = 5;
       name = "Condor_Pool";
     ]
@@ -339,7 +338,7 @@ The following entry routes jobs to HTCondor if the incoming job (specified by `T
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS  TARGET.queue == "prod"
+      REQUIREMENTS queue == "prod"
       TargetUniverse = 5
     @jrt
 
@@ -370,7 +369,7 @@ The following entry routes jobs to the HTCondor batch system if the mapped user 
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS  TARGET.Owner == "usatlas2"
+      REQUIREMENTS Owner == "usatlas2"
       TargetUniverse = 5
     @jrt
 
@@ -398,7 +397,7 @@ The following entry routes jobs to the HTCondor batch system if the mapped user 
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS regexp("^usatlas", TARGET.Owner)
+      REQUIREMENTS regexp("^usatlas", Owner)
       TargetUniverse = 5
     @jrt
 
@@ -430,7 +429,7 @@ The following entry routes jobs to the HTCondor batch system if the proxy subjec
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS regexp("\/cms\/Role\=pilot", TARGET.x509UserProxyFirstFQAN)
+      REQUIREMENTS regexp("\/cms\/Role\=pilot", x509UserProxyFirstFQAN)
       TargetUniverse = 5
     @jrt
 
