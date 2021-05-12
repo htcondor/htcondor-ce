@@ -289,40 +289,8 @@ More information on the syntax of ClassAd's can be found in the
 For an example on how incoming jobs interact with filtering in job routes, consult
 [this document](../remote-job-submission.md).
 
-When setting requirements, you need to prefix job attributes that you are filtering with `TARGET.` so that the job route
-knows to compare the attribute of the incoming job rather than the route’s own attribute.
-For example, if an incoming job has a `queue = "prod"` attribute, then the following job route will not match:
-
-=== "ClassAd Transform"
-
-    ```
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS  queue == "prod"
-      TargetUniverse = 5
-    @jrt
-
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
-
-=== "Deprecated syntax"
-
-    ```
-    JOB_ROUTER_ENTRIES @=jre
-    [
-      queue = "analysis";
-      Requirements = (TARGET.queue == "prod");
-      TargetUniverse = 5;
-      name = "Condor_Pool";
-    ]
-    @jre
-
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
-
-This is because when evaluating the route requirement, the job route will compare its own `queue` attribute to "analy"
-and see that it does not match.
-You can read more about comparing two ClassAds in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators).
+In the deprecated syntax, you may need to specify `TARGET.` to refer to differentiate between job and route attributes. 
+See [this section](#differences-in-my-and-target) for more details.
 
 !!! note
     If you have an HTCondor batch system, note the difference with
