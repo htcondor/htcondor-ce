@@ -109,12 +109,7 @@ Requires: %{name} = %{version}-%{release}
 Group: Applications/System
 Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description pbs
 %{summary}
@@ -123,12 +118,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to LSF
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description lsf
 %{summary}
@@ -137,12 +127,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description sge
 %{summary}
@@ -151,12 +136,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to Slurm
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description slurm
 %{summary}
