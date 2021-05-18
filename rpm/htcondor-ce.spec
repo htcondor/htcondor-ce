@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.0
+Version: 5.1.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -109,12 +109,7 @@ Requires: %{name} = %{version}-%{release}
 Group: Applications/System
 Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description pbs
 %{summary}
@@ -123,12 +118,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to LSF
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description lsf
 %{summary}
@@ -137,12 +127,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description sge
 %{summary}
@@ -151,12 +136,7 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to Slurm
 Requires: %{name} = %{version}-%{release}
-
-%if 0%{?uw_build}
-Requires: /usr/libexec/condor/glite/bin/batch_gahp
-%else
 Requires: blahp
-%endif
 
 %description slurm
 %{summary}
@@ -565,6 +545,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue May 18 2021 Brian Lin <blin@cs.wisc.edu> - 5.1.1-1
+- Improve restart time of HTCondor-CE View (HTCONDOR-420)
+- Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
+- Fix blahp packaging requirement (HTCONDOR-504)
+
 * Tue Mar 30 2021 Mark Coatsworth <coatsworth@cs.wisc.edu> - 5.1.0-1
 - Fix an issue where the CE removed running jobs prematurely (HTCONDOR-350)
 - Add optional job router transform syntax (HTCONDOR-243)
