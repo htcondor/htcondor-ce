@@ -132,13 +132,13 @@ JOB_ROUTER_DEFAULTS_GENERATED @=jrd
 
     /* BatchRuntime is in seconds but users configure default_maxWallTime and ROUTED_JOB_MAX_TIME in minutes */
     copy_BatchRuntime = "orig_BatchRuntime";
-    set_BatchRuntime = ifThenElse(maxWallTime isnt undefined,
-                                  60*maxWallTime,
-                                  ifThenElse(orig_BatchRuntime isnt undefined,
-                                             orig_BatchRuntime,
-                                             ifThenElse(default_maxWallTime isnt undefined,
-                                                        60*default_maxWallTime,
-                                                        60*$(ROUTED_JOB_MAX_TIME))));
+    eval_set_BatchRuntime = ifThenElse(maxWallTime isnt undefined,
+                                       60*maxWallTime,
+                                       ifThenElse(orig_BatchRuntime isnt undefined,
+                                                  orig_BatchRuntime,
+                                                  ifThenElse(default_maxWallTime isnt undefined,
+                                                             60*default_maxWallTime,
+                                                             60*$(ROUTED_JOB_MAX_TIME))));
 
     set_CondorCE = 1;
     eval_set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
