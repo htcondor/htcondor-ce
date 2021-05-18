@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.0
+Version: 5.1.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -545,6 +545,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue May 18 2021 Brian Lin <blin@cs.wisc.edu> - 5.1.1-1
+- Improve restart time of HTCondor-CE View (HTCONDOR-420)
+- Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
+- Fix blahp packaging requirement (HTCONDOR-504)
+
 * Tue Mar 30 2021 Mark Coatsworth <coatsworth@cs.wisc.edu> - 5.1.0-1
 - Fix an issue where the CE removed running jobs prematurely (HTCONDOR-350)
 - Add optional job router transform syntax (HTCONDOR-243)
