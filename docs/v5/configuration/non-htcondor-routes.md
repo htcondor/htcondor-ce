@@ -15,7 +15,7 @@ transform and deprecated syntax, respectively:
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
       GridResource = "batch slurm"
       TargetUniverse = 9
-      SET default_queue "osg_queue"
+      default_queue = "osg_queue"
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
