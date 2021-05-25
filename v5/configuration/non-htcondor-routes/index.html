@@ -1019,7 +1019,7 @@ transform and deprecated syntax, respectively:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
   GridResource = &quot;batch slurm&quot;
   TargetUniverse = 9
-<span class="hll">  SET default_queue &quot;osg_queue&quot;
+<span class="hll">  default_queue = &quot;osg_queue&quot;
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
@@ -1048,8 +1048,8 @@ submit script.
 ClassAd attributes can be passed from the routed job to the local submit attributes script via
 <code>default_CERequirements</code> attribute, which takes a comma-separated list of other attributes:</p>
 <div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>SET foo &quot;X&quot;
-SET bar &quot;Y&quot;
+<div class="highlight"><pre><span></span><code>SET foo = &quot;X&quot;
+SET bar = &quot;Y&quot;
 SET default_CERequirements = &quot;foo,bar&quot;
 </code></pre></div>
 </div>
@@ -1067,9 +1067,9 @@ attribute of the job submitted to a PBS batch system:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
      GridResource = &quot;batch slurm&quot;
      TargetUniverse = 9
-<span class="hll">     SET Walltime 3600
-</span><span class="hll">     SET AccountingGroup x509UserProxyFirstFQAN
-</span><span class="hll">     SET default_CERequirements &quot;WallTime,AccountingGroup&quot;
+<span class="hll">     SET Walltime = 3600
+</span><span class="hll">     SET AccountingGroup = x509UserProxyFirstFQAN
+</span><span class="hll">     SET default_CERequirements = &quot;WallTime,AccountingGroup&quot;
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster

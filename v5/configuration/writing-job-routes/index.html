@@ -1320,7 +1320,7 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <div class="admonition warning">
 <p class="admonition-title">Naming restrictions</p>
 <ul>
-<li>Route names should only contain alphanumeric, <code>-</code>, and <code>_</code> characters.</li>
+<li>Route names should only contain alphanumeric and <code>_</code> characters.</li>
 <li>Routes specified by <code>JOB_ROUTER_ROUTE_*</code> will override routes with the same name in <code>JOB_ROUTER_ENTRIES</code></li>
 </ul>
 </div>
@@ -1377,14 +1377,14 @@ statements compared to incoming jobs.</p>
 All other jobs will be routed with <code>IsProduction = False</code>.</p>
 <div class="tabbed-set" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="hll">JOB_ROUTER_ROUTE_Production_Jobs @=jrt
-</span>  REQUIREMENTS TARGET.queue == &quot;prod&quot;
+</span>  REQUIREMENTS queue == &quot;prod&quot;
   TargetUniverse = 5
-  SET IsProduction True
+  SET IsProduction = True
 @jrt
 
 <span class="hll">JOB_ROUTER_ROUTE_Condor_Pool @=jrt
 </span>  TargetUniverse = 5
-  SET IsProduction False
+  SET IsProduction = False
 @jrt
 
 <span class="hll">JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
@@ -1474,37 +1474,8 @@ More information on the syntax of ClassAd's can be found in the
 <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
 For an example on how incoming jobs interact with filtering in job routes, consult
 <a href="../../remote-job-submission/">this document</a>.</p>
-<p>When setting requirements, you need to prefix job attributes that you are filtering with <code>TARGET.</code> so that the job route
-knows to compare the attribute of the incoming job rather than the route’s own attribute.
-For example, if an incoming job has a <code>queue = "prod"</code> attribute, then the following job route will not match:</p>
-<div class="tabbed-set" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  queue = &quot;analysis&quot;
-  REQUIREMENTS  queue == &quot;prod&quot;
-  TargetUniverse = 5
-@jrt
-
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-<input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><label for="__tabbed_6_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  queue = &quot;analysis&quot;;
-  Requirements = (queue == &quot;prod&quot;);
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-]
-@jre
-
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
-<p>This is because when evaluating the route requirement, the job route will compare its own <code>queue</code> attribute to "analy"
-and see that it does not match.
-You can read more about comparing two ClassAds in the
-<a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators">HTCondor manual</a>.</p>
+<p>In the deprecated syntax, you may need to specify <code>TARGET.</code> to refer to differentiate between job and route attributes. 
+See <a href="#differences-in-my-and-target">this section</a> for more details.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you have an HTCondor batch system, note the difference with
@@ -1514,16 +1485,16 @@ You can read more about comparing two ClassAds in the
 <p>To filter jobs based on their pilot job queue attribute, your routes will need a requirements expression using the
 incoming job's <code>queue</code> attribute.
 The following entry routes jobs to HTCondor if the incoming job (specified by <code>TARGET</code>) is an <code>analy</code> (Analysis) glidein:</p>
-<div class="tabbed-set" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><label for="__tabbed_7_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS  TARGET.queue == &quot;prod&quot;
+<span class="hll">  REQUIREMENTS queue == &quot;prod&quot;
 </span>  TargetUniverse = 5
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><label for="__tabbed_7_2">Deprecated syntax</label><div class="tabbed-content">
+<input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><label for="__tabbed_6_2">Deprecated syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
 <span class="hll">  Requirements = (TARGET.queue == &quot;prod&quot;);
@@ -1540,16 +1511,16 @@ JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
 <p>To filter jobs based on what local account the incoming job was mapped to, your routes will need a requirements
 expression using the incoming job's <code>Owner</code> attribute.
 The following entry routes jobs to the HTCondor batch system if the mapped user is <code>usatlas2</code>:</p>
-<div class="tabbed-set" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><label for="__tabbed_8_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><label for="__tabbed_7_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS  TARGET.Owner == &quot;usatlas2&quot;
+<span class="hll">  REQUIREMENTS Owner == &quot;usatlas2&quot;
 </span>  TargetUniverse = 5
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><label for="__tabbed_8_2">Deprecated syntax</label><div class="tabbed-content">
+<input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><label for="__tabbed_7_2">Deprecated syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
 <span class="hll">  Requirements = (TARGET.Owner == &quot;usatlas2&quot;);
@@ -1564,16 +1535,16 @@ JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
 </div>
 <p>Alternatively, you can match based on regular expression.
 The following entry routes jobs to the HTCondor batch system if the mapped user begins with <code>usatlas</code>:</p>
-<div class="tabbed-set" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><label for="__tabbed_9_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><label for="__tabbed_8_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS regexp(&quot;^usatlas&quot;, TARGET.Owner)
+<span class="hll">  REQUIREMENTS regexp(&quot;^usatlas&quot;, Owner)
 </span>  TargetUniverse = 5
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><label for="__tabbed_9_2">Deprecated syntax</label><div class="tabbed-content">
+<input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><label for="__tabbed_8_2">Deprecated syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
 <span class="hll">  Requirements = regexp(&quot;^usatlas&quot;, TARGET.Owner);
@@ -1590,16 +1561,16 @@ JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
 <p>To filter jobs based on the subject of the job's proxy, your routes will need a requirements expression using the
 incoming job's <code>x509UserProxyFirstFQAN</code> attribute.
 The following entry routes jobs to the HTCondor batch system if the proxy subject contains <code>/cms/Role=Pilot</code>:</p>
-<div class="tabbed-set" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><label for="__tabbed_10_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><label for="__tabbed_9_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS regexp(&quot;\/cms\/Role\=pilot&quot;, TARGET.x509UserProxyFirstFQAN)
+<span class="hll">  REQUIREMENTS regexp(&quot;\/cms\/Role\=pilot&quot;, x509UserProxyFirstFQAN)
 </span>  TargetUniverse = 5
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><label for="__tabbed_10_2">Deprecated syntax</label><div class="tabbed-content">
+<input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><label for="__tabbed_9_2">Deprecated syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
 <span class="hll">  Requirements = regexp(&quot;\/cms\/Role\=pilot&quot;, TARGET.x509UserProxyFirstFQAN);
@@ -1629,7 +1600,7 @@ transform.</p>
 <h3 id="maximum-memory">Maximum memory<a class="headerlink" href="#maximum-memory" title="Permanent link">&para;</a></h3>
 <p>To set a default maximum memory (in MB) for routed jobs, set the variable or attribute <code>default_maxMemory</code> for the
 ClassAd transform and deprecated syntax, respectively:</p>
-<div class="tabbed-set" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><label for="__tabbed_11_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><label for="__tabbed_10_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
   # Set the requested memory to 1 GB
@@ -1639,7 +1610,7 @@ ClassAd transform and deprecated syntax, respectively:</p>
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><label for="__tabbed_11_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><label for="__tabbed_10_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1656,7 +1627,7 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <h3 id="number-of-cores-to-request">Number of cores to request<a class="headerlink" href="#number-of-cores-to-request" title="Permanent link">&para;</a></h3>
 <p>To set a default number of cores for routed jobs, set the variable or attribute <code>default_xcount</code> for the ClassAd
 transform and deprecated syntax, respectively:</p>
-<div class="tabbed-set" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><label for="__tabbed_12_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><label for="__tabbed_11_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
   # Set the requested memory to 1 GB
@@ -1666,7 +1637,7 @@ transform and deprecated syntax, respectively:</p>
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><label for="__tabbed_12_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><label for="__tabbed_11_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1683,7 +1654,7 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <h3 id="maximum-walltime">Maximum walltime<a class="headerlink" href="#maximum-walltime" title="Permanent link">&para;</a></h3>
 <p>To set a default number of cores for routed jobs, set the variable or attribute <code>default_maxWallTime</code> for the ClassAd
 transform and deprecated syntax, respectively:</p>
-<div class="tabbed-set" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><label for="__tabbed_13_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><label for="__tabbed_12_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
   # Set the max walltime to 1 hr
@@ -1693,7 +1664,7 @@ transform and deprecated syntax, respectively:</p>
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><label for="__tabbed_13_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><label for="__tabbed_12_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1723,11 +1694,11 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><label for="__tabbed_14_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><label for="__tabbed_13_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu&quot;
 </code></pre></div>
 </div>
-<input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><label for="__tabbed_14_2">Resulting Environment</label><div class="tabbed-content">
+<input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><label for="__tabbed_13_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
@@ -1736,12 +1707,12 @@ For example, the following HTCondor-CE configuration would result in the followi
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
 <a href="https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><label for="__tabbed_15_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><label for="__tabbed_14_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
 CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)&quot;
 </code></pre></div>
 </div>
-<input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><label for="__tabbed_15_2">Resulting Environment</label><div class="tabbed-content">
+<input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><label for="__tabbed_14_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
@@ -1750,18 +1721,18 @@ CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROX
 <p>To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 <code>set_default_pilot_job_env</code> to your job route configuration.
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:</p>
-<div class="tabbed-set" data-tabs="16:4"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><label for="__tabbed_16_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="15:4"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><label for="__tabbed_15_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_Condor_Pool @=jrt
   TargetUniverse = 5
-<span class="hll">  SET default_pilot_job_env strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
-</span><span class="hll">                                   &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
-</span><span class="hll">                                   &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO))
+<span class="hll">  SET default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
+</span><span class="hll">                                    &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
+</span><span class="hll">                                    &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO))
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><label for="__tabbed_16_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><label for="__tabbed_15_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1775,12 +1746,12 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_16_3" name="__tabbed_16" type="radio" /><label for="__tabbed_16_3">Incoming Job Attributes</label><div class="tabbed-content">
+<input id="__tabbed_15_3" name="__tabbed_15" type="radio" /><label for="__tabbed_15_3">Incoming Job Attributes</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
 JOB_VO = &quot;GLOW&quot;
 </code></pre></div>
 </div>
-<input id="__tabbed_16_4" name="__tabbed_16" type="radio" /><label for="__tabbed_16_4">Resulting Environment</label><div class="tabbed-content">
+<input id="__tabbed_15_4" name="__tabbed_15" type="radio" /><label for="__tabbed_15_4">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">PILOT_COLLECTOR</span><span class="o">=</span>collector.wisc.edu
 <span class="nv">ACCOUNTING_GROUP</span><span class="o">=</span>glow
@@ -1834,16 +1805,16 @@ job for the ClassAd transform and deprecated syntax, respectively:</p>
 ClassAd transform and deprecated syntaxes, respectively..
 The following route copies the <code>Environment</code> attribute of the incoming job and sets the attribute <code>Original_Environment</code>
 on the routed job to the same value:</p>
-<div class="tabbed-set" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><label for="__tabbed_17_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><label for="__tabbed_16_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
-<span class="hll">  COPY Environment Original_Environment
+<span class="hll">  COPY Environment = Original_Environment
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><label for="__tabbed_17_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><label for="__tabbed_16_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1860,7 +1831,7 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <p>To remove an attribute of the incoming job from the routed job, use <code>DELETE</code> or <code>delete_</code> for ClassAd transform and
 deprecated syntaxes, respectively.
 The following route removes the <code>Environment</code> attribute from the routed job:</p>
-<div class="tabbed-set" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><label for="__tabbed_18_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><label for="__tabbed_17_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
 <span class="hll">  DELETE Environment
@@ -1869,7 +1840,7 @@ The following route removes the <code>Environment</code> attribute from the rout
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><label for="__tabbed_18_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><label for="__tabbed_17_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1885,16 +1856,16 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <h3 id="setting-attributes">Setting attributes<a class="headerlink" href="#setting-attributes" title="Permanent link">&para;</a></h3>
 <p>To set an attribute on the routed job, use <code>SET</code> or <code>set_</code> for ClassAd transform and deprecated syntaxes, respectively.
 The following route sets the Job's <code>Rank</code> attribute to 5:</p>
-<div class="tabbed-set" data-tabs="19:2"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><label for="__tabbed_19_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><label for="__tabbed_18_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
-<span class="hll">  SET Rank 5
+<span class="hll">  SET Rank = 5
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><label for="__tabbed_19_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><label for="__tabbed_18_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1911,16 +1882,16 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <p>To set an attribute to a ClassAd expression to be evaluated, use <code>EVALSET</code> or <code>eval_set</code> for ClassAd transform and
 deprecated syntaxes, respectively.
 The following route sets the <code>Experiment</code> attribute to <code>atlas.osguser</code> if the Owner of the incoming job is <code>osguser</code>:</p>
-<div class="tabbed-set" data-tabs="20:2"><input checked="checked" id="__tabbed_20_1" name="__tabbed_20" type="radio" /><label for="__tabbed_20_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="19:2"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><label for="__tabbed_19_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   TargetUniverse = 5
-<span class="hll">  EVALSET Experiment strcat(&quot;atlas.&quot;, Owner)
+<span class="hll">  EVALSET Experiment = strcat(&quot;atlas.&quot;, Owner)
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_20_2" name="__tabbed_20" type="radio" /><label for="__tabbed_20_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><label for="__tabbed_19_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1945,7 +1916,7 @@ HTCondor manages fair share on its own via
 <h3 id="total-jobs">Total jobs<a class="headerlink" href="#total-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of jobs for a specific route,
 set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134">MaxJobs</a> attribute:</p>
-<div class="tabbed-set" data-tabs="21:2"><input checked="checked" id="__tabbed_21_1" name="__tabbed_21" type="radio" /><label for="__tabbed_21_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="20:2"><input checked="checked" id="__tabbed_20_1" name="__tabbed_20" type="radio" /><label for="__tabbed_20_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   TargetUniverse = 5
 <span class="hll">  MaxJobs = 100
@@ -1954,7 +1925,7 @@ set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Jo
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_21_2" name="__tabbed_21" type="radio" /><label for="__tabbed_21_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_20_2" name="__tabbed_20" type="radio" /><label for="__tabbed_20_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1970,7 +1941,7 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <h3 id="idle-jobs">Idle jobs<a class="headerlink" href="#idle-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of idle jobs for a specific route,
 set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135">MaxIdleJobs</a> attribute:</p>
-<div class="tabbed-set" data-tabs="22:2"><input checked="checked" id="__tabbed_22_1" name="__tabbed_22" type="radio" /><label for="__tabbed_22_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="21:2"><input checked="checked" id="__tabbed_21_1" name="__tabbed_21" type="radio" /><label for="__tabbed_21_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   TargetUniverse = 5
 <span class="hll">  MaxIdleJobs = 100
@@ -1979,7 +1950,7 @@ set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Jo
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_22_2" name="__tabbed_22" type="radio" /><label for="__tabbed_22_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_21_2" name="__tabbed_21" type="radio" /><label for="__tabbed_21_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1998,16 +1969,16 @@ First, set the debug mode for the JobRouter by editing a file in <code>/etc/cond
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
 </code></pre></div>
 <p>Then wrap the problematic attribute in <code>debug()</code>:</p>
-<div class="tabbed-set" data-tabs="23:2"><input checked="checked" id="__tabbed_23_1" name="__tabbed_23" type="radio" /><label for="__tabbed_23_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="22:2"><input checked="checked" id="__tabbed_22_1" name="__tabbed_22" type="radio" /><label for="__tabbed_22_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  EVALSET Experiment debug(strcat(&quot;atlas&quot;, Name))
+<span class="hll">  EVALSET Experiment = debug(strcat(&quot;atlas&quot;, Name))
 </span>
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
 </div>
-<input id="__tabbed_23_2" name="__tabbed_23" type="radio" /><label for="__tabbed_23_2">Deprecated Syntax</label><div class="tabbed-content">
+<input id="__tabbed_22_2" name="__tabbed_22" type="radio" /><label for="__tabbed_22_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   name = &quot;Condor_Pool&quot;;
