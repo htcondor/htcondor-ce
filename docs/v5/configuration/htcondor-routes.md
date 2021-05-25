@@ -32,7 +32,7 @@ This will catch jobs which are starting and stopping multiple times.
       SET Periodic_Hold ((NumJobStarts >= 1 && JobStatus == 1) || NumJobStarts > 1)
       # Release routed jobs if the condor_starter couldn't start the executable and 
       # 'VMGAHP_ERR_INTERNAL' is in the HoldReason
-      SET Periodic_Release (HoldReasonCode == 6 && regexp("VMGAHP_ERR_INTERNAL", HoldReason))
+      SET Periodic_Release = (HoldReasonCode == 6 && regexp("VMGAHP_ERR_INTERNAL", HoldReason))
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -103,7 +103,7 @@ To do this, replace the above `SET Requirements` or `set_Requirements` lines wit
 === "ClassAd Transform"
 
     ```
-    SET Requirements ($(MY.Requirements)) && (<YOUR REQUIREMENTS EXPRESSION>)
+    SET Requirements = ($(MY.Requirements)) && (<YOUR REQUIREMENTS EXPRESSION>)
     ```
 
 === "Deprecated Syntax"

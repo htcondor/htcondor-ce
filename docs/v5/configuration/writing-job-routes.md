@@ -171,12 +171,12 @@ All other jobs will be routed with `IsProduction = False`.
     JOB_ROUTER_ROUTE_Production_Jobs @=jrt
       REQUIREMENTS queue == "prod"
       TargetUniverse = 5
-      SET IsProduction True
+      SET IsProduction = True
     @jrt
 
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET IsProduction False
+      SET IsProduction = False
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
@@ -593,9 +593,9 @@ For example, the following HTCondor-CE configuration would result in this enviro
     ```hl_lines="3 4 5" 
     JOB_ROUTER_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET default_pilot_job_env strcat("WN_SCRATCH_DIR=/nobackup",
-                                       " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                       " ACCOUNTING_GROUP=", toLower(JOB_VO))
+      SET default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                        " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                        " ACCOUNTING_GROUP=", toLower(JOB_VO))
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -685,7 +685,7 @@ on the routed job to the same value:
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      COPY Environment Original_Environment
+      COPY Environment = Original_Environment
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -747,7 +747,7 @@ The following route sets the Job's `Rank` attribute to 5:
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET Rank 5
+      SET Rank = 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -778,7 +778,7 @@ The following route sets the `Experiment` attribute to `atlas.osguser` if the Ow
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      EVALSET Experiment strcat("atlas.", Owner)
+      EVALSET Experiment = strcat("atlas.", Owner)
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -885,7 +885,7 @@ Then wrap the problematic attribute in `debug()`:
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      EVALSET Experiment debug(strcat("atlas", Name))
+      EVALSET Experiment = debug(strcat("atlas", Name))
 
     @jrt
 
