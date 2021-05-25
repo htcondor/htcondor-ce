@@ -657,7 +657,7 @@ The above operations are evaluated in order differently depending on your chosen
     subsequently remove `FOO` from the routed job:
 
         JOB_ROUTER_Condor_Pool @=jrt
-          EVALSET FOO "$(MY.Owner)"
+          EVALSET FOO = "$(MY.Owner)"
           DELETE FOO
         @jrt
 
@@ -687,7 +687,7 @@ on the routed job to the same value:
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      COPY Environment = Original_Environment
+      COPY Environment Original_Environment
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
