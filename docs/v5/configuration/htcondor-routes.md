@@ -73,7 +73,7 @@ To ensure that your job lands on a Linux machine in your pool:
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @jrt
       TargetUniverse = 5
-      SET REQUIREMENTS = (TARGET.OpSys == "LINUX")
+      SET Requirements = (TARGET.OpSys == "LINUX")
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
