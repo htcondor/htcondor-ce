@@ -542,7 +542,8 @@ HTCondor-CE offers two different methods for setting environment variables of ro
 
 - `CONDORCE_PILOT_JOB_ENV` configuration, which should be used for setting environment variables for all routed jobs to
   static strings.
-- `set_default_pilot_job_env` job route configuration, which should be used for setting environment variables:
+- `default_pilot_job_env` or `set_default_pilot_job_env` job route configuration, which should be used for setting
+  environment variables:
     - Per job route
     - To values based on incoming job attributes
     - Using [ClassAd functions](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#predefined-functions)
@@ -585,7 +586,8 @@ For example, the following HTCondor-CE configuration would result in the followi
     ```
 
 To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
-`set_default_pilot_job_env` to your job route configuration.
+`default_pilot_job_env` or `set_default_pilot_job_env` to your job route configuration for ClassAd transforms and
+deprecated syntax, respectively.
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:
 
 === "ClassAd Transform"
@@ -593,9 +595,9 @@ For example, the following HTCondor-CE configuration would result in this enviro
     ```hl_lines="3 4 5" 
     JOB_ROUTER_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
-                                        " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                        " ACCOUNTING_GROUP=", toLower(JOB_VO))
+      default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                     " ACCOUNTING_GROUP=", toLower(JOB_VO))
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -633,8 +635,8 @@ For example, the following HTCondor-CE configuration would result in this enviro
     ```
 
 !!!tip "Debugging job route environment expressions"
-    While constructing `set_default_pilot_job_env` expressions, try wrapping your expression in
-    [debug()](#debugging-routes) to help with any issues that may arise.
+    While constructing `default_pilot_job_env` or `set_default_pilot_job_env` expressions, try wrapping your expression
+    in [debug()](#debugging-routes) to help with any issues that may arise.
     Make sure to remove `debug()` after you're done!
 
 Editing Attributes…
