@@ -103,8 +103,7 @@ To do this, replace the above `SET Requirements` or `set_Requirements` lines wit
 === "ClassAd Transform"
 
     ```
-    COPY Requirements original_requirements
-    SET Requirements original_requirements && <YOUR REQUIREMENTS EXPRESSION>
+    SET Requirements ($(MY.Requirements)) && (<YOUR REQUIREMENTS EXPRESSION>)
     ```
 
 === "Deprecated Syntax"
