@@ -15,7 +15,7 @@ transform and deprecated syntax, respectively:
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
       GridResource = "batch slurm"
       TargetUniverse = 9
-      SET default_queue "osg_queue"
+      default_queue = "osg_queue"
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
@@ -50,8 +50,8 @@ ClassAd attributes can be passed from the routed job to the local submit attribu
 === "ClassAd Transform"
 
     ```
-    SET foo "X"
-    SET bar "Y"
+    SET foo = "X"
+    SET bar = "Y"
     SET default_CERequirements = "foo,bar"
     ```
 
@@ -74,9 +74,9 @@ attribute of the job submitted to a PBS batch system:
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
          GridResource = "batch slurm"
          TargetUniverse = 9
-         SET Walltime 3600
-         SET AccountingGroup x509UserProxyFirstFQAN
-         SET default_CERequirements "WallTime,AccountingGroup"
+         SET Walltime = 3600
+         SET AccountingGroup = x509UserProxyFirstFQAN
+         SET default_CERequirements = "WallTime,AccountingGroup"
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster

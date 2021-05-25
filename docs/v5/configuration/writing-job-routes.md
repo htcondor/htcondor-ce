@@ -100,7 +100,7 @@ To identify routes, you will need to assign a name to the route, either in the n
     ```
 
 !!! warning "Naming restrictions"
-    -   Route names should only contain alphanumeric, `-`, and `_` characters.
+    -   Route names should only contain alphanumeric and `_` characters.
     -   Routes specified by `JOB_ROUTER_ROUTE_*` will override routes with the same name in `JOB_ROUTER_ENTRIES`
 
 The name of the route will be useful in debugging since it shows up in the output of
@@ -169,14 +169,14 @@ All other jobs will be routed with `IsProduction = False`.
 
     ```hl_lines="1 7 12"
     JOB_ROUTER_ROUTE_Production_Jobs @=jrt
-      REQUIREMENTS TARGET.queue == "prod"
+      REQUIREMENTS queue == "prod"
       TargetUniverse = 5
-      SET IsProduction True
+      SET IsProduction = True
     @jrt
 
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET IsProduction False
+      SET IsProduction = False
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
@@ -289,41 +289,8 @@ More information on the syntax of ClassAd's can be found in the
 For an example on how incoming jobs interact with filtering in job routes, consult
 [this document](../remote-job-submission.md).
 
-When setting requirements, you need to prefix job attributes that you are filtering with `TARGET.` so that the job route
-knows to compare the attribute of the incoming job rather than the route’s own attribute.
-For example, if an incoming job has a `queue = "prod"` attribute, then the following job route will not match:
-
-=== "ClassAd Transform"
-
-    ```
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      queue = "analysis"
-      REQUIREMENTS  queue == "prod"
-      TargetUniverse = 5
-    @jrt
-
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
-
-=== "Deprecated syntax"
-
-    ```
-    JOB_ROUTER_ENTRIES @=jre
-    [
-      queue = "analysis";
-      Requirements = (queue == "prod");
-      TargetUniverse = 5;
-      name = "Condor_Pool";
-    ]
-    @jre
-
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
-
-This is because when evaluating the route requirement, the job route will compare its own `queue` attribute to "analy"
-and see that it does not match.
-You can read more about comparing two ClassAds in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators).
+In the deprecated syntax, you may need to specify `TARGET.` to refer to differentiate between job and route attributes. 
+See [this section](#differences-in-my-and-target) for more details.
 
 !!! note
     If you have an HTCondor batch system, note the difference with
@@ -339,7 +306,7 @@ The following entry routes jobs to HTCondor if the incoming job (specified by `T
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS  TARGET.queue == "prod"
+      REQUIREMENTS queue == "prod"
       TargetUniverse = 5
     @jrt
 
@@ -370,7 +337,7 @@ The following entry routes jobs to the HTCondor batch system if the mapped user 
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS  TARGET.Owner == "usatlas2"
+      REQUIREMENTS Owner == "usatlas2"
       TargetUniverse = 5
     @jrt
 
@@ -398,7 +365,7 @@ The following entry routes jobs to the HTCondor batch system if the mapped user 
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS regexp("^usatlas", TARGET.Owner)
+      REQUIREMENTS regexp("^usatlas", Owner)
       TargetUniverse = 5
     @jrt
 
@@ -430,7 +397,7 @@ The following entry routes jobs to the HTCondor batch system if the proxy subjec
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS regexp("\/cms\/Role\=pilot", TARGET.x509UserProxyFirstFQAN)
+      REQUIREMENTS regexp("\/cms\/Role\=pilot", x509UserProxyFirstFQAN)
       TargetUniverse = 5
     @jrt
 
@@ -626,9 +593,9 @@ For example, the following HTCondor-CE configuration would result in this enviro
     ```hl_lines="3 4 5" 
     JOB_ROUTER_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET default_pilot_job_env strcat("WN_SCRATCH_DIR=/nobackup",
-                                       " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                       " ACCOUNTING_GROUP=", toLower(JOB_VO))
+      SET default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                        " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                        " ACCOUNTING_GROUP=", toLower(JOB_VO))
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -718,7 +685,7 @@ on the routed job to the same value:
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      COPY Environment Original_Environment
+      COPY Environment = Original_Environment
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -780,7 +747,7 @@ The following route sets the Job's `Rank` attribute to 5:
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      SET Rank 5
+      SET Rank = 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -811,7 +778,7 @@ The following route sets the `Experiment` attribute to `atlas.osguser` if the Ow
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       TargetUniverse = 5
-      EVALSET Experiment strcat("atlas.", Owner)
+      EVALSET Experiment = strcat("atlas.", Owner)
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -918,7 +885,7 @@ Then wrap the problematic attribute in `debug()`:
 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      EVALSET Experiment debug(strcat("atlas", Name))
+      EVALSET Experiment = debug(strcat("atlas", Name))
 
     @jrt
 
