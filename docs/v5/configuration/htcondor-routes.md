@@ -26,7 +26,7 @@ This will catch jobs which are starting and stopping multiple times.
 
     ```hl_lines="5 8"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE 5
+      UNIVERSE VANILLA
       # Puts the routed job on hold if the job's been idle and has been started at least
       # once or if the job has tried to start more than once
       SET Periodic_Hold ((NumJobStarts >= 1 && JobStatus == 1) || NumJobStarts > 1)
@@ -72,7 +72,7 @@ To ensure that your job lands on a Linux machine in your pool:
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @jrt
-      UNIVERSE 5
+      UNIVERSE VANILLA
       SET Requirements = (TARGET.OpSys == "LINUX")
     @jrt
 
