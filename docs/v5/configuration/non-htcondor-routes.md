@@ -14,7 +14,7 @@ transform and deprecated syntax, respectively:
     ```hl_lines="4"
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
       GridResource = "batch slurm"
-      TargetUniverse = 9
+      UNIVERSE 9
       default_queue = "osg_queue"
     @jrt
 
@@ -73,7 +73,7 @@ attribute of the job submitted to a PBS batch system:
     ```hl_lines="4 5 6"
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
          GridResource = "batch slurm"
-         TargetUniverse = 9
+         UNIVERSE 9
          SET Walltime = 3600
          SET AccountingGroup = x509UserProxyFirstFQAN
          SET default_CERequirements = "WallTime,AccountingGroup"

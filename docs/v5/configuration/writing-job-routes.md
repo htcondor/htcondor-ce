@@ -81,7 +81,7 @@ To identify routes, you will need to assign a name to the route, either in the n
 
     ```hl_lines="1"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -114,21 +114,21 @@ and in the ClassAd of the routed job, which can be vieweed with
 ### Batch system
 
 Each route needs to indicate the type of batch system that jobs should be routed to.
-For HTCondor batch systems, the `TargetUniverse` attribute needs to be set to `5` or `"vanilla"`.
-For all other batch systems, the `TargetUniverse` attribute needs to be set to `9` or `"grid"` and the `GridResource`
-attribute needs to be set to `"batch <batch system>"` (where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or
-`sge`).
+For HTCondor batch systems, the `UNIVERSE` command or `TargetUniverse` attribute needs to be set to `5` or `"vanilla"`.
+For all other batch systems, the `UNIVERSE` command or `TargetUniverse` attribute needs to be set to `9` or `"grid"` and
+the `GridResource` attribute needs to be set to `"batch <batch system>"`
+(where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or `sge`).
 
 
 === "ClassAd Transform"
 
     ```hl_lines="2 6 7"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_My_Slurm @=jrt
-      TargetUniverse = 9
+      UNIVERSE 9
       GridResource = "batch slurm"
     @jrt
 
@@ -170,12 +170,12 @@ All other jobs will be routed with `IsProduction = False`.
     ```hl_lines="1 7 12"
     JOB_ROUTER_ROUTE_Production_Jobs @=jrt
       REQUIREMENTS queue == "prod"
-      TargetUniverse = 5
+      UNIVERSE 5
       SET IsProduction = True
     @jrt
 
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       SET IsProduction = False
     @jrt
 
@@ -212,7 +212,7 @@ To write comments you can use `#` to comment a line:
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       # This is a comment
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -307,7 +307,7 @@ The following entry routes jobs to HTCondor if the incoming job (specified by `T
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       REQUIREMENTS queue == "prod"
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -338,7 +338,7 @@ The following entry routes jobs to the HTCondor batch system if the mapped user 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       REQUIREMENTS Owner == "usatlas2"
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -366,7 +366,7 @@ The following entry routes jobs to the HTCondor batch system if the mapped user 
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       REQUIREMENTS regexp("^usatlas", Owner)
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -398,7 +398,7 @@ The following entry routes jobs to the HTCondor batch system if the proxy subjec
     ```hl_lines="2"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       REQUIREMENTS regexp("\/cms\/Role\=pilot", x509UserProxyFirstFQAN)
-      TargetUniverse = 5
+      UNIVERSE 5
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -447,7 +447,7 @@ ClassAd transform and deprecated syntax, respectively:
 
     ```hl_lines="4"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       # Set the requested memory to 1 GB
       default_maxMemory = 1000
     @jrt
@@ -480,7 +480,7 @@ transform and deprecated syntax, respectively:
 
     ```hl_lines="4"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       # Set the requested memory to 1 GB
       default_xcount = 8
     @jrt
@@ -512,7 +512,7 @@ transform and deprecated syntax, respectively:
 
     ```hl_lines="4"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       # Set the max walltime to 1 hr
       default_maxWallTime = 60
     @jrt
@@ -594,7 +594,7 @@ For example, the following HTCondor-CE configuration would result in this enviro
 
     ```hl_lines="3 4 5" 
     JOB_ROUTER_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
                                      " PILOT_COLLECTOR=", JOB_COLLECTOR,
                                      " ACCOUNTING_GROUP=", toLower(JOB_VO))
@@ -686,7 +686,7 @@ on the routed job to the same value:
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       COPY Environment Original_Environment
     @jrt
 
@@ -718,7 +718,7 @@ The following route removes the `Environment` attribute from the routed job:
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       DELETE Environment
     @jrt
 
@@ -748,7 +748,7 @@ The following route sets the Job's `Rank` attribute to 5:
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       SET Rank = 5
     @jrt
 
@@ -779,7 +779,7 @@ The following route sets the `Experiment` attribute to `atlas.osguser` if the Ow
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       EVALSET Experiment = strcat("atlas.", Owner)
     @jrt
 
@@ -820,7 +820,7 @@ set the [MaxJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_J
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Poole @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       MaxJobs = 100
     @jrt
 
@@ -850,7 +850,7 @@ set the [MaxIdleJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCond
 
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Poole @=jrt
-      TargetUniverse = 5
+      UNIVERSE 5
       MaxIdleJobs = 100
     @jrt
 
