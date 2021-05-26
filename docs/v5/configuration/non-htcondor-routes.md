@@ -14,7 +14,6 @@ transform and deprecated syntax, respectively:
     ```hl_lines="4"
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
       GridResource = "batch slurm"
-      UNIVERSE 9
       default_queue = osg_queue
     @jrt
 
@@ -27,7 +26,6 @@ transform and deprecated syntax, respectively:
     JOB_ROUTER_ENTRIES @=jre
     [
       GridResource = "batch slurm";
-      TargetUniverse = 9;
       name = "Slurm_Cluster";
       set_default_queue = "osg_queue";
     ]
@@ -73,7 +71,6 @@ attribute of the job submitted to a PBS batch system:
     ```hl_lines="4 5 6"
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
          GridResource = "batch slurm"
-         UNIVERSE 9
          SET Walltime = 3600
          SET AccountingGroup = x509UserProxyFirstFQAN
          SET default_CERequirements = "WallTime,AccountingGroup"
@@ -87,7 +84,6 @@ attribute of the job submitted to a PBS batch system:
     ```hl_lines="5 6 7"
     JOB_ROUTER_ENTRIES @=jre [
          GridResource = "batch slurm";
-         TargetUniverse = 9;
          name = "Slurm_Cluster";
          set_Walltime = 3600;
          set_AccountingGroup = x509UserProxyFirstFQAN;

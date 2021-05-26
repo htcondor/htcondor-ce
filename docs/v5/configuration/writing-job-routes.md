@@ -115,8 +115,7 @@ and in the ClassAd of the routed job, which can be vieweed with
 
 Each route needs to indicate the type of batch system that jobs should be routed to.
 For HTCondor batch systems, the `UNIVERSE` command or `TargetUniverse` attribute needs to be set to `5` or `"vanilla"`.
-For all other batch systems, the `UNIVERSE` command or `TargetUniverse` attribute needs to be set to `9` or `"grid"` and
-the `GridResource` attribute needs to be set to `"batch <batch system>"`
+For all other batch systems, the `GridResource` attribute needs to be set to `"batch <batch system>"`
 (where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or `sge`).
 
 
@@ -128,7 +127,6 @@ the `GridResource` attribute needs to be set to `"batch <batch system>"`
     @jrt
 
     JOB_ROUTER_ROUTE_My_Slurm @=jrt
-      UNIVERSE 9
       GridResource = "batch slurm"
     @jrt
 
@@ -145,7 +143,6 @@ the `GridResource` attribute needs to be set to `"batch <batch system>"`
     ]
     [
       GridResource = "batch slurm";
-      TargetUniverse = 9;
       name = "My_Slurm";
     ]
     @jre
