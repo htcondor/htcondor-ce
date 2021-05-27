@@ -1018,10 +1018,9 @@ transform and deprecated syntax, respectively:</p>
 <div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
   GridResource = &quot;batch slurm&quot;
-  TargetUniverse = 9
-<span class="hll">  default_queue = &quot;osg_queue&quot;
-</span>@jrt
-
+  default_queue = osg_queue
+<span class="hll">@jrt
+</span>
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 </code></pre></div>
 </div>
@@ -1029,11 +1028,10 @@ JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   GridResource = &quot;batch slurm&quot;;
-  TargetUniverse = 9;
   name = &quot;Slurm_Cluster&quot;;
-<span class="hll">  set_default_queue = &quot;osg_queue&quot;;
-</span>]
-@jre
+  set_default_queue = &quot;osg_queue&quot;;
+<span class="hll">]
+</span>@jre
 
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 </code></pre></div>
@@ -1066,25 +1064,23 @@ attribute of the job submitted to a PBS batch system:</p>
 <div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
      GridResource = &quot;batch slurm&quot;
-     TargetUniverse = 9
-<span class="hll">     SET Walltime = 3600
-</span><span class="hll">     SET AccountingGroup = x509UserProxyFirstFQAN
+     SET Walltime = 3600
+<span class="hll">     SET AccountingGroup = x509UserProxyFirstFQAN
 </span><span class="hll">     SET default_CERequirements = &quot;WallTime,AccountingGroup&quot;
-</span>@jrt
-
+</span><span class="hll">@jrt
+</span>
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 </code></pre></div>
 </div>
 <input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Deprecated Syntax</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre [
      GridResource = &quot;batch slurm&quot;;
-     TargetUniverse = 9;
      name = &quot;Slurm_Cluster&quot;;
-<span class="hll">     set_Walltime = 3600;
-</span><span class="hll">     set_AccountingGroup = x509UserProxyFirstFQAN;
+     set_Walltime = 3600;
+<span class="hll">     set_AccountingGroup = x509UserProxyFirstFQAN;
 </span><span class="hll">     set_default_CERequirements = &quot;WallTime,AccountingGroup&quot;;
-</span>]
-@jre
+</span><span class="hll">]
+</span>@jre
 
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 </code></pre></div>
