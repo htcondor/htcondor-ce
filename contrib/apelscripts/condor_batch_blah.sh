@@ -32,7 +32,7 @@ mkdir -p "$QUARANTINE_DIR"
 
 CONDOR_Q_EXTRA_ARGS=(-format "\n" EMPTY)
 safe_ce_config_val SCALING_ATTR APEL_SCALING_ATTR
-[[ -z $SCALING_ATTR ]] || CONDOR_Q_EXTRA_ARGS=(-format "%v|" "${SCALING_ATTR} isnt undefined ? ${SCALING_ATTR} : 1" "${CONDOR_Q_EXTRA_ARGS[@]}")
+[[ -z $SCALING_ATTR ]] || CONDOR_Q_EXTRA_ARGS=(-format "%v|" "${SCALING_ATTR}" "${CONDOR_Q_EXTRA_ARGS[@]}")
 
 safe_ce_config_val BATCH_HOST APEL_BATCH_HOST
 safe_ce_config_val CE_HOST APEL_CE_HOST
@@ -49,6 +49,12 @@ do
     # Check if $file is a valid history file by looking for a ClusterId value
     # If not found, assume the file is invalid and move to quarantine folder
     if [[ -z `condor_q -job $file -format "%s" GlobalJobId` ]]; then
+        mv "$file" "$QUARANTINE_DIR"
+        continue
+    fi
+    # Check that APEL scaling information is available if requested
+    # Otherwise, quarantine the job information to allow manual fixing
+    if [[ -n $SCALING_ATTR && -z `condor_q -job $file -format "%f" "${SCALING_ATTR}"` ]]; then
         mv "$file" "$QUARANTINE_DIR"
         continue
     fi
