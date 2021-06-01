@@ -32,7 +32,7 @@ mkdir -p "$QUARANTINE_DIR"
 
 CONDOR_Q_EXTRA_ARGS=(-format "\n" EMPTY)
 safe_ce_config_val SCALING_ATTR APEL_SCALING_ATTR
-[[ -z $SCALING_ATTR ]] || CONDOR_Q_EXTRA_ARGS=(-format "%v|" "${SCALING_ATTR}" "${CONDOR_Q_EXTRA_ARGS[@]}")
+[[ -z $SCALING_ATTR ]] || CONDOR_Q_EXTRA_ARGS=(-format "%v|" "${SCALING_ATTR} isnt undefined ? ${SCALING_ATTR} : 1" "${CONDOR_Q_EXTRA_ARGS[@]}")
 
 safe_ce_config_val BATCH_HOST APEL_BATCH_HOST
 safe_ce_config_val CE_HOST APEL_CE_HOST
