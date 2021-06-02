@@ -3,7 +3,7 @@ Releases
 
 HTCondor-CE 5 is distributed via RPM and are available from the following Yum repositories:
 
-- [HTCondor development](https://research.cs.wisc.edu/htcondor/yum/)
+- [HTCondor stable and current channels](https://research.cs.wisc.edu/htcondor/downloads/)
 - [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
 
 
