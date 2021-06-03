@@ -44,7 +44,7 @@ SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
 To allow clients with GSI proxies with to submit jobs to your HTCondor-CE, add lines of the following format:
 
 ```
-GSI /^<DISTINGUISHED NAME>,.*/ <USERNAME>
+GSI /^<DISTINGUISHED NAME>$/ <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`) and `<USERNAME>` with the distinguished name of the
