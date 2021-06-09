@@ -296,7 +296,9 @@ fi
 
 %if 0%{?osg}
 %{_datadir}/condor-ce/gratia_cleanup.py*
+%if 0%{?rhel} < 8
 %{_datadir}/condor-ce/__pycache__/gratia_cleanup.*.pyc
+%endif
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 %endif
 
@@ -402,8 +404,10 @@ fi
 
 %if 0%{?osg}
 %{plugins_dir}/agis_json.py*
+%if 0%{?rhel} < 8
 %dir %{plugins_dir}/__pycache__
 %{plugins_dir}/__pycache__/agis_json.*.pyc
+%endif
 %endif
 
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
@@ -449,7 +453,9 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
 %{_datadir}/condor-ce/bosco-cluster-remote-hosts.*
+%if 0%{?rhel} < 8
 %{_datadir}/condor-ce/__pycache__/bosco-cluster-remote-hosts.*.pyc
+%endif
 %dir %{_sysconfdir}/condor-ce/bosco_override
 
 %files client
@@ -480,13 +486,15 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %dir %{_datadir}/condor-ce
+%if 0%{?rhel} < 8
 %dir %{_datadir}/condor-ce/__pycache__
+%{_datadir}/condor-ce/__pycache__/verify_ce_config.*.pyc
+%endif
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
 %{_datadir}/condor-ce/verify_ce_config.py*
 %{_datadir}/condor-ce/condor_ce_create_password
-%{_datadir}/condor-ce/__pycache__/verify_ce_config.*.pyc
 
 %{_bindir}/condor_ce_config_val
 %{_bindir}/condor_ce_hold
