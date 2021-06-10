@@ -21,7 +21,7 @@ INSTALL_SHARE_DIR	:= usr/share
 INSTALL_STATE_DIR	:= var
 INSTALL_SYSCONF_DIR	:= etc
 INSTALL_WSGI_DIR        := $(INSTALL_STATE_DIR)/www/wsgi-scripts
-INSTALL_PYTHON_DIR	:= $(shell $(PYTHON) -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')
+INSTALL_PYTHON_DIR	:= $(shell $(PYTHON) -c 'from sysconfig import get_paths; print(get_paths()["purelib"])')
 
 # ------------------------------------------------------------------------------
 # HTCondor-CE client files
