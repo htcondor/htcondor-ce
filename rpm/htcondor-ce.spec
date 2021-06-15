@@ -232,6 +232,7 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor/history/
 rm -f $RPM_BUILD_ROOT%{plugins_dir}/agis_json.py
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf \
       $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
@@ -356,6 +357,7 @@ fi
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor/history/
 
 %{_unitdir}/condor-ce-apel.service
 %{_unitdir}/condor-ce-apel.timer

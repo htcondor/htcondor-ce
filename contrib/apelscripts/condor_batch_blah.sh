@@ -52,6 +52,12 @@ do
         mv "$file" "$QUARANTINE_DIR"
         continue
     fi
+    # Check that APEL scaling information is available if requested
+    # Otherwise, quarantine the job information to allow manual fixing
+    if [[ -n $SCALING_ATTR && -z `condor_q -job $file -format "%f" "${SCALING_ATTR}"` ]]; then
+        mv "$file" "$QUARANTINE_DIR"
+        continue
+    fi
 
     batch_record=`TZ=GMT condor_q -job "$file" \
         -format "%s|" GlobalJobId \
