@@ -12,8 +12,24 @@ RUN groupadd -o -g 9619 testuser && \
 WORKDIR /src
 
 # Install dependencies
-RUN yum install -y https://research.cs.wisc.edu/htcondor/repo/${CONDOR_SERIES}/htcondor-release-current.el${EL}.noarch.rpm && \
+RUN \
+    if  [[ $EL == 7 ]]; then \
+       YUM_PKG_NAME="yum-plugin-priorities"; \
+       yum-config-manager \
+         --setopt=skip_missing_names_on_install=False \
+         --setopt=skip_missing_names_on_update=False \
+         --save > /dev/null; \
+    else \
+       YUM_PKG_NAME="yum-utils"; \
+    fi && \
+    yum update -y && \
+    yum install -y https://research.cs.wisc.edu/htcondor/repo/${CONDOR_SERIES}/htcondor-release-current.el${EL}.noarch.rpm \
+                   $YUM_PKG_NAME && \
+    if [[ $OS_VERSION != 7 ]]; then \
+       yum-config-manager --enable powertools; \
+    fi && \
     yum install -y git \
+                   make \
                    supervisor \
                    htcondor-ce \
                    htcondor-ce-view && \
