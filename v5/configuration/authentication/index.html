@@ -1045,7 +1045,7 @@ such a service.</p>
 authentication.</p>
 <h2 id="built-in-mapfiles">Built-in Mapfiles<a class="headerlink" href="#built-in-mapfiles" title="Permanent link">&para;</a></h2>
 <p>HTCondor-CE uses
-<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication">unified HTCondor mapfiles</a>
+<a href="https://htcondor.readthedocs.io/en/v9_0/admin-manual/security.html#the-unified-map-file-for-authentication">unified HTCondor mapfiles</a>
 stored in <code>/etc/condor-ce/mapfiles.d/*.conf</code> to map incoming jobs with credentials to local Unix accounts.
 These files are parsed in lexicographic order and HTCondor-CE will use the first line that matches for the
 authentication method that the client and your HTCondor-CE negotiates.</p>
@@ -1065,7 +1065,7 @@ in <code>/etc/condor-ce/mapfiles.d/</code>:</p>
 </code></pre></div>
 <h3 id="gsi">GSI<a class="headerlink" href="#gsi" title="Permanent link">&para;</a></h3>
 <p>To allow clients with GSI proxies with to submit jobs to your HTCondor-CE, add lines of the following format:</p>
-<div class="highlight"><pre><span></span><code>GSI /^&lt;DISTINGUISHED NAME&gt;,.*/ &lt;USERNAME&gt;
+<div class="highlight"><pre><span></span><code>GSI /^&lt;DISTINGUISHED NAME&gt;$/ &lt;USERNAME&gt;
 </code></pre></div>
 <p>Replacing <code>&lt;DISTINGUISHED NAME&gt;</code> (escaping any <code>/</code> with <code>\/</code>) and <code>&lt;USERNAME&gt;</code> with the distinguished name of the
 incoming certificate and the unix account under which the job should run, respectively.
