@@ -14,7 +14,7 @@ Built-in Mapfiles
 ----------------
 
 HTCondor-CE uses
-[unified HTCondor mapfiles](https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication)
+[unified HTCondor mapfiles](https://htcondor.readthedocs.io/en/v9_0/admin-manual/security.html#the-unified-map-file-for-authentication)
 stored in `/etc/condor-ce/mapfiles.d/*.conf` to map incoming jobs with credentials to local Unix accounts.
 These files are parsed in lexicographic order and HTCondor-CE will use the first line that matches for the
 authentication method that the client and your HTCondor-CE negotiates.
@@ -44,7 +44,7 @@ SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
 To allow clients with GSI proxies with to submit jobs to your HTCondor-CE, add lines of the following format:
 
 ```
-GSI /^<DISTINGUISHED NAME>,.*/ <USERNAME>
+GSI /^<DISTINGUISHED NAME>$/ <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`) and `<USERNAME>` with the distinguished name of the
