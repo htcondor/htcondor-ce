@@ -1092,7 +1092,7 @@ In other words, the route transform names returned by <code>condor_ce_config_val
 appear in your list of used routes returned by <code>condor_ce_config_val JOB_ROUTER_ROUTE_NAMES</code> if you
 intend to use the new transform syntax.</p>
 </div>
-<p>HTCondor-CE now includes default <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html">ClassAd transforms</a>
+<p>HTCondor-CE now includes default <a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/transforms.html">ClassAd transforms</a>
 equivalent to its <code>JOB_ROUTER_DEFAULTS</code>, allowing administrators to write job routes using the transform synatx.
 The old syntax continues to be the default in HTCondor-CE 5.
 Writing routes in the new syntax provides many benefits including:</p>
@@ -1121,7 +1121,7 @@ respectively.  To use the new transform syntax:</p>
 </ol>
 <h3 id="new-condor_mapfile-format-and-locations">New <code>condor_mapfile</code> format and locations<a class="headerlink" href="#new-condor_mapfile-format-and-locations" title="Permanent link">&para;</a></h3>
 <p>HTCondor-CE 5 separates its
-<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication">unified mapfile</a>
+<a href="https://htcondor.readthedocs.io/en/v9_0/admin-manual/security.html#the-unified-map-file-for-authentication">unified mapfile</a>
 used for authentication between multiple files across multiple directories.
 Additionally, any regular expressions in the second field must be enclosed by <code>/</code>.
 To update your mappings to the new format and location, perform the following actions:</p>
@@ -1193,7 +1193,7 @@ Full HTCondor-CE version history can be found on <a href="https://github.com/htc
 <h3 id="510">5.1.0<a class="headerlink" href="#510" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0">This release</a> includes the following new features:</p>
 <ul>
-<li>Add support for <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html">ClassAd transforms</a>
+<li>Add support for <a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/transforms.html">ClassAd transforms</a>
     to the JobRouter (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-243">HTCONDOR-243</a>)</li>
 <li>Add mapped user and X.509 attribute to local HTCondor pool AccountingGroup mappings to Job Routers configured to use
     the ClassAd transform syntax (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-187">HTCONDOR-187</a>)</li>

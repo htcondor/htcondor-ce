@@ -1332,7 +1332,7 @@
                 
                 
                 <h1 id="writing-routes-for-htcondor-ce">Writing Routes For HTCondor-CE<a class="headerlink" href="#writing-routes-for-htcondor-ce" title="Permanent link">&para;</a></h1>
-<p>The <a href="https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html">JobRouter</a> is at the heart of HTCondor-CE
+<p>The <a href="https://htcondor.readthedocs.io/en/v8_8/grid-computing/job-router.html">JobRouter</a> is at the heart of HTCondor-CE
 and allows admins to transform and direct jobs to specific batch systems.
 Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
 If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
@@ -1355,7 +1355,7 @@ of common job routes and job route problems.</p>
 <li>HTCondor batch system only: Local universe jobs are excluded from any routing.</li>
 </ul>
 <h2 id="how-job-routes-are-constructed">How Job Routes are Constructed<a class="headerlink" href="#how-job-routes-are-constructed" title="Permanent link">&para;</a></h2>
-<p>Each job route’s <a href="https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html">ClassAd</a> is constructed by combining each entry from the <code>JOB_ROUTER_ENTRIES</code> with the <code>JOB_ROUTER_DEFAULTS</code>. Attributes that are <a href="#setting-attributes">set_*</a> in <code>JOB_ROUTER_ENTRIES</code> will override those <a href="#setting-attributes">set_*</a> in <code>JOB_ROUTER_DEFAULTS</code></p>
+<p>Each job route’s <a href="https://htcondor.readthedocs.io/en/v8_8/misc-concepts/classad-mechanism.html">ClassAd</a> is constructed by combining each entry from the <code>JOB_ROUTER_ENTRIES</code> with the <code>JOB_ROUTER_DEFAULTS</code>. Attributes that are <a href="#setting-attributes">set_*</a> in <code>JOB_ROUTER_ENTRIES</code> will override those <a href="#setting-attributes">set_*</a> in <code>JOB_ROUTER_DEFAULTS</code></p>
 <h3 id="job_router_entries">JOB_ROUTER_ENTRIES<a class="headerlink" href="#job_router_entries" title="Permanent link">&para;</a></h3>
 <p><code>JOB_ROUTER_ENTRIES</code> is a configuration variable whose default is set in <code>/etc/condor-ce/config.d/02-ce-*.conf</code> but may be overriden by the administrator in <code>/etc/condor-ce/config.d/99-local.conf</code>. This document outlines the many changes you can make to <code>JOB_ROUTER_ENTRIES</code> to fit your site’s needs.</p>
 <h3 id="job_router_defaults">JOB_ROUTER_DEFAULTS<a class="headerlink" href="#job_router_defaults" title="Permanent link">&para;</a></h3>
@@ -1402,7 +1402,7 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 </tr>
 <tr>
 <td>&gt;= 8.8.7</td>
-<td><strong>First matching route</strong> where routes are considered in the order specified by <a href="https://htcondor.readthedocs.io/en/stable/admin-manual/configuration-macros.html#index-863">JOB_ROUTER_ROUTE_NAMES</a></td>
+<td><strong>First matching route</strong> where routes are considered in the order specified by <a href="https://htcondor.readthedocs.io/en/v8_8/admin-manual/configuration-macros.html#index-863">JOB_ROUTER_ROUTE_NAMES</a></td>
 </tr>
 </tbody>
 </table>
@@ -1511,7 +1511,7 @@ MERGE_JOB_ROUTER_DEFAULT_ADS=True
 Jobs will evaluate against the ClassAd expression set in the <code>Requirements</code> and if the expression evaluates to <code>TRUE</code>,
 the route will match.
 More information on the syntax of ClassAd's can be found in the
-<a href="https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
+<a href="https://htcondor.readthedocs.io/en/v8_8/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
 For an example on how incoming jobs interact with filtering in job routes, consult <a href="../job-submission/">this document</a>.</p>
 <p>When setting requirements, you need to prefix job attributes that you are filtering with <code>TARGET.</code> so that the job route
 knows to compare the attribute of the incoming job rather than the route’s own attribute.
@@ -1528,7 +1528,7 @@ For example, if an incoming job has a <code>queue = "analy"</code> attribute, th
 <p>This is because when evaluating the route requirement, the job route will compare its own <code>queue</code> attribute to "analy"
 and see that it does not match.
 You can read more about comparing two ClassAds in the
-<a href="https://htcondor.readthedocs.io/en/stable/misc-concepts/classad-mechanism.html#classad-operators">HTCondor manual</a>.</p>
+<a href="https://htcondor.readthedocs.io/en/v8_8/misc-concepts/classad-mechanism.html#classad-operators">HTCondor manual</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you have an HTCondor batch system, note the difference with <a href="#setting-routed-job-requirements">set_requirements</a>.</p>
@@ -1634,12 +1634,12 @@ The following entry routes jobs to HTCondor if the incoming job (specified by <c
 <li><code>set_default_pilot_job_env</code> job route configuration, which should be used for setting environment variables:<ul>
 <li>Per job route</li>
 <li>To values based on incoming job attributes</li>
-<li>Using <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
+<li>Using <a href="https://htcondor.readthedocs.io/en/v8_8/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
 </ul>
 </li>
 </ul>
 <p>Both of these methods use the new HTCondor format of the
-<a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14">environment command</a>, which is
+<a href="https://htcondor.readthedocs.io/en/v8_8/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
 <p>``` tab="HTCondor-CE Configuration"
@@ -1649,7 +1649,7 @@ WN_SCRATCH_DIR=/nobackup/
 http_proxy=proxy.wisc.edu
 </code></pre></div></p>
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
-<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
+<a href="https://htcondor.readthedocs.io/en/v8_8/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
 <p>``` tab="HTCondor-CE Configuration"
 LOCAL_PROXY = proxy.wisc.edu
@@ -1695,7 +1695,7 @@ The following functions are operations that affect job attributes and are evalua
 
 After each job route’s ClassAd is [constructed](#how-job-routes-are-constructed), the above operations are evaluated in order. For example, if the attribute `foo` is set using `eval_set_foo` in the `JOB_ROUTER_DEFAULTS`, you&#39;ll be unable to use `delete_foo` to remove it from your jobs since the attribute is set using `eval_set_foo` after the deletion occurs according to the order of operations. To get around this, we can take advantage of the fact that operations defined in `JOB_ROUTER_DEFAULTS` get overridden by the same operation in `JOB_ROUTER_ENTRIES`. So to &#39;delete&#39; `foo`, we would add `eval_set_foo = &quot;&quot;` to the route in the `JOB_ROUTER_ENTRIES`, resulting in `foo` being absent from the routed job.
 
-More documentation can be found in the [HTCondor manual](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html#routing-table-entry-classad-attributes).
+More documentation can be found in the [HTCondor manual](https://htcondor.readthedocs.io/en/v8_8/grid-computing/job-router.html#routing-table-entry-classad-attributes).
 
 #### Copying attributes
 
@@ -1752,10 +1752,10 @@ JOB_ROUTER_ENTRIES @=jre
 <p>This section outlines how to limit the number of total or idle jobs in a specific route (i.e., if this limit is reached, jobs will no longer be placed in this route).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution: HTCondor manages fair share on its own via <a href="https://htcondor.readthedocs.io/en/stable/admin-manual/user-priorities-negotiation.html">user priorities and group accounting</a>.</p>
+<p>If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution: HTCondor manages fair share on its own via <a href="https://htcondor.readthedocs.io/en/v8_8/admin-manual/user-priorities-negotiation.html">user priorities and group accounting</a>.</p>
 </div>
 <h4 id="total-jobs">Total jobs<a class="headerlink" href="#total-jobs" title="Permanent link">&para;</a></h4>
-<p>To set a limit on the number of jobs for a specific route, set the <a href="https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html#routing-table-entry-classad-attributes">MaxJobs</a> attribute:</p>
+<p>To set a limit on the number of jobs for a specific route, set the <a href="https://htcondor.readthedocs.io/en/v8_8/grid-computing/job-router.html#routing-table-entry-classad-attributes">MaxJobs</a> attribute:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   GridResource = &quot;batch pbs&quot;;
@@ -1772,7 +1772,7 @@ JOB_ROUTER_ENTRIES @=jre
 @jre
 </code></pre></div>
 <h4 id="idle-jobs">Idle jobs<a class="headerlink" href="#idle-jobs" title="Permanent link">&para;</a></h4>
-<p>To set a limit on the number of idle jobs for a specific route, set the <a href="https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html#routing-table-entry-classad-attributes">MaxIdleJobs</a> attribute:</p>
+<p>To set a limit on the number of idle jobs for a specific route, set the <a href="https://htcondor.readthedocs.io/en/v8_8/grid-computing/job-router.html#routing-table-entry-classad-attributes">MaxIdleJobs</a> attribute:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
   TargetUniverse = 5;
@@ -1820,7 +1820,7 @@ JOB_ROUTER_ENTRIES @=jre
 @jre
 </code></pre></div>
 <h3 id="setting-routed-job-requirements">Setting routed job requirements<a class="headerlink" href="#setting-routed-job-requirements" title="Permanent link">&para;</a></h3>
-<p>If you need to set requirements on your routed job, you will need to use <code>set_Requirements</code> instead of <code>Requirements</code>. The <code>Requirements</code> attribute filters jobs coming into your CE into different job routes whereas <code>set_Requirements</code> will set conditions on the routed job that must be met by the worker node it lands on. For more information on requirements, consult the <a href="https://htcondor.readthedocs.io/en/stable/users-manual/submitting-a-job.html#about-requirements-and-rank">HTCondor manual</a>.</p>
+<p>If you need to set requirements on your routed job, you will need to use <code>set_Requirements</code> instead of <code>Requirements</code>. The <code>Requirements</code> attribute filters jobs coming into your CE into different job routes whereas <code>set_Requirements</code> will set conditions on the routed job that must be met by the worker node it lands on. For more information on requirements, consult the <a href="https://htcondor.readthedocs.io/en/v8_8/users-manual/submitting-a-job.html#about-requirements-and-rank">HTCondor manual</a>.</p>
 <p>To ensure that your job lands on a Linux machine in your pool:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
 [
@@ -1879,7 +1879,7 @@ echo &quot;#PBS -A $AccountingGroup&quot;
 <h3 id="aglt2s-job-routes">AGLT2's job routes<a class="headerlink" href="#aglt2s-job-routes" title="Permanent link">&para;</a></h3>
 <p>Atlas AGLT2 is using an HTCondor batch system. Here are some things to note about their routes.</p>
 <ul>
-<li>Setting various HTCondor-specific attributes like <code>Rank</code>, <code>AccountingGroup</code>, <code>JobPrio</code> and <code>Periodic_Remove</code> (see the <a href="https://htcondor.readthedocs.io/en/stable/classad-attributes/index.html">HTCondor manual</a> for more). Some of these are site-specific like <code>LastandFrac</code>, <code>IdleMP8Pressure</code>, <code>localQue</code>, <code>IsAnalyJob</code> and <code>JobMemoryLimit</code>.</li>
+<li>Setting various HTCondor-specific attributes like <code>Rank</code>, <code>AccountingGroup</code>, <code>JobPrio</code> and <code>Periodic_Remove</code> (see the <a href="https://htcondor.readthedocs.io/en/v8_8/classad-attributes/index.html">HTCondor manual</a> for more). Some of these are site-specific like <code>LastandFrac</code>, <code>IdleMP8Pressure</code>, <code>localQue</code>, <code>IsAnalyJob</code> and <code>JobMemoryLimit</code>.</li>
 <li>There is a difference between <code>Requirements</code> and <code>set_requirements</code>. The <code>Requirements</code> attribute matches jobs to specific routes while the <code>set_requirements</code> sets the <code>Requirements</code> attribute on the <em>routed</em> job, which confines which machines that the routed job can land on.</li>
 </ul>
 <p>Source: <a href="https://www.aglt2.org/wiki/bin/view/AGLT2/CondorCE#The_JobRouter_configuration_file_content">https://www.aglt2.org/wiki/bin/view/AGLT2/CondorCE#The_JobRouter_configuration_file_content</a></p>
@@ -2064,7 +2064,7 @@ echo &quot;#PBS -A $AccountingGroup&quot;
 <p>ATLAS BNL T1, they are using an HTCondor batch system. Here are some things to note about their routes:</p>
 <ul>
 <li>Setting various HTCondor-specific attributes like <code>JobLeaseDuration</code>, <code>Requirements</code> and <code>Periodic_Hold</code> (see the
-    <a href="https://htcondor.readthedocs.io/en/stable/classad-attributes/job-classad-attributes.html">HTCondor manual</a>).
+    <a href="https://htcondor.readthedocs.io/en/v8_8/classad-attributes/job-classad-attributes.html">HTCondor manual</a>).
     Some of these are site-specific like <code>RACF_Group</code>, <code>Experiment</code>, <code>Job_Type</code> and <code>VO</code>.</li>
 <li>Jobs are split into different routes based on the <a href="#glidein-queue">GlideIn</a> queue that they're in.</li>
 <li>There is a difference between <code>Requirements</code> and <code>set_requirements</code>.

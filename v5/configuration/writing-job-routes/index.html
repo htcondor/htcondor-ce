@@ -1469,7 +1469,7 @@ syntaxes, respectively.
 Incoming jobs will be evaluated against the ClassAd expression set in the route's requirements and if the expression
 evaluates to <code>TRUE</code>, the route will match.
 More information on the syntax of ClassAd's can be found in the
-<a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
+<a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
 For an example on how incoming jobs interact with filtering in job routes, consult
 <a href="../../remote-job-submission/">this document</a>.</p>
 <p>In the deprecated syntax, you may need to specify <code>TARGET.</code> to refer to differentiate between job and route attributes. 
@@ -1685,12 +1685,12 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
   environment variables:<ul>
 <li>Per job route</li>
 <li>To values based on incoming job attributes</li>
-<li>Using <a href="https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
+<li>Using <a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
 </ul>
 </li>
 </ul>
 <p>Both of these methods use the new HTCondor format of the
-<a href="https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14">environment command</a>, which is
+<a href="https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
 <div class="tabbed-set" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><label for="__tabbed_13_1">HTCondor-CE Configuration</label><div class="tabbed-content">
@@ -1704,7 +1704,7 @@ For example, the following HTCondor-CE configuration would result in the followi
 </div>
 </div>
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
-<a href="https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
+<a href="https://htcondor.readthedocs.io/en/v9_0/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
 <div class="tabbed-set" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><label for="__tabbed_14_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
@@ -1799,7 +1799,7 @@ job for the ClassAd transform and deprecated syntax, respectively:</p>
 </li>
 </ul>
 <p>More documentation can be found in the
-<a href="https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#routing-table-entry-commands-and-macro-values">HTCondor manual</a></p>
+<a href="https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html#routing-table-entry-commands-and-macro-values">HTCondor manual</a></p>
 <h3 id="copying-attributes">Copying attributes<a class="headerlink" href="#copying-attributes" title="Permanent link">&para;</a></h3>
 <p>To copy the value of an attribute of the incoming job to an attribute of the routed job, use <code>COPY</code> or <code>copy_</code> for
 ClassAd transform and deprecated syntaxes, respectively..
