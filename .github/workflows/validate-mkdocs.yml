@@ -1,5 +1,6 @@
 name: Valdate static MkDocs pages
 on:
+  push:
   pull_request:
     paths:
       - 'mkdocs.yml'
