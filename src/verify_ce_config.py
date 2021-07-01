@@ -32,7 +32,10 @@ def debug(msg):
 def parse_route_names(entries_config):
     """Return names of job routes that can be parsed as proper ClassAds
     """
-    return [x['Name'] for x in classad.parseAds(entries_config)]
+    try:
+        return [x['Name'] for x in classad.parseAds(entries_config)]
+    except:
+        error("Name is a required field for all entries in JOB_ROUTER_ENTRIES")
 
 
 def find_malformed_entries(entries_config):
