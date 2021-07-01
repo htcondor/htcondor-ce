@@ -102,7 +102,7 @@ already runs such a service.
 #### Built-in mapfile ####
 
 The built-in mapfile is a
-[unified HTCondor mapfile](https://htcondor.readthedocs.io/en/stable/admin-manual/security.html#the-unified-map-file-for-authentication)
+[unified HTCondor mapfile](https://htcondor.readthedocs.io/en/v8_8/admin-manual/security.html#the-unified-map-file-for-authentication)
 located at `/etc/condor-ce/condor_mapfile`.
 This file is parsed in line-by-line order and HTCondor-CE will use the first line that matches.
 Therefore, mappings should be added to the top of the file.

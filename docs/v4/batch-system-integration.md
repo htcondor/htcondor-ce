@@ -1,7 +1,7 @@
 Writing Routes For HTCondor-CE
 ==============================
 
-The [JobRouter](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html) is at the heart of HTCondor-CE
+The [JobRouter](https://htcondor.readthedocs.io/en/v8_9_11/grid-computing/job-router.html) is at the heart of HTCondor-CE
 and allows admins to transform and direct jobs to specific batch systems.
 Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
 If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
@@ -65,7 +65,7 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
 | < 8.7.1                           | **Round-robin** between all matching routes. In this case, we recommend making each route's requirements mutually exclusive. |
 | >= 8.7.1, < 8.9.5                 | **First matching route** where routes are considered in hash-table order. In this case, we recommend making each route's requirements mutually exclusive. |
-| >= 8.9.5                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES) |
+| >= 8.9.5                          | **First matching route** where routes are considered in the order specified by [JOB_ROUTER_ROUTE_NAMES](https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES) |
 
 !!! bug "Job Route Order"
     For HTCondor versions < 8.9.5 (as well as versions >= 8.7.1 and < 8.8.7) the order of job routes does not match the
@@ -200,7 +200,7 @@ To filter jobs, use the `Requirements` attribute.
 Jobs will evaluate against the ClassAd expression set in the `Requirements` and if the expression evaluates to `TRUE`,
 the route will match.
 More information on the syntax of ClassAd's can be found in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html).
+[HTCondor manual](https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html).
 For an example on how incoming jobs interact with filtering in job routes, consult [this document](remote-job-submission.md).
 
 When setting requirements, you need to prefix job attributes that you are filtering with `TARGET.` so that the job route
@@ -221,7 +221,7 @@ JOB_ROUTER_ENTRIES @=jre
 This is because when evaluating the route requirement, the job route will compare its own `queue` attribute to "analy"
 and see that it does not match.
 You can read more about comparing two ClassAds in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#classad-operators).
+[HTCondor manual](https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html#classad-operators).
 
 !!! note
     If you have an HTCondor batch system, note the difference with [set\_requirements](#setting-routed-job-requirements).
@@ -359,10 +359,10 @@ HTCondor-CE offers two different methods for setting environment variables of ro
 - `set_default_pilot_job_env` job route configuration, which should be used for setting environment variables:
     - Per job route
     - To values based on incoming job attributes
-    - Using [ClassAd functions](https://htcondor.readthedocs.io/en/latest/misc-concepts/classad-mechanism.html#predefined-functions)
+    - Using [ClassAd functions](https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html#predefined-functions)
 
 Both of these methods use the new HTCondor format of the
-[environment command](https://htcondor.readthedocs.io/en/latest/man-pages/condor_submit.html#index-14), which is
+[environment command](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-14), which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
@@ -380,7 +380,7 @@ For example, the following HTCondor-CE configuration would result in the followi
     ```
 
 Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
-[$() macro expansion](https://htcondor.readthedocs.io/en/stable/admin-manual/introduction-to-configuration.html#configuration-file-macros).
+[$() macro expansion](https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/introduction-to-configuration.html#configuration-file-macros).
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
 === "HTCondor-CE Configuration"
@@ -897,7 +897,7 @@ JOB_ROUTER_ENTRIES @=jre
 ATLAS BNL T1, they are using an HTCondor batch system. Here are some things to note about their routes:
 
 -   Setting various HTCondor-specific attributes like `JobLeaseDuration`, `Requirements` and `Periodic_Hold` (see the
-    [HTCondor manual](https://htcondor.readthedocs.io/en/stable/classad-attributes/job-classad-attributes.html)).
+    [HTCondor manual](https://htcondor.readthedocs.io/en/v8_9_11/classad-attributes/job-classad-attributes.html)).
     Some of these are site-specific like `RACF_Group`, `Experiment`, `Job_Type` and `VO`.
 -   Jobs are split into different routes based on the [GlideIn](#glidein-queue) queue that they're in.
 -   There is a difference between `Requirements` and `set_requirements`.

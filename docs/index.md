@@ -33,7 +33,7 @@ What is HTCondor-CE?
 --------------------
 
 HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint.
-It is configured to use the HTCondor [Job Router daemon](https://htcondor.readthedocs.io/en/stable/grid-computing/job-router.html)
+It is configured to use the HTCondor [Job Router daemon](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 
 Benefits of running the HTCondor-CE:
