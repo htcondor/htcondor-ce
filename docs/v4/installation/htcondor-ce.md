@@ -4,9 +4,9 @@ Installing HTCondor-CE 4
 !!! warning "Update to HTCondor-CE 5"
     In the [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/), HTCondor-CE 4 is distributed
     alongside the HTCondor 8.9
-    [development release series](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series),
+    [development release series](https://htcondor.readthedocs.io/en/v8_9_11/version-history/introduction-version-history.html#the-stable-release-series),
     which has been turned into the HTCondor 9.0
-    [stable release series](https://htcondor.readthedocs.io/en/latest/version-history/introduction-version-history.html#the-stable-release-series).
+    [stable release series](https://htcondor.readthedocs.io/en/v8_9_11/version-history/introduction-version-history.html#the-stable-release-series).
     Security and other bug-fixes that would have been targeted for 8.9 will now only be available in 9.0 or 8.8.
     Consider [updating to HTCondor-CE 5](../../v5/releases.md#updating-to-htcondor-ce-5) and HTCondor 9.0 at your
     earliest convenience.

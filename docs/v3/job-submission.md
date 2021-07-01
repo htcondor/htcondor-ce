@@ -358,7 +358,7 @@ Here are some other HTCondor-CE documents that might be helpful:
 The following table is a reference of job attributes that can be included in HTCondor submit files and their GlobusRSL
 equivalents.
 A more comprehensive list of submit file attributes specific to HTCondor-CE can be found in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/stable/man-pages/condor_submit.html)
+[HTCondor manual](https://htcondor.readthedocs.io/en/v8_8/man-pages/condor_submit.html)
 
 | **HTCondor Attribute** | **Globus RSL** | **Summary** |
 |------------------------------------------------------------------------------------------------------|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|

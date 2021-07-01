@@ -1,7 +1,7 @@
 Job Router Configuration Overview
 =================================
 
-The [HTCondor Job Router](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html) is at the heart of
+The [HTCondor Job Router](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html) is at the heart of
 HTCondor-CE and allows admins to transform and direct jobs to specific batch systems.
 Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
 If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
@@ -26,7 +26,7 @@ to the new syntax as [outlined below](#choosing-a-syntax).
 
 ### ClassAd transforms ###
 
-The HTCondor [ClassAd transforms](https://htcondor.readthedocs.io/en/latest/misc-concepts/transforms.html) were
+The HTCondor [ClassAd transforms](https://htcondor.readthedocs.io/en/v9_0/misc-concepts/transforms.html) were
 originally introduced to HTCondor to perform in-place transformations of user jobs submitted to an HTCondor pool.
 In the HTCondor 8.9 series, the Job Router was updated to support transforms and HTCondor-CE 5 adds the configuration
 necessary to support routes written as ClassAd transforms.
@@ -41,7 +41,7 @@ in the following order:
 ### Deprecated syntax ###
 
 Since the inception of HTCondor-CE, job routes have been written as a
-[list of ClassAds](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#deprecated-router-configuration).
+[list of ClassAds](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html#deprecated-router-configuration).
 Each job route’s [ClassAd](http://research.cs.wisc.edu/htcondor/manual/v8.6/4_1HTCondor_s_ClassAd.html) is constructed
 by combining each entry from the `JOB_ROUTER_ENTRIES` with the `JOB_ROUTER_DEFAULTS`:
 
