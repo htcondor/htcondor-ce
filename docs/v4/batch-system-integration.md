@@ -1,7 +1,7 @@
 Writing Routes For HTCondor-CE
 ==============================
 
-The [JobRouter](https://htcondor.readthedocs.io/v8_9_11/grid-computing/job-router.html) is at the heart of HTCondor-CE
+The [JobRouter](https://htcondor.readthedocs.io/en/v8_9_11/grid-computing/job-router.html) is at the heart of HTCondor-CE
 and allows admins to transform and direct jobs to specific batch systems.
 Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
 If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
