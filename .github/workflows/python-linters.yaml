@@ -40,7 +40,6 @@ jobs:
 
     - name: Run Pylint
       env:
-        PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
         PYTHON_FILES: ${{ needs.python-files.outputs.filelist }}
       # HACK: in newer versions of HTCondor (at least 8.9.11+),
       # classad/htcondor modules are placed in python packages where
@@ -50,6 +49,7 @@ jobs:
       # adding a version requirement to HTCondor-CE, we'll just ignore
       # these errors
       run: |
+        export PYTHONPATH=$PYTHONPATH:$PWD/src/htcondorce
         pylint --errors-only --disable no-member $PYTHON_FILES
 
   flake8:
@@ -79,7 +79,7 @@ jobs:
 
     - name: Run flake8
       env:
-        PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
         PYTHON_FILES: ${{ needs.python-files.outputs.filelist }}
       run: |
+        export PYTHONPATH=$PYTHONPATH:$PWD/src/htcondorce
         flake8 --select F $PYTHON_FILES
