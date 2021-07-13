@@ -6,7 +6,6 @@ import sys
 
 try:
     import classad
-    import htcondor
 except ImportError:
     sys.exit("ERROR: Could not load HTCondor Python bindings. "
              "Ensure the 'htcondor' and 'classad' are in PYTHONPATH")
