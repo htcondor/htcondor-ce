@@ -8,7 +8,7 @@ jobs:
     outputs:
       filelist: ${{ steps.python-files.outputs.filelist }}
     steps:
-
+    - uses: actions/checkout@v2
     - id: python-files
       run:
         echo "::set-output name=filelist::$(find . -type f -exec awk ' /^#!.*python/{print FILENAME} {nextfile}' {} + | tr '\n' ' ')"
