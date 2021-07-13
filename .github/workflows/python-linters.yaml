@@ -11,20 +11,7 @@ jobs:
 
     - id: python-files
       run:
-        echo "::set-output name=filelist::src/*.py
-               contrib/bdii/htcondor-ce-provider
-               src/htcondorce/*
-               src/collector_to_agis
-               src/condor_ce_metric
-               src/condor_ce_host_network_check
-               src/condor_ce_info_status
-               src/condor_ce_jobmetrics
-               src/condor_ce_register
-               src/condor_ce_router_defaults
-               src/condor_ce_run
-               src/condor_ce_scitoken_exchange
-               src/condor_ce_trace
-               src/condor_ce_view"
+        echo "::set-output name=filelist::$(find . -type f -exec awk ' /^#!.*python/{print FILENAME} {nextfile}' {} + | tr '\n' ' ')"
 
   pylint:
     runs-on: ubuntu-latest
