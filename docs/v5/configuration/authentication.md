@@ -24,6 +24,8 @@ Each mapfile line consists of three fields:
 1.  Incoming credential principal formatted as a Perl Compatible Regular Expression (PCRE)
 1.  Local account
 
+!!! tip "Applying mapping changes"
+    When changing your HTCondor-CE mappings, run `condor_ce_reconfig` to apply your changes.
 
 ### SciTokens ###
 
