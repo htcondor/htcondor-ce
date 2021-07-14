@@ -18,9 +18,12 @@ HTCondor-CE uses
 stored in `/etc/condor-ce/mapfiles.d/*.conf` to map incoming jobs with credentials to local Unix accounts.
 These files are parsed in lexicographic order and HTCondor-CE will use the first line that matches for the
 authentication method that the client and your HTCondor-CE negotiates.
+Each mapfile line consists of three fields:
 
-!!! tip "Rich mappings with regular expressions"
-    Mapfiles can be written using Perl Compatible Regular Expressions (PCRE) if enclosed by `/`.
+1.  HTCondor authentication method
+1.  Incoming credential principal formatted as a Perl Compatible Regular Expression (PCRE)
+1.  Local account
+
 
 ### SciTokens ###
 
@@ -52,7 +55,7 @@ incoming certificate and the unix account under which the job should run, respec
 VOMS attributes of incoming X.509 proxy certificates can also be used for mapping:
 
 ```
-GSI "<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>" <USERNAME>
+GSI /<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>/ <USERNAME>
 ```
 
 Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`), `<VOMSFQAN>` fields, and `<USERNAME>` with the
