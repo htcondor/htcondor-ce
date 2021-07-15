@@ -8,32 +8,19 @@ jobs:
     outputs:
       filelist: ${{ steps.python-files.outputs.filelist }}
     steps:
-
+    - uses: actions/checkout@v2
     - id: python-files
       run:
-        echo "::set-output name=filelist::src/*.py
-               contrib/bdii/htcondor-ce-provider
-               src/htcondorce/*
-               src/collector_to_agis
-               src/condor_ce_metric
-               src/condor_ce_host_network_check
-               src/condor_ce_info_status
-               src/condor_ce_jobmetrics
-               src/condor_ce_register
-               src/condor_ce_router_defaults
-               src/condor_ce_run
-               src/condor_ce_scitoken_exchange
-               src/condor_ce_trace
-               src/condor_ce_view"
+        echo "::set-output name=filelist::$(find . -type f -exec awk ' /^#!.*python/{print FILENAME} {nextfile}' {} + | tr '\n' ' ')"
 
   pylint:
     runs-on: ubuntu-latest
     needs: [python-files]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Set up Python 3.6
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.6
 
@@ -53,7 +40,6 @@ jobs:
 
     - name: Run Pylint
       env:
-        PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
         PYTHON_FILES: ${{ needs.python-files.outputs.filelist }}
       # HACK: in newer versions of HTCondor (at least 8.9.11+),
       # classad/htcondor modules are placed in python packages where
@@ -63,16 +49,17 @@ jobs:
       # adding a version requirement to HTCondor-CE, we'll just ignore
       # these errors
       run: |
+        export PYTHONPATH=$PYTHONPATH:$PWD/src/htcondorce
         pylint --errors-only --disable no-member $PYTHON_FILES
 
   flake8:
     runs-on: ubuntu-latest
     needs: [python-files]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Set up Python 3.6
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.6
 
@@ -92,7 +79,7 @@ jobs:
 
     - name: Run flake8
       env:
-        PYTHONPATH: $PYTHONPATH:$PWD/src/htcondorce
         PYTHON_FILES: ${{ needs.python-files.outputs.filelist }}
       run: |
+        export PYTHONPATH=$PYTHONPATH:$PWD/src/htcondorce
         flake8 --select F $PYTHON_FILES
