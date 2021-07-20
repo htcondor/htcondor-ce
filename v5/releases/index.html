@@ -698,6 +698,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#specify-certificate-locations-for-token-authentication" class="md-nav__link">
+    Specify certificate locations for token authentication
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#no-longer-set-home-by-default" class="md-nav__link">
     No longer set $HOME by default
   </a>
@@ -1175,6 +1182,13 @@ FS &quot;(.*)&quot; \1
 </ul>
 </li>
 </ol>
+<h3 id="specify-certificate-locations-for-token-authentication">Specify certificate locations for token authentication<a class="headerlink" href="#specify-certificate-locations-for-token-authentication" title="Permanent link">&para;</a></h3>
+<p>HTCondor-CE 5 adds improved support for accepting pilot jobs submitted with bearer tokens
+(e.g., SciTokens or WLCG tokens).
+As part of the bearer token authentication, HTCondor-CE uses its host certificate to perform an SSL handshake with the
+client to establish trust with its token issuer.
+Consult the <a href="../configuration/authentication/#configuring-certificates">authentication documentation</a> to configure
+certificate locations for token authentication.</p>
 <h3 id="no-longer-set-home-by-default">No longer set <code>$HOME</code> by default<a class="headerlink" href="#no-longer-set-home-by-default" title="Permanent link">&para;</a></h3>
 <p>Older versions of HTCondor-CE set <code>$HOME</code> in the routed job to the user's <code>$HOME</code> directory on the HTCondor-CE.
 To re-enable this behavior, set <code>USE_CE_HOME_DIR = True</code> in <code>/etc/condor-ce/config.d/</code>.</p>
