@@ -3,7 +3,7 @@ Optional Configuration
 
 The following configuration steps are optional and will not be required for all sites.
 If you do not need any of the following special configurations, skip to
-the page for [verifying your HTCondor-CE](../verification.md).
+the page for [verifying your HTCondor-CE](../usage.md).
 
 Configuring for Multiple Network Interfaces
 -------------------------------------------
@@ -98,7 +98,7 @@ blah APEL records for HTCondor batch systems:
     - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
 
 1. Start and enable the `condor-ce-apel` and `condor-ce-apel.timer`
-   [services](../verification.md#managing-htcondor-ce-services)
+   [services](../usage.md#managing-htcondor-ce-services)
 
 Enabling BDII Integration
 -------------------------

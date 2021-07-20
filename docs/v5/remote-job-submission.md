@@ -7,14 +7,14 @@ This document outlines how to submit jobs to an HTCondor-CE from a remote client
 -   From an existing HTCondor submit host, useful for developing pilot submission infrastructure
 
 If you are the administrator of an HTCondor-CE, consider verifying your HTCondor-CE using the
-[administrator-focused documentation](verification.md).
+[administrator-focused documentation](usage.md).
 
 Before Starting
 ---------------
 
 Before attempting to submit jobs to an HTCondor-CE as documented below, ensure the following:
 
--   The HTCondor-CE administrator has independently [verified their HTCondor-CE](verification.md)
+-   The HTCondor-CE administrator has independently [verified their HTCondor-CE](usage.md)
 -   The HTCondor-CE administrator has added your credential information (e.g. SciToken or grid proxy) to the HTCondor-CE
     [authentication configuration](configuration/authentication.md)
 -   Your credentials are valid and unexpired
