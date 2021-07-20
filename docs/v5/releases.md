@@ -103,6 +103,15 @@ To update your mappings to the new format and location, perform the following ac
 
             SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
 
+### Specify certificate locations for token authentication ###
+
+HTCondor-CE 5 adds improved support for accepting pilot jobs submitted with bearer tokens
+(e.g., SciTokens or WLCG tokens).
+As part of the bearer token authentication, HTCondor-CE uses its host certificate to perform an SSL handshake with the
+client to establish trust with its token issuer.
+Consult the [authentication documentation](configuration/authentication.md#configuring-certificates) to configure
+certificate locations for token authentication.
+
 ### No longer set `$HOME` by default ###
 
 Older versions of HTCondor-CE set `$HOME` in the routed job to the user's `$HOME` directory on the HTCondor-CE.
