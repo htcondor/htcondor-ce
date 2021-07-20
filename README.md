@@ -1,67 +1,28 @@
-HTCondor-CE
-===========
+HTCondor-CE Documentation
+=========================
 
-[![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=master)](https://travis-ci.org/htcondor/htcondor-ce)
+[![Deploy static MkDocs pages](https://github.com/htcondor/htcondor-ce/actions/workflows/deploy-mkdocs.yaml/badge.svg?branch=docs)](https://github.com/htcondor/htcondor-ce/actions/workflows/deploy-mkdocs.yaml) [![Valdate static MkDocs pages](https://github.com/htcondor/htcondor-ce/actions/workflows/validate-mkdocs.yml/badge.svg?branch=docs)](https://github.com/htcondor/htcondor-ce/actions/workflows/validate-mkdocs.yml)
 
 ---
 
-A site grid gatekeeper technology based solely on HTCondor components.
+Source documents and [MkDocs](https://www.mkdocs.org/) configuration for <http://htcondor-ce.org> served by
+[GitHub Pages](https://pages.github.com/).
+The documentation is built using the [mkdocs-material container](https://hub.docker.com/r/squidfunk/mkdocs-material/)
+with a [GitHub Action](https://github.com/htcondor/htcondor-ce/blob/docs/.github/workflows/deploy-mkdocs.yaml).
 
-This package is simply a thin set of wrappers around HTCondor, allowing you to
-run a HTCondor-CE without disrupting a site HTCondor install.
+Previewing the Pages
+--------------------
 
-For example, `condor_ce_q` is the HTCondor-CE equivalent to `condor_q` for the
-HTCondor-CE processes.  This package took much of its inspiration - and base 
-code - from OSGs condor-cron package.
+To preview the pages, start a MkDocs development server.
+The development server will automatically detect any content changes and make them viewable in your browser.
 
-Sites are encouraged to install the sub-package `htcondor-ce-condor` or
-`htcondor-ce-pbs`, depending on which batch manager they run.
+1. `cd` into the directory containing the local clone of your GitHub fork
 
-Download
---------
+1. Start a MkDocs development server to preview your changes:
 
-HTCondor-CE RPMs are available from the following locations:
+        :::console
+        $ docker run --rm -p 8000:8000 -v ${PWD}:/docs squidfunk/mkdocs-material:7.1.0
 
-- HTCondor Yum repositories: https://research.cs.wisc.edu/htcondor/yum/
-- OSG Yum repositories: https://opensciencegrid.org/docs/common/yum/
+    To preview your changes visit `localhost:8000` in the browser of your choice.
+    The server can be stopped with `Ctrl-C`.
 
-Versioning
-----------
-
-At any given time, two versions of HTCondor-CE are maintained, a stable and a development version.
-In this repository, the `master` branch contains the latest version of HTCondor-CE (i.e. development) while the `stable`
-branch contains the previous version.
-
-- [Development](https://htcondor-ce.readthedocs.io/en/latest/): HTCondor-CE 4
-- [Stable](https://htcondor-ce.readthedocs.io/en/stable/): HTCondor-CE 3
-
-Development
------------
-
-1.  Build the development container:
-
-        $ docker build -t htcondor-ce-dev -f tests/Dockerfile.dev .
-
-    Optionally, specify the following build arguments:
-
-        -  `EL`: CentOS base image to use for the build.
-           Accepted values: `8` or `7` (default)
-        -  `BUILD_ENV`: specifies the repositories to use for HTCondor/BLAH dependencies.
-           Accepted values: `osg` or `uw_build` (default)
-
-2.  Run the container with the following:
-
-        $ docker run -d \
-                     --name my-htcondor-ce \
-                     -v ${PWD}:/src/htcondor-ce \
-                     -p 9619:9619 \
-                     -p 8080:80 \
-                     htcondor-ce-dev
-
-3.  Make changes to the source, apply them, and reconfigure the CE:
-
-        $ docker exec my-htcondor-ce \
-                 /bin/sh -c \
-                   "cmake -DCMAKE_INSTALL_PREFIX=/usr -DPYTHON_EXECUTABLE=/usr/bin/python3 && \
-                    make install && \
-                    condor_ce_restart -fast"
