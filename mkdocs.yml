@@ -28,7 +28,7 @@ nav:
       - For HTCondor Batch Systems: 'v5/configuration/htcondor-routes.md'
       - For Non-HTCondor Batch Systems: 'v5/configuration/non-htcondor-routes.md'
     - Optional Configuration: 'v5/configuration/optional-configuration.md'
-  - Usage: 'v5/usage.md'
+  - Operation: 'v5/operation.md'
   - Troubleshooting:
     - Common Issues: 'v5/troubleshooting/common-issues.md'
     - Debugging Tools: 'v5/troubleshooting/debugging-tools.md'
@@ -70,5 +70,5 @@ markdown_extensions:
 plugins:
   - redirects:
       redirect_maps:
-        'v5/verification.md': 'v5/usage.md'
+        'v5/verification.md': 'v5/operation.md'
   
