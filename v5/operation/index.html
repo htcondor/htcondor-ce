@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v5/usage/">
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v5/operation/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
     
     
       
-        <title>Usage - HTCondor-CE Documentation</title>
+        <title>Operation - HTCondor-CE Documentation</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#verifying-an-htcondor-ce" class="md-skip">
+        <a href="#operating-an-htcondor-ce" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Usage
+              Operation
             
           </span>
         </div>
@@ -486,12 +486,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Usage
+          Operation
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Usage
+        Operation
       </a>
       
         
@@ -978,12 +978,12 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v5/usage.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v5/operation.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="verifying-an-htcondor-ce">Verifying an HTCondor-CE<a class="headerlink" href="#verifying-an-htcondor-ce" title="Permanent link">&para;</a></h1>
+                <h1 id="operating-an-htcondor-ce">Operating an HTCondor-CE<a class="headerlink" href="#operating-an-htcondor-ce" title="Permanent link">&para;</a></h1>
 <p>To verify that you have a working installation of HTCondor-CE, ensure that all the relevant services are started and
 enabled then perform the validation steps below.</p>
 <h2 id="managing-htcondor-ce-services">Managing HTCondor-CE services<a class="headerlink" href="#managing-htcondor-ce-services" title="Permanent link">&para;</a></h2>
@@ -1065,10 +1065,10 @@ As a reminder, here are common service commands (all run as <code>root</code>):<
 </li>
 </ol>
 <h2 id="draining-an-htcondor-ce">Draining an HTCondor-CE<a class="headerlink" href="#draining-an-htcondor-ce" title="Permanent link">&para;</a></h2>
-<p>To drain an HTCondor-CE, perform the following steps:</p>
+<p>To drain an HTCondor-CE of jobs, perform the following steps:</p>
 <ol>
 <li>
-<p>Set <code>CONDORCE_MAX_JOBS = 0</code> in /etc/condor-ce/config.d</p>
+<p>Set <code>CONDORCE_MAX_JOBS = 0</code> in <code>/etc/condor-ce/config.d</code></p>
 </li>
 <li>
 <p>Run <code>condor_ce_reconfig</code> to apply the configuration change</p>
@@ -1077,7 +1077,7 @@ As a reminder, here are common service commands (all run as <code>root</code>):<
 <p>Use <code>condor_ce_rm</code> as needed to stop and remove any jobs that should stop running</p>
 </li>
 </ol>
-<p>Once draining is completed, Don't forget to restore the value of <code>CONDORCE_MAX_JOBS</code> to its previous value
+<p>Once draining is completed, don't forget to restore the value of <code>CONDORCE_MAX_JOBS</code> to its previous value
 before trying to operate the HTCondor-CE again.</p>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <p>If any of the above validation steps fail, consult the <a href="../troubleshooting/common-issues/">troubleshooting guide</a>.
