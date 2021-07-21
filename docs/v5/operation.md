@@ -1,4 +1,4 @@
-Verifying an HTCondor-CE
+Operating an HTCondor-CE
 ========================
 
 To verify that you have a working installation of HTCondor-CE, ensure that all the relevant services are started and
@@ -46,17 +46,17 @@ To validate an HTCondor-CE, perform the following steps:
    [condor\_ce\_trace](troubleshooting/debugging-tools.md#condor_ce_trace).
 
 Draining an HTCondor-CE
-----------------------
+-----------------------
 
-To drain an HTCondor-CE, perform the following steps:
+To drain an HTCondor-CE of jobs, perform the following steps:
 
-1. Set `CONDORCE_MAX_JOBS = 0` in /etc/condor-ce/config.d
+1. Set `CONDORCE_MAX_JOBS = 0` in `/etc/condor-ce/config.d`
 
 1. Run `condor_ce_reconfig` to apply the configuration change
 
 1. Use `condor_ce_rm` as needed to stop and remove any jobs that should stop running
 
-Once draining is completed, Don't forget to restore the value of `CONDORCE_MAX_JOBS` to its previous value
+Once draining is completed, don't forget to restore the value of `CONDORCE_MAX_JOBS` to its previous value
 before trying to operate the HTCondor-CE again.
 
 Getting Help
