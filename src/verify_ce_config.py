@@ -34,7 +34,7 @@ def parse_route_names(entries_config):
     """
     try:
         return [x['Name'] for x in classad.parseAds(entries_config)]
-    except:
+    except KeyError:
         error("Name is a required field for all entries in JOB_ROUTER_ENTRIES")
 
 
@@ -66,66 +66,64 @@ def main():
 
     # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
     parsed_jr_ads = defaultdict(list)
-    jr_transforms = {key : value for key, value in htcondor.param.items() if "JOB_ROUTER_ROUTE_" in key}
-    for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
-        try:
-            config_val = htcondor.param[attr]
-        except KeyError:
-            # Only raise an error here if no JOB_ROUTER_ROUTE_<name> configuration knobs are set
-            if not jr_transforms:
-                debug("Missing %s configuration value. " % attr)
-            continue
+    jr_transforms = {key : value for key, value in htcondor.param.items() if key.startswith("JOB_ROUTER_ROUTE_")}
 
-        # store the ads (iterating through ClassAdStringIterator consumes them)
-        # We can ignore this for JOB_ROUTER_ENTRIES if there's at least one JOB_ROUTER_ROUTE_<name>
-        if attr != "JOB_ROUTER_ENTRIES" or not jr_transforms:
-            try:
-                parsed_jr_ads[attr] = list(classad.parseAds(config_val))
-            except ValueError:
-                # We shouldn't ever get here since classad.parseAds() only raises ValueError when it's given
-                # non-string/non-file output and htcondor.param shouldn't contain such values
-                debug("Failed to parse %s configuration value. " % attr)
-
-                # If JRD or JRE can't be parsed, the job router can't function
-                if not parsed_jr_ads[attr]:
-                    debug("Could not read %s in the HTCondor-CE configuration. " % attr)
-
-        if attr == "JOB_ROUTER_ENTRIES":
-            # Warn about routes we can find in the config that don't result in valid ads
-            malformed_entry_names = find_malformed_entries(config_val)
-            if malformed_entry_names:
-                warn("Could not read JOB_ROUTER_ENTRIES in the HTCondor-CE configuration. " +
-                     "Failed to parse the following routes: %s"
-                     % ', '.join(malformed_entry_names))
-
-            # Warn about routes specified by JOB_ROUTER_ROUTE_NAMES that don't appear in the parsed JRE.
-            # The job router can function this way but it's likely a config error
-            route_order = htcondor.param.get('JOB_ROUTER_ROUTE_NAMES', '')
-            if route_order:
-                missing_route_def = set(route_order.replace(',',' ').split()).difference(set(parse_route_names(config_val)))
-                if missing_route_def:
-                    warn("The following are specified in JOB_ROUTER_ROUTE_NAMES "
-                         "but cannot be found in JOB_ROUTER_ENTRIES: %s"
-                         % ', '.join(missing_route_def))
-
-    # Also warn about routes specified in JOB_ROUTER_ROUTE_<name> transforms that don't appear in the parsed JRE.
+    # If JOB_ROUTER_ROUTE_<name> rules are defined, verify that these transforms exist
     if jr_transforms:
-        for transform_attr, transform_value in jr_transforms:
-            missing_route_def = set(transform_value.replace(',',' ').split()).difference(set(parse_route_names(config_val)))
-            if missing_route_def:
-                warn("The following are specified in %s "
-                        "but cannot be found in JOB_ROUTER_ENTRIES: %s"
-                        % transform_attr, ', '.join(missing_route_def))
+        route_names = htcondor.param.get("JOB_ROUTER_ROUTE_NAMES", "")
+        for name in route_names.split(" "):
+            route_def = htcondor.param.get(f"JOB_ROUTER_ROUTE_{name}", "")
+            if not route_def:
+                warn(f"The route {name} is specified in JOB_ROUTER_ROUTE_NAMES, but no corresponding JOB_ROUTER_ROUTE_{name} exists")
 
-    if parsed_jr_ads['JOB_ROUTER_DEFAULTS'] and parsed_jr_ads['JOB_ROUTER_ENTRIES']:
+    # If no JOB_ROUTER_ROUTE_<name> rules exist, verify JOB_ROUTER_DEFAULTS and JOB_ROUTER_ENTRIES
+    else:
+        for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
+            try:
+                config_val = htcondor.param[attr]
+            except KeyError:
+                error("Missing %s configuration value. " % attr)
+                continue
+
+            # store the ads (iterating through ClassAdStringIterator consumes them)
+            if attr != "JOB_ROUTER_ENTRIES":
+                try:
+                    parsed_jr_ads[attr] = list(classad.parseAds(config_val))
+                except ValueError:
+                    # We shouldn't ever get here since classad.parseAds() only raises ValueError when it's given
+                    # non-string/non-file output and htcondor.param shouldn't contain such values
+                    debug("Failed to parse %s configuration value. " % attr)
+
+                    # If JRD or JRE can't be parsed, the job router can't function
+                    if not parsed_jr_ads[attr]:
+                        debug("Could not read %s in the HTCondor-CE configuration. " % attr)
+
+            if attr == "JOB_ROUTER_ENTRIES":
+                # Warn about routes we can find in the config that don't result in valid ads
+                malformed_entry_names = find_malformed_entries(config_val)
+                if malformed_entry_names:
+                    warn("Could not read JOB_ROUTER_ENTRIES in the HTCondor-CE configuration. " +
+                        "Failed to parse the following routes: %s"
+                        % ', '.join(malformed_entry_names))
+
+                # Warn about routes specified by JOB_ROUTER_ROUTE_NAMES that don't appear in the parsed JRE.
+                # The job router can function this way but it's likely a config error
+                route_order = htcondor.param.get('JOB_ROUTER_ROUTE_NAMES', '')
+                if route_order:
+                    missing_route_def = set(route_order.replace(',',' ').split()).difference(set(parse_route_names(config_val)))
+                    if missing_route_def:
+                        warn("The following are specified in JOB_ROUTER_ROUTE_NAMES "
+                            "but cannot be found in JOB_ROUTER_ENTRIES: %s"
+                            % ', '.join(missing_route_def))
+
         # Find all eval_set_ attributes in the JOB_ROUTER_DEFAULTS
         eval_set_defaults = set([x.lstrip('eval_') for x in parsed_jr_ads['JOB_ROUTER_DEFAULTS'][0].keys()
                                 if x.startswith('eval_set_')])
 
         # Find all default_ attributes used in expressions in the JOB_ROUTER_DEFAULTS
         default_attr = set([re.sub(r'.*(default_\w*).*', 'eval_set_\\1', str(x))
-                            for x in parsed_jr_ads['JOB_ROUTER_DEFAULTS'][0].values()
-                            if isinstance(x, classad.ExprTree) and "default_" in str(x)])
+                        for x in parsed_jr_ads['JOB_ROUTER_DEFAULTS'][0].values()
+                        if isinstance(x, classad.ExprTree) and "default_" in str(x)])
 
         for entry in parsed_jr_ads['JOB_ROUTER_ENTRIES']:
             # Warn users if they've set_ attributes that would be overriden by eval_set in the JOB_ROUTER_DEFAULTS
