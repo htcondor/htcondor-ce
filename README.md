@@ -20,7 +20,6 @@ The development server will automatically detect any content changes and make th
 
 1. Start a MkDocs development server to preview your changes:
 
-        :::console
         $ docker run --rm -p 8000:8000 -v ${PWD}:/docs squidfunk/mkdocs-material:7.1.0
 
     To preview your changes visit `localhost:8000` in the browser of your choice.
