@@ -25,3 +25,10 @@ The development server will automatically detect any content changes and make th
     To preview your changes visit `localhost:8000` in the browser of your choice.
     The server can be stopped with `Ctrl-C`.
 
+Contributing Documentation
+--------------------------
+
+To contribute changes to the documentation, please submit a
+[pull request](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
+The reason for this is two-fold: document and link validation CI checks are run on pull requests and anything pushed to
+the `docs` branch is immediately published to <http://htcondor-ce.org>.
