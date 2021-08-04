@@ -40,7 +40,7 @@ def verify_matching_condor_versions():
 
 def configure_auth():
     try:
-        auth_methods = re.split(r",?\s*", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
+        auth_methods = re.split(r"[, \t]+", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
     except KeyError:
         auth_methods = []
     if 'GSI' not in auth_methods:
