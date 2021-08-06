@@ -253,7 +253,7 @@ def main():
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
     job_info['debug'] = opts.debug
-    os.environ.setdefault("TOOL_DEBUG", "D_FULLDEBUG")
+    os.environ.setdefault("_condor_TOOL_DEBUG", "D_CAT D_ALWAYS:2 D_SECURITY:2")
 
     job_info['remote'] = opts.remote
     job_info['arguments'] = args[2:]
