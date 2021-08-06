@@ -88,6 +88,19 @@ def parse_opts():
 
     return opts, args
 
+
+def run_command_debug(cmd, debug=False):
+    """Run cmd and print stdout/stderr if debug
+    """
+    rc, stdout, stderr = ce.run_command(cmd)
+
+    if debug:
+        print(stdout)
+        print(stderr, file=sys.stderr)
+
+    return rc, stdout, stderr
+
+
 def generate_submit_contents(job_info):
     if job_info['command'][0] != '/':
         for pathdir in os.environ.get("PATH", "").split(":"):
@@ -117,7 +130,7 @@ def submit_job(job_info):
     if job_info['remote']:
         args += ['-remote', job_info['schedd_name'], '-pool', job_info['collector_name']]
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=job_info['debug'])
     # Example output: 1 job(s) submitted to cluster 14.
     cluster_re = re.compile(r'(\d+) job\(s\) submitted to cluster (\d+)\.')
     try:
@@ -144,7 +157,7 @@ def wait_for_job(job_info):
     if job_info['debug']:
         args.append("-debug")
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=job_info['debug'])
     if rc < 0:
         raise ce.CondorRunException("Failed to wait for job; condor_wait " \
                                     "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
@@ -159,7 +172,7 @@ def check_remote_status(job_info):
     if job_info['debug']:
         args.append('-debug')
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=job_info['debug'])
     job_status = None
     status_re = re.compile(r"(\d+)")
     for line in ce.to_str(stdout):
@@ -189,7 +202,7 @@ def wait_for_job_remote(job_info):
     if job_info['debug']:
         args.append('-debug')
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=job_info['debug'])
     if rc < 0:
         raise ce.CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
                                     "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
