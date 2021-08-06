@@ -1,7 +1,7 @@
 HTCondor-CE
 ===========
 
-[![Build Status](https://travis-ci.org/htcondor/htcondor-ce.svg?branch=master)](https://travis-ci.org/htcondor/htcondor-ce)
+[![Build and test HTCondor-CE RPMs](https://github.com/htcondor/htcondor-ce/actions/workflows/build_and_test_rpms.yml/badge.svg?branch=V5-branch)](https://github.com/htcondor/htcondor-ce/actions/workflows/build_and_test_rpms.yml)
 
 ---
 
