@@ -57,8 +57,10 @@ yum -y install \
     rrdtool \
     rrdtool-devel
 
-if [[ $BUILD_ENV == osg ]]; then
-    yum install -y https://repo.opensciencegrid.org/osg/3.5/osg-3.5-el${OS_VERSION}-release-latest.rpm
+if [[ $BUILD_ENV =~ ^osg ]]; then
+    OSG_SERIES=${BUILD_ENV%-upcoming}
+    OSG_SERIES=${OSG_SERIES#osg-}
+    yum install -y https://repo.opensciencegrid.org/osg/${OSG_SERIES}/osg-${OSG_SERIES}-el${OS_VERSION}-release-latest.rpm
 else
     # This is currently tracking the 9.0 stable release.
     # For the stable release series the version number is required.

@@ -96,7 +96,7 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
-if [[ $BUILD_ENV == osg ]]; then
+if [[ $BUILD_ENV =~ ^osg ]]; then
     run_osg_tests
 else
     run_integration_tests
