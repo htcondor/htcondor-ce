@@ -38,17 +38,6 @@ def verify_matching_condor_versions():
         raise RuntimeError('Found multiple, mismatched versions of HTCondor libraries. ' \
                            'Please ensure that you only have one version of HTCondor installed.')
 
-def configure_auth():
-    try:
-        auth_methods = re.split(r"[, \t]+", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
-    except KeyError:
-        auth_methods = []
-    if 'GSI' not in auth_methods:
-        auth_methods.append("GSI")
-
-    auth_methods = ",".join(auth_methods)
-    os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
-    htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
 
 def run_ping(address, daemon='SCHEDD'):
 
@@ -316,7 +305,7 @@ def main():
         raise ce.CondorRunException('ERROR: Could not find CE schedd at %s.\n' % job_info['schedd_name'] + \
                                     'Verify that the Scheduler daemon is up with `condor_ce_status -any`.')
 
-    configure_auth()
+    os.environ.setdefault('_condor_SEC_CLIENT_AUTHENTICATION_METHODS', 'SCITOKENS,GSI,FS')
     check_authz(coll_ad, schedd_ad)
     try:
         job_info.update(ce.generate_job_files())
