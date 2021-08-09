@@ -30,6 +30,7 @@ ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 getenv = True
 
+use_scitokens = auto
 use_x509userproxy = true
 %(extra_attr)s
 
@@ -49,6 +50,7 @@ ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 getenv = True
 
+use_scitokens = auto
 use_x509userproxy = true
 
 +Owner = undefined
