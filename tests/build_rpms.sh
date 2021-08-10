@@ -72,12 +72,7 @@ fi
 # Prepare the RPM environment
 mkdir -p /tmp/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
-if [[ $BUILD_ENV == uw_build ]]; then
-    printf "%s\n" "%dist .el${OS_VERSION}" >> /etc/rpm/macros.dist
-else
-    printf "%s\n" "%dist .${BUILD_ENV}.el${OS_VERSION}" >> /etc/rpm/macros.dist
-fi
-
+printf "%s\n" "%dist .el${OS_VERSION}" >> /etc/rpm/macros.dist
 [[ ${BUILD_ENV} =~ ^osg ]] && printf "%s\n" "%osg 1" >> /etc/rpm/macros.dist
 
 cp htcondor-ce/rpm/htcondor-ce.spec /tmp/rpmbuild/SPECS
