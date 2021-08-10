@@ -71,7 +71,7 @@ def main():
     # If JOB_ROUTER_ROUTE_<name> rules are defined, verify that these transforms exist
     if jr_transforms:
         route_names = htcondor.param.get("JOB_ROUTER_ROUTE_NAMES", "")
-        for name in route_names.split(" "):
+        for name in re.split(r'[, \t]+', route_names):
             route_def = htcondor.param.get(f"JOB_ROUTER_ROUTE_{name}", "")
             if not route_def:
                 warn(f"The route {name} is specified in JOB_ROUTER_ROUTE_NAMES, but no corresponding JOB_ROUTER_ROUTE_{name} exists")
