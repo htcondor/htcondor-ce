@@ -165,10 +165,6 @@ Requires: voms-clients-cpp
 Requires: voms-clients
 %endif
 
-%if ! 0%{?uw_build}
-Requires: grid-certificates >= 7
-%endif
-
 Requires: python3-condor
 
 %description client
