@@ -128,35 +128,38 @@ def check_authz(collector_ad, schedd_ad):
                 print("*"*5, "Ping response ClassAd", "*"*5, ping_ad)
                 print("*"*20)
 
-def add_job_proxy_info(job_ad):
 
-    subj_rc, subj_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-subject"])
+def job_proxy_info(proxy_path):
+    """Given the path to a proxy, return a dict of x509 ClassAd attrs describing the proxy
+    """
+    results = {}
+    subj_rc, subj_stdout, _ = ce.run_command(["voms-proxy-info", "-file", proxy_path, "-subject"])
     if subj_rc != 0:
-        raise ce.CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+        raise ce.CondorUserException("Cannot parse proxy at %s." % proxy_path)
     subj_stdout = subj_stdout.strip()
-    job_ad['x509userproxysubject'] = subj_stdout
-    job_ad['x509UserProxyFQAN'] = subj_stdout
+    results['x509userproxysubject'] = subj_stdout
+    results['x509UserProxyFQAN'] = subj_stdout
 
-    time_rc, time_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-timeleft"])
+    time_rc, time_stdout, _ = ce.run_command(["voms-proxy-info", "-file", proxy_path, "-timeleft"])
     if time_rc != 0:
-        raise ce.CondorUserException("Cannot parse proxy at %s." % job_ad['x509userproxy'])
+        raise ce.CondorUserException("Cannot parse proxy at %s." % proxy_path)
     time_stdout = int(time_stdout)
     if time_stdout <= 0:
         print("WARNING: available proxy appears to be expired")
-    job_ad['x509UserProxyExpiration'] = int(time.time()) + int(time_stdout)
+    results['x509UserProxyExpiration'] = int(time.time()) + int(time_stdout)
 
-    vo_rc, vo_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-vo"])
+    vo_rc, vo_stdout, _ = ce.run_command(["voms-proxy-info", "-file", proxy_path, "-vo"])
     if vo_rc == 0:
-        job_ad['x509UserProxyVOName'] = vo_stdout.strip()
+        results['x509UserProxyVOName'] = vo_stdout.strip()
 
-    fqan_rc, fqan_stdout, _ = ce.run_command(["voms-proxy-info", "-file", job_ad['x509userproxy'], "-fqan"])
+    fqan_rc, fqan_stdout, _ = ce.run_command(["voms-proxy-info", "-file", proxy_path, "-fqan"])
     if fqan_rc == 0:
         fqan_lines = [i.strip() for i in fqan_stdout.strip().split('\n')]
-        job_ad['x509UserProxyFirstFQAN'] = fqan_lines[0]
-        job_ad['x509UserProxyFQAN'] += "," + ",".join(fqan_lines)
+        results['x509UserProxyFirstFQAN'] = fqan_lines[0]
+        results['x509UserProxyFQAN'] += "," + ",".join(fqan_lines)
 
-    if G_DEBUG:
-        print("Job ad, pre-submit:", job_ad)
+    return results
+
 
 def set_classad_value_type(value):
     if value.lower() == 'true':
@@ -169,6 +172,29 @@ def set_classad_value_type(value):
         return int(value)
 
     return value
+
+
+def setup_user_creds():
+    """Return a dict of token/X.509 attributes that are necessary for remote submission to a schedd
+    """
+    results = {}
+    try:
+        results['SciTokensFile'] = ce.bearer_token_path()
+    except FileNotFoundError:
+        pass
+
+    try:
+        proxy = ce.x509_user_proxy_path()
+        results['x509userproxy'] = proxy
+        results.update(job_proxy_info(proxy))
+    except FileNotFoundError:
+        pass
+
+    if not results:
+        raise ce.CondorUserException("Could not find a bearer token or an X.509 proxy for job submission")
+
+    return results
+
 
 def check_job_submit(job_info, schedd_ad):
 
@@ -184,13 +210,11 @@ def check_job_submit(job_info, schedd_ad):
         key, value = attr.split('=', 1)
         # Accept submit format '+AttributeName'
         job_ad[key.lstrip('+').strip()] = set_classad_value_type(value.strip())
-    proxy = os.environ.setdefault("X509_USER_PROXY", "/tmp/x509up_u%d" % os.geteuid())
-    if not os.path.exists(proxy):
-        if 'SCITOKENS_FILE' not in htcondor.param:
-            raise ce.CondorUserException("Could not find an X509 proxy in %s" % proxy)
-    else:
-        job_ad['x509userproxy'] = proxy
-        add_job_proxy_info(job_ad)
+
+    job_ad.update(setup_user_creds())
+
+    if G_DEBUG:
+        print("Job ad, pre-submit:", job_ad)
 
     try:
         schedd = htcondor.Schedd(schedd_ad)
