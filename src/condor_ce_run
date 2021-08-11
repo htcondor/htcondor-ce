@@ -29,8 +29,10 @@ ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 getenv = True
 
+# let condor handle token discovery
 use_scitokens = auto
-use_x509userproxy = true
+# there's no auto option
+use_x509userproxy = %(use_x509userproxy)s
 %(extra_attr)s
 
 queue
@@ -49,8 +51,10 @@ ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 getenv = True
 
+# let condor handle token discovery
 use_scitokens = auto
-use_x509userproxy = true
+# there's no auto option
+use_x509userproxy = %(use_x509userproxy)s
 
 +Owner = undefined
 +LeaveJobInQueue = ( StageOutFinish > 0 ) =!= true
@@ -89,6 +93,7 @@ def parse_opts():
 
     return opts, args
 
+
 def generate_submit_contents(job_info):
     if job_info['command'][0] != '/':
         for pathdir in os.environ.get("PATH", "").split(":"):
@@ -102,6 +107,12 @@ def generate_submit_contents(job_info):
             job_info['arguments']])
     else:
         job_info['arguments'] = ''
+
+    try:
+        if ce.x509_user_proxy_path():
+            job_info['use_x509userproxy'] = True
+    except FileNotFoundError:
+        job_info['use_x509userproxy'] = False
 
     if job_info['remote']:
         return SUBMIT_REMOTE_FILE % job_info
