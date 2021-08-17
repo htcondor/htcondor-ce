@@ -180,18 +180,18 @@ def setup_user_creds():
     results = {}
     try:
         results['SciTokensFile'] = ce.bearer_token_path()
-    except FileNotFoundError:
+    except OSError:
         pass
 
     try:
         proxy = ce.x509_user_proxy_path()
         results['x509userproxy'] = proxy
         results.update(job_proxy_info(proxy))
-    except FileNotFoundError:
+    except OSError:
         pass
 
     if not results:
-        raise ce.CondorUserException("Could not find a bearer token or an X.509 proxy for job submission")
+        raise ce.CondorUserException("Could not read a bearer token or an X.509 proxy for job submission")
 
     return results
 
@@ -214,7 +214,7 @@ def check_job_submit(job_info, schedd_ad):
     job_ad.update(setup_user_creds())
 
     if G_DEBUG:
-        print("Job ad, pre-submit:", job_ad)
+        print(f"Job ad, pre-submit:\n{job_ad}")
 
     try:
         schedd = htcondor.Schedd(schedd_ad)

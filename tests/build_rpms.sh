@@ -57,7 +57,7 @@ yum -y install \
     rrdtool \
     rrdtool-devel
 
-if [[ $BUILD_ENV =~ ^osg ]]; then
+if [[ $BUILD_ENV == osg* ]]; then
     OSG_SERIES=${BUILD_ENV%-upcoming}
     OSG_SERIES=${OSG_SERIES#osg-}
     yum install -y https://repo.opensciencegrid.org/osg/${OSG_SERIES}/osg-${OSG_SERIES}-el${OS_VERSION}-release-latest.rpm

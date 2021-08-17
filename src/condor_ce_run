@@ -111,7 +111,7 @@ def generate_submit_contents(job_info):
     try:
         if ce.x509_user_proxy_path():
             job_info['use_x509userproxy'] = True
-    except FileNotFoundError:
+    except OSError:
         job_info['use_x509userproxy'] = False
 
     if job_info['remote']:

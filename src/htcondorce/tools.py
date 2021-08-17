@@ -92,9 +92,9 @@ def x509_user_proxy_path():
     except KeyError:
         path = f'/tmp/x509up_u{os.geteuid()}'
 
-    if os.path.exists(path):
+    if open(path):
         return path
-    raise FileNotFoundError
+    return None  # we shouldn't get here; failure to open should raise OSError
 
 
 def bearer_token_path():
@@ -102,9 +102,9 @@ def bearer_token_path():
     """
     def check_token_path(path, suffix=''):
         token_path = f'{path}{suffix}'
-        if os.path.exists(token_path):
+        if open(token_path):
             return token_path
-        raise FileNotFoundError
+        return None  # we shouldn't get here, failure to open should raise OSError
 
     # 1. BEARER_TOKEN env var containing the token itself
     #    Punt on this one until we address HTCONDOR-634
