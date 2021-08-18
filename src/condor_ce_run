@@ -108,11 +108,12 @@ def generate_submit_contents(job_info):
     else:
         job_info['arguments'] = ''
 
+    job_info['use_x509userproxy'] = False
     try:
         if ce.x509_user_proxy_path():
             job_info['use_x509userproxy'] = True
     except OSError:
-        job_info['use_x509userproxy'] = False
+        pass  # could not open the X.509 user proxy from the expected locations
 
     if job_info['remote']:
         return SUBMIT_REMOTE_FILE % job_info
