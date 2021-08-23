@@ -8,7 +8,11 @@ jobs:
       fail-fast: false
       matrix:
         dver: [7, 8]
-        target_env: [osg, uw_build]
+        target_env:
+          - uw_build
+          - osg-3.5-upcoming
+          - osg-3.6
+          - osg-3.6-upcoming
     steps:
       - uses: actions/checkout@v2
         with:
@@ -34,7 +38,7 @@ jobs:
                  /bin/bash -xc \
                    "/htcondor-ce/tests/build_rpms.sh \
                      ${{ matrix.dver }} \
-                     ${{ matrix.target_env}}"
+                     ${{ matrix.target_env }}"
 
       - name: Install EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
         run: |

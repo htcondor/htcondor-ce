@@ -82,3 +82,43 @@ def to_bytes(strlike, encoding="latin-1", errors="backslashreplace"):
     if isinstance(strlike, str):
         return strlike.encode(encoding, errors)
     return strlike
+
+
+def x509_user_proxy_path():
+    """Return the path to the user's X.509 proxy or raise FileNotFoundError if it doesn't exist on disk
+    """
+    try:
+        path = os.environ['X509_USER_PROXY']
+    except KeyError:
+        path = f'/tmp/x509up_u{os.geteuid()}'
+
+    if open(path):
+        return path
+    return None  # we shouldn't get here; failure to open should raise OSError
+
+
+def bearer_token_path():
+    """Return the path to the user's X.509 proxy or raise FileNotFoundError if it doesn't exist on disk
+    """
+    def check_token_path(path, suffix=''):
+        token_path = f'{path}{suffix}'
+        if open(token_path):
+            return token_path
+        return None  # we shouldn't get here, failure to open should raise OSError
+
+    # 1. BEARER_TOKEN env var containing the token itself
+    #    Punt on this one until we address HTCONDOR-634
+
+    try:
+        # 2. BEARER_TOKEN_PATH containing the path to the token
+        path = check_token_path(os.environ['BEARER_TOKEN_FILE'])
+    except (KeyError, FileNotFoundError):
+        try:
+            # 3. XDG_RUNTIME_DIR containing the path to the folder containing the token at bt_u$UID
+            path = check_token_path(os.environ['XDG_RUNTIME_DIR'], suffix=f'/bt_u{os.geteuid()}')
+        except (KeyError, FileNotFoundError):
+            # 4. Otherwise, the token is expected at /tmp/bt_u$UID
+            #    Raise FileExceptionError if it doesn't exist
+            path = check_token_path(f'/tmp/bt_u{os.geteuid()}')
+
+    return path

@@ -8,7 +8,6 @@ import socket
 import optparse
 import traceback
 
-import htcondor
 import htcondorce.tools as ce
 
 # HTCondor-CE simple run script.
@@ -30,7 +29,10 @@ ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 getenv = True
 
-use_x509userproxy = true
+# let condor handle token discovery
+use_scitokens = auto
+# there's no auto option
+use_x509userproxy = %(use_x509userproxy)s
 %(extra_attr)s
 
 queue
@@ -49,7 +51,10 @@ ShouldTransferFiles = YES
 WhenToTransferOutput = ON_EXIT
 getenv = True
 
-use_x509userproxy = true
+# let condor handle token discovery
+use_scitokens = auto
+# there's no auto option
+use_x509userproxy = %(use_x509userproxy)s
 
 +Owner = undefined
 +LeaveJobInQueue = ( StageOutFinish > 0 ) =!= true
@@ -114,6 +119,13 @@ def generate_submit_contents(job_info):
             job_info['arguments']])
     else:
         job_info['arguments'] = ''
+
+    job_info['use_x509userproxy'] = False
+    try:
+        if ce.x509_user_proxy_path():
+            job_info['use_x509userproxy'] = True
+    except OSError:
+        pass  # could not open the X.509 user proxy from the expected locations
 
     if job_info['remote']:
         return SUBMIT_REMOTE_FILE % job_info
@@ -217,23 +229,12 @@ def print_results(job_info):
     for line in open(job_info["stderr_file"], "r").readlines():
         print(line, end='')
 
-def configureAuth():
-    try:
-        auth_methods = re.split(r"[,\s]+", htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'])
-    except KeyError:
-        auth_methods = []
-    if 'GSI' not in auth_methods:
-        auth_methods.append("GSI")
-
-    auth_methods = ",".join(auth_methods)
-    os.environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
-    htcondor.param['SEC_CLIENT_AUTHENTICATION_METHODS'] = auth_methods
 
 def main():
     opts, args = parse_opts()
     if opts.remote:
         os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
-        configureAuth()
+        os.environ.setdefault('_condor_SEC_CLIENT_AUTHENTICATION_METHODS', 'SCITOKENS,GSI,FS')
 
     if len(args) < 2:
         print("Usage: condor_ce_run <hostname> <command> [arg1] [arg2] [...]")
