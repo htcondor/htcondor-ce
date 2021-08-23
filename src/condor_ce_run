@@ -94,6 +94,18 @@ def parse_opts():
     return opts, args
 
 
+def run_command_debug(cmd, debug=False):
+    """Run cmd and print stdout/stderr if debug
+    """
+    rc, stdout, stderr = ce.run_command(cmd)
+
+    if debug:
+        print(stdout)
+        print(stderr, file=sys.stderr)
+
+    return rc, stdout, stderr
+
+
 def generate_submit_contents(job_info):
     if job_info['command'][0] != '/':
         for pathdir in os.environ.get("PATH", "").split(":"):
@@ -120,17 +132,17 @@ def generate_submit_contents(job_info):
     else:
         return SUBMIT_FILE % job_info
 
-def submit_job(job_info):
+def submit_job(job_info, debug=False):
     # TODO: Here and in wait_job below, make sure we can tell the difference
     # between condor_submit failure and failure to exec.
     args = ['condor_submit', job_info['submit_file']]
-    if job_info['debug']:
+    if debug:
         args.append("-debug")
 
     if job_info['remote']:
         args += ['-remote', job_info['schedd_name'], '-pool', job_info['collector_name']]
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=debug)
     # Example output: 1 job(s) submitted to cluster 14.
     cluster_re = re.compile(r'(\d+) job\(s\) submitted to cluster (\d+)\.')
     try:
@@ -149,15 +161,15 @@ def submit_job(job_info):
         raise ce.CondorRunException("Failed to submit job; condor_submit " \
                                     "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (rc, ce.to_str(stdout), ce.to_str(stderr)))
 
-def wait_for_job(job_info):
+def wait_for_job(job_info, debug=False):
     if job_info['remote']:
-        return wait_for_job_remote(job_info)
+        return wait_for_job_remote(job_info, debug)
 
     args = ['condor_wait', job_info['log_file']]
-    if job_info['debug']:
+    if debug:
         args.append("-debug")
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=debug)
     if rc < 0:
         raise ce.CondorRunException("Failed to wait for job; condor_wait " \
                                     "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
@@ -165,14 +177,14 @@ def wait_for_job(job_info):
         raise ce.CondorRunException("Failed to wait for job; condor_wait " \
                                     "exited with code %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
 
-def check_remote_status(job_info):
+def check_remote_status(job_info, debug=False):
     args = ['condor_q', '-format', '%d\n', 'JobStatus', '-pool',
             job_info['collector_name'], '-name', job_info['schedd_name'],
             job_info['cluster']]
-    if job_info['debug']:
+    if debug:
         args.append('-debug')
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=debug)
     job_status = None
     status_re = re.compile(r"(\d+)")
     for line in ce.to_str(stdout):
@@ -193,16 +205,16 @@ def check_remote_status(job_info):
 
     return job_status
 
-def wait_for_job_remote(job_info):
-    while check_remote_status(job_info) != 4:
+def wait_for_job_remote(job_info, debug=False):
+    while check_remote_status(job_info, debug) != 4:
         time.sleep(1)
 
     args = ['condor_transfer_data', '-pool', job_info['collector_name'],
             '-name', job_info['schedd_name'], job_info['cluster']]
-    if job_info['debug']:
+    if debug:
         args.append('-debug')
 
-    rc, stdout, stderr = ce.run_command(args)
+    rc, stdout, stderr = run_command_debug(args, debug=debug)
     if rc < 0:
         raise ce.CondorRunException("Failed to retrieve job output sandbox; condor_transfer_data " \
                                     "terminated with signal %d.\nSTDOUT: %s\n STDERR: %s" % (-rc, stdout, stderr))
@@ -241,8 +253,7 @@ def main():
     else:
         job_info['schedd_name'] = collector_hostname.split(":")[0]
 
-    job_info['debug'] = opts.debug
-    os.environ.setdefault("TOOL_DEBUG", "D_FULLDEBUG")
+    os.environ.setdefault("_condor_TOOL_DEBUG", "D_CAT D_ALWAYS:2 D_SECURITY:2")
 
     job_info['remote'] = opts.remote
     job_info['arguments'] = args[2:]
@@ -276,8 +287,8 @@ def main():
             submit_fd, job_info['submit_file'] = tempfile.mkstemp(dir=".", prefix=".submit_%d_" % pid)
             os.write(submit_fd, ce.to_bytes(run_script))
             os.close(submit_fd)
-            submit_job(job_info)
-            wait_for_job(job_info)
+            submit_job(job_info, opts.debug)
+            wait_for_job(job_info, opts.debug)
             print_results(job_info)
     finally:
         if opts.clean or opts.dry_run:
