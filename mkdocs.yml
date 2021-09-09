@@ -68,6 +68,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 plugins:
+  - search
   - redirects:
       redirect_maps:
         'v5/verification.md': 'v5/operation.md'
