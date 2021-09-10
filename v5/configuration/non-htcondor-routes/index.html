@@ -1018,9 +1018,9 @@ transform and deprecated syntax, respectively:</p>
 <div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
   GridResource = &quot;batch slurm&quot;
-  default_queue = osg_queue
-<span class="hll">@jrt
-</span>
+<span class="hll">  default_queue = osg_queue
+</span>@jrt
+
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 </code></pre></div>
 </div>
@@ -1029,9 +1029,9 @@ JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 [
   GridResource = &quot;batch slurm&quot;;
   name = &quot;Slurm_Cluster&quot;;
-  set_default_queue = &quot;osg_queue&quot;;
-<span class="hll">]
-</span>@jre
+<span class="hll">  set_default_queue = &quot;osg_queue&quot;;
+</span>]
+@jre
 
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
 </code></pre></div>
