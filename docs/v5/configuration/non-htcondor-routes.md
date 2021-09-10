@@ -11,7 +11,7 @@ transform and deprecated syntax, respectively:
 
 === "ClassAd Transform"
 
-    ```hl_lines="4"
+    ```hl_lines="3"
     JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
       GridResource = "batch slurm"
       default_queue = osg_queue
@@ -22,7 +22,7 @@ transform and deprecated syntax, respectively:
 
 === "Deprecated Syntax"
 
-    ```hl_lines="6"
+    ```hl_lines="5"
     JOB_ROUTER_ENTRIES @=jre
     [
       GridResource = "batch slurm";
