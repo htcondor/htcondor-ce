@@ -57,6 +57,12 @@ respectively.  To use the new transform syntax:
 
 1.  Add the above `<ROUTE_NAME>` to the list of routes in `JOB_ROUTER_ROUTE_NAMES`
 
+!!! bug "New Job Router Transform Syntax"
+    In HTCondor-CE 5.1.0 and 5.1.1, sites using the new Job Router transform syntax may run into issues with CPU and
+    memory requests. This issue can be worked around by adding some extra lines to your job routes as described in the
+    [Maximum memory](configuration/writing-job-routes.md#maximum-memory) and
+    [Number of cores to request](configuration/writing-job-routes.md#number-of-cores-to-request) examples.
+
 ### New `condor_mapfile` format and locations  ###
 
 HTCondor-CE 5 separates its
