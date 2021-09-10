@@ -1072,6 +1072,13 @@ in the following order:</p>
     See <a href="#how-jobs-match-to-routes">the section on route matching</a> below.</li>
 <li>Each transform in <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> whose requirements are met by the job</li>
 </ol>
+<div class="admonition bug">
+<p class="admonition-title">New Job Router Transform Syntax</p>
+<p>In HTCondor-CE 5.1.0 and 5.1.1, sites using the new Job Router transform syntax may run into issues with CPU and
+memory requests. This issue can be worked around by adding some extra lines to your job routes as described in the
+<a href="../writing-job-routes/#maximum-memory">Maximum memory</a> and
+<a href="../writing-job-routes/#number-of-cores-to-request">Number of cores to request</a> examples.</p>
+</div>
 <h3 id="deprecated-syntax">Deprecated syntax<a class="headerlink" href="#deprecated-syntax" title="Permanent link">&para;</a></h3>
 <p>Since the inception of HTCondor-CE, job routes have been written as a
 <a href="https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html#deprecated-router-configuration">list of ClassAds</a>.
@@ -1113,6 +1120,13 @@ The <a href="#classad-transforms">ClassAd transform</a> syntax provides many ben
 <p>Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
 including transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code>,
 respectively.</p>
+<div class="admonition bug">
+<p class="admonition-title">New Job Router Transform Syntax</p>
+<p>In HTCondor-CE 5.1.0 and 5.1.1, sites using the new Job Router transform syntax may run into issues with CPU and
+memory requests. This issue can be worked around by adding some extra lines to your job routes as described in the
+<a href="../writing-job-routes/#maximum-memory">Maximum memory</a> and
+<a href="../writing-job-routes/#number-of-cores-to-request">Number of cores to request</a> examples.</p>
+</div>
 <h2 id="how-jobs-match-to-routes">How Jobs Match to Routes<a class="headerlink" href="#how-jobs-match-to-routes" title="Permanent link">&para;</a></h2>
 <p>The Job Router considers incoming jobs in the HTCondor-CE SchedD (i.e., jobs visible in
 <a href="../../troubleshooting/debugging-tools/#condor_ce_q">condor_ce_q</a>) that meet the following constraints:</p>
