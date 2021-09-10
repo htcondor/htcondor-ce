@@ -16,48 +16,6 @@ function run_osg_tests {
     set -e
 }
 
-function run_integration_tests {
-    # create host/user certificates
-    test_user=cetest
-    useradd -m $test_user
-    yum install -y openssl # centos7 containers don't have openssl by default
-    osg-ca-generator --host --user $test_user --pass $test_user
-
-    # add the host subject DN to the top of the condor_mapfile
-    host_dn=$(python3 -c "import cagen; print(cagen.certificate_info('/etc/grid-security/hostcert.pem')[0])")
-    host_dn=${host_dn//\//\\/} # escape all forward slashes
-    entry="GSI \"${host_dn}\" $(hostname --long)@daemon.htcondor.org"
-    ce_mapfile='/etc/condor-ce/condor_mapfile'
-    tmp_mapfile=$(mktemp)
-    echo $entry | cat - $ce_mapfile > $tmp_mapfile && mv $tmp_mapfile $ce_mapfile
-    chmod 644 $ce_mapfile
-
-    yum install -y sudo # run tests as non-root user
-
-    echo "------------ Integration Test --------------"
-    # start necessary services
-    systemctl start condor-ce
-    systemctl start condor
-
-    set +e
-    # wait until the schedd is ready before submitting a job
-    for service in condor condor-ce; do
-        timeout 30 bash -c "until (grep -q 'JobQueue hash' /var/log/${service}/SchedLog); do sleep 0.5; done"
-        timeout 30 bash -c "until (grep -q 'ScheddAd' /var/log/${service}/CollectorLog); do sleep 0.5; done"
-    done
-
-    # submit test job as a normal user
-    # TODO: Change this to voms-proxy-init to test VOMS attr mapping
-    pushd /tmp
-    sudo -u $test_user /bin/sh -c "echo $test_user | grid-proxy-init -pwstdin"
-    sudo -u $test_user condor_ce_status -any
-    curl http://127.0.0.1
-    sudo -u $test_user condor_ce_trace -d $(hostname)
-    test_exit=$?
-    popd
-    set -e
-}
-
 # --------- EXECUTION BEGINS HERE ---------
 set -xe
 
@@ -96,10 +54,8 @@ cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
 
-if [[ $BUILD_ENV == osg* ]]; then
+if [ $BUILD_ENV == osg* ] || [ $BUILD_ENV == uw_build ]; then
     run_osg_tests
-else
-    run_integration_tests
 fi
 
 exit $test_exit
