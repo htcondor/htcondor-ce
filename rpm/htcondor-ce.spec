@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.1
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 5.1.2
+Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -551,6 +551,15 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Mon Sep 20 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.2-0.rc1
+- Fixed the default memory and CPU requests when using job router transforms
+- Apply default MaxJobs and MaxJobsIdle when using job router transforms
+- Improved SciTokens support in submission tools
+- Fixed --debug flag in condor_ce_run
+- Update configuration verification script to handle job router transforms
+- Corrected ownership of the HTCondor PER_JOBS_HISTORY_DIR
+- Fix bug passing maximum wall time requests to the local batch system
+
 * Tue May 18 2021 Brian Lin <blin@cs.wisc.edu> - 5.1.1-1
 - Improve restart time of HTCondor-CE View (HTCONDOR-420)
 - Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
