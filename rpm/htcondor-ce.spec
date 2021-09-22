@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.1.2
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -551,7 +551,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Mon Sep 20 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.2-0.rc1
+* Wed Sep 22 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.2-1
 - Fixed the default memory and CPU requests when using job router transforms
 - Apply default MaxJobs and MaxJobsIdle when using job router transforms
 - Improved SciTokens support in submission tools
