@@ -725,6 +725,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#512" class="md-nav__link">
+    5.1.2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#511" class="md-nav__link">
     5.1.1
   </a>
@@ -1126,13 +1133,6 @@ respectively.  To use the new transform syntax:</p>
 <p>Add the above <code>&lt;ROUTE_NAME&gt;</code> to the list of routes in <code>JOB_ROUTER_ROUTE_NAMES</code></p>
 </li>
 </ol>
-<div class="admonition bug">
-<p class="admonition-title">New Job Router Transform Syntax</p>
-<p>In HTCondor-CE 5.1.0 and 5.1.1, sites using the new Job Router transform syntax may run into issues with CPU and
-memory requests. This issue can be worked around by adding some extra lines to your job routes as described in the
-<a href="../configuration/writing-job-routes/#maximum-memory">Maximum memory</a> and
-<a href="../configuration/writing-job-routes/#number-of-cores-to-request">Number of cores to request</a> examples.</p>
-</div>
 <h3 id="new-condor_mapfile-format-and-locations">New <code>condor_mapfile</code> format and locations<a class="headerlink" href="#new-condor_mapfile-format-and-locations" title="Permanent link">&para;</a></h3>
 <p>HTCondor-CE 5 separates its
 <a href="https://htcondor.readthedocs.io/en/v9_0/admin-manual/security.html#the-unified-map-file-for-authentication">unified mapfile</a>
@@ -1202,14 +1202,25 @@ To re-enable this behavior, set <code>USE_CE_HOME_DIR = True</code> in <code>/et
 <h2 id="htcondor-ce-5-version-history">HTCondor-CE 5 Version History<a class="headerlink" href="#htcondor-ce-5-version-history" title="Permanent link">&para;</a></h2>
 <p>This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on <a href="https://github.com/htcondor/htcondor-ce/releases">GitHub</a>.</p>
+<h3 id="512">5.1.2<a class="headerlink" href="#512" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.2">This release</a> includes the following changes:</p>
+<ul>
+<li>Fixed the default memory and CPU requests when using job router transforms</li>
+<li>Apply default MaxJobs and MaxJobsIdle when using job router transforms</li>
+<li>Improved SciTokens support in submission tools</li>
+<li>Fixed --debug flag in condor_ce_run</li>
+<li>Update configuration verification script to handle job router transforms</li>
+<li>Corrected ownership of the HTCondor PER_JOBS_HISTORY_DIR</li>
+<li>Fix bug passing maximum wall time requests to the local batch system</li>
+</ul>
 <h3 id="511">5.1.1<a class="headerlink" href="#511" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.1">This release</a> includes the following new features:          </p>
+<p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.1">This release</a> includes the following changes:</p>
 <ul>
 <li>Improve restart time of HTCondor-CE View
-  (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-420">HTCONDOR-420</a>)</li>
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-420">HTCONDOR-420</a>)</li>
 <li>Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)</li>
 <li>Fixed error that occurred during RPM installation of non-HTCondor batch systems regarding missing file <code>batch_gahp</code>
-  (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-504">HTCONDOR-504</a>)</li>
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-504">HTCONDOR-504</a>)</li>
 </ul>
 <h3 id="510">5.1.0<a class="headerlink" href="#510" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0">This release</a> includes the following new features:</p>
