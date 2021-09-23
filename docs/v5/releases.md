@@ -123,16 +123,28 @@ HTCondor-CE 5 Version History
 This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 5.1.2 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.2) includes the following changes:
+
+-   Fixed the default memory and CPU requests when using job router transforms
+-   Apply default MaxJobs and MaxJobsIdle when using job router transforms
+-   Improved SciTokens support in submission tools
+-   Fixed --debug flag in condor\_ce\_run
+-   Update configuration verification script to handle job router transforms
+-   Corrected ownership of the HTCondor PER\_JOBS\_HISTORY\_DIR
+-   Fix bug passing maximum wall time requests to the local batch system
+
 ### 5.1.1 ###
 
-[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.1) includes the following new features:          
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.1) includes the following changes:
 
-- Improve restart time of HTCondor-CE View
-  ([HTCONDOR-420](https://opensciencegrid.atlassian.net/browse/HTCONDOR-420))
-- Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
-- Fixed error that occurred during RPM installation of non-HTCondor batch systems regarding missing file `batch_gahp`
-  ([HTCONDOR-504](https://opensciencegrid.atlassian.net/browse/HTCONDOR-504))
-                
+-   Improve restart time of HTCondor-CE View
+    ([HTCONDOR-420](https://opensciencegrid.atlassian.net/browse/HTCONDOR-420))
+-   Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
+-   Fixed error that occurred during RPM installation of non-HTCondor batch systems regarding missing file `batch_gahp`
+    ([HTCONDOR-504](https://opensciencegrid.atlassian.net/browse/HTCONDOR-504))
+
 ### 5.1.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0) includes the following new features:
