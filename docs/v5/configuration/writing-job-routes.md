@@ -448,12 +448,6 @@ ClassAd transform and deprecated syntax, respectively:
       UNIVERSE VANILLA
       # Set the requested memory to 1 GB
       default_maxMemory = 1000
-      # If using HTCondor-CE v5.1.0 or 5.1.1,
-      # add the following lines to work around
-      # a known bug in these releases. There is no
-      # need to add these lines with v5.1.2 or later.
-      DELETE RequestMemory
-      DELETE orig_RequestMemory
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -487,12 +481,6 @@ transform and deprecated syntax, respectively:
       UNIVERSE VANILLA
       # Set the requested memory to 1 GB
       default_xcount = 8
-      # If using HTCondor-CE v5.1.0 or 5.1.1,
-      # add the following lines to work around
-      # a known bug in these releases. There is no
-      # need to add these lines with v5.1.2 or later.
-      DELETE RequestCpus
-      DELETE orig_RequestCpus
     @jrt
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
