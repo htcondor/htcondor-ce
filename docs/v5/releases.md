@@ -57,12 +57,6 @@ respectively.  To use the new transform syntax:
 
 1.  Add the above `<ROUTE_NAME>` to the list of routes in `JOB_ROUTER_ROUTE_NAMES`
 
-!!! bug "New Job Router Transform Syntax"
-    In HTCondor-CE 5.1.0 and 5.1.1, sites using the new Job Router transform syntax may run into issues with CPU and
-    memory requests. This issue can be worked around by adding some extra lines to your job routes as described in the
-    [Maximum memory](configuration/writing-job-routes.md#maximum-memory) and
-    [Number of cores to request](configuration/writing-job-routes.md#number-of-cores-to-request) examples.
-
 ### New `condor_mapfile` format and locations  ###
 
 HTCondor-CE 5 separates its
@@ -129,16 +123,28 @@ HTCondor-CE 5 Version History
 This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 5.1.2 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.2) includes the following changes:
+
+-   Fixed the default memory and CPU requests when using job router transforms
+-   Apply default MaxJobs and MaxJobsIdle when using job router transforms
+-   Improved SciTokens support in submission tools
+-   Fixed --debug flag in condor\_ce\_run
+-   Update configuration verification script to handle job router transforms
+-   Corrected ownership of the HTCondor PER\_JOBS\_HISTORY\_DIR
+-   Fix bug passing maximum wall time requests to the local batch system
+
 ### 5.1.1 ###
 
-[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.1) includes the following new features:          
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.1) includes the following changes:
 
-- Improve restart time of HTCondor-CE View
-  ([HTCONDOR-420](https://opensciencegrid.atlassian.net/browse/HTCONDOR-420))
-- Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
-- Fixed error that occurred during RPM installation of non-HTCondor batch systems regarding missing file `batch_gahp`
-  ([HTCONDOR-504](https://opensciencegrid.atlassian.net/browse/HTCONDOR-504))
-                
+-   Improve restart time of HTCondor-CE View
+    ([HTCONDOR-420](https://opensciencegrid.atlassian.net/browse/HTCONDOR-420))
+-   Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
+-   Fixed error that occurred during RPM installation of non-HTCondor batch systems regarding missing file `batch_gahp`
+    ([HTCONDOR-504](https://opensciencegrid.atlassian.net/browse/HTCONDOR-504))
+
 ### 5.1.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0) includes the following new features:
