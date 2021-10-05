@@ -156,15 +156,83 @@ You may see error messages like the following in your [SchedLog](logs.md#schedlo
 08/30/16 16:53:12 DC_AUTHENTICATE: Command not authorized, done!
 ```
 
+The following are several potential causes and how to check and correct them.
+
+#### Jobs fail to submit: Verify SSL configuration
+
+Your machine must have a valid host certificate and the CE must be
+configured to use it.
+Both the CE and the submitting machines must be configured to recognize
+the Certificate Authorities (CAs) that issued all certificates in use.
+See the documentation about
+[Configuring Certificates](../configuration/authentication.md#configuring-certificates)
+for details.
+
+#### Jobs fail to submit: Verify SciToken contents
+
+If SciTokens is the authentication method being used, you can examine
+the token's payload for some common errors.
+If you have access to the token itself, you can decode it at
+[jwt.io](https://jwt.io).
+If you have the `D_AUDIT` debug level enabled, the token's payload will
+appear in the `SchedLog` file, like so:
+```
+10/05/21 18:34:06 (D_AUDIT) Examining SciToken with payload {<payload contents>}.
+```
+
+The token's payload will look something like this:
+```
+{
+  "aud": "ANY",
+  "ver": "scitokens:2.0",
+  "scope": "condor:/READ condor:/WRITE",
+  "exp": 1633488473,
+  "sub": "htcondor-ce-dev",
+  "iss": "https://demo.scitokens.org",
+  "iat": 1633459675,
+  "nbf": 1633459675,
+  "jti": "cb84b7af-ed21-450d-a50e-552a5cd2904c"
+}
+```
+
 **Next actions**
 
-1.  **Check voms-mapfile or grid-mapfile** and ensure that the user's DN or VOMS attributes are known to your
-    [authentication method](../configuration/authentication.md), and that the mapped users exist
-    on your CE and cluster.
-1.  **Check for lcmaps errors** in `/var/log/messages`
-1.  **If you do not see helpful error messages in `/var/log/messages`,** adjust the debug level by adding `export
-    LCMAPS_DEBUG_LEVEL=5` to `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and checking
-    `/var/log/messages` for errors again.
+If any of the following checks fail, the user will need a new, corrected,
+token.
+
+1.  Check that the `aud` (audience) value is either `ANY` or matches your `COLLECTOR_HOST` parameter (i.e. `<CE hostname>:9619`).
+1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE`.
+1.  Check that the `exp` (expiration) value is in the future.
+1.  Check that the `nbf` (not before) value is in the past.
+
+#### Jobs fail to submit: Check user mapping
+
+The CE must be able to map the identity of the job submitter to a local
+OS account, used for storing the job sandbox and running the job under the
+local batch system.
+This mapping is done via a set of
+[mapfiles](../configuration/authentication.md).
+If no mapping is available, then job submission will fail.
+
+If a SciToken can't be mapped and the `D_SECURITY` debug level is enabled, then you will see this in the `SchedLog` file:
+```
+10/05/21 18:56:04 (D_SECURITY) Failed to map SCITOKENS authenticated identity 'https://demo.scitokens.org,htcondor-ce-dev', failing authentication to give another authentication method a go.
+```
+
+
+**Next actions**
+
+1.  Check the files in `/etc/condor-ce/mapfiles.d/` and ensure that the
+    user's authentication method and identity are present (possibly via a
+    regular expression), and that the mapped OS account exists on your CE
+    and cluster.
+1.  If using GSI, check voms-mapfile or grid-mapfile as an alternate
+    file with a mapping for the user's identity.
+1.  If using lcmaps, check for lcmaps errors in `/var/log/messages`.
+1.  If you do not see helpful lcmaps error messages in `/var/log/messages`,
+    adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to
+    `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and
+    checking `/var/log/messages` for errors again.
 
 ### Jobs stay idle on the CE
 
