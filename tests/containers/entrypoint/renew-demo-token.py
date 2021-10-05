@@ -6,20 +6,17 @@ import time
 
 from urllib import request
 
-# Create the requested json
-demo_json = {
-    "payload": {
-        "aud": "ANY",
-        "ver": "scitokens:2.0",
-        "scope": "condor:/READ condor:/WRITE",
-        "exp": int(time.time() + 3600*8),
-        "sub": "abh3"
-    }
-}
+# Request payload
+payload = {"aud": "ANY",
+           "ver": "scitokens:2.0",
+           "scope": "condor:/READ condor:/WRITE",
+           "exp": int(time.time() + 3600*8),
+           "sub": "htcondor-ce-dev"
+           }
 
 # Convert the format from dictionary to json string
 data = json.dumps({
-            'payload': json.dumps(demo_json['payload']),
+            'payload': payload,
             "algorithm": "ES256"
             }).encode()
 
