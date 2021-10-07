@@ -200,8 +200,8 @@ The token's payload will look something like this:
 If any of the following checks fail, the user will need a new, corrected,
 token.
 
-1.  Check that the `aud` (audience) value is either `ANY` or matches your `COLLECTOR_HOST` parameter (i.e. `<CE hostname>:9619`).
-1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE`.
+1.  Check that the `aud` (audience) value is either `ANY`, `https://wlcg.cern.ch/jwt/v1/any`, or matches one of the items from `condor_ce_config_val SCITOKENS_SERVER_AUDIENCE` (i.e. `<CE hostname>:9619`).
+1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE` or `compute.cancel compute.create compute.modify compute.read`
 1.  Check that the `exp` (expiration) value is in the future.
 1.  Check that the `nbf` (not before) value is in the past.
 
@@ -228,8 +228,8 @@ If a SciToken can't be mapped and the `D_SECURITY` debug level is enabled, then 
     and cluster.
 1.  If using GSI, check voms-mapfile or grid-mapfile as an alternate
     file with a mapping for the user's identity.
-1.  If using lcmaps, check for lcmaps errors in `/var/log/messages`.
-1.  If you do not see helpful lcmaps error messages in `/var/log/messages`,
+1.  If using LCMAPS, check for LCMAPS errors in `/var/log/messages`.
+1.  If you do not see helpful LCMAPS error messages in `/var/log/messages`,
     adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to
     `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and
     checking `/var/log/messages` for errors again.
