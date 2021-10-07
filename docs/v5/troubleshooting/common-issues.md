@@ -201,6 +201,9 @@ If any of the following checks fail, the user will need a new, corrected,
 token.
 
 1.  Check that the `aud` (audience) value is either `ANY`, `https://wlcg.cern.ch/jwt/v1/any`, or matches one of the items from `condor_ce_config_val SCITOKENS_SERVER_AUDIENCE` (i.e. `<CE hostname>:9619`).
+    Tokens with an invalid `aud` value will appear in `/var/log/condor-ce/SchedLog` with the following errors if `D_SECURITY` is enabled in `SCHEDD_DEBUG`:
+
+        10/07/21 15:55:39 (D_SECURITY) SCITOKENS:2:Failed to verify token and generate ACLs: token verification failed: 'aud' claim verification failed.
 1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE` or `compute.cancel compute.create compute.modify compute.read`
 1.  Check that the `exp` (expiration) value is in the future.
 1.  Check that the `nbf` (not before) value is in the past.
