@@ -182,14 +182,14 @@ an error like the following in `/var/log/condor-ce/SchedLog` if
 ***Next actions***
 
 1.  If your host certificate is installed under `/etc/grid-security/`,
-    ensure the CE is configured look for it there.
+    ensure the CE is configured look for it there (see [configuring certificates](../configuration/authentication.md#configuring-certificates)).
 
 #### Jobs fail to submit: Verify SSL configuration on the client
 
-The CE client tools on the client machine must be configure to recognize
+The CE client tools on the client machine must be configured to recognize
 the Certificate Autority (CA) that issued the CE's host certificate.
 
-If the client tools don't trust your certificate's CA, then the output of
+If the client tools don't trust your CE's host certificate's CA, then the output of
 `condor_ce_trace -d <CE hostname>` will include something like the following:
 
 ```
