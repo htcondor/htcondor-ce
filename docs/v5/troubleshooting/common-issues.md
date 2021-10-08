@@ -156,17 +156,62 @@ You may see error messages like the following in your [SchedLog](logs.md#schedlo
 08/30/16 16:53:12 DC_AUTHENTICATE: Command not authorized, done!
 ```
 
+The detailed debug output of `condor_ce_ping -d <CE hostname>` can provide
+useful data from the client side.
+
 The following are several potential causes and how to check and correct them.
 
-#### Jobs fail to submit: Verify SSL configuration
+#### Jobs fail to submit: Verify SSL configuration on the CE
 
-Your machine must have a valid host certificate and the CE must be
-configured to use it.
-Both the CE and the submitting machines must be configured to recognize
-the Certificate Authorities (CAs) that issued all certificates in use.
+Your machine must have a valid host certificate and private key,
+and the CE must be configured to use them.
 See the documentation about
 [Configuring Certificates](../configuration/authentication.md#configuring-certificates)
 for details.
+
+If the CE can't read its host certificate and private key, you will see
+an error like the following in `/var/log/condor-ce/SchedLog` if
+`D_SECURITY` is enabled in `SCHEDD_DEBUG`
+
+```
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error loading private key from file
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error initializing server security context
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error creating SSL context
+```
+
+***Next actions***
+
+1.  If your host certificate is installed under `/etc/grid-security/`,
+    ensure the CE is configured look for it there.
+
+#### Jobs fail to submit: Verify SSL configuration on the client
+
+The CE client tools on the client machine must be configure to recognize
+the Certificate Autority (CA) that issued the CE's host certificate.
+
+If the client tools don't trust your certificate's CA, then the output of
+`condor_ce_trace -d <CE hostname>` will include something like the following:
+
+```
+10/07/21 16:39:10 (D_SECURITY) -Error with certificate at depth: 0
+10/07/21 16:39:10 (D_SECURITY)   issuer   = /DC=org/DC=opensciencegrid/C=US/O=OSG Software/CN=OSG Test CA
+10/07/21 16:39:10 (D_SECURITY)   subject  = /DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=4c75de0db10c.htcondor.org
+10/07/21 16:39:10 (D_SECURITY)   err 20:unable to get local issuer certificate
+10/07/21 16:39:10 (D_SECURITY) Tried to connect: -1
+10/07/21 16:39:10 (D_SECURITY) SSL: library failure: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed
+```
+
+If your CE is using a grid certificate (i.e. one installed under
+`/etc/grid-security/`), then the client machine will need an
+`/etc/grid-security/certificates/` directory containing the CA files
+for your grid certificate, and the CE client tools must be configured
+to look there for the CA files.
+The CE configuration files on the client machine will need to include
+the following:
+
+```
+AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+```
 
 #### Jobs fail to submit: Verify SciToken contents
 
@@ -204,8 +249,17 @@ token.
     Tokens with an invalid `aud` value will appear in `/var/log/condor-ce/SchedLog` with the following errors if `D_SECURITY` is enabled in `SCHEDD_DEBUG`:
 
         10/07/21 15:55:39 (D_SECURITY) SCITOKENS:2:Failed to verify token and generate ACLs: token verification failed: 'aud' claim verification failed.
-1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE` or `compute.cancel compute.create compute.modify compute.read`
+
+1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE` or `compute.cancel compute.create compute.modify compute.read`.
+    Tokens with an invalid `scope` value will appear in `/var/log/condor-ce/SchedLog` with the following errors:
+
+        10/05/21 18:41:50 (D_ALWAYS) DC_AUTHENTICATE: authentication of <172.17.0.3:40489> was successful but resulted in a limited authorization which did not include this command (60021 DC_NOP_WRITE), so aborting.
+
 1.  Check that the `exp` (expiration) value is in the future.
+    Tokens that have expired will appear in `/var/log/condor-ce/SchedLog` with the following errors if `D_SECURITY` is enabled in `SCHEDD_DEBUG`:
+
+        10/05/21 18:10:55 (D_SECURITY) SCITOKENS:2:Failed to deserialize scitoken: token verification failed: token expired
+
 1.  Check that the `nbf` (not before) value is in the past.
 
 #### Jobs fail to submit: Check user mapping
