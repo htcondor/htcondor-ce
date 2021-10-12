@@ -653,6 +653,40 @@
     Jobs fail to submit to the CE
   </a>
   
+    <nav class="md-nav" aria-label="Jobs fail to submit to the CE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jobs-fail-to-submit-verify-ssl-configuration-on-the-ce" class="md-nav__link">
+    Jobs fail to submit: Verify SSL configuration on the CE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs-fail-to-submit-verify-ssl-configuration-on-the-client" class="md-nav__link">
+    Jobs fail to submit: Verify SSL configuration on the client
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs-fail-to-submit-verify-scitoken-contents" class="md-nav__link">
+    Jobs fail to submit: Verify SciToken contents
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs-fail-to-submit-check-user-mapping" class="md-nav__link">
+    Jobs fail to submit: Check user mapping
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1373,15 +1407,122 @@ You may see error messages like the following in your <a href="../logs/#schedlog
 08/30/16 16:53:12 PERMISSION DENIED to gsi@unmapped from host 72.33.0.189 for command 60021 (DC_NOP_WRITE), access level WRITE: reason: WRITE authorization policy contains no matching ALLOW entry for this request; identifiers used for this host: 72.33.0.189,dyn-72-33-0-189.uwnet.wisc.edu, hostname size = 1, original ip address = 72.33.0.189
 08/30/16 16:53:12 DC_AUTHENTICATE: Command not authorized, done!
 </code></pre></div>
+<p>The detailed debug output of <code>condor_ce_ping -d &lt;CE hostname&gt;</code> can provide
+useful data from the client side.</p>
+<p>The following are several potential causes and how to check and correct them.</p>
+<h4 id="jobs-fail-to-submit-verify-ssl-configuration-on-the-ce">Jobs fail to submit: Verify SSL configuration on the CE<a class="headerlink" href="#jobs-fail-to-submit-verify-ssl-configuration-on-the-ce" title="Permanent link">&para;</a></h4>
+<p>Your machine must have a valid host certificate and private key,
+and the CE must be configured to use them.
+See the documentation about
+<a href="../../configuration/authentication/#configuring-certificates">Configuring Certificates</a>
+for details.</p>
+<p>If the CE can't read its host certificate and private key, you will see
+an error like the following in <code>/var/log/condor-ce/SchedLog</code> if
+<code>D_SECURITY</code> is enabled in <code>SCHEDD_DEBUG</code></p>
+<div class="highlight"><pre><span></span><code>10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error loading private key from file
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error initializing server security context
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error creating SSL context
+</code></pre></div>
+<p><strong><em>Next actions</em></strong></p>
+<ol>
+<li>If your host certificate is installed under <code>/etc/grid-security/</code>,
+    ensure the CE is configured look for it there (see <a href="../../configuration/authentication/#configuring-certificates">configuring certificates</a>).</li>
+</ol>
+<h4 id="jobs-fail-to-submit-verify-ssl-configuration-on-the-client">Jobs fail to submit: Verify SSL configuration on the client<a class="headerlink" href="#jobs-fail-to-submit-verify-ssl-configuration-on-the-client" title="Permanent link">&para;</a></h4>
+<p>The CE client tools on the client machine must be configured to recognize
+the Certificate Autority (CA) that issued the CE's host certificate.</p>
+<p>If the client tools don't trust your CE's host certificate's CA, then the output of
+<code>condor_ce_trace -d &lt;CE hostname&gt;</code> will include something like the following:</p>
+<div class="highlight"><pre><span></span><code>10/07/21 16:39:10 (D_SECURITY) -Error with certificate at depth: 0
+10/07/21 16:39:10 (D_SECURITY)   issuer   = /DC=org/DC=opensciencegrid/C=US/O=OSG Software/CN=OSG Test CA
+10/07/21 16:39:10 (D_SECURITY)   subject  = /DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=4c75de0db10c.htcondor.org
+10/07/21 16:39:10 (D_SECURITY)   err 20:unable to get local issuer certificate
+10/07/21 16:39:10 (D_SECURITY) Tried to connect: -1
+10/07/21 16:39:10 (D_SECURITY) SSL: library failure: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed
+</code></pre></div>
+<p>If your CE is using a grid certificate (i.e. one installed under
+<code>/etc/grid-security/</code>), then the client machine will need an
+<code>/etc/grid-security/certificates/</code> directory containing the CA files
+for your grid certificate, and the CE client tools must be configured
+to look there for the CA files.
+The CE configuration files on the client machine will need to include
+the following:</p>
+<div class="highlight"><pre><span></span><code>AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+</code></pre></div>
+<h4 id="jobs-fail-to-submit-verify-scitoken-contents">Jobs fail to submit: Verify SciToken contents<a class="headerlink" href="#jobs-fail-to-submit-verify-scitoken-contents" title="Permanent link">&para;</a></h4>
+<p>If SciTokens is the authentication method being used, you can examine
+the token's payload for some common errors.
+If you have access to the token itself, you can decode it at
+<a href="https://jwt.io">jwt.io</a>.
+If you have the <code>D_AUDIT</code> debug level enabled, the token's payload will
+appear in the <code>SchedLog</code> file, like so:
+<div class="highlight"><pre><span></span><code>10/05/21 18:34:06 (D_AUDIT) Examining SciToken with payload {&lt;payload contents&gt;}.
+</code></pre></div></p>
+<p>The token's payload will look something like this:
+<div class="highlight"><pre><span></span><code>{
+  &quot;aud&quot;: &quot;ANY&quot;,
+  &quot;ver&quot;: &quot;scitokens:2.0&quot;,
+  &quot;scope&quot;: &quot;condor:/READ condor:/WRITE&quot;,
+  &quot;exp&quot;: 1633488473,
+  &quot;sub&quot;: &quot;htcondor-ce-dev&quot;,
+  &quot;iss&quot;: &quot;https://demo.scitokens.org&quot;,
+  &quot;iat&quot;: 1633459675,
+  &quot;nbf&quot;: 1633459675,
+  &quot;jti&quot;: &quot;cb84b7af-ed21-450d-a50e-552a5cd2904c&quot;
+}
+</code></pre></div></p>
+<p><strong>Next actions</strong></p>
+<p>If any of the following checks fail, the user will need a new, corrected,
+token.</p>
+<ol>
+<li>
+<p>Check that the <code>aud</code> (audience) value is either <code>ANY</code>, <code>https://wlcg.cern.ch/jwt/v1/any</code>, or matches one of the items from <code>condor_ce_config_val SCITOKENS_SERVER_AUDIENCE</code> (i.e. <code>&lt;CE hostname&gt;:9619</code>).
+    Tokens with an invalid <code>aud</code> value will appear in <code>/var/log/condor-ce/SchedLog</code> with the following errors if <code>D_SECURITY</code> is enabled in <code>SCHEDD_DEBUG</code>:</p>
+<div class="codehilite"><pre><span></span><code>10/07/21 15:55:39 (D_SECURITY) SCITOKENS:2:Failed to verify token and generate ACLs: token verification failed: &#39;aud&#39; claim verification failed.
+</code></pre></div>
+
+</li>
+<li>
+<p>Check that the <code>scope</code> value includes the string <code>condor:/READ condor:/WRITE</code> or <code>compute.cancel compute.create compute.modify compute.read</code>.
+    Tokens with an invalid <code>scope</code> value will appear in <code>/var/log/condor-ce/SchedLog</code> with the following errors:</p>
+<div class="codehilite"><pre><span></span><code>10/05/21 18:41:50 (D_ALWAYS) DC_AUTHENTICATE: authentication of &lt;172.17.0.3:40489&gt; was successful but resulted in a limited authorization which did not include this command (60021 DC_NOP_WRITE), so aborting.
+</code></pre></div>
+
+</li>
+<li>
+<p>Check that the <code>exp</code> (expiration) value is in the future.
+    Tokens that have expired will appear in <code>/var/log/condor-ce/SchedLog</code> with the following errors if <code>D_SECURITY</code> is enabled in <code>SCHEDD_DEBUG</code>:</p>
+<div class="codehilite"><pre><span></span><code>10/05/21 18:10:55 (D_SECURITY) SCITOKENS:2:Failed to deserialize scitoken: token verification failed: token expired
+</code></pre></div>
+
+</li>
+<li>
+<p>Check that the <code>nbf</code> (not before) value is in the past.</p>
+</li>
+</ol>
+<h4 id="jobs-fail-to-submit-check-user-mapping">Jobs fail to submit: Check user mapping<a class="headerlink" href="#jobs-fail-to-submit-check-user-mapping" title="Permanent link">&para;</a></h4>
+<p>The CE must be able to map the identity of the job submitter to a local
+OS account, used for storing the job sandbox and running the job under the
+local batch system.
+This mapping is done via a set of
+<a href="../../configuration/authentication/">mapfiles</a>.
+If no mapping is available, then job submission will fail.</p>
+<p>If a SciToken can't be mapped and the <code>D_SECURITY</code> debug level is enabled, then you will see this in the <code>SchedLog</code> file:
+<div class="highlight"><pre><span></span><code>10/05/21 18:56:04 (D_SECURITY) Failed to map SCITOKENS authenticated identity &#39;https://demo.scitokens.org,htcondor-ce-dev&#39;, failing authentication to give another authentication method a go.
+</code></pre></div></p>
 <p><strong>Next actions</strong></p>
 <ol>
-<li><strong>Check voms-mapfile or grid-mapfile</strong> and ensure that the user's DN or VOMS attributes are known to your
-    <a href="../../configuration/authentication/">authentication method</a>, and that the mapped users exist
-    on your CE and cluster.</li>
-<li><strong>Check for lcmaps errors</strong> in <code>/var/log/messages</code></li>
-<li><strong>If you do not see helpful error messages in <code>/var/log/messages</code>,</strong> adjust the debug level by adding <code>export
-    LCMAPS_DEBUG_LEVEL=5</code> to <code>/etc/sysconfig/condor-ce</code>, restarting the condor-ce service, and checking
-    <code>/var/log/messages</code> for errors again.</li>
+<li>Check the files in <code>/etc/condor-ce/mapfiles.d/</code> and ensure that the
+    user's authentication method and identity are present (possibly via a
+    regular expression), and that the mapped OS account exists on your CE
+    and cluster.</li>
+<li>If using GSI, check voms-mapfile or grid-mapfile as an alternate
+    file with a mapping for the user's identity.</li>
+<li>If using LCMAPS, check for LCMAPS errors in <code>/var/log/messages</code>.</li>
+<li>If you do not see helpful LCMAPS error messages in <code>/var/log/messages</code>,
+    adjust the debug level by adding <code>export LCMAPS_DEBUG_LEVEL=5</code> to
+    <code>/etc/sysconfig/condor-ce</code>, restarting the condor-ce service, and
+    checking <code>/var/log/messages</code> for errors again.</li>
 </ol>
 <h3 id="jobs-stay-idle-on-the-ce">Jobs stay idle on the CE<a class="headerlink" href="#jobs-stay-idle-on-the-ce" title="Permanent link">&para;</a></h3>
 <p>Check the following subsections in order, but note that jobs may take several minutes or longer to run if the CE is
