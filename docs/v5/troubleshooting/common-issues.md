@@ -156,15 +156,140 @@ You may see error messages like the following in your [SchedLog](logs.md#schedlo
 08/30/16 16:53:12 DC_AUTHENTICATE: Command not authorized, done!
 ```
 
+The detailed debug output of `condor_ce_ping -d <CE hostname>` can provide
+useful data from the client side.
+
+The following are several potential causes and how to check and correct them.
+
+#### Jobs fail to submit: Verify SSL configuration on the CE
+
+Your machine must have a valid host certificate and private key,
+and the CE must be configured to use them.
+See the documentation about
+[Configuring Certificates](../configuration/authentication.md#configuring-certificates)
+for details.
+
+If the CE can't read its host certificate and private key, you will see
+an error like the following in `/var/log/condor-ce/SchedLog` if
+`D_SECURITY` is enabled in `SCHEDD_DEBUG`
+
+```
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error loading private key from file
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error initializing server security context
+10/07/21 17:52:01 (D_SECURITY) SSL Auth: Error creating SSL context
+```
+
+***Next actions***
+
+1.  If your host certificate is installed under `/etc/grid-security/`,
+    ensure the CE is configured look for it there (see [configuring certificates](../configuration/authentication.md#configuring-certificates)).
+
+#### Jobs fail to submit: Verify SSL configuration on the client
+
+The CE client tools on the client machine must be configured to recognize
+the Certificate Autority (CA) that issued the CE's host certificate.
+
+If the client tools don't trust your CE's host certificate's CA, then the output of
+`condor_ce_trace -d <CE hostname>` will include something like the following:
+
+```
+10/07/21 16:39:10 (D_SECURITY) -Error with certificate at depth: 0
+10/07/21 16:39:10 (D_SECURITY)   issuer   = /DC=org/DC=opensciencegrid/C=US/O=OSG Software/CN=OSG Test CA
+10/07/21 16:39:10 (D_SECURITY)   subject  = /DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=4c75de0db10c.htcondor.org
+10/07/21 16:39:10 (D_SECURITY)   err 20:unable to get local issuer certificate
+10/07/21 16:39:10 (D_SECURITY) Tried to connect: -1
+10/07/21 16:39:10 (D_SECURITY) SSL: library failure: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed
+```
+
+If your CE is using a grid certificate (i.e. one installed under
+`/etc/grid-security/`), then the client machine will need an
+`/etc/grid-security/certificates/` directory containing the CA files
+for your grid certificate, and the CE client tools must be configured
+to look there for the CA files.
+The CE configuration files on the client machine will need to include
+the following:
+
+```
+AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
+```
+
+#### Jobs fail to submit: Verify SciToken contents
+
+If SciTokens is the authentication method being used, you can examine
+the token's payload for some common errors.
+If you have access to the token itself, you can decode it at
+[jwt.io](https://jwt.io).
+If you have the `D_AUDIT` debug level enabled, the token's payload will
+appear in the `SchedLog` file, like so:
+```
+10/05/21 18:34:06 (D_AUDIT) Examining SciToken with payload {<payload contents>}.
+```
+
+The token's payload will look something like this:
+```
+{
+  "aud": "ANY",
+  "ver": "scitokens:2.0",
+  "scope": "condor:/READ condor:/WRITE",
+  "exp": 1633488473,
+  "sub": "htcondor-ce-dev",
+  "iss": "https://demo.scitokens.org",
+  "iat": 1633459675,
+  "nbf": 1633459675,
+  "jti": "cb84b7af-ed21-450d-a50e-552a5cd2904c"
+}
+```
+
 **Next actions**
 
-1.  **Check voms-mapfile or grid-mapfile** and ensure that the user's DN or VOMS attributes are known to your
-    [authentication method](../configuration/authentication.md), and that the mapped users exist
-    on your CE and cluster.
-1.  **Check for lcmaps errors** in `/var/log/messages`
-1.  **If you do not see helpful error messages in `/var/log/messages`,** adjust the debug level by adding `export
-    LCMAPS_DEBUG_LEVEL=5` to `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and checking
-    `/var/log/messages` for errors again.
+If any of the following checks fail, the user will need a new, corrected,
+token.
+
+1.  Check that the `aud` (audience) value is either `ANY`, `https://wlcg.cern.ch/jwt/v1/any`, or matches one of the items from `condor_ce_config_val SCITOKENS_SERVER_AUDIENCE` (i.e. `<CE hostname>:9619`).
+    Tokens with an invalid `aud` value will appear in `/var/log/condor-ce/SchedLog` with the following errors if `D_SECURITY` is enabled in `SCHEDD_DEBUG`:
+
+        10/07/21 15:55:39 (D_SECURITY) SCITOKENS:2:Failed to verify token and generate ACLs: token verification failed: 'aud' claim verification failed.
+
+1.  Check that the `scope` value includes the string `condor:/READ condor:/WRITE` or `compute.cancel compute.create compute.modify compute.read`.
+    Tokens with an invalid `scope` value will appear in `/var/log/condor-ce/SchedLog` with the following errors:
+
+        10/05/21 18:41:50 (D_ALWAYS) DC_AUTHENTICATE: authentication of <172.17.0.3:40489> was successful but resulted in a limited authorization which did not include this command (60021 DC_NOP_WRITE), so aborting.
+
+1.  Check that the `exp` (expiration) value is in the future.
+    Tokens that have expired will appear in `/var/log/condor-ce/SchedLog` with the following errors if `D_SECURITY` is enabled in `SCHEDD_DEBUG`:
+
+        10/05/21 18:10:55 (D_SECURITY) SCITOKENS:2:Failed to deserialize scitoken: token verification failed: token expired
+
+1.  Check that the `nbf` (not before) value is in the past.
+
+#### Jobs fail to submit: Check user mapping
+
+The CE must be able to map the identity of the job submitter to a local
+OS account, used for storing the job sandbox and running the job under the
+local batch system.
+This mapping is done via a set of
+[mapfiles](../configuration/authentication.md).
+If no mapping is available, then job submission will fail.
+
+If a SciToken can't be mapped and the `D_SECURITY` debug level is enabled, then you will see this in the `SchedLog` file:
+```
+10/05/21 18:56:04 (D_SECURITY) Failed to map SCITOKENS authenticated identity 'https://demo.scitokens.org,htcondor-ce-dev', failing authentication to give another authentication method a go.
+```
+
+
+**Next actions**
+
+1.  Check the files in `/etc/condor-ce/mapfiles.d/` and ensure that the
+    user's authentication method and identity are present (possibly via a
+    regular expression), and that the mapped OS account exists on your CE
+    and cluster.
+1.  If using GSI, check voms-mapfile or grid-mapfile as an alternate
+    file with a mapping for the user's identity.
+1.  If using LCMAPS, check for LCMAPS errors in `/var/log/messages`.
+1.  If you do not see helpful LCMAPS error messages in `/var/log/messages`,
+    adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to
+    `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and
+    checking `/var/log/messages` for errors again.
 
 ### Jobs stay idle on the CE
 
