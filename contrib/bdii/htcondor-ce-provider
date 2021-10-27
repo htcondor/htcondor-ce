@@ -281,6 +281,7 @@ def get_ce_jobs(ce_schedd_ad, time_out):
         query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
     except RuntimeError as exc:
         sys.stderr.write("%s: %s\n" % (exc, ce_fqdn))
+        raise
 
     idle_vo_jobs = defaultdict(int)
     running_vo_jobs = defaultdict(int)
@@ -399,6 +400,8 @@ def main():
         try:
             total_vo_jobs, idle_vo_jobs, running_vo_jobs = get_ce_jobs(ce_schedd_ad, time_out)
         except TimeoutError:
+            continue
+        except RuntimeError:
             continue
 
         for voname in vonames:
