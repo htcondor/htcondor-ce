@@ -34,7 +34,7 @@ req = request.Request("https://demo.scitokens.org/issue",
 resp = request.urlopen(req).read()
 
 # Convert the "bytes" response to text
-token_path = os.environ.get('BEARER_TOKEN', '') or \
+token_path = os.environ.get('BEARER_TOKEN_FILE', '') or \
     f"/tmp/bt_u{os.geteuid()}"
 
 with open(token_path, 'w') as f:
