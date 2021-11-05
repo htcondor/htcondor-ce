@@ -274,7 +274,12 @@ def get_cert_issuer(path):
 
 
 def get_ce_jobs(ce_schedd_ad, time_out):
-    ce_schedd = htcondor.Schedd(ce_schedd_ad)
+    try:
+        ce_schedd = htcondor.Schedd(ce_schedd_ad)
+    except RuntimeError as exc:
+        sys.stderr.write("%s\n" % exc)
+        raise
+
     ce_fqdn = ce_schedd_ad['Machine']
 
     try:
