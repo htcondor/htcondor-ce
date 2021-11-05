@@ -62,14 +62,14 @@ do
     batch_record=`TZ=GMT condor_q -job "$file" \
         -format "%s|" GlobalJobId \
         -format "%s|" Owner \
-        -format "%d|" RemoteWallClockTime \
-        -format "%d|" RemoteUserCpu \
-        -format "%d|" RemoteSysCpu \
-        -format "%d|" JobStartDate \
-        -format "%d|" EnteredCurrentStatus \
-        -format "%d|" ResidentSetSize_RAW \
-        -format "%d|" ImageSize_RAW \
-        -format "%d|" RequestCpus \
+        -format "%lld|" RemoteWallClockTime \
+        -format "%lld|" RemoteUserCpu \
+        -format "%lld|" RemoteSysCpu \
+        -format "%lld|" JobStartDate \
+        -format "%lld|" EnteredCurrentStatus \
+        -format "%lld|" ResidentSetSize_RAW \
+        -format "%lld|" ImageSize_RAW \
+        -format "%lld|" RequestCpus \
         "${CONDOR_Q_EXTRA_ARGS[@]}"`
     OUTPUT_FILE="$OUTPUT_DIR/batch-${OUTPUT_DATETIME}-$(hostname -s)"
     echo "$batch_record" >> "$OUTPUT_FILE"
