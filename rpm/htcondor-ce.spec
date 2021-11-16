@@ -559,6 +559,7 @@ fi
 - Update configuration verification script to handle job router transforms
 - Corrected ownership of the HTCondor PER_JOBS_HISTORY_DIR
 - Fix bug passing maximum wall time requests to the local batch system
+- Be more tolerant of white space in authentication method list separators
 
 * Tue May 18 2021 Brian Lin <blin@cs.wisc.edu> - 5.1.1-1
 - Improve restart time of HTCondor-CE View (HTCONDOR-420)
