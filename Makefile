@@ -71,11 +71,6 @@ CLIENT_DEFAULT_CONFIG_FILES := \
 	config/01-common-auth-defaults.conf \
 	config/01-common-collector-defaults.conf
 
-CLIENT_MAP_FILES := \
-	config/mapfiles.d/10-gsi.conf \
-	config/mapfiles.d/10-scitokens.conf \
-	config/mapfiles.d/50-gsi-callout.conf
-
 CLIENT_DEFAULT_MAP_FILES := \
 	config/mapfiles.d/50-common-default.conf
 
@@ -141,6 +136,11 @@ CE_DEFAULT_CONFIG_FILES := \
 	config/03-managed-fork-defaults.conf \
         config/05-ce-health-defaults.conf \
 	contrib/apelscripts/50-ce-apel-defaults.conf
+
+CE_MAP_FILES := \
+	config/mapfiles.d/10-gsi.conf \
+	config/mapfiles.d/10-scitokens.conf \
+	config/mapfiles.d/50-gsi-callout.conf
 
 CE_CONDOR_CONFIG_FILES := \
 	config/50-condor-ce-defaults.conf \
@@ -296,7 +296,6 @@ client: _mkdirs
 	install -p -m 0755 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/			$(CLIENT_SHARE_FILES)
 
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/			$(CLIENT_CONFIG_FILES)
-	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/mapfiles.d/	$(CLIENT_MAP_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/config.d/		$(CLIENT_DEFAULT_CONFIG_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/mapfiles.d/		$(CLIENT_DEFAULT_MAP_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_PYTHON_DIR)/htcondorce/		 	$(CLIENT_PYTHON_FILES)
@@ -313,6 +312,7 @@ entrypoint: client _view
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor/config.d/	$(CE_CONDOR_CONFIG_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/ 		$(CE_USER_MAP_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/config.d/	$(CE_CONFIG_FILES)
+	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/condor-ce/mapfiles.d/	$(CE_MAP_FILES)
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SYSCONF_DIR)/sysconfig/		$(CE_SYSCONFIG_FILES)
 
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/apel		$(CE_APEL_README_FILES)

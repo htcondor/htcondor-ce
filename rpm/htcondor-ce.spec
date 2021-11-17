@@ -307,12 +307,15 @@ fi
 %{_unitdir}/condor-ce.service
 %{_tmpfilesdir}/condor-ce.conf
 
-
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-pilot-env.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
+
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
@@ -479,9 +482,6 @@ fi
 %config %{_datadir}/condor-ce/mapfiles.d/50-common-default.conf
 
 %config %{_sysconfdir}/condor-ce/condor_mapfile
-%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %dir %{_datadir}/condor-ce
 %if 0%{?rhel} < 8
