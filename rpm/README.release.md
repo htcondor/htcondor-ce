@@ -3,10 +3,10 @@ Releasing HTCondor-CE
 
 HTCondor-CE release and release candidate RPMs can be automatically built upon GitHub release/pre-release:
 
+1.  Update the version number in the [Makefile](../Makefile).
 1.  Update the version, release number, and changelog in the [RPM packaging](htcondor-ce.spec).
-    Also update the version number in [CMake](../CMakeLists.txt).
-    Release numbers should be of the form `0.rcA` or `A` where `A` increments for each release candidate or packaging
-    change, respectively.
+    Release candidate numbers should be of the form `0.rcA` or `A` where `A` increments for each release candidate or
+    packaging change, respectively.
 1.  [Draft a new GitHub release](https://github.com/htcondor/htcondor-ce/releases/new) against your target major version
     branch, i.e. `V5-branch`:
     - For production releases, use the tag `vX.Y.Z`, title `HTCondor-CE X.Y.Z`, and copy the RPM changelog entry into
