@@ -7,6 +7,18 @@ HTCondor-CE 5 is distributed via RPM and are available from the following Yum re
 - [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
 
 
+Known Issues
+------------
+
+Known bugs affecting HTCondor-CEs can be found in
+[Jira](https://opensciencegrid.atlassian.net/issues/?jql=project%20%3D%20HTCONDOR%20AND%20status%20not%20in%20(done%2C%20abandoned)%20and%20component%20%3D%20htcondor-ce%20and%20issuetype%20%3D%20bug)
+In particular, the following bugs are of note:
+
+-   C-style comments, e.g. `/* comment */`, in `JOB_ROUTER_ENTRIES` will prevent the JobRouter from routing jobs
+    ([HTCONDOR-864](https://opensciencegrid.atlassian.net/browse/HTCONDOR-864)).
+    For the time being, remove any comments if you are still using the
+    [deprecated syntax](configuration/job-router-overview.md#deprecated-syntax).
+
 Updating to HTCondor-CE 5
 -------------------------
 
