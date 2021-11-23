@@ -676,6 +676,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#known-issues" class="md-nav__link">
+    Known Issues
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#updating-to-htcondor-ce-5" class="md-nav__link">
     Updating to HTCondor-CE 5
   </a>
@@ -1079,6 +1086,16 @@
 <ul>
 <li><a href="https://research.cs.wisc.edu/htcondor/downloads/">HTCondor stable and current channels</a></li>
 <li><a href="https://opensciencegrid.org/docs/common/yum/">Open Science Grid</a></li>
+</ul>
+<h2 id="known-issues">Known Issues<a class="headerlink" href="#known-issues" title="Permanent link">&para;</a></h2>
+<p>Known bugs affecting HTCondor-CEs can be found in
+<a href="https://opensciencegrid.atlassian.net/issues/?jql=project%20%3D%20HTCONDOR%20AND%20status%20not%20in%20(done%2C%20abandoned)%20and%20component%20%3D%20htcondor-ce%20and%20issuetype%20%3D%20bug">Jira</a>
+In particular, the following bugs are of note:</p>
+<ul>
+<li>C-style comments, e.g. <code>/* comment */</code>, in <code>JOB_ROUTER_ENTRIES</code> will prevent the JobRouter from routing jobs
+    (<a href="https://opensciencegrid.atlassian.net/browse/HTCONDOR-864">HTCONDOR-864</a>).
+    For the time being, remove any comments if you are still using the
+    <a href="../configuration/job-router-overview/#deprecated-syntax">deprecated syntax</a>.</li>
 </ul>
 <h2 id="updating-to-htcondor-ce-5">Updating to HTCondor-CE 5<a class="headerlink" href="#updating-to-htcondor-ce-5" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
