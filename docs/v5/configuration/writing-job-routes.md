@@ -501,6 +501,26 @@ transform and deprecated syntax, respectively:
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
     ```
 
+### Number of gpus to request ###
+
+To set a default number of GPUs for routed jobs, set the job ClassAd attribute `RequestGPUs` in the route
+transform:
+
+=== "ClassAd Transform"
+
+    ```hl_lines="4"
+    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+      UNIVERSE VANILLA
+      # If the job does not already have a RequestGPUs value set it to 1
+      DEFAULT RequestGPUs = 1
+    @jrt
+
+    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+    ```
+
+The `DEFAULT` keyword works for any job attribute other than those mentioned above that require the use of
+alternative names for defaulting in the CE.  The deprecated syntax has no keyword for defaulting.
+
 ### Maximum walltime ###
 
 To set a default number of cores for routed jobs, set the variable or attribute `default_maxWallTime` for the ClassAd
