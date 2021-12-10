@@ -32,7 +32,14 @@ RUN \
                    make \
                    supervisor \
                    htcondor-ce \
-                   htcondor-ce-view && \
+                   htcondor-ce-view \
+                   mariadb \
+                   mariadb-server \
+                   slurm \
+                   slurm-slurmd \
+                   slurm-slurmctld \
+                   slurm-perlapi \
+                   slurm-slurmdbd && \
 
     # Install the CA generator tool
     git clone https://github.com/opensciencegrid/osg-ca-generator && \
@@ -49,6 +56,12 @@ COPY tests/containers/entrypoint/10-ce.conf               /etc/condor-ce/config.
 COPY tests/containers/entrypoint/10-token-creds.sh        /etc/condor-ce/image-init.d/
 COPY tests/containers/entrypoint/10-x509-creds.sh         /etc/condor-ce/image-init.d/
 COPY tests/containers/entrypoint/10-hostname.sh           /etc/condor-ce/image-init.d/
+COPY tests/containers/entrypoint/image-init.d/            /etc/condor-ce/image-init.d/
+COPY tests/containers/entrypoint/slurm/*                  /etc/slurm/
+
+# Slurm
+RUN chmod 600 /etc/slurm/slurmdbd.conf
+
 
 # Install the relevant bits from source
 COPY . /src/htcondor-ce
