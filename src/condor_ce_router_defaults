@@ -88,6 +88,7 @@ JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     /* Request GPUs for whole node jobs (HTCONDOR-103) */
     /* If a whole node job requests GPUs and is matched to a machine with GPUs then set the job's RequestGPUs to all the GPUs on that machine */
     copy_RequestGPUs = "orig_RequestGPUs";
+    copy_WantWholeNode = "WholeNodes";
     eval_set_OriginalGPUs = orig_RequestGPUs;
     /* MATCH_EXP_JOB_GLIDEIN_GPUs will be based on JOB_GLIDEIN_GPUs (set below) once the routed job is matched to an HTCondor slot */
     set_GlideinGPUsIsGood = !isUndefined(MATCH_EXP_JOB_GLIDEIN_GPUs) && (int(MATCH_EXP_JOB_GLIDEIN_GPUs) isnt error);
