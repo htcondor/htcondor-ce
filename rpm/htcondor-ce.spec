@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.2
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 5.1.3
+Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -551,6 +551,12 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.3-0.rc1
+- The HTCondor-CE central collector requires SSL credentials from client CEs
+- Fix BDII crash if an HTCondor Access Point is not available
+- Fix formatting of APEL records that contain huge values
+- HTCondor-CE client mapfiles are not installed on the central collector
+
 * Wed Sep 22 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.2-1
 - Fixed the default memory and CPU requests when using job router transforms
 - Apply default MaxJobs and MaxJobsIdle when using job router transforms
