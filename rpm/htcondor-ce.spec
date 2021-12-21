@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 5.1.3
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -551,7 +551,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.3-0.rc1
+* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.3-1
 - The HTCondor-CE central collector requires SSL credentials from client CEs
 - Fix BDII crash if an HTCondor Access Point is not available
 - Fix formatting of APEL records that contain huge values
