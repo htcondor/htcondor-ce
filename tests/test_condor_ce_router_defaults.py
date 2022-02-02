@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#/usr/bin/env python3
 """Unit tests for condor_ce_router_defaults"""
 
 import imp

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 """
 GIP provider for htcondor-CE.
@@ -8,7 +8,6 @@ GIP provider for htcondor-CE.
 # pylint: disable=invalid-name
 
 
-from __future__ import print_function
 import re
 import sys
 from datetime import datetime
@@ -271,17 +270,17 @@ def find_ce_state(ce_schedd_ad, time_out):
 def get_cert_issuer(path):
     cmd = ['/usr/bin/openssl', 'x509', '-noout', '-issuer', '-nameopt', 'RFC2253', '-in', path]
     cmd_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return cmd_proc.communicate()[0].replace('issuer=', '').strip()
+    return cmd_proc.communicate()[0].decode('latin-1', 'strict').replace('issuer=', '').strip()
 
 
 def get_ce_jobs(ce_schedd_ad, time_out):
-    ce_schedd = htcondor.Schedd(ce_schedd_ad)
     ce_fqdn = ce_schedd_ad['Machine']
-
     try:
+        ce_schedd = htcondor.Schedd(ce_schedd_ad)
         query = ce_schedd.xquery(projection=["JobStatus", "x509userproxyvoname"])
-    except RuntimeError, exc:
+    except RuntimeError as exc:
         sys.stderr.write("%s: %s\n" % (exc, ce_fqdn))
+        raise
 
     idle_vo_jobs = defaultdict(int)
     running_vo_jobs = defaultdict(int)
@@ -298,7 +297,7 @@ def get_ce_jobs(ce_schedd_ad, time_out):
                 idle_vo_jobs[job['x509userproxyvoname']] += 1
             elif job['JobStatus'] == 2:
                 running_vo_jobs[job['x509userproxyvoname']] += 1
-    except TimeoutError as exc:
+    except TimeoutError:
         sys.stderr.write("CE schedd on %s timed out after %i s.\n" % ce_fqdn, time_out)
         raise
 
@@ -353,7 +352,7 @@ def main():
 
             if startd['Machine'] not in total_cores:
                 total_cores[startd['Machine']] = startd['DetectedCpus']
-        except KeyError, exc:
+        except KeyError as exc:
             msg = "Malformed machine ad: Missing '{0}' attribute for {1}"\
                    .format(exc, startd['Machine'])
             sys.stderr.write(msg)
@@ -400,6 +399,8 @@ def main():
         try:
             total_vo_jobs, idle_vo_jobs, running_vo_jobs = get_ce_jobs(ce_schedd_ad, time_out)
         except TimeoutError:
+            continue
+        except RuntimeError:
             continue
 
         for voname in vonames:

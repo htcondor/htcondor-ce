@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 4.4.1
-Release: 3%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 5.1.3
+Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -19,11 +19,16 @@ URL: http://github.com/opensciencegrid/htcondor-ce
 #
 Source0: %{name}-%{version}%{?gitrev:-%{gitrev}}.tar.gz
 
-BuildRequires: boost-devel
-BuildRequires: cmake
+BuildRequires: openssl
+BuildRequires: python-srpm-macros
+BuildRequires: python-rpm-macros
+BuildRequires: python3-devel
+BuildRequires: python3-rpm-macros
 
-# because of https://jira.opensciencegrid.org/browse/SOFTWARE-2816
-Requires:  condor >= 8.6.5
+# Mapfiles.d changes require 8.9.13 but 8.9.13 has known bugs
+# affecting the Job Router and Python 3 collector plugin
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-244
+Requires:  condor >= 9.0.0
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -47,13 +52,7 @@ Requires: /usr/bin/unshare
 Group: Applications/Internet
 Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
 
-%if 0%{?rhel} >= 8
-%define __python /usr/bin/python3
 Requires: python3-condor
-%else
-%define __python /usr/bin/python2
-Requires: python2-condor
-%endif
 Requires: bdii
 
 %description bdii
@@ -77,11 +76,19 @@ Group: Applications/Internet
 Summary: A Website that will report the current status of the local HTCondor-CE
 
 Requires: %{name}-master = %{version}-%{release}
-Requires: python-cherrypy
-Requires: python-genshi
 Requires: ganglia-gmond
-Requires: rrdtool-python
-Requires: python-flask
+
+%if 0%{?rhel} >= 8
+Requires: python3-flask
+Requires: python3-gunicorn
+Requires: python3-rpm
+Requires: python3-rrdtool
+%else
+Requires: python36-flask
+Requires: python36-gunicorn
+Requires: python36-rpm
+Requires: rrdtool
+%endif
 
 %description view
 %{summary}
@@ -146,6 +153,10 @@ Summary: Client-side tools for submission to HTCondor-CE
 # Note the strange requirements (base package is not required!
 # Point is to be able to submit jobs without installing the server.
 Requires: condor
+
+# Explicitly require Python 3
+Requires: python3
+
 # voms-proxy-info used by condor_ce_trace
 %if 0%{?osg}
 # osg uses its own, patched version of voms-clients-cpp, so keep using that
@@ -154,13 +165,7 @@ Requires: voms-clients-cpp
 Requires: voms-clients
 %endif
 
-%if 0%{?rhel} >= 8
-%define __python /usr/bin/python3
 Requires: python3-condor
-%else
-%define __python /usr/bin/python2
-Requires: python2-condor
-%endif
 
 %description client
 %{summary}
@@ -171,15 +176,17 @@ Summary: Central HTCondor-CE information services collector
 
 Provides: %{name}-master = %{version}-%{release}
 Requires: %{name}-client = %{version}-%{release}
-Requires: libxml2-python
-Requires: python-six
 
 # Various requirements for the CE registry application
 # for registering the CE with this collector.
 Requires: mod_auth_openidc
-Requires: mod_wsgi
-Requires: python-flask
-Requires: python-genshi
+Requires: python3-mod_wsgi
+
+%if 0%{?rhel} >= 8
+Requires: python3-flask
+%else
+Requires: python36-flask
+%endif
 
 Conflicts: %{name}
 
@@ -189,17 +196,13 @@ Conflicts: %{name}
 
 %define plugins_dir %{_datadir}/condor-ce/ceview-plugins
 
+%define __python /usr/bin/python3
 
 %prep
 %setup -q
 
-%build
-%cmake -DHTCONDORCE_VERSION=%{version} -DSTATE_INSTALL_DIR=%{_localstatedir} -DPYTHON_SITELIB=%{python_sitelib}
-make %{?_smp_mflags}
-
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/%{plugins_dir}
+make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
 
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
@@ -209,8 +212,7 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/README.md
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
-rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_blah.sh
-rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch.sh
+rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_batch_blah.sh
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/condor_ce_apel.sh
 rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.service
 rm -f $RPM_BUILD_ROOT%{_unitdir}/condor-ce-apel.timer
@@ -226,6 +228,7 @@ mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
    $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor/history/
 rm -f $RPM_BUILD_ROOT%{plugins_dir}/agis_json.py
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.nonosg.conf \
       $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/05-ce-view-table.conf
@@ -238,14 +241,6 @@ rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.os
 # Gratia accounting cleanup
 %if ! 0%{?osg}
 rm -rf ${RPM_BUILD_ROOT%}%{_datadir}/condor-ce/gratia_cleanup.py*
-%endif
-
-%if 0%{?uw_build}
-# Use CERTIFICATE_MAPFILE for UW builds with instructions for adding specific
-# GSI auth lines since they don't necessarily use GT callouts
-rm -rf ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile.osg
-%else
-mv ${RPM_BUILD_ROOT}%{_sysconfdir}/condor-ce/condor_mapfile{.osg,}
 %endif
 
 install -m 0755 -d -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
@@ -298,6 +293,9 @@ fi
 
 %if 0%{?osg}
 %{_datadir}/condor-ce/gratia_cleanup.py*
+%if 0%{?rhel} < 8
+%{_datadir}/condor-ce/__pycache__/gratia_cleanup.*.pyc
+%endif
 %attr(1777,root,root) %dir %{_localstatedir}/lib/gratia/condorce_data
 %endif
 
@@ -309,12 +307,15 @@ fi
 %{_unitdir}/condor-ce.service
 %{_tmpfilesdir}/condor-ce.conf
 
-
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-auth.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-router.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-pilot-env.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
+
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
@@ -325,7 +326,8 @@ fi
 
 %{_datadir}/condor-ce/local-wrapper
 
-%{python_sitelib}/htcondorce/audit_payloads.py*
+%{python3_sitelib}/htcondorce/audit_payloads.py
+%{python3_sitelib}/htcondorce/__pycache__/audit_payloads.*.pyc
 
 %{_bindir}/condor_ce_host_network_check
 %{_bindir}/condor_ce_register
@@ -348,13 +350,13 @@ fi
 
 %files apel
 %{_datadir}/condor-ce/apel/README.md
-%{_datadir}/condor-ce/condor_blah.sh
-%{_datadir}/condor-ce/condor_batch.sh
+%{_datadir}/condor-ce/condor_batch_blah.sh
 %{_datadir}/condor-ce/condor_ce_apel.sh
 %{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
 %attr(-,root,root) %dir %{_localstatedir}/lib/condor-ce/apel/
+%attr(-,condor,condor) %dir %{_localstatedir}/lib/condor/history/
 
 %{_unitdir}/condor-ce-apel.service
 %{_unitdir}/condor-ce-apel.timer
@@ -364,18 +366,23 @@ fi
 %defattr(-,root,root,-)
 
 # Web package
-%{python_sitelib}/htcondorce/web.py*
-%{python_sitelib}/htcondorce/web_utils.py*
-%{python_sitelib}/htcondorce/rrd.py*
-%{python_sitelib}/htcondorce/registry.py*
-%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.js
-%{python_sitelib}/htcondorce/static/bootstrap-pincode-input.css
+%{python3_sitelib}/htcondorce/web.py
+%{python3_sitelib}/htcondorce/web_utils.py
+%{python3_sitelib}/htcondorce/rrd.py
+%{python3_sitelib}/htcondorce/registry.py
+%{python3_sitelib}/htcondorce/__pycache__/web.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/web_utils.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/rrd.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/registry.*.pyc
+%{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.js
+%{python3_sitelib}/htcondorce/static/bootstrap-pincode-input.css
 
+%dir %{_datadir}/condor-ce/templates
 %{_datadir}/condor-ce/templates/index.html
 %{_datadir}/condor-ce/templates/vos.html
 %{_datadir}/condor-ce/templates/metrics.html
 %{_datadir}/condor-ce/templates/health.html
-%{_datadir}/condor-ce/templates/header.html
+%{_datadir}/condor-ce/templates/view_base.html
 %{_datadir}/condor-ce/templates/pilots.html
 %{_datadir}/condor-ce/templates/code.html
 %{_datadir}/condor-ce/templates/code_submit.html
@@ -398,6 +405,10 @@ fi
 
 %if 0%{?osg}
 %{plugins_dir}/agis_json.py*
+%if 0%{?rhel} < 8
+%dir %{plugins_dir}/__pycache__
+%{plugins_dir}/__pycache__/agis_json.*.pyc
+%endif
 %endif
 
 %attr(-,condor,condor) %dir %{_localstatedir}/lib/condor-ce/spool/ceview
@@ -407,6 +418,8 @@ fi
 %files condor
 %defattr(-,root,root,-)
 
+%config(noreplace) %{_sysconfdir}/condor-ce/uid_acct_group.map
+%config(noreplace) %{_sysconfdir}/condor-ce/x509_acct_group.map
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-condor.conf
 %{_datadir}/condor-ce/config.d/02-ce-condor-defaults.conf
 %{_sysconfdir}/condor/config.d/50-condor-ce-defaults.conf
@@ -441,24 +454,40 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/02-ce-bosco.conf
 %{_datadir}/condor-ce/config.d/02-ce-bosco-defaults.conf
 %{_datadir}/condor-ce/bosco-cluster-remote-hosts.*
+%if 0%{?rhel} < 8
+%{_datadir}/condor-ce/__pycache__/bosco-cluster-remote-hosts.*.pyc
+%endif
 %dir %{_sysconfdir}/condor-ce/bosco_override
 
 %files client
 
 %{_bindir}/condor_ce_info_status
-%{python_sitelib}/htcondorce/info_query.py*
+%{python3_sitelib}/htcondorce/info_query.py
+%{python3_sitelib}/htcondorce/__pycache__/info_query.*.pyc
 
 %dir %{_sysconfdir}/condor-ce
 %dir %{_sysconfdir}/condor-ce/config.d
 %config %{_sysconfdir}/condor-ce/condor_config
 %attr(0700,root,root) %dir %{_sysconfdir}/condor-ce/passwords.d
 %attr(0700,condor,condor) %dir %{_sysconfdir}/condor-ce/tokens.d
+
+%dir %{_datadir}/condor-ce/
+%dir %{_datadir}/condor-ce/config.d
 %{_datadir}/condor-ce/config.d/01-common-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-common-collector-defaults.conf
 %{_datadir}/condor-ce/ce-status.cpf
 %{_datadir}/condor-ce/pilot-status.cpf
-%config(noreplace) %{_sysconfdir}/condor-ce/condor_mapfile
 
+%dir %{_datadir}/condor-ce/mapfiles.d
+%config %{_datadir}/condor-ce/mapfiles.d/50-common-default.conf
+
+%config %{_sysconfdir}/condor-ce/condor_mapfile
+
+%dir %{_datadir}/condor-ce
+%if 0%{?rhel} < 8
+%dir %{_datadir}/condor-ce/__pycache__
+%{_datadir}/condor-ce/__pycache__/verify_ce_config.*.pyc
+%endif
 %{_datadir}/condor-ce/condor_ce_env_bootstrap
 %{_datadir}/condor-ce/condor_ce_startup
 %{_datadir}/condor-ce/condor_ce_startup_internal
@@ -485,14 +514,17 @@ fi
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
 
-%dir %{python_sitelib}/htcondorce
-%{python_sitelib}/htcondorce/__init__.py*
-%{python_sitelib}/htcondorce/tools.py*
+%dir %{python3_sitelib}/htcondorce
+%{python3_sitelib}/htcondorce/__init__.py
+%{python3_sitelib}/htcondorce/tools.py
+%{python3_sitelib}/htcondorce/__pycache__/__init__.*.pyc
+%{python3_sitelib}/htcondorce/__pycache__/tools.*.pyc
 
 %files collector
 
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/mapfiles.d/50-central-collector.conf
 %{_datadir}/condor-ce/condor_ce_create_password
 
 %{_unitdir}/condor-ce-collector.service
@@ -500,7 +532,6 @@ fi
 
 %config %{_datadir}/condor-ce/config.d/01-ce-collector-requirements.conf
 %config %{_datadir}/condor-ce/config.d/05-ce-collector-auth.conf
-%config %{_sysconfdir}/condor-ce/condor_mapfile.central_collector
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce-collector
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/01-ce-collector.conf
 %attr(0700,condorce_webapp,condorce_webapp) %dir %{_sysconfdir}/condor-ce/webapp.tokens.d
@@ -520,10 +551,69 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Fri Nov 20 2020 Brian Lin <blin@cs.wisc.edu> - 4.4.1-3
-- Fix blahp requirements for HTCondor 8.9.9 (HTCONDOR-84)
-- Remove OSG grid-certificates requirement duplicated by downstream
-  requirements in the osg-ce metapackage
+* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.3-0.rc1
+- The HTCondor-CE central collector requires SSL credentials from client CEs
+- Fix BDII crash if an HTCondor Access Point is not available
+- Fix formatting of APEL records that contain huge values
+- HTCondor-CE client mapfiles are not installed on the central collector
+
+* Wed Sep 22 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.2-1
+- Fixed the default memory and CPU requests when using job router transforms
+- Apply default MaxJobs and MaxJobsIdle when using job router transforms
+- Improved SciTokens support in submission tools
+- Fixed --debug flag in condor_ce_run
+- Update configuration verification script to handle job router transforms
+- Corrected ownership of the HTCondor PER_JOBS_HISTORY_DIR
+- Fix bug passing maximum wall time requests to the local batch system
+
+* Tue May 18 2021 Brian Lin <blin@cs.wisc.edu> - 5.1.1-1
+- Improve restart time of HTCondor-CE View (HTCONDOR-420)
+- Fix bug that caused HTCondor-CE to ignore incoming BatchRuntime requests (#480)
+- Fix blahp packaging requirement (HTCONDOR-504)
+
+* Tue Mar 30 2021 Mark Coatsworth <coatsworth@cs.wisc.edu> - 5.1.0-1
+- Fix an issue where the CE removed running jobs prematurely (HTCONDOR-350)
+- Add optional job router transform syntax (HTCONDOR-243)
+- Add username and X.509 accounting group mapfiles for use by job router transforms (HTCONDOR-187)
+- Replace custom mappings in condor_mapfile with /etc/condor-ce/mapfiles.d/ (HTCONDOR-244)
+- Require regular expressions in the second field of the unified mapfile be enclosed by '/'(HTCONDOR-244)
+- Update maxWallTime logic to accept BatchRuntime (HTCONDOR-80)
+- Append SSL to the default authentication methods list (HTCONDOR-366)
+- APEL reporting scripts now use the local HTCondor's PER_JOB_HISTORY_DIR to collect job data. (HTCONDOR-293)
+- Use the `GlobalJobID` attribute as the APEL record `lrmsID` (#426)
+- Update HTCondor-CE registry app to Python 3 (HTCONDOR-307)
+- Enable SSL authentication by default for `READ`/`WRITE` authorization levels (HTCONDOR-366)
+- Downgrade errors in the configuration verification startup script to support routes written in the transform syntax (#465)
+- Allow required directories to be owned by non-`condor` groups (#451)
+- Fix an issue with an overly aggressive default `SYSTEM_PERIODIC_REMOVE` (HTCONDOR-350)
+- Fix incorrect path to Python 3 Collector plugin (HTCONDOR-400)
+- Fix faulty validation of `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ENTRIES` in the startup script (HTCONDOR-406)
+- Fix various Python 3 incompatibilities (#460)
+
+* Thu Feb 11 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-1
+- Add Python 3 and EL8 support (HTCondor-13)
+- Whole node jobs (HTCondor batch systems only) now make use of GPUs (HTCONDOR-103)
+- Added `USE_CE_HOME_DIR` configuration variable (default: `False`) to allow users to enable setting `$HOME` in the
+  routed job's environment based on the HTCondor-CE user's home directory
+- HTCondor-CE Central Collectors now prefer GSI over SSL authentication (HTCONDOR-237)
+- HTCondor-CE registry now validates the value of submitted client codes (HTCONDOR-241)
+- Automatically remove CE jobs that exceed their `maxWalltime` (if defined) or the configuration value of
+  `ROUTED_JOB_MAX_TIME` (default: 4320 sec/72 hrs)
+- Remove circular HTCondor-CE View configuration definition (HTCONDOR-161)
+- Replace htcondor-ce package requirement with python2-condor for htcondor-ce-bdii
+
+* Wed Jan 27 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-0.rc1
+- Remove unused deps from the central collector packaging
+
+* Wed Jan 27 2021 Brian Lin <blin@cs.wisc.edu> - 5.0.0-0.rc1
+- Convert HTCondor-CE to Python 3 (#391, #397, #400, #402, #403, #404, #405,
+  #406)
+- Add USE_CE_HOME_DIR configuration to allow users to disable passing the CE
+  users's HOME dir to the job on the worker node (#377)
+- RPM packaging fixes for default CE registry httpd configuration (#372)
+- Add CE View advertising of GPU job counts to the central collector (#381)
+- BDII: Reduce package dependencies of htcondor-ce-bdii (#384)
+- BDII: Add support for whitespace/comma separated local collectors (#375)
 
 * Wed Jul 15 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.4.1-2
 - Change voms-clients-cpp requirement to voms-clients for non-OSG builds,
@@ -582,7 +672,7 @@ fi
 - Add `systemctl daemon-reload` to packaging for initial installations
 - Improve robustness of BDII provider
 
-* Mon Sep 15 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
+* Mon Sep 16 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.1-1
 - Fix call to error() (#245)
 
 * Fri Sep 13 2019 Brian Lin <blin@cs.wisc.edu> - 4.0.0-1
@@ -690,7 +780,7 @@ expected to change is in /etc, other configuration is in /usr
 - Respect RequestCpus of incoming jobs (SOFTWARE-2598)
 - Fix set_attr check in condor_ce_startup (SOFTWARE-2581)
 
-* Tue Dec 24 2016 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
+* Tue Jan 24 2017 Brian Lin <blin@cs.wisc.edu> - 2.1.2-1
 - condor_ce_info_status: safely handle bad data (SOFTWARE-2185)
 - Added Russian Data Intensive Grid certs to condor_mapfile (GOC#31952)
 
@@ -727,7 +817,7 @@ expected to change is in /etc, other configuration is in /usr
 - HTCondor-CE should detect and refuse to start with invalid configs (SOFTWARE-1856)
 - Handle unbounded HTCondor-CE accounting dir (SOFTWARE-2090)
 
-* Wed Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
+* Wed Aug 31 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-2
 - Fix EL7 cleanup on uninstall
 
 * Mon Aug 29 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.8-1
@@ -760,10 +850,10 @@ expected to change is in /etc, other configuration is in /usr
 - Drop arch requirements
 - Accept subject DNs in extattr_table.txt (SOFTWARE-2243)
 
-* Fri Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
+* Mon Feb 22 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.2-1
 - Drop CE ClassAd functions from JOB_ROUTER_DEFAULTS
 
-* Wed Feb 07 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
+* Wed Feb 17 2016 Brian Lin <blin@cs.wisc.edu> - 2.0.1-1
 - Fix htcondor-ce-view requirements to allow installation with an htcondor-ce-collector
 - Drop CE ClassAd functions
 
@@ -795,7 +885,7 @@ expected to change is in /etc, other configuration is in /usr
 - Allow users to add onto accounting group defaults set by the job router (SOFTWARE-2067)
 - build against condor 8.4.1 (SOFTWARE-2084)
 
-* Mon Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
+* Fri Sep 25 2015 Brian Lin <blin@cs.wisc.edu> - 1.16-1
 - Add network troubleshooting tool (condor_ce_host_network_check)
 - Add ability to disable glideins advertising to the CE
 - Add non-DigiCert hostcerts for CERN

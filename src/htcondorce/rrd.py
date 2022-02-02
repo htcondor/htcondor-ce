@@ -1,10 +1,15 @@
+# TODO: catch rrdtool method exceptions and non-zero return codes from the rrdtool cli with `check_call()`
 
 import os
 import re
 import errno
-import tempfile
 
-import rrdtool
+# Try using rrdtool Python bindings
+try:
+    import rrdtool
+except ModuleNotFoundError:
+    # If not available, fallback to shelling out to the CLI
+    import subprocess
 
 
 def path_with_spool(environ, *paths):
@@ -20,19 +25,28 @@ def path_with_spool(environ, *paths):
     return joined_path
 
 
+def create(path, *args):
+    try:
+        rrdtool.create(path, *args)
+    except NameError:
+        cmd = ['/usr/bin/rrdtool', 'create', path] + list(args)
+        proc = subprocess.Popen(cmd)
+        proc.communicate()  # wait until 'rrdtool create' completes
+
+
 def check_rrd(environ, host, plot, group=None, name=None):
     path = path_with_spool(environ, host, plot, group, name)
     dirname, _ = os.path.split(path)
     try:
         os.makedirs(dirname)
-    except OSError, exc:
+    except OSError as exc:
         if exc.errno != errno.EEXIST:
             raise
     if os.path.exists(path):
         return path
 
     if plot in "jobs":
-        rrdtool.create(path,
+        create(path,
             "--step", "180",
             "DS:running:GAUGE:360:U:U",
             "DS:pending:GAUGE:360:U:U",
@@ -41,7 +55,7 @@ def check_rrd(environ, host, plot, group=None, name=None):
             "RRA:AVERAGE:0.5:20:8760",
             )
     elif plot == "vos":
-        rrdtool.create(path,
+        create(path,
             "--step", "180",
             "DS:running:GAUGE:360:U:U",
             "DS:pending:GAUGE:360:U:U",
@@ -51,7 +65,7 @@ def check_rrd(environ, host, plot, group=None, name=None):
             "RRA:AVERAGE:0.5:20:8760",
             )
     elif plot == "metrics":
-        rrdtool.create(path,
+        create(path,
             "--step", "180",
             "DS:metric:GAUGE:360:U:U",
             "RRA:AVERAGE:0.5:1:1000",
@@ -101,6 +115,24 @@ def get_rrd_interval(interval):
     return rrd_interval
 
 
+def generate_graph(interval, *args):
+    args = ["-",
+            "--imgformat", "PNG",
+            "--width", "400",
+            "--start", "-1%s" % get_rrd_interval(interval),
+            "--lower-limit", "0"] + list(args)
+
+    try:
+        out = rrdtool.graphv(*args)
+        return out['image']
+    except NameError:
+        # use graph instead of graphv since we don't need the metadata
+        cmd = ['/usr/bin/rrdtool', 'graph'] + list(args)
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        stdout, _ = proc.communicate()
+        return stdout
+
+
 def graph(environ, host, plot, interval):
 
     if plot not in ['jobs', 'vos', 'metrics']:
@@ -108,12 +140,8 @@ def graph(environ, host, plot, interval):
 
     if plot == "jobs":
         fname = check_rrd(environ, host, plot)
-        graph = rrdtool.graphv('-',
-            "--imgformat", "PNG",
-            "--width", "400",
-            "--start", "-1%s" % get_rrd_interval(interval),
+        graph = generate_graph(interval,
             "--vertical-label", "Pilots",
-            "--lower-limit", "0",
             "--title", "CE Pilot Counts",
             "DEF:Running=%s:running:AVERAGE" % fname,
             "DEF:Idle=%s:pending:AVERAGE" % fname,
@@ -141,12 +169,8 @@ def graph(environ, host, plot, interval):
     elif plot == 'vos':
         vo = environ.get('vo', 'Unknown')
         fname = check_rrd(environ, host, plot, vo)
-        graph = rrdtool.graphv('-',
-            "--imgformat", "PNG",
-            "--width", "400",
-            "--start", "-1%s" % get_rrd_interval(interval),
+        graph = generate_graph(interval,
             "--vertical-label", "Pilots",
-            "--lower-limit", "0",
             "--title", "%s Pilot Counts" % vo,
             "DEF:Running=%s:running:AVERAGE" % fname,
             "DEF:Idle=%s:pending:AVERAGE" % fname,
@@ -175,11 +199,7 @@ def graph(environ, host, plot, interval):
         group = environ.get('group', 'Unknown')
         name = environ.get('name', 'Unknown')
         fname = check_rrd(environ, host, plot, group, name)
-        graph = rrdtool.graphv('-',
-            "--imgformat", "PNG",
-            "--width", "400",
-            "--start", "-1%s" % get_rrd_interval(interval),
-            "--lower-limit", "0",
+        graph = generate_graph(interval,
             "--title", "%s %s" % (group, name),
             "DEF:metric=%s:metric:AVERAGE" % fname,
             "LINE2:metric#FF0000:%s" % name,
@@ -192,5 +212,13 @@ def graph(environ, host, plot, interval):
             )
 
 
-    return graph['image']
+    return graph
 
+
+def update(fname, value):
+    try:
+        rrdtool.update(fname, value)
+    except NameError:
+        cmd = ['/usr/bin/rrdtool', 'update', fname, value]
+        proc = subprocess.Popen(cmd)
+        proc.communicate()  # wait until 'rrdtool update' completes

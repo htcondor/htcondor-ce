@@ -1,35 +1,39 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-			xmlns:py="http://genshi.edgewall.org/">
-			<xi:include href="header.html" />
-			<head>
-				<title py:if="multice">Grid Overview</title>
-				<title py:if="not multice">HTCondor-CE Overview</title>
-			</head>
-			<body>
-    <div class="container" style="padding-top:60px">
-      <div py:for="group in sorted(metrics)">
-        <h1>${group}</h1>
-        <div py:for="name in sorted(metrics[group])" class="row">
-					<div class="col-sm-12">
-						<div class="row">
-							<h2 class="col-sm-6">${name}</h2>
-						</div>
-						<div class="row">
-            	<div class="col-sm-6">
-             		<h3>Last Hour</h3>
-             		<img src="graphs/metrics/${group}/${name}/hourly" class="img-responsive"/>
-            	</div>
-            	<div class="col-sm-6">
-             		<h3>Last Day</h3>
-								<img src="graphs/metrics/${group}/${name}/daily" class="img-responsive"/>
-							</div>
-						</div>
+{% extends "view_base.html" %}
+
+{% block title %}
+{% if multice %}
+Grid Overview
+{% else %}
+HTCondor-CE Overview
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding-top:60px">
+  <div>
+    {% for group in metrics|sort %}
+    <h1>{{ group }}</h1>
+    <div class="row">
+      {% for name in metrics.group|sort %}
+      <div class="col-sm-12">
+	<div class="row">
+	  <h2 class="col-sm-6">{{ name }}</h2>
+	</div>
+	<div class="row">
+          <div class="col-sm-6">
+            <h3>Last Hour</h3>
+            <img src="graphs/metrics/${group}/${name}/hourly" class="img-responsive"/>
           </div>
-        </div>
-        <hr/>
+          <div class="col-sm-6">
+            <h3>Last Day</h3>
+	    <img src="graphs/metrics/{{ group }}/{ {name }}/daily" class="img-responsive"/>
+	  </div>
+	</div>
       </div>
+      {% endfor %}
     </div>
-  </body>
-</html>
+    <hr/>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

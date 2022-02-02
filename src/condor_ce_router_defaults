@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import re
@@ -6,7 +6,24 @@ import pwd
 import classad
 from collections import OrderedDict
 
-JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
+JOB_ROUTER_CONFIG = r"""JOB_ROUTER_TRANSFORM_Env @=jrt
+    EVALMACRO default_env {advertise_pilots}
+    if $(USE_CE_HOME_DIR)
+        EVALMACRO use_ce_home userHome(Owner, "/")
+        default_env = $(default_env) HOME=$(use_ce_home)
+    endif
+
+    SET osg_environment "{osg_environment}"
+    EVALSET environment mergeEnvironment("$(default_env)", \
+                                         osg_environment, \
+                                         orig_environment, \
+                                         "$(CONDORCE_PILOT_JOB_ENV)", \
+                                         "$(default_pilot_job_env)")
+@jrt
+
+JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES) Env
+
+JOB_ROUTER_DEFAULTS_GENERATED @=jrd
   [ MaxIdleJobs = 2000;
     MaxJobs = $(CONDORCE_MAX_JOBS);
     /* by default, accept all jobs */
@@ -23,12 +40,12 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
 
     /* Set the environment */
     copy_environment = "orig_environment";
-    set_osg_environment = "@osg_environment@";
+    set_osg_environment = "{osg_environment}";
     eval_set_environment = mergeEnvironment(join(" ",
                                                  $(USE_CE_HOME_DIR) =?= True ?
                                                      strcat("HOME=", userHome(Owner, "/")) :
                                                      "",
-                                                 @advertise_pilots@),
+                                                 {advertise_pilots}),
                                             osg_environment,
                                             orig_environment,
                                             $(CONDORCE_PILOT_JOB_ENV),
@@ -71,6 +88,7 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     /* Request GPUs for whole node jobs (HTCONDOR-103) */
     /* If a whole node job requests GPUs and is matched to a machine with GPUs then set the job's RequestGPUs to all the GPUs on that machine */
     copy_RequestGPUs = "orig_RequestGPUs";
+    copy_WantWholeNode = "WholeNodes";
     eval_set_OriginalGPUs = orig_RequestGPUs;
     /* MATCH_EXP_JOB_GLIDEIN_GPUs will be based on JOB_GLIDEIN_GPUs (set below) once the routed job is matched to an HTCondor slot */
     set_GlideinGPUsIsGood = !isUndefined(MATCH_EXP_JOB_GLIDEIN_GPUs) && (int(MATCH_EXP_JOB_GLIDEIN_GPUs) isnt error);
@@ -113,17 +131,20 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                                                        default_xcount,
                                                        1));
 
-    set_CondorCE = 1;
+    /* BatchRuntime is in seconds but users configure default_maxWallTime and ROUTED_JOB_MAX_TIME in minutes */
+    copy_BatchRuntime = "orig_BatchRuntime";
+    eval_set_BatchRuntime = ifThenElse(maxWallTime isnt undefined,
+                                       60*maxWallTime,
+                                       ifThenElse(orig_BatchRuntime isnt undefined,
+                                                  orig_BatchRuntime,
+                                                  ifThenElse(default_maxWallTime isnt undefined,
+                                                             60*default_maxWallTime,
+                                                             60*$(ROUTED_JOB_MAX_TIME))));
 
-    /* WallTime is in seconds but users configure default_maxWallTime and ROUTED_JOB_MAX_TIME in minutes */
-    set_WallTime = ifThenElse(maxWallTime isnt undefined,
-                              60*maxWallTime,
-                              ifThenElse(default_maxWallTime isnt undefined,
-                                         60*default_maxWallTime,
-                                         60*$(ROUTED_JOB_MAX_TIME)));
+    set_CondorCE = 1;
     eval_set_CERequirements = ifThenElse(default_CERequirements isnt undefined,
-                                         strcat(default_CERequirements, ",Walltime,CondorCE"),
-                                         "Walltime,CondorCE");
+                                         strcat(default_CERequirements, ",CondorCE"),
+                                         "CondorCE");
 
     copy_OnExitHold = "orig_OnExitHold";
     set_OnExitHold = ifThenElse(orig_OnExitHold isnt undefined,
@@ -155,11 +176,20 @@ JOB_ROUTER_DEFAULTS = """JOB_ROUTER_DEFAULTS_GENERATED @=jrd
                                                    orig_OnExitHoldSubCode,
                                                    1),
                                        42);
-
-    set_AccountingGroupOSG = @accounting_group@;
-    eval_set_AccountingGroup = AccountingGroupOSG;
   ]
   @jrd
+"""
+
+ACCOUNTING_GROUP_CONFIG = """
+# Also append the accounting group routing rules to the old job router syntax
+# since it's still the default syntax
+JOB_ROUTER_DEFAULTS_GENERATED @=jrd
+  $(JOB_ROUTER_DEFAULTS_GENERATED)
+  [
+    set_AccountingGroupOSG = {accounting_group};
+    eval_set_AccountingGroup = AccountingGroupOSG;
+  ]
+@jrd
 """
 
 osg_environment_files = ["/var/lib/osg/osg-job-environment.conf",
@@ -312,15 +342,14 @@ def main():
     # Construct HTCondor-formatted environment string
     env_string = " ".join(["%s=%s" % (i[0], i[1]) for i in osg_env.items()])
 
-    accounting_group_str = set_accounting_group()
+    advertise_pilots = advertise_pilots_value()
+    defaults = JOB_ROUTER_CONFIG.format(osg_environment=env_string, advertise_pilots=advertise_pilots)
 
-    defaults = JOB_ROUTER_DEFAULTS.replace("@osg_environment@", env_string)
-    defaults = defaults.replace("@advertise_pilots@", advertise_pilots_value())
+    accounting_group_expr = set_accounting_group()
+    if accounting_group_expr:
+        defaults += ACCOUNTING_GROUP_CONFIG.format(accounting_group=accounting_group_expr)
 
-    try:
-        print defaults.replace("@accounting_group@", accounting_group_str)
-    except TypeError:  # if no accounting group mappings, remove them from the classad
-        print re.sub(r'.*AccountingGroupOSG.*\n', '', defaults)
+    print(defaults)
 
 
 if __name__ == "__main__":

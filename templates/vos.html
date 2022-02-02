@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:py="http://genshi.edgewall.org/">
-   <xi:include href="header.html" />
-  <head>
-    <title>HTCondor-CE VO Overview</title>
+{% extends "view_base.html" %}
+
+
+{% block title %}
+{% if multice %}
+Grid Overview
+{% else %}
+HTCondor-CE Overview
+{% endif %}
+{% endblock %}
+
+
+{% block script %}
     <script type='text/javascript'>
 //<![CDATA[
         google.load('visualization', '1', {packages:['table', 'controls']});
@@ -30,34 +36,39 @@
         }
 //]]>
     </script>
-  </head>
-  <body>
-    <div class="container" style="padding-top:60px">
-      <div py:for="vo in sorted(vos)" class="row" id="top_summary">
-        <div class="col-sm-12">
-          <div class="col-sm-3" style="padding-top:40px">
-            <h1>${vo}</h1>
-            <div id="${vo}_table"></div>
-          </div>
-          <div class="col-sm-4 col-sm-offset-1">
-            <div class="row">
-              <h2>Last Hour</h2>
-              <div id="${vo}_hourly_div">
-                <img id="${vo}_hourly_img" src="graphs/vos/${vo}/hourly" class="img-responsive"/>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="row">
-              <h2>Last Day</h2>
-              <div id="${vo}_daily_div">
-                <img id="${vo}_daily_img" src="graphs/vos/${vo}/daily" class="img-responsive"/>
-              </div>
-            </div>
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding-top:60px">
+  {% if not vos %}
+  <h1>No VO data found</h1>
+  {% endif %}
+  <div class="row" id="top_summary">
+    {% for vo in vos|sort %}
+    <div class="col-sm-12">
+      <div class="col-sm-3" style="padding-top:40px">
+        <h1>{{ vo }}</h1>
+        <div id="{{ vo }}_table"></div>
+      </div>
+      <div class="col-sm-4 col-sm-offset-1">
+        <div class="row">
+          <h2>Last Hour</h2>
+          <div id="{{ vo }}_hourly_div">
+            <img id="{{ vo }}_hourly_img" src="graphs/vos/{{ vo }}/hourly" class="img-responsive"/>
           </div>
         </div>
-        <hr/>
+      </div>
+      <div class="col-sm-4">
+        <div class="row">
+          <h2>Last Day</h2>
+          <div id="{{ vo }}_daily_div">
+            <img id="{{ vo }}_daily_img" src="graphs/vos/{{ vo }}/daily" class="img-responsive"/>
+          </div>
+        </div>
       </div>
     </div>
-  </body>
-</html>
+    <hr/>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

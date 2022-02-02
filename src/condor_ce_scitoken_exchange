@@ -12,6 +12,7 @@ import time
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
 import htcondor
+import htcondorce.tools as ce
 
 
 DEFAULT_COLLECTOR_PORT="9619"
@@ -40,7 +41,7 @@ def acquire_ce_token(pool, name, token_dir, debug=False):
     if result.returncode:
         print("condor_token_fetch failed with error %d:" % result.returncode)
         print(result.stderr.decode('ascii'), file=sys.stderr, end='')
-    return result.stdout
+    return ce.to_str(result.stdout)
 
 
 def exchange_scitoken(pool, name, scitoken_fname, token_dir, debug=False):
@@ -55,7 +56,7 @@ def exchange_scitoken(pool, name, scitoken_fname, token_dir, debug=False):
     if result.returncode:
         print("condor_scitoken_exchange failed with error %d:" % result.returncode)
         print(result.stderr.decode('ascii'), file=sys.stderr, end='')
-    return result.stdout
+    return ce.to_str(result.stdout)
 
 
 def token_is_valid(contents):
@@ -133,7 +134,7 @@ def main():
 
     result = exchange_scitoken(pool, args.name, args.scitoken, token_dir, debug=args.debug)
     if result:
-        print(result.decode('ascii'), end="")
+        print(result.decode('ascii'), end='')
     else:
         print("Failed to exchange SciToken in %s with CE at %s" % (args.scitoken, args.name), file=sys.stderr)
         sys.exit(3)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 """Unit tests for verify_ce_config.py"""
 
 import imp

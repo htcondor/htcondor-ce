@@ -1,9 +1,6 @@
 
 import os
-import re
 import json
-import time
-import types
 import socket
 import traceback
 
@@ -104,9 +101,8 @@ def get_schedd_statuses(environ={}):
 
 def get_schedd_status(environ={}):
     statuses = get_schedd_statuses()
-    keys = statuses.keys()
-    keys.sort()
-    return statuses[keys[0]]
+    top_result = sorted(statuses)[0]
+    return statuses[top_result]
 
 
 def ad_to_json(ad):
@@ -117,7 +113,7 @@ def ad_to_json(ad):
             result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
         else:
             val = val_expr.eval()
-            if isinstance(val, types.ListType) or isinstance(val, types.DictType):
+            if isinstance(val, list) or isinstance(val, dict):
                 result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
             else:
                 result[key] = val
@@ -194,3 +190,6 @@ def get_spooldir():
         spooldir = "tmp"
     return spooldir
 
+
+def dump_json_utf8(results):
+    return json.dumps(results).encode('utf-8')
