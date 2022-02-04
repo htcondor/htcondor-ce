@@ -135,6 +135,15 @@ HTCondor-CE 5 Version History
 This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 5.1.3 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.3) includes the following changes:
+
+-   The HTCondor-CE central collector requires SSL credentials from client CEs
+-   Fix BDII crash if an HTCondor Access Point is not available
+-   Fix formatting of APEL records that contain huge values
+-   HTCondor-CE client mapfiles are not installed on the central collector
+
 ### 5.1.2 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.2) includes the following changes:
