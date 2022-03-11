@@ -1454,10 +1454,10 @@ the following:</p>
 the token's payload for some common errors.
 If you have access to the token itself, you can decode it at
 <a href="https://jwt.io">jwt.io</a>.
-If you have the <code>D_AUDIT</code> debug level enabled, the token's payload will
-appear in the <code>SchedLog</code> file, like so:
+The token's payload will
+appear in <code>/var/log/condor-ce/AuditLog*</code> files, like so:</p>
 <div class="highlight"><pre><span></span><code>10/05/21 18:34:06 (D_AUDIT) Examining SciToken with payload {&lt;payload contents&gt;}.
-</code></pre></div></p>
+</code></pre></div>
 <p>The token's payload will look something like this:
 <div class="highlight"><pre><span></span><code>{
   &quot;aud&quot;: &quot;ANY&quot;,
