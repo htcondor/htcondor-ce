@@ -219,8 +219,9 @@ If SciTokens is the authentication method being used, you can examine
 the token's payload for some common errors.
 If you have access to the token itself, you can decode it at
 [jwt.io](https://jwt.io).
-If you have the `D_AUDIT` debug level enabled, the token's payload will
-appear in the `SchedLog` file, like so:
+The token's payload will
+appear in `/var/log/condor-ce/AuditLog*` files, like so:
+
 ```
 10/05/21 18:34:06 (D_AUDIT) Examining SciToken with payload {<payload contents>}.
 ```
