@@ -11,7 +11,9 @@ jobs:
     if: startsWith(github.repository, 'htcondor/')
     strategy:
       matrix:
-        dver: [7, 8]
+        platform:
+          - centos:7
+          - rockylinux:8
     steps:
       - uses: actions/checkout@v2
 
@@ -20,23 +22,23 @@ jobs:
           echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
             sudo service docker restart
 
-      - name: Start CentOS ${{ matrix.dver}} image
+      - name: Start ${{ matrix.platform }} image
         run: |
           docker run --detach --env "container=docker" \
                  --name $GITHUB_SHA \
                  --volume `pwd`:/htcondor-ce:rw \
-                 centos:centos${{ matrix.dver }} \
+                 ${{ matrix.platform }} \
                  /usr/sbin/init
 
-      - name: Build CHTC EL${{ matrix.dver }} RPMs
+      - name: Build CHTC ${{ matrix.platform }} RPMs
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
                    "/htcondor-ce/tests/build_rpms.sh \
-                     ${{ matrix.dver }} \
+                     ${{ matrix.platform }} \
                      uw_build"
 
-      - name: Upload CHTC EL${{ matrix.dver }} RPMs
+      - name: Upload CHTC ${{ matrix.platform }} RPMs
         run: |
           ssh-agent -a "$SSH_AUTH_SOCK" > /dev/null
           ssh-add - <<< "${{ secrets.CI_XFER_KEY }}"

@@ -61,7 +61,8 @@ function run_integration_tests {
 # --------- EXECUTION BEGINS HERE ---------
 set -xe
 
-OS_VERSION=$1
+PLATFORM=$1
+OS_VERSION=${PLATFORM##*:}
 BUILD_ENV=$2
 
 if [[ $BUILD_ENV == uw_build ]]; then

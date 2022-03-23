@@ -6,7 +6,8 @@ set -exu
 # SRPMs will be /tmp/rpmbuild/SRPMS/*.rpm.
 # Binary RPMs will be /tmp/rpmbuild/RPMS/*/*.rpm.
 
-OS_VERSION=$1
+PLATFORM=$1
+OS_VERSION=${PLATFORM##*:}
 BUILD_ENV=$2
 
 if  [[ $OS_VERSION == 7 ]]; then

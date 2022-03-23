@@ -7,7 +7,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dver: [7, 8]
+        platform:
+          - centos:7
+          - rockylinux:8
         target_env:
           - uw_build
           - osg-3.5-upcoming
@@ -23,24 +25,24 @@ jobs:
           echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null &&
             sudo service docker restart
 
-      - name: Start CentOS ${{ matrix.dver}} image
+      - name: Start ${{ matrix.platform }} image
         run: |
           docker run --privileged --detach --env "container=docker" \
                  --name $GITHUB_SHA \
                  --volume /sys/fs/cgroup:/sys/fs/cgroup \
                  --volume `pwd`:/htcondor-ce:rw \
-                 centos:centos${{ matrix.dver }} \
+                 ${{ matrix.platform }} \
                  /usr/sbin/init
 
-      - name: Build EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
+      - name: Build ${{ matrix.platform }} RPMs (${{ matrix.target_env }})
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
                    "/htcondor-ce/tests/build_rpms.sh \
-                     ${{ matrix.dver }} \
+                     ${{ matrix.platform }} \
                      ${{ matrix.target_env }}"
 
-      - name: Install EL${{ matrix.dver }} RPMs (${{ matrix.target_env }})
+      - name: Install ${{ matrix.platform }} RPMs (${{ matrix.target_env }})
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
@@ -54,13 +56,13 @@ jobs:
                   "cd /htcondor-ce/tests; \
                    python3 run_tests.py"
 
-      - name: Run ${{ matrix.target_env }} integration tests (EL${{ matrix.dver }})
+      - name: Run ${{ matrix.target_env }} integration tests (${{ matrix.platform }})
         id: integration-tests
         run: |
           docker exec $GITHUB_SHA \
                  /bin/bash -xc \
                    "/htcondor-ce/tests/test_inside_docker.sh \
-                     ${{ matrix.dver}} \
+                     ${{ matrix.platform}} \
                      ${{ matrix.target_env}}"
 
       - name: Host certificate details
