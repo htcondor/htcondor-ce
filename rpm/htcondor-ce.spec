@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.3
+Version: 5.1.4
 Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -551,7 +551,13 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.3-0.rc1
+* Thu Mar 24 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.4-1
+- Fix whole node job glidein CPUs and GPUs expressions that caused held jobs
+- Fix bug where default CERequirements were being ignored
+- Pass whole node request from GlideinWMS to the batch system
+- Since CentOS 8 has reached end of life, we build and test on Rocky Linux 8
+
+* Tue Dec 21 2021 Tim Theisen <tim@cs.wisc.edu> - 5.1.3-1
 - The HTCondor-CE central collector requires SSL credentials from client CEs
 - Fix BDII crash if an HTCondor Access Point is not available
 - Fix formatting of APEL records that contain huge values
