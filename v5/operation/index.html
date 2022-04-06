@@ -559,6 +559,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#checking-user-authentication" class="md-nav__link">
+    Checking User Authentication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#getting-help" class="md-nav__link">
     Getting Help
   </a>
@@ -1109,6 +1116,24 @@ As a reminder, here are common service commands (all run as <code>root</code>):<
 </ol>
 <p>Once draining is completed, don't forget to restore the value of <code>CONDORCE_MAX_JOBS</code> to its previous value
 before trying to operate the HTCondor-CE again.</p>
+<h2 id="checking-user-authentication">Checking User Authentication<a class="headerlink" href="#checking-user-authentication" title="Permanent link">&para;</a></h2>
+<p>There are two primary authentication methods for submitting jobs to
+an HTCondor-CE: GSI (currently being phased out) and SciTokens.
+To see which authentication method and identity were used to submit
+a particular job (or modify existing jobs), you can look in
+<code>/var/log/condor-ce/AuditLog</code>.</p>
+<p>If GSI authentication was used, you'll see a set of lines like this:</p>
+<div class="highlight"><pre><span></span><code>10/15/21 17:52:32 (cid:14) (D_AUDIT) Command=QMGMT_WRITE_CMD, peer=&lt;172.17.0.2:41045&gt;
+10/15/21 17:52:32 (cid:14) (D_AUDIT) AuthMethod=GSI, AuthId=/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=People/CN=testuser, CondorId=testuser@users.htcondor.org
+10/15/21 17:52:32 (cid:14) (D_AUDIT) Submitting new job 1.0
+</code></pre></div>
+<p>If SciTokens authentication was used, you'll see a set of lines like this:</p>
+<div class="highlight"><pre><span></span><code>10/15/21 17:54:08 (cid:130) (D_AUDIT) Command=QMGMT_WRITE_CMD, peer=&lt;172.17.0.2:37869&gt;
+10/15/21 17:54:08 (cid:130) (D_AUDIT) AuthMethod=SCITOKENS, AuthId=https://demo.scitokens.org,htcondor-ce-dev, CondorId=testuser@users.htcondor.org
+10/15/21 17:54:08 (cid:130) (D_AUDIT) Submitting new job 2.0
+</code></pre></div>
+<p>Lines pertaining to the same client request will have the same <code>cid</code> value.
+Lines from different client requests may be interleaved.</p>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <p>If any of the above validation steps fail, consult the <a href="../troubleshooting/common-issues/">troubleshooting guide</a>.
 If that still doesn't resolve your issue, please <a href="../..#contact-us">contact us</a> for assistance.</p>
