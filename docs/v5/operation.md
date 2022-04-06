@@ -59,6 +59,34 @@ To drain an HTCondor-CE of jobs, perform the following steps:
 Once draining is completed, don't forget to restore the value of `CONDORCE_MAX_JOBS` to its previous value
 before trying to operate the HTCondor-CE again.
 
+Checking User Authentication
+----------------------------
+
+There are two primary authentication methods for submitting jobs to
+an HTCondor-CE: GSI (currently being phased out) and SciTokens.
+To see which authentication method and identity were used to submit
+a particular job (or modify existing jobs), you can look in
+`/var/log/condor-ce/AuditLog`.
+
+If GSI authentication was used, you'll see a set of lines like this:
+
+```
+10/15/21 17:52:32 (cid:14) (D_AUDIT) Command=QMGMT_WRITE_CMD, peer=<172.17.0.2:41045>
+10/15/21 17:52:32 (cid:14) (D_AUDIT) AuthMethod=GSI, AuthId=/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=People/CN=testuser, CondorId=testuser@users.htcondor.org
+10/15/21 17:52:32 (cid:14) (D_AUDIT) Submitting new job 1.0
+```
+
+If SciTokens authentication was used, you'll see a set of lines like this:
+
+```
+10/15/21 17:54:08 (cid:130) (D_AUDIT) Command=QMGMT_WRITE_CMD, peer=<172.17.0.2:37869>
+10/15/21 17:54:08 (cid:130) (D_AUDIT) AuthMethod=SCITOKENS, AuthId=https://demo.scitokens.org,htcondor-ce-dev, CondorId=testuser@users.htcondor.org
+10/15/21 17:54:08 (cid:130) (D_AUDIT) Submitting new job 2.0
+```
+
+Lines pertaining to the same client request will have the same `cid` value.
+Lines from different client requests may be interleaved.
+
 Getting Help
 ------------
 
