@@ -1,9 +1,9 @@
-ARG EL=7
+ARG BASE_IMAGE=rockylinux:8
 
-FROM centos:centos$EL
+FROM $BASE_IMAGE
 
-# "ARG EL" needs to be here again because the previous instance has gone out of scope.
-ARG EL=7
+# "ARG BASE_IMAGE" needs to be here again because the previous instance has gone out of scope.
+ARG BASE_IMAGE=rockylinux:8
 ARG CONDOR_SERIES=9.0
 
 RUN groupadd -o -g 9619 testuser && \
@@ -13,6 +13,9 @@ WORKDIR /src
 
 # Install dependencies
 RUN \
+    # Grab the OS major version
+    OS_VER=${BASE_IMAGE##*:}; \
+    EL=${OS_VER%%.*}; \
     if  [[ $EL == 7 ]]; then \
        YUM_PKG_NAME="yum-plugin-priorities"; \
        yum-config-manager \

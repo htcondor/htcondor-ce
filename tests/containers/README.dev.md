@@ -22,7 +22,7 @@ docker build -t entrypoint -f tests/containers/entrypoint/Dockerfile .
 
 You may also specify `--build-arg` for:
 
-- `EL`: CentOS major version (default: `7`)
+- `BASE_IMAGE`: EL-based OS container base image (default: `rockylinux:8`, suggested alternative `centos:7`)
 - `CONDOR_SERIES`: HTCondor release series (default `9.0`)
 
 ### Starting the CE ###
