@@ -54,6 +54,11 @@ renew-demo-token.py
 _condor_SEC_CLIENT_AUTHENTICATION_METHODS=SCITOKENS _condor_SCITOKENS_FILE=/tmp/bt_u$(id -u testuser) condor_ce_trace -d `hostname`
 ```
 
+### Configuring the CE ###
+
+The entrypoint container starts up both a local HTCondor pool and a local Slurm cluster.
+To test the CE against either, modify the configuration in `/etc/codnor-ce/config.d/10-ce.conf
+
 ### Cleaning up the CE ###
 
 ```
