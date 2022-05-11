@@ -100,10 +100,10 @@ with the following contents:
 
 The `jwks_uri` key can point to any URL, but will need to be used below.
 
-To create a keypair, first install the `python2-scitokens` RPM from the OSG via yum:
+To create a keypair, first install the `python3-scitokens` RPM from the OSG via yum:
 
 ```
-yum install python2-scitokens
+yum install python3-scitokens
 ```
 
 Next, use `scitokens-admin-create-key` to create a new keyfile:
@@ -139,9 +139,9 @@ use the generated private key to start issuing tokens!
 To generate a token, simply use `scitokens-admin-create-token`:
 
 ```
-scitokens-admin-create-token --kid b270 --keyfile /tmp/test.scitoken.private.pem --issuer https://scitokens.example.com sub=htcondor aud=https://my-ce.example.com 'scope=condor:/READ condor:/WRITE condor:/ALLOW'
+scitokens-admin-create-token --key_id b270 --keyfile /tmp/test.scitoken.private.pem --issuer https://scitokens.example.com sub=htcondor aud=https://my-ce.example.com 'scope=condor:/READ condor:/WRITE condor:/ALLOW'
 ```
 
-For the `kid` argument, utilize the `kid` generated above.
+For the `key_id` argument, utilize the `kid` generated above.
 
 This will output an encoded token that should be usable to submit jobs to the HTCondor-CE.
