@@ -39,11 +39,11 @@ JOB_ROUTER_DEFAULTS_GENERATED @=jrd
     set_RoutedJob = true;
 
     /* Copy AuthToken attributes if they exist - the routed job will have the original attributes deleted */
-    copy_AuthTokenSubject = "orig_AuthTokenSubject"
-    copy_AuthTokenIssuer = "orig_AuthTokenIssuer"
-    copy_AuthTokenGroups = "orig_AuthTokenGroups"
-    copy_AuthTokenScopes = "orig_AuthTokenScopes"
-    copy_AuthTokenId = "orig_AuthTokenId"
+    copy_AuthTokenSubject = "orig_AuthTokenSubject";
+    copy_AuthTokenIssuer = "orig_AuthTokenIssuer";
+    copy_AuthTokenGroups = "orig_AuthTokenGroups";
+    copy_AuthTokenScopes = "orig_AuthTokenScopes";
+    copy_AuthTokenId = "orig_AuthTokenId";
 
     /* Set the environment */
     copy_environment = "orig_environment";
