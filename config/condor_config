@@ -13,6 +13,10 @@
 CONDOR_HOST = $(FULL_HOSTNAME)
 PORT = 9619
 COLLECTOR_HOST = $(CONDOR_HOST):$(PORT)
+# The above definition should be sufficient for HTCondor.
+# However, we must make sure the port definitions match.
+COLLECTOR_PORT = $(PORT)
+SHARED_PORT_PORT = $(PORT)
 
 DAEMON_LIST = MASTER COLLECTOR SCHEDD JOB_ROUTER
 
