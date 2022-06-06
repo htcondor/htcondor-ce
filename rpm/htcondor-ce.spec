@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.4
+Version: 5.1.5
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -551,6 +551,11 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Fri Jun 03 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.5-1
+- Rename AuthToken attributes in the routed job to better support accounting
+- Prevent GSI environment from pointing the job to the wrong certificates
+- Fix issue where HTCondor-CE would need port 9618 open to start up
+
 * Thu Mar 24 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.4-1
 - Fix whole node job glidein CPUs and GPUs expressions that caused held jobs
 - Fix bug where default CERequirements were being ignored
