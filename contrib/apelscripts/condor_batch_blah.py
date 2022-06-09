@@ -3,6 +3,7 @@ import os
 import argparse
 import subprocess
 import time
+import configparser
 from pathlib import Path
 
 
@@ -18,9 +19,16 @@ HTCondor configuration values:
     APEL_OUTPUT_DIR      path to which APEL record files should be written
     APEL_CE_HOST         hostname of the CE
     APEL_CE_ID           APEL identifier for the CE
-    APEL_SCALING_ATTR    job attribute containing performance scaling factor
+    APEL_SCALING_ATTR    job attribute for optional performance factor
+    APEL_SPEC_ATTR       job attribute for optional absolute performance
 """.strip(),
     formatter_class=argparse.RawDescriptionHelpFormatter,
+)
+CLI.add_argument(
+    "--apel-config",
+    help="path to apel client configuration file [default: %(default)s]",
+    default="/etc/apel/client.cfg",
+    type=Path,
 )
 CLI.add_argument(
     "--dry-run",
@@ -43,6 +51,49 @@ def _read_any_config_val(prog: str, key: str) -> str:
     ).stdout.strip()
 
 
+def read_apel_specs(apel_config: Path, ce_id: str) -> "dict[str, float]":
+    """Read APEL manual_specX entries for a given CE identifier"""
+    config = configparser.ConfigParser()
+    with apel_config.open() as config_stream:
+        config.read_file(config_stream)
+    specs = {}
+    for spec_id in range(1, len(config["spec_updater"]) + 1):
+        try:
+            spec = config["spec_updater"][f"manual_spec{spec_id}"]
+        except KeyError:
+            break
+        spec_ce_id, spec_type, spec_value, *_ = spec.split(",")
+        if ce_id == spec_ce_id:
+            specs[spec_type] = float(spec_value)
+    return specs
+
+
+def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
+    """Build a ClassAd expression for the factor of used vs average performance"""
+    specs = read_apel_specs(apel_config, ce_id)
+    # assume average performance by default
+    scale_query = "1.0"
+    try:
+        scaling_attr = read_ce_config_val("APEL_SCALING_ATTR")
+    except subprocess.CalledProcessError:
+        pass
+    else:
+        scale_query = f"({scaling_attr} ?: {scale_query})"
+    try:
+        spec_attr = read_ce_config_val("APEL_SPEC_ATTR")
+    except subprocess.CalledProcessError:
+        return scale_query
+    else:
+        spec_scale_query = "undefined"
+        for spec_type, spec_value in reversed(list(specs.items())):
+            spec_scale_query = (
+                f"({spec_attr}.'{spec_type}' isnt undefined"
+                f" ? ({spec_attr}.'{spec_type}' / {spec_value})"
+                f" : {spec_scale_query})"
+            )
+        return f"({spec_scale_query} ?: {scale_query})"
+
+
 def condor_q_format(job_history: Path, *formats: str) -> str:
     """Run `condor_q` with several `-format` fields for a given `job_history` file"""
     assert len(formats) % 2 == 0
@@ -63,7 +114,7 @@ history_dir = Path(read_lrms_config_val("PER_JOB_HISTORY_DIR"))
 output_dir = Path(read_ce_config_val("APEL_OUTPUT_DIR"))
 ce_host = read_ce_config_val("APEL_CE_HOST")
 ce_id = read_ce_config_val("APEL_CE_ID")
-scaling_attr = read_ce_config_val("APEL_SCALING_ATTR") or "1.0"
+scaling_expr = format_apel_scaling(options.apel_config, ce_id)
 output_datetime = time.strftime("%Y%m%d-%H%M")
 
 for directory in (history_dir / "quarantine", output_dir):
@@ -85,7 +136,7 @@ with batch_path.open("w") as batch_stream, blah_path.open("w") as blah_stream:
         # basic check that the file contains valid history
         if (
             not condor_q_format(history, "%s", "GlobalJobId").strip()
-            or not condor_q_format(history, "%f", scaling_attr).strip()
+            or not condor_q_format(history, "%f", scaling_expr).strip()
         ):
             if not dry_run:
                 history.rename(history_dir / "quarantine" / history.stem)
@@ -103,7 +154,7 @@ with batch_path.open("w") as batch_stream, blah_path.open("w") as blah_stream:
                 "%lld|", "ResidentSetSize_RAW",
                 "%lld|", "ImageSize_RAW",
                 "%lld|", "RequestCpus",
-                "%v|\n", scaling_attr,
+                "%v|\n", scaling_expr,
             )
         )
         blah_stream.write(
