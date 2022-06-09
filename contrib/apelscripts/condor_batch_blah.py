@@ -132,7 +132,7 @@ with batch_path.open("w") as batch_stream, blah_path.open("w") as blah_stream:
             or not condor_q_format(history, "%f", scaling_expr).strip()
         ):
             if not dry_run:
-                history.rename(history_dir / "quarantine" / history.stem)
+                history.rename(history_dir / "quarantine" / history.name)
             continue
         batch_stream.write(
             condor_q_format(
