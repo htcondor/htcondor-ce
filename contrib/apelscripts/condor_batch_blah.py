@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 import argparse
-import subprocess
+from subprocess import check_output, CalledProcessError
 import time
 import configparser
 from pathlib import Path
@@ -38,17 +38,11 @@ CLI.add_argument(
 
 
 def read_lrms_config_val(key: str) -> str:
-    return _read_any_config_val("condor_config_val", key)
+    return check_output(["condor_config_val", key], universal_newlines=True).strip()
 
 
 def read_ce_config_val(key: str) -> str:
-    return _read_any_config_val("condor_ce_config_val", key)
-
-
-def _read_any_config_val(prog: str, key: str) -> str:
-    return subprocess.run(
-        [prog, key], check=True, stdout=subprocess.PIPE, universal_newlines=True
-    ).stdout.strip()
+    return check_output(["condor_ce_config_val", key], universal_newlines=True).strip()
 
 
 def read_apel_specs(apel_config: Path, ce_id: str) -> "dict[str, float]":
@@ -75,13 +69,13 @@ def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
     scale_query = "1.0"
     try:
         scaling_attr = read_ce_config_val("APEL_SCALING_ATTR")
-    except subprocess.CalledProcessError:
+    except CalledProcessError:
         pass
     else:
         scale_query = f"({scaling_attr} ?: {scale_query})"
     try:
         spec_attr = read_ce_config_val("APEL_SPEC_ATTR")
-    except subprocess.CalledProcessError:
+    except CalledProcessError:
         return scale_query
     else:
         spec_scale_query = "undefined"
@@ -100,11 +94,10 @@ def condor_q_format(job_history: Path, *formats: str) -> str:
     format_fields = ["-format"] * (len(formats) // 2 * 3)
     format_fields[1::3] = formats[::2]
     format_fields[2::3] = formats[1::2]
-    return subprocess.run(
+    return check_output(
             ["condor_q", "-job", str(job_history)] + format_fields,
-            check=True, stdout=subprocess.PIPE, universal_newlines=True,
-            env={**os.environ, "TZ": "GMT"},
-        ).stdout
+            universal_newlines=True, env={**os.environ, "TZ": "GMT"},
+        )
 
 
 options = CLI.parse_args()
