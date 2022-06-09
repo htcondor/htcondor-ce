@@ -2,7 +2,6 @@
 import os
 import argparse
 import subprocess
-import platform
 import time
 from pathlib import Path
 
@@ -51,19 +50,16 @@ ce_host = read_ce_config_val("APEL_CE_HOST")
 ce_id = read_ce_config_val("APEL_CE_ID")
 scaling_attr = read_ce_config_val("APEL_SCALING_ATTR") or "1.0"
 output_datetime = time.strftime("%Y%m%d-%H%M")
-hostname = platform.node().split(".")[0]
 
 for directory in (history_dir / "quarantine", output_dir):
     directory.mkdir(exist_ok=True)
     (directory / ".write_test").touch()
     (directory / ".write_test").unlink()
-if not hostname or hostname == "localhost":
-    raise SystemExit(f"failed to fetch hostname, got {hostname}")
 
 
 if not dry_run:
-    batch_path = output_dir / f"batch-{output_datetime}-{hostname}"
-    blah_path = output_dir / f"blah-{output_datetime}-{hostname}"
+    batch_path = output_dir / f"batch-{output_datetime}-{ce_host.split('.')[0]}"
+    blah_path = output_dir / f"blah-{output_datetime}-{ce_host.split('.')[0]}"
 else:
     batch_path = blah_path = Path("/dev/stdout")
 histories = [path for path in history_dir.iterdir() if path.is_file()]
