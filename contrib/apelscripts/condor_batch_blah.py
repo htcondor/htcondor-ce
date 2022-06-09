@@ -6,7 +6,22 @@ import time
 from pathlib import Path
 
 
-CLI = argparse.ArgumentParser()
+CLI = argparse.ArgumentParser(
+    description="Generate APEL accounting records for an HTCondor CE and LRMS",
+    epilog="""
+HTCondor configuration values:
+
+  condor_config_val:
+    PER_JOB_HISTORY_DIR  path to which per-job history files are written
+
+  condor_ce_config_val:
+    APEL_OUTPUT_DIR      path to which APEL record files should be written
+    APEL_CE_HOST         hostname of the CE
+    APEL_CE_ID           APEL identifier for the CE
+    APEL_SCALING_ATTR    job attribute containing performance scaling factor
+""".strip(),
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+)
 CLI.add_argument(
     "--dry-run",
     help="do not perform destructive actions, write data to stdout",
