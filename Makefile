@@ -99,7 +99,7 @@ CE_SHARE_FILES := \
 	src/condor_ce_router_defaults \
 	src/gratia_cleanup.py \
 	src/local-wrapper \
-	contrib/apelscripts/condor_batch_blah.sh \
+	contrib/apelscripts/condor_batch_blah.py \
 	contrib/apelscripts/condor_ce_apel.sh \
 	contrib/bdii/htcondor-ce-provider \
 	contrib/bosco/bosco-cluster-remote-hosts.py \
