@@ -81,9 +81,7 @@ def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
         spec_scale_query = "undefined"
         for spec_type, spec_value in reversed(list(specs.items())):
             spec_scale_query = (
-                f"({spec_attr}.'{spec_type}' isnt undefined"
-                f" ? ({spec_attr}.'{spec_type}' / {spec_value})"
-                f" : {spec_scale_query})"
+                f"(({spec_attr}.'{spec_type}' / {spec_value}) ?: {spec_scale_query})"
             )
         return f"({spec_scale_query} ?: {scale_query})"
 
