@@ -35,8 +35,8 @@ To create and publish APEL records, use the following instructions
    ```
    # In the StartD condor config:
    # define an absolute performance for specific benchmarks, or ...
-   ApelSpec = [HEPSPEC=14.37; SI2K=2793]
-   STARTD_ATTRS = $(STARTD_ATTRS) ApelSpec
+   ApelSpecs = [HEPSPEC=14.37; SI2K=2793]
+   STARTD_ATTRS = $(STARTD_ATTRS) ApelSpecs
    # ... define a performance factor compared to the average
    ApelScaling = 1.414  # this machine is above average
    STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
