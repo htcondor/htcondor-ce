@@ -418,7 +418,7 @@ def not_found(environ, start_response):
     headers = _headers('text/html') + [('Location', '/')]
     start_response(status, headers)
     path = environ.get('PATH_INFO', '').lstrip('/')
-    return ["Resource %s not found" % xml.sax.saxutils.escape(path)]
+    return [("Resource %s not found" % xml.sax.saxutils.escape(path)).encode("utf-8")]
 
 
 urls = [
