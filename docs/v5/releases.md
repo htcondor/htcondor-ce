@@ -135,6 +135,23 @@ HTCondor-CE 5 Version History
 This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 5.1.5 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.5) includes the following changes:
+
+-   Rename AuthToken attributes in the routed job to better support accounting
+-   Prevent GSI environment from pointing the job to the wrong certificates
+-   Fix issue where HTCondor-CE would need port 9618 open to start up
+
+### 5.1.4 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.4) includes the following changes:
+
+-   Fix whole node job glidein CPUs and GPUs expressions that caused held jobs
+-   Fix bug where default CERequirements were being ignored
+-   Pass whole node request from GlideinWMS to the batch system
+-   Since CentOS 8 has reached end of life, we build and test on Rocky Linux 8
+
 ### 5.1.3 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.3) includes the following changes:
