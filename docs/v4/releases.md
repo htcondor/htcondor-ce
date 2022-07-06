@@ -143,7 +143,7 @@ HTCondor batch systems ([#245](https://github.com/htcondor/htcondor-ce/issues/24
         ENABLE_JOB_RETRIES = True
 
 - **Simplified daemon authentication:** HTCondor-CE now uses
-  [FS authentication](https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/security.html#file-system-authentication)
+  [FS authentication](https://htcondor.readthedocs.io/en/v9_0/admin-manual/security.html#file-system-authentication)
   between its own daemons instead of GSI.
 - **Simplified remote CE requirements format:**
   [Remote CE requirements](batch-system-integration.md#setting-batch-system-directives)

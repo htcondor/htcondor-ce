@@ -4,9 +4,9 @@ Installing HTCondor-CE 4
 !!! warning "Update to HTCondor-CE 5"
     In the [HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/), HTCondor-CE 4 is distributed
     alongside the HTCondor 8.9
-    [development release series](https://htcondor.readthedocs.io/en/v8_9_11/version-history/introduction-version-history.html#the-stable-release-series),
+    [development release series](https://htcondor.readthedocs.io/en/v9_0/version-history/introduction-version-history.html#the-stable-release-series),
     which has been turned into the HTCondor 9.0
-    [stable release series](https://htcondor.readthedocs.io/en/v8_9_11/version-history/introduction-version-history.html#the-stable-release-series).
+    [stable release series](https://htcondor.readthedocs.io/en/v9_0/version-history/introduction-version-history.html#the-stable-release-series).
     Security and other bug-fixes that would have been targeted for 8.9 will now only be available in 9.0 or 8.8.
     Consider [updating to HTCondor-CE 5](../../v5/releases.md#updating-to-htcondor-ce-5) and HTCondor 9.0 at your
     earliest convenience.
@@ -17,7 +17,7 @@ Installing HTCondor-CE 4
 
 HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
 grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/v8_9_11/grid-computing/job-router.html)
+It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
@@ -108,7 +108,7 @@ Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-cer
 #### Built-in mapfile ####
 
 The built-in mapfile is a
-[unified HTCondor mapfile](https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/security.html#the-unified-map-file-for-authentication)
+[unified HTCondor mapfile](https://htcondor.readthedocs.io/en/v9_0/admin-manual/security.html#the-unified-map-file-for-authentication)
 located at `/etc/condor-ce/condor_mapfile`.
 This file is parsed in line-by-line order and HTCondor-CE will use the first line that matches.
 Therefore, mappings should be added to the top of the file.

@@ -93,7 +93,7 @@ you can use standard HTCondor submission tools.
 
 To submit jobs to a remote HTCondor-CE (or any other externally facing HTCondor SchedD) from an HTCondor submit host,
 you need to construct an HTCondor submit file describing an
-[HTCondor-C job](https://htcondor.readthedocs.io/en/v8_9_11/grid-computing/grid-universe.html#htcondor-c-the-condor-grid-type):
+[HTCondor-C job](https://htcondor.readthedocs.io/en/v9_0/grid-computing/grid-universe.html#htcondor-c-the-condor-grid-type):
 
 1.  Write a submit file, `ce_test.sub`:
 
@@ -206,23 +206,23 @@ Submit File Commands
 The following table is a reference of commands that are commonly included in HTCondor submit files used for HTCondor-CE
 resource allocation requests.
 A more comprehensive list of submit file commands specific to HTCondor can be found in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html).
+[HTCondor manual](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html).
 
 !!!tip "HTCondor string values"
     If you are setting an attribute to a string value, make sure enclose the string in double-quotes (`"`)
 
 | **Command**                                                                                                 | **Description**                                                                                                                                                                              |
 |-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [arguments](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-13)                | Arguments that will be provided to the executable for the resource allocation request.                                                                                                       |
-| [error](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-18)                    | Path to the file on the client host that stores stderr from the resource allocation request.                                                                                                 |
-| [executable](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-19)               | Path to the file on the client host that the resource allocation request will execute.                                                                                                       |
-| [input](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-23)                    | Path to the file on the client host that stores input to be piped into the stdin of the resource allocation request.                                                                         |
+| [arguments](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-13)                | Arguments that will be provided to the executable for the resource allocation request.                                                                                                       |
+| [error](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-18)                    | Path to the file on the client host that stores stderr from the resource allocation request.                                                                                                 |
+| [executable](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-19)               | Path to the file on the client host that the resource allocation request will execute.                                                                                                       |
+| [input](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-23)                    | Path to the file on the client host that stores input to be piped into the stdin of the resource allocation request.                                                                         |
 | +maxMemory                                                                                                  | The amount of memory in MB that you wish to allocate to the resource allocation request.                                                                                                     |
 | +maxWallTime                                                                                                | The maximum walltime (in minutes) the resource allocation request is allowed to run before it is removed.                                                                                    |
-| [output](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-37)                   | Path to the file on the client host that stores stdout from the resource allocation request.                                                                                                 |
+| [output](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-37)                   | Path to the file on the client host that stores stdout from the resource allocation request.                                                                                                 |
 | +remote\_queue                                                                                              | Assign resource allocation request to the target queue in the scheduler.                                                                                                                     |
-| [transfer\_input\_files](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-110)  | A comma-delimited list of all the files and directories to be transferred into the working directory for the resource allocation request, before the resource allocation request is started. |
-| [transfer\_output\_files](https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-113) | A comma-delimited list of all the files and directories to be transferred back to the client, after the resource allocation request completes.                                               |
+| [transfer\_input\_files](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-110)  | A comma-delimited list of all the files and directories to be transferred into the working directory for the resource allocation request, before the resource allocation request is started. |
+| [transfer\_output\_files](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-113) | A comma-delimited list of all the files and directories to be transferred back to the client, after the resource allocation request completes.                                               |
 | +WantWholeNode                                                                                              | When set to `True`, request entire node for the resource allocation request (HTCondor batch systems only)                                                                                    |
 | +xcount                                                                                                     | The number of cores to allocate for the resource allocation request.                                                                                                                         |
 

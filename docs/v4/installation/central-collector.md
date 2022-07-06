@@ -4,10 +4,10 @@ Installing an HTCondor-CE Central Collector
 The HTCondor-CE Central Collector is an information service designed to provide a an overview and descriptions of grid
 services.
 Based on the
-[HTCondorView Server](https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/setting-up-special-environments.html#configuring-the-htcondorview-server),
-the Central Collector accepts [ClassAds](https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html)
+[HTCondorView Server](https://htcondor.readthedocs.io/en/v9_0/admin-manual/setting-up-special-environments.html#configuring-the-htcondorview-server),
+the Central Collector accepts [ClassAds](https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html)
 from site HTCondor-CEs by default but may accept from other services using the
-[HTCondor Python Bindings](https://htcondor.readthedocs.io/en/v8_9_11/apis/python-bindings/index.html).
+[HTCondor Python Bindings](https://htcondor.readthedocs.io/en/v9_0/apis/python-bindings/index.html).
 By distributing configuration to each member site, a central grid team can coordinate the information that site 
 HTCondor-CEs should advertise.
 
