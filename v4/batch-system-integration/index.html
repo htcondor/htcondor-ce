@@ -1346,7 +1346,7 @@
                 
                 
                 <h1 id="writing-routes-for-htcondor-ce">Writing Routes For HTCondor-CE<a class="headerlink" href="#writing-routes-for-htcondor-ce" title="Permanent link">&para;</a></h1>
-<p>The <a href="https://htcondor.readthedocs.io/en/v8_9_11/grid-computing/job-router.html">JobRouter</a> is at the heart of HTCondor-CE
+<p>The <a href="https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html">JobRouter</a> is at the heart of HTCondor-CE
 and allows admins to transform and direct jobs to specific batch systems.
 Customizations are made in the form of job routes where each route corresponds to a separate job transformation:
 If an incoming job matches a job route's requirements, the route creates a transformed job (referred to as the 'routed
@@ -1416,7 +1416,7 @@ If the job meets the requirements of multiple routes,  the route that is chosen 
 </tr>
 <tr>
 <td>&gt;= 8.9.5</td>
-<td><strong>First matching route</strong> where routes are considered in the order specified by <a href="https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES">JOB_ROUTER_ROUTE_NAMES</a></td>
+<td><strong>First matching route</strong> where routes are considered in the order specified by <a href="https://htcondor.readthedocs.io/en/v9_0/admin-manual/configuration-macros.html#JOB_ROUTER_ROUTE_NAMES">JOB_ROUTER_ROUTE_NAMES</a></td>
 </tr>
 </tbody>
 </table>
@@ -1525,7 +1525,7 @@ MERGE_JOB_ROUTER_DEFAULT_ADS=True
 Jobs will evaluate against the ClassAd expression set in the <code>Requirements</code> and if the expression evaluates to <code>TRUE</code>,
 the route will match.
 More information on the syntax of ClassAd's can be found in the
-<a href="https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
+<a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
 For an example on how incoming jobs interact with filtering in job routes, consult <a href="../remote-job-submission/">this document</a>.</p>
 <p>When setting requirements, you need to prefix job attributes that you are filtering with <code>TARGET.</code> so that the job route
 knows to compare the attribute of the incoming job rather than the route’s own attribute.
@@ -1542,7 +1542,7 @@ For example, if an incoming job has a <code>queue = "analy"</code> attribute, th
 <p>This is because when evaluating the route requirement, the job route will compare its own <code>queue</code> attribute to "analy"
 and see that it does not match.
 You can read more about comparing two ClassAds in the
-<a href="https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html#classad-operators">HTCondor manual</a>.</p>
+<a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html#classad-operators">HTCondor manual</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you have an HTCondor batch system, note the difference with <a href="#setting-routed-job-requirements">set_requirements</a>.</p>
@@ -1648,12 +1648,12 @@ The following entry routes jobs to HTCondor if the incoming job (specified by <c
 <li><code>set_default_pilot_job_env</code> job route configuration, which should be used for setting environment variables:<ul>
 <li>Per job route</li>
 <li>To values based on incoming job attributes</li>
-<li>Using <a href="https://htcondor.readthedocs.io/en/v8_9_11/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
+<li>Using <a href="https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html#predefined-functions">ClassAd functions</a></li>
 </ul>
 </li>
 </ul>
 <p>Both of these methods use the new HTCondor format of the
-<a href="https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_submit.html#index-14">environment command</a>, which is
+<a href="https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
 <div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content">
@@ -1667,7 +1667,7 @@ For example, the following HTCondor-CE configuration would result in the followi
 </div>
 </div>
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
-<a href="https://htcondor.readthedocs.io/en/v8_9_11/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
+<a href="https://htcondor.readthedocs.io/en/v9_0/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
 <div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
@@ -2092,7 +2092,7 @@ echo &quot;#PBS -A $AccountingGroup&quot;
 <p>ATLAS BNL T1, they are using an HTCondor batch system. Here are some things to note about their routes:</p>
 <ul>
 <li>Setting various HTCondor-specific attributes like <code>JobLeaseDuration</code>, <code>Requirements</code> and <code>Periodic_Hold</code> (see the
-    <a href="https://htcondor.readthedocs.io/en/v8_9_11/classad-attributes/job-classad-attributes.html">HTCondor manual</a>).
+    <a href="https://htcondor.readthedocs.io/en/v9_0/classad-attributes/job-classad-attributes.html">HTCondor manual</a>).
     Some of these are site-specific like <code>RACF_Group</code>, <code>Experiment</code>, <code>Job_Type</code> and <code>VO</code>.</li>
 <li>Jobs are split into different routes based on the <a href="#glidein-queue">GlideIn</a> queue that they're in.</li>
 <li>There is a difference between <code>Requirements</code> and <code>set_requirements</code>.

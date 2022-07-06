@@ -1150,7 +1150,7 @@ To verify DNS, use a tool like <code>nslookup</code>:</p>
 <p>Once you've verified network connectivity, you can start verifying the HTCondor-CE daemons.</p>
 <h3 id="inspecting-daemons">Inspecting daemons<a class="headerlink" href="#inspecting-daemons" title="Permanent link">&para;</a></h3>
 <p>To inspect the running daemons of a remote HTCondor-CE,
-use <a href="https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_status.html">condor_status</a>:</p>
+use <a href="https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_status.html">condor_status</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_status -any -pool htcondor-ce.chtc.wisc.edu:9619
 <span class="go">MyType             TargetType         Name</span>
 
@@ -1182,7 +1182,7 @@ These ads are used to collect per-user stats that are available to the HTCondor-
 </code></pre></div>
 <h3 id="inspecting-resource-requests">Inspecting resource requests<a class="headerlink" href="#inspecting-resource-requests" title="Permanent link">&para;</a></h3>
 <p>To inspect resource requests submitted to a remote HTCondor-CE,
-use <a href="https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_q.html">condor_q</a>:</p>
+use <a href="https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_q.html">condor_q</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_q -all -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619
 
 <span class="go">-- Schedd: htcondor-ce.chtc.wisc.edu : &lt;128.104.100.65:9619?... @ 10/29/20 15:31:45</span>
@@ -1209,7 +1209,7 @@ use <a href="https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_q.html"
 </code></pre></div>
 <h3 id="retrieving-htcondor-ce-configuration">Retrieving HTCondor-CE configuration<a class="headerlink" href="#retrieving-htcondor-ce-configuration" title="Permanent link">&para;</a></h3>
 <p>To verify a remote HTCondor-CE configuration,
-use <a href="https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_config_val.html">condor_config_val</a>:</p>
+use <a href="https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_config_val.html">condor_config_val</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>condor_config_val -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -dump
 <span class="gp"># </span>Configuration from master on htcondor-ce.chtc.wisc.edu &lt;<span class="m">128</span>.104.100.65:9619?addrs<span class="o">=</span><span class="m">128</span>.104.100.65-9619+<span class="o">[</span><span class="m">2607</span>-f388-107c-501-216-3eff-fe89-aa3<span class="o">]</span>-9619<span class="p">&amp;</span><span class="nv">alias</span><span class="o">=</span>htcondor-ce.chtc.wisc.edu<span class="p">&amp;</span>noUDP<span class="p">&amp;</span><span class="nv">sock</span><span class="o">=</span>master_1744571_b0a0&gt;
 <span class="go">ABORT_ON_EXCEPTION = false</span>
@@ -1244,7 +1244,7 @@ For this, you will need a credential such as a grid proxy:</p>
 <span class="go">timeleft  : 3:55:22</span>
 </code></pre></div>
 <p>After you have retrieved your credential, verify that you have the ability to submit requests to the remote HTCondor-CE
-(i.e., <code>WRITE</code> access) with <a href="https://htcondor.readthedocs.io/en/v8_9_11/man-pages/condor_ping.html">condor_ping</a>:</p>
+(i.e., <code>WRITE</code> access) with <a href="https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_ping.html">condor_ping</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span> <span class="nv">_condor_SEC_CLIENT_AUTHENTICATION_METHODS</span><span class="o">=</span>SCITOKENS,GSI
 <span class="gp">$ </span><span class="nb">export</span> <span class="nv">_condor_SEC_TOOL_DEBUG</span><span class="o">=</span>D_SECURITY:2  <span class="c1"># Extremely verbose debugging for troubleshooting authentication issues</span>
 <span class="gp">$ </span>condor_ping -name htcondor-ce.chtc.wisc.edu <span class="se">\</span>
