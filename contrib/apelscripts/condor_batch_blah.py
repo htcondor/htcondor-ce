@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os
+import sys
 import argparse
 from subprocess import check_output, CalledProcessError
 import time
@@ -115,15 +116,16 @@ for directory in (history_dir / "quarantine", output_dir):
 
 
 if not dry_run:
-    batch_path = output_dir / f"batch-{output_datetime}-{ce_host.split('.')[0]}"
-    blah_path = output_dir / f"blah-{output_datetime}-{ce_host.split('.')[0]}"
+    batch_stream = (output_dir / f"batch-{output_datetime}-{ce_host.split('.')[0]}").open("w")
+    blah_stream = (output_dir / f"blah-{output_datetime}-{ce_host.split('.')[0]}").open("w")
 else:
-    batch_path = blah_path = Path("/dev/stdout")
-histories = [path for path in history_dir.iterdir() if path.is_file()]
+    batch_stream = blah_stream = sys.stdout
 
 
-with batch_path.open("w") as batch_stream, blah_path.open("w") as blah_stream:
-    for history in histories:
+with batch_stream, blah_stream:
+    for history in history_dir.iterdir():
+        if not history.is_file():
+            continue
         # basic check that the file contains valid history
         if (
             not condor_q_format(history, "%s", "GlobalJobId").strip()
