@@ -18,6 +18,7 @@ HTCondor configuration values:
 
   condor_ce_config_val:
     APEL_OUTPUT_DIR      path to which APEL record files should be written
+    APEL_SCALE_DEFAULT   default scale when no job attribute applies, such as 1.0 or UNDEFINED
     APEL_CE_HOST         hostname of the CE
     APEL_CE_ID           APEL identifier for the CE
     APEL_SCALING_ATTR    job attribute for optional performance factor
@@ -66,8 +67,11 @@ def read_apel_specs(apel_config: Path, ce_id: str) -> "dict[str, float]":
 def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
     """Build a ClassAd expression for the factor of used vs average performance"""
     specs = read_apel_specs(apel_config, ce_id)
-    # assume average performance by default
-    scale_query = "1.0"
+    try:
+        scale_query = read_ce_config_val("APEL_SCALE_DEFAULT")
+    except CalledProcessError:
+        # assume average performance by default
+        scale_query = "1.0"
     try:
         scaling_attr = read_ce_config_val("APEL_SCALING_ATTR")
     except CalledProcessError:

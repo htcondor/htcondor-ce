@@ -44,6 +44,11 @@ To create and publish APEL records, use the following instructions
 
 4. Start and enable the `condor-ce-apel.timer` on each HTCondor-CE
 
+The default behaviour when a StartD does not properly report performance information
+changed in HTCondor-CE v 5.1.6 to assume average performance in this case.
+To restore the previous behaviour of quarantining the metadata of affected jobs,
+set `APEL_SCALE_DEFAULT = undefined` in the HTCondor-CE configuration.
+
 References
 ----------
 
