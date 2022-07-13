@@ -87,7 +87,12 @@ Requires: python3-rrdtool
 Requires: python36-flask
 Requires: python36-gunicorn
 Requires: python36-rpm
+%if 0%{?osg}
+# osg has built python3-rrdtool for EL7
+Requires: python3-rrdtool
+%else
 Requires: rrdtool
+%endif
 %endif
 
 %description view
