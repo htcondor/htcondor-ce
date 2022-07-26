@@ -112,6 +112,13 @@ class MyWSGIGateway(gunicorn.app.base.BaseApplication):
         return self.application
 
 
+def to_bytes(str_or_bytes, encoding="utf-8", errors="backslashreplace"):
+    if isinstance(str_or_bytes, str):
+        return str_or_bytes.encode(encoding, errors)
+    else:
+        return str_or_bytes
+
+
 class WSGILogging(object):
 
     def __init__(self, app):
@@ -130,6 +137,8 @@ class WSGILogging(object):
                     break
             return start_response(status, response_headers, exc_info)
         retval = self.app(environ, custom_start_response)
+        if isinstance(retval, list):
+            retval = list(to_bytes(x) for x in retval)
         content_length = content_lengths[0] if content_lengths else len(b"".join(retval))
 
         msg = { \
