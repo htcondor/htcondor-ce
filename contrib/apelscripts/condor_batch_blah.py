@@ -65,7 +65,10 @@ def read_apel_specs(apel_config: Path, ce_id: str) -> "dict[str, float]":
 
 
 def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
-    """Build a ClassAd expression for the factor of used vs average performance"""
+    """Build a ClassAd expression to compute the factor of used vs average performance"""
+    # The expression chains several cases via `?:` to fall-through to the first not-UNDEFINED value.
+    # This means we build the expression in reverse order, starting at the default and adding
+    # higher-priority cases around it.
     try:
         scale_query = read_ce_config_val("APEL_SCALE_DEFAULT")
     except CalledProcessError:
@@ -82,6 +85,10 @@ def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
     except CalledProcessError:
         return scale_query
     else:
+        # Match the specs defined by APEL on the CE to those of the machine/job:
+        # The result looks like `((MachineAttrApelSpecs0.'HEPSPEC' / 13.45) ?: (...))` where
+        # `MachineAttrApelSpecs0` is a ClassAd like `[HEPSPEC=14.37; SI2K=2793]` or UNDEFINED.
+        # If the current spec_type is UNDEFINED for the job, we fall-through to the next type.
         specs = read_apel_specs(apel_config, ce_id)
         for spec_type, spec_value in reversed(list(specs.items())):
             scale_query = (
