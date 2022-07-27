@@ -72,8 +72,7 @@ def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
     try:
         scale_query = read_ce_config_val("APEL_SCALE_DEFAULT")
     except CalledProcessError:
-        # assume average performance by default
-        scale_query = "1.0"
+        scale_query = "UNDEFINED"
     try:
         scaling_attr = read_ce_config_val("APEL_SCALING_ATTR")
     except CalledProcessError:
