@@ -66,7 +66,6 @@ def read_apel_specs(apel_config: Path, ce_id: str) -> "dict[str, float]":
 
 def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
     """Build a ClassAd expression for the factor of used vs average performance"""
-    specs = read_apel_specs(apel_config, ce_id)
     try:
         scale_query = read_ce_config_val("APEL_SCALE_DEFAULT")
     except CalledProcessError:
@@ -84,6 +83,7 @@ def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
         return scale_query
     else:
         spec_scale_query = scale_query
+        specs = read_apel_specs(apel_config, ce_id)
         for spec_type, spec_value in reversed(list(specs.items())):
             spec_scale_query = (
                 f"(({spec_attr}.'{spec_type}' / {spec_value}) ?: {spec_scale_query})"
