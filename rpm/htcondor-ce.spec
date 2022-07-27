@@ -356,6 +356,9 @@ fi
 %files apel
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_batch_blah.py
+%if 0%{?rhel} < 8
+%{_datadir}/condor-ce/__pycache__/condor_batch_blah.*.pyc
+%endif
 %{_datadir}/condor-ce/condor_ce_apel.sh
 %{_datadir}/condor-ce/config.d/50-ce-apel-defaults.conf
 %{_sysconfdir}/condor/config.d/50-condor-apel.conf

@@ -12,7 +12,6 @@ jobs:
           - rockylinux:8
         target_env:
           - uw_build
-          - osg-3.5-upcoming
           - osg-3.6
           - osg-3.6-upcoming
     steps:
