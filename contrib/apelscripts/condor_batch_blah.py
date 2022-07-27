@@ -82,13 +82,12 @@ def format_apel_scaling(apel_config: Path, ce_id: str) -> str:
     except CalledProcessError:
         return scale_query
     else:
-        spec_scale_query = scale_query
         specs = read_apel_specs(apel_config, ce_id)
         for spec_type, spec_value in reversed(list(specs.items())):
-            spec_scale_query = (
-                f"(({spec_attr}.'{spec_type}' / {spec_value}) ?: {spec_scale_query})"
+            scale_query = (
+                f"(({spec_attr}.'{spec_type}' / {spec_value}) ?: {scale_query})"
             )
-        return spec_scale_query
+        return scale_query
 
 
 def condor_q_format(job_history: Path, *formats: str) -> str:
