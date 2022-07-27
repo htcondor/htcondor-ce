@@ -17,7 +17,7 @@ safe_config_val () {
 
 safe_config_val SEND_RECORDS APEL_SEND_RECORDS
 
-/usr/share/condor-ce/condor_batch_blah.sh # Make the batch file (batch system job run times) and blah file (CE/Security data)
+/usr/share/condor-ce/condor_batch_blah.py # Make the batch file (batch system job run times) and blah file (CE/Security data)
 /usr/bin/apelparser                       # Read the blah and batch files in
 if [ "$SEND_RECORDS" == "True" ]; then
     /usr/bin/apelclient                   # Join blah and batch records to make job records
