@@ -28,7 +28,9 @@ BuildRequires: python3-rpm-macros
 # Mapfiles.d changes require 8.9.13 but 8.9.13 has known bugs
 # affecting the Job Router and Python 3 collector plugin
 # https://opensciencegrid.atlassian.net/browse/HTCONDOR-244
-Requires:  condor >= 9.0.0
+# Need 9.0.1 for the C++ collector plugin
+# https://opensciencegrid.atlassian.net/browse/HTCONDOR-1326
+Requires:  condor >= 9.0.1
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
