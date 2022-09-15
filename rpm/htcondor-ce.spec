@@ -333,9 +333,6 @@ fi
 
 %{_datadir}/condor-ce/local-wrapper
 
-%{python3_sitelib}/htcondorce/audit_payloads.py
-%{python3_sitelib}/htcondorce/__pycache__/audit_payloads.*.pyc
-
 %{_bindir}/condor_ce_host_network_check
 %{_bindir}/condor_ce_register
 
