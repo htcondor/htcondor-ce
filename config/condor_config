@@ -74,6 +74,9 @@ VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
 USER_JOB_WRAPPER = $(DATA_DIR)/local-wrapper
 
+# Reschedule is not needed when there is no negotiator
+SCHEDD_SEND_RESCHEDULE = false
+
 # Disable mail on service restart
 SCHEDD_RESTART_REPORT=
 
