@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 5.1.5
+Version: 5.1.6
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -558,6 +558,13 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed Oct 05 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.6-1
+- HTCondor-CE now uses the C++ Collector plugin for payload job traceability
+- Fix HTCondor-CE mapfiles to be compliant with PCRE2 and HTCondor 9.10.0+
+- Add support for multiple APEL accounting scaling factors
+- Suppress spurious log message about a missing negotiator
+- Fix crash in HTCondor-CE View
+
 * Fri Jun 03 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.5-1
 - Rename AuthToken attributes in the routed job to better support accounting
 - Prevent GSI environment from pointing the job to the wrong certificates
