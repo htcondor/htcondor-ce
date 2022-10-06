@@ -135,6 +135,16 @@ HTCondor-CE 5 Version History
 This section contains release notes for each version of HTCondor-CE 5.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 5.1.6 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.6) includes the following changes:
+
+-   HTCondor-CE now uses the C++ Collector plugin for payload job traceability
+-   Fix HTCondor-CE mapfiles to be compliant with PCRE2 and HTCondor 9.10.0+
+-   Add support for multiple APEL accounting scaling factors
+-   Suppress spurious log message about a missing negotiator
+-   Fix crash in HTCondor-CE View
+
 ### 5.1.5 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.5) includes the following changes:
