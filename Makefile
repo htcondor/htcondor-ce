@@ -122,7 +122,6 @@ CE_CONFIG_FILES := \
 
 CE_DEFAULT_CONFIG_FILES := \
 	config/01-ce-audit-payloads-defaults.conf \
-        config/01-ce-auth-defaults.conf \
         config/01-ce-router-defaults.conf \
         config/01-pilot-env-defaults.conf \
 	config/02-ce-bosco-defaults.conf \
@@ -132,6 +131,7 @@ CE_DEFAULT_CONFIG_FILES := \
 	config/02-ce-sge-defaults.conf \
 	config/02-ce-slurm-defaults.conf \
 	config/03-managed-fork-defaults.conf \
+	config/05-ce-auth-defaults.conf \
         config/05-ce-health-defaults.conf \
 	contrib/apelscripts/50-ce-apel-defaults.conf
 
@@ -167,9 +167,9 @@ COLL_WSGI_FILES		:= src/htcondor-ce-registry.wsgi
 COLL_CONFIG_FILES	:= config/01-ce-collector.conf
 
 COLL_DEFAULT_CONFIG_FILES := \
-	config/01-ce-auth-defaults.conf \
 	config/01-ce-collector-defaults.conf \
 	config/01-ce-collector-requirements.conf \
+	config/05-ce-auth-defaults.conf \
 	config/05-ce-collector-auth.conf
 
 COLL_DEFAULT_MAP_FILES := \

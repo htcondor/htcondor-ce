@@ -324,11 +324,11 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 
-%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
 %{_datadir}/condor-ce/config.d/01-pilot-env-defaults.conf
 %{_datadir}/condor-ce/config.d/03-managed-fork-defaults.conf
+%{_datadir}/condor-ce/config.d/05-ce-auth-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-health-defaults.conf
 
 %{_datadir}/condor-ce/local-wrapper
@@ -530,7 +530,7 @@ fi
 %files collector
 
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
-%{_datadir}/condor-ce/config.d/01-ce-auth-defaults.conf
+%{_datadir}/condor-ce/config.d/05-ce-auth-defaults.conf
 %{_datadir}/condor-ce/mapfiles.d/50-central-collector.conf
 %{_datadir}/condor-ce/condor_ce_create_password
 
