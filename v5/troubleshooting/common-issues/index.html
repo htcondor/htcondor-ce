@@ -622,8 +622,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#verify-host-cerificates-and-crls-are-valid" class="md-nav__link">
-    Verify host cerificates and CRLs are valid
+  <a href="#verify-host-certificates-and-crls-are-valid" class="md-nav__link">
+    Verify host certificates and CRLs are valid
   </a>
   
 </li>
@@ -1313,7 +1313,7 @@ Further inspection of these files may be required as to whether or not you need 
 synchronized using a utility such as <code>ntpd</code>. 
 Additionally, HTCondor itself is sensitive to time skews on the NFS server.
 If you see empty stdout / err being returned to the submitter, verify there is no NFS server time skew.</p>
-<h3 id="verify-host-cerificates-and-crls-are-valid">Verify host cerificates and CRLs are valid<a class="headerlink" href="#verify-host-cerificates-and-crls-are-valid" title="Permanent link">&para;</a></h3>
+<h3 id="verify-host-certificates-and-crls-are-valid">Verify host certificates and CRLs are valid<a class="headerlink" href="#verify-host-certificates-and-crls-are-valid" title="Permanent link">&para;</a></h3>
 <p>An expired host certificate or CRLs will cause various issues with GSI authentication. 
 Verify that your host certificate is valid by running:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">root@host # </span>openssl x509 -in /etc/grid-security/hostcert.pem -noout -dates
@@ -1430,7 +1430,7 @@ an error like the following in <code>/var/log/condor-ce/SchedLog</code> if
 </ol>
 <h4 id="jobs-fail-to-submit-verify-ssl-configuration-on-the-client">Jobs fail to submit: Verify SSL configuration on the client<a class="headerlink" href="#jobs-fail-to-submit-verify-ssl-configuration-on-the-client" title="Permanent link">&para;</a></h4>
 <p>The CE client tools on the client machine must be configured to recognize
-the Certificate Autority (CA) that issued the CE's host certificate.</p>
+the Certificate Authority (CA) that issued the CE's host certificate.</p>
 <p>If the client tools don't trust your CE's host certificate's CA, then the output of
 <code>condor_ce_trace -d &lt;CE hostname&gt;</code> will include something like the following:</p>
 <div class="highlight"><pre><span></span><code>10/07/21 16:39:10 (D_SECURITY) -Error with certificate at depth: 0
@@ -1566,7 +1566,7 @@ system interaction will appear in the <a href="../logs/#jobrouterlog">JobRouterL
 <h5 id="for-non-htcondor-batch-systems">For non-HTCondor batch systems<a class="headerlink" href="#for-non-htcondor-batch-systems" title="Permanent link">&para;</a></h5>
 <p>HTCondor-CE submits jobs to a non-HTCondor batch system via the Gridmanager, so any issues with the CE/local batch
 system interaction will appear in the <a href="../logs/#gridmanagerlog">GridmanagerLog</a>. 
-Look for <code>gm state change…</code> lines to figure out where the issures are occuring.</p>
+Look for <code>gm state change…</code> lines to figure out where the issues are occurring.</p>
 <p><strong>Next actions</strong></p>
 <ol>
 <li><strong>If you see failures in the GridmanagerLog during job submission:</strong>
@@ -1665,6 +1665,12 @@ The most common cases for this behavior are as follows:</p>
   Check for errors in the <a href="../logs/#jobrouterlog">JobRouterLog</a> or <a href="../logs/#gridmanagerlog">GridmanagerLog</a> for HTCondor
   and non-HTCondor batch systems, respectively.</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is expected that jobs from remote submitters will temporarily be held with
+<code>Spooling input data files</code> as the reason. Once the input files have transferred
+the job will continue.</p>
+</div>
 <h4 id="held-jobs-missingexpired-user-proxy">Held jobs: Missing/expired user proxy<a class="headerlink" href="#held-jobs-missingexpired-user-proxy" title="Permanent link">&para;</a></h4>
 <p>HTCondor-CE requires a valid user proxy for each job that is submitted. 
 You can check the status of your proxy with the following</p>
@@ -1749,7 +1755,7 @@ Therefore, to remove misbehaving jobs, they will need to be removed on the CE le
 </li>
 </ol>
 <h3 id="missing-htcondor-tools">Missing HTCondor tools<a class="headerlink" href="#missing-htcondor-tools" title="Permanent link">&para;</a></h3>
-<p>Most of the HTCondor-CE tools are just wrappers around existing HTCondor tools that load the CE-specific config. 
+<p>Most of the HTCondor-CE tools are just wrappers around existing HTCondor tools that load the CE-specific configuration. 
 If you are trying to use HTCondor-CE tools and you see the following error:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_job_router_info
 <span class="go">/usr/bin/condor_ce_job_router_info: line 6: exec: condor_job_router_info: not found</span>
