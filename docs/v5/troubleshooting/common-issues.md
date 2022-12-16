@@ -53,7 +53,7 @@ synchronized using a utility such as `ntpd`.
 Additionally, HTCondor itself is sensitive to time skews on the NFS server.
 If you see empty stdout / err being returned to the submitter, verify there is no NFS server time skew.
 
-### Verify host cerificates and CRLs are valid
+### Verify host certificates and CRLs are valid
 
 An expired host certificate or CRLs will cause various issues with GSI authentication. 
 Verify that your host certificate is valid by running:
@@ -187,7 +187,7 @@ an error like the following in `/var/log/condor-ce/SchedLog` if
 #### Jobs fail to submit: Verify SSL configuration on the client
 
 The CE client tools on the client machine must be configured to recognize
-the Certificate Autority (CA) that issued the CE's host certificate.
+the Certificate Authority (CA) that issued the CE's host certificate.
 
 If the client tools don't trust your CE's host certificate's CA, then the output of
 `condor_ce_trace -d <CE hostname>` will include something like the following:
@@ -348,7 +348,7 @@ system interaction will appear in the [JobRouterLog](logs.md#jobrouterlog).
 
 HTCondor-CE submits jobs to a non-HTCondor batch system via the Gridmanager, so any issues with the CE/local batch
 system interaction will appear in the [GridmanagerLog](logs.md#gridmanagerlog). 
-Look for `gm state change…` lines to figure out where the issures are occuring.
+Look for `gm state change…` lines to figure out where the issues are occurring.
 
 **Next actions**
 
@@ -471,6 +471,11 @@ The most common cases for this behavior are as follows:
   Check for errors in the [JobRouterLog](logs.md#jobrouterlog) or [GridmanagerLog](logs.md#gridmanagerlog) for HTCondor
   and non-HTCondor batch systems, respectively.
 
+!!! note
+    It is expected that jobs from remote submitters will temporarily be held with
+    `Spooling input data files` as the reason. Once the input files have transferred
+    the job will continue.
+
 #### Held jobs: Missing/expired user proxy
 
 HTCondor-CE requires a valid user proxy for each job that is submitted. 
@@ -555,7 +560,7 @@ Therefore, to remove misbehaving jobs, they will need to be removed on the CE le
 
 ### Missing HTCondor tools
 
-Most of the HTCondor-CE tools are just wrappers around existing HTCondor tools that load the CE-specific config. 
+Most of the HTCondor-CE tools are just wrappers around existing HTCondor tools that load the CE-specific configuration. 
 If you are trying to use HTCondor-CE tools and you see the following error:
 
 ``` console
