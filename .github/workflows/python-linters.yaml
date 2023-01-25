@@ -14,7 +14,7 @@ jobs:
         echo "::set-output name=filelist::$(find . -type f -exec awk ' /^#!.*python/{print FILENAME} {nextfile}' {} + | tr '\n' ' ')"
 
   pylint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [python-files]
     steps:
     - uses: actions/checkout@v2
@@ -53,7 +53,7 @@ jobs:
         pylint --errors-only --disable no-member $PYTHON_FILES
 
   flake8:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [python-files]
     steps:
     - uses: actions/checkout@v2
