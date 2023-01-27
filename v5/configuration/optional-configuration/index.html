@@ -1096,34 +1096,8 @@ To change this default, edit the value of <code>HTCONDORCE_VIEW_PORT</code> in <
 <p>HTCondor-CE only supports generation of APEL accounting records for HTCondor batch systems.</p>
 </div>
 <p>For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
-blah APEL records for HTCondor batch systems:</p>
-<ol>
-<li>
-<p>Install the HTCondor-CE APEL package on your CE host:</p>
-<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install htcondor-ce-apel
-</code></pre></div>
-
-</li>
-<li>
-<p>On each worker node, set the appropriate scaling factor in the HTCondor configuration (i.e. <code>/etc/condor/config.d/</code>)
-   and advertise it in the startd ad:</p>
-<div class="codehilite"><pre><span></span><code>ApelScaling = &lt;SCALING FACTOR&gt;  # For example, 1.062
-STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
-</code></pre></div>
-
-</li>
-<li>
-<p>Configure the APEL parser, client, and SSM</p>
-<ul>
-<li>Records are written to <code>APEL_OUTPUT_DIR</code> in the HTCondor-CE configuration (default: <code>/var/lib/condor-ce/apel/</code>)</li>
-<li>Batch and blah record filenames are prefixed <code>batch-</code> and <code>blah-</code>, respectively</li>
-</ul>
-</li>
-<li>
-<p>Start and enable the <code>condor-ce-apel</code> and <code>condor-ce-apel.timer</code>
-   <a href="../../operation/#managing-htcondor-ce-services">services</a></p>
-</li>
-</ol>
+blah APEL records for HTCondor batch systems.
+Please refer to <a href="https://docs.egi.eu/providers/high-throughput-compute/htcondor-ce-accounting/">EGI's HTCondor-CE Accounting Documentation</a>.</p>
 <h2 id="enabling-bdii-integration">Enabling BDII Integration<a class="headerlink" href="#enabling-bdii-integration" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Batch System Support</p>
