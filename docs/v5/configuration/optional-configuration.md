@@ -79,26 +79,8 @@ Uploading Accounting Records to APEL
     HTCondor-CE only supports generation of APEL accounting records for HTCondor batch systems.
 
 For sites outside of the OSG that need to upload the APEL accounting records, HTCondor-CE supports uploading batch and
-blah APEL records for HTCondor batch systems:
-
-1. Install the HTCondor-CE APEL package on your CE host:
-
-        :::console
-        root@host # yum install htcondor-ce-apel
-
-1. On each worker node, set the appropriate scaling factor in the HTCondor configuration (i.e. `/etc/condor/config.d/`)
-   and advertise it in the startd ad:
-
-        ApelScaling = <SCALING FACTOR>  # For example, 1.062
-        STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
-
-1. Configure the APEL parser, client, and SSM
-
-    - Records are written to `APEL_OUTPUT_DIR` in the HTCondor-CE configuration (default: `/var/lib/condor-ce/apel/`)
-    - Batch and blah record filenames are prefixed `batch-` and `blah-`, respectively
-
-1. Start and enable the `condor-ce-apel` and `condor-ce-apel.timer`
-   [services](../operation.md#managing-htcondor-ce-services)
+blah APEL records for HTCondor batch systems.
+Please refer to [EGI's HTCondor-CE Accounting Documentation](https://docs.egi.eu/providers/high-throughput-compute/htcondor-ce-accounting/).
 
 Enabling BDII Integration
 -------------------------
