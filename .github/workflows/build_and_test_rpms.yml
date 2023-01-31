@@ -13,7 +13,9 @@ jobs:
         target_env:
           - uw_build
           - osg-3.6
+          - osg-3.6-testing
           - osg-3.6-upcoming
+          - osg-3.6-upcoming-testing
     steps:
       - uses: actions/checkout@v2
         with:
