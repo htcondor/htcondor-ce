@@ -323,6 +323,7 @@ fi
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/90-ban.conf
 
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
 %{_datadir}/condor-ce/config.d/01-ce-router-defaults.conf
