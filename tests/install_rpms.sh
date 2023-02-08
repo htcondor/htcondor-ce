@@ -15,7 +15,14 @@ useradd -r -g condor -d /var/lib/condor -s /sbin/nologin \
         -u 64 -c "Owner of HTCondor Daemons" condor
 
 RPM_LOCATION=/tmp/rpmbuild/RPMS/noarch
-[[ $BUILD_ENV =~ ^osg\-[0-9]+\.[0-9]+\-upcoming$ ]] && extra_repos='--enablerepo=osg-upcoming'
+# osg-3.6
+# osg-3.6-testing
+# osg-3.6-upcoming
+# osg 3.6-upcoming-testing
+if [[ $BUILD_ENV =~ ^osg ]]; then
+    extra_repos='--enablerepo='
+    extra_repos="${extra_repos}$(cut -d- -f1,3- --output-delimiter '-' <<< $BUILD_ENV)"
+fi
 
 package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
 yum localinstall -y $RPM_LOCATION/htcondor-ce-${package_version}* \
