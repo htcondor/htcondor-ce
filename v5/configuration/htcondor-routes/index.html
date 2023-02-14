@@ -515,6 +515,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#setting-the-accounting-group-based-on-the-credential-of-the-submitted-job" class="md-nav__link">
+    Setting the accounting group based on the credential of the submitted job
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1036,7 +1043,7 @@ a file in <code>/etc/condor-ce/config.d/</code></p>
 </code></pre></div>
 
 </div>
-<p>To release or put routed jobs on hold if they meet certain criteria, use the <code>Periodic_*</code> family of attributes.
+<p>To release or put routed jobs on hold if they meet certain criteria, use the <code>Periodic*</code> family of attributes.
 By default, periodic expressions are evaluated once every 300 seconds but this can be changed by setting
 <code>PERIODIC_EXPR_INTERVAL</code> in your local HTCondor configuration.</p>
 <p>In this example, we set the routed job on hold if the job is idle and has been started at least once or if the job has
@@ -1047,10 +1054,10 @@ This will catch jobs which are starting and stopping multiple times.</p>
   UNIVERSE VANILLA
   # Puts the routed job on hold if the job&#39;s been idle and has been started at least
   # once or if the job has tried to start more than once
-<span class="hll">  SET Periodic_Hold ((NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1)
+<span class="hll">  SET PeriodicHold ((NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1)
 </span>  # Release routed jobs if the condor_starter couldn&#39;t start the executable and 
   # &#39;VMGAHP_ERR_INTERNAL&#39; is in the HoldReason
-<span class="hll">  SET Periodic_Release = (HoldReasonCode == 6 &amp;&amp; regexp(&quot;VMGAHP_ERR_INTERNAL&quot;, HoldReason))
+<span class="hll">  SET PeriodicRelease = (HoldReasonCode == 6 &amp;&amp; regexp(&quot;VMGAHP_ERR_INTERNAL&quot;, HoldReason))
 </span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
@@ -1063,10 +1070,10 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
   name = &quot;Condor_Pool&quot;;
   # Puts the routed job on hold if the job&#39;s been idle and has been started at least
   # once or if the job has tried to start more than once
-<span class="hll">  set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
+<span class="hll">  set_PeriodicHold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;
 </span>  # Release routed jobs if the condor_starter couldn&#39;t start the executable and
   # &#39;VMGAHP_ERR_INTERNAL&#39; is in the HoldReason
-<span class="hll">  set_Periodic_Release = HoldReasonCode == 6 &amp;&amp; regexp(&quot;VMGAHP_ERR_INTERNAL&quot;, HoldReason);
+<span class="hll">  set_PeriodicRelease = HoldReasonCode == 6 &amp;&amp; regexp(&quot;VMGAHP_ERR_INTERNAL&quot;, HoldReason);
 </span>]
 @jre
 
@@ -1119,6 +1126,31 @@ set_Requirements = original_requirements &amp;&amp; ...;
 </code></pre></div>
 </div>
 </div>
+<h3 id="setting-the-accounting-group-based-on-the-credential-of-the-submitted-job">Setting the accounting group based on the credential of the submitted job<a class="headerlink" href="#setting-the-accounting-group-based-on-the-credential-of-the-submitted-job" title="Permanent link">&para;</a></h3>
+<p>A common need in the CE is to want to set the accounting identity of the routed job using information from the credential
+of the submitter of the job.  This originally was done using information from the x509 certificate, in particular <code>X509UserProxyVOName</code>
+and <code>x509UserProxySubject</code>.  With the switch to SCITOKENs, the equivalent job attributes are <code>AuthTokenIssuer</code> and <code>AuthTokenSubject</code>. </p>
+<p>It is important to understand that the <em>condor_schedd</em> treats <code>AuthTokenSubject</code> and <code>AuthTokenIssuer</code> as secure attributes. The values
+of these attributes cannot be supplied by the <em>condor_job_router</em> directly, they will be set based on what credential the <em>condor_job_router</em>
+uses to submit the routed job.  Because of this the value of these attributes in the routed job is almost never the same as the value in the
+original job.  This is different from the way the <code>x509*</code> job attributes behaved.</p>
+<p>Because of this, the default CE config will copy all attributes that match <code>AuthToken*</code> to <code>orig_AuthToken*</code> before the route transforms are applied.</p>
+<p>Example of setting the accounting group from AuthToken or x509 attributes.</p>
+<div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">ClassAd Transform</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_CLASSAD_USER_MAP_NAMES = $(JOB_ROUTER_CLASSAD_USER_MAP_NAMES) AcctGroupMap
+CLASSAD_USER_MAPFILE_AcctGroupMap = &lt;path-to-mapfile&gt;
+
+JOB_ROUTER_TRANSFORM_SetAcctGroup @=end
+   REQUIREMENTS (orig_AuthTokenSubject ?: x509UserProxySubject) isnt undefined
+   EVALSET AcctGroup UserMap(&quot;AcctGroupMap&quot;, orig_AuthTokenSubject ?: x509UserProxySubject, AcctGroup)
+   EVALSET AccountingGroup join(&quot;.&quot;, AcctGroup, Owner)
+@end
+
+JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) SetAcctGroup
+</code></pre></div>
+</div>
+</div>
+<p>Refer to the HTCondor documentation for <a href="https://htcondor.readthedocs.io/en/latest/admin-manual/security.html?highlight=mapfile#the-unified-map-file-for-authentication">information on mapfiles</a>.</p>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <p>If you have any questions or issues with configuring job routes, please <a href="../../..#contact-us">contact us</a> for
 assistance.</p>
