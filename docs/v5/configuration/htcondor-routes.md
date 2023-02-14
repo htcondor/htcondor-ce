@@ -144,6 +144,8 @@ Example of setting the accounting group from AuthToken or x509 attributes.
     JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) SetAcctGroup
     ```
 
+Refer to the HTCondor documentation for [information on mapfiles](https://htcondor.readthedocs.io/en/latest/admin-manual/security.html?highlight=mapfile#the-unified-map-file-for-authentication).
+
 
 Getting Help
 ------------
