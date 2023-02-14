@@ -114,7 +114,7 @@ To do this, replace the above `SET Requirements` or `set_Requirements` lines wit
     ```
 
 
-### Setting the accounting group according to the the credential that submitted the job ###
+### Setting the accounting group based on the credential of the submitted job ###
 
 A common need in the CE is to want to set the accounting identity of the routed job using information from the credential
 of the submitter of the job.  This originally was done using information from the x509 certificate, in particular `X509UserProxyVOName`
