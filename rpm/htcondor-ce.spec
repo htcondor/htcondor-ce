@@ -559,6 +559,12 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Feb 16 2022 Tim Theisen <tim@cs.wisc.edu> - 6.0.0-1
+- Align HTCondor-CE security configuration with HTCondor defaults
+- Add example configuration on how to ban users
+- Add condor_ce_transform_ads command
+- Improve essential directory checking and creation at startup
+
 * Wed Oct 05 2022 Tim Theisen <tim@cs.wisc.edu> - 5.1.6-1
 - HTCondor-CE now uses the C++ Collector plugin for payload job traceability
 - Fix HTCondor-CE mapfiles to be compliant with PCRE2 and HTCondor 9.10.0+
