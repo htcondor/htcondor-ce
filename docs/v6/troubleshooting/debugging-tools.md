@@ -72,7 +72,7 @@ condor_ce_run
 
 ### Usage ###
 
-Similar to `globus-job-run`, `condor_ce_run` is a tool that submits a simple job to your CE, so it is useful for quickly
+`condor_ce_run` is a tool that submits a simple job to your CE, so it is useful for quickly
 submitting jobs through your CE. 
 To submit a job to the CE and run the `env` command on the remote batch system:
 

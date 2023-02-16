@@ -49,29 +49,10 @@ user@host $ yum reinstall htcondor-ce htcondor-ce-client blahp
 
 ### Verify clocks are synchronized
 
-Like all GSI-based authentication, HTCondor-CE is sensitive to time skews. Make sure the clock on your CE is
+Like all network-based authentication, HTCondor-CE is sensitive to time skews. Make sure the clock on your CE is
 synchronized using a utility such as `ntpd`. 
 Additionally, HTCondor itself is sensitive to time skews on the NFS server.
 If you see empty stdout / err being returned to the submitter, verify there is no NFS server time skew.
-
-### Verify host cerificates and CRLs are valid
-
-An expired host certificate or CRLs will cause various issues with GSI authentication. 
-Verify that your host certificate is valid by running:
-
-```console 
-root@host # openssl x509 -in /etc/grid-security/hostcert.pem -noout -dates
-```
-
-Likewise, run the `fetch-crl` script to update your CRLs:
-
-```console
-root@host # fetch-crl
-```
-
-If updating CRLs fix your issues, make sure that the `fetch-crl-cron` and
-`fetch-crl-boot` services are enabled and running.
-
 
 HTCondor-CE Troubleshooting Items
 ---------------------------------
@@ -152,8 +133,6 @@ You may see error messages like the following in your [SchedLog](#schedlog):
 1.  **Check voms-mapfile or grid-mapfile** and ensure that the user's DN or VOMS attributes are known to your
     [authentication method](../configuration/authentication.md), and that the mapped users exist
     on your CE and cluster.
-1.  **Check for lcmaps errors** in `/var/log/messages`
-1.  **If you do not see helpful error messages in `/var/log/messages`,** adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and checking `/var/log/messages` for errors again.
 
 ### Jobs stay idle on the CE
 
@@ -482,7 +461,7 @@ reverse DNS resolution return the public IP and hostname.
 
 #### Usage
 
-Similar to `globus-job-run`, `condor_ce_run` is a tool that submits a simple job to your CE, so it is useful for quickly
+`condor_ce_run` is a tool that submits a simple job to your CE, so it is useful for quickly
 submitting jobs through your CE. 
 To submit a job to the CE and run the `env` command on the remote batch system:
 
@@ -1069,23 +1048,6 @@ This log is a good place to check if experiencing connectivity issues with HTCon
 
             :::console
             root@host # condor_ce_reconfig
-
-### Messages log
-
-The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the [authentication setup](../configuration/authentication.md), the errors may
-appear here.
-
-- Location: `/var/log/messages`
-- Key contents: User authentication
-
-#### What to look for ####
-
-A user is mapped:
-
-```
-Oct 6 10:35:32 osgserv06 htondor-ce-llgt[12147]: Callout to "LCMAPS" returned local user (service condor): "osgglow01"
-```
 
 ### BLAHP Configuration File
 

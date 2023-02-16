@@ -40,7 +40,7 @@ Benefits of running the HTCondor-CE:
 
 -   **Scalability:** HTCondor-CE is capable of supporting ~16k concurrent RARs
 -   **Debugging tools:** HTCondor-CE offers
-    [many tools to help troubleshoot](v5/troubleshooting/troubleshooting.md#htcondor-ce-troubleshooting-tools) issues with RARs
+    [many tools to help troubleshoot](v6/troubleshooting/troubleshooting.md#htcondor-ce-troubleshooting-tools) issues with RARs
 -   **Routing as configuration:** HTCondor-CE’s mechanism to transform and submit RARs is customized via configuration
     variables, which means that customizations will persist across upgrades and will not involve modification of
     software internals to route jobs
@@ -48,7 +48,7 @@ Benefits of running the HTCondor-CE:
 Getting HTCondor-CE
 -------------------
 
-Learn how to get and install HTCondor-CE through our [documentation](v5/installation/htcondor-ce.md).
+Learn how to get and install HTCondor-CE through our [documentation](v6/installation/htcondor-ce.md).
 
 Contact Us
 ----------

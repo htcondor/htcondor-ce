@@ -15,11 +15,6 @@ can be contacted on its HTCondor-CE port (default: `9619`) at the specified full
 
 ### Verifying DNS ###
 
-!!! tip "Reverse DNS and GSI authentication"
-    GSI authentication requires that the HTCondor-CE host has a reverse DNS record but that record is not required to
-    match the forward DNS record! For example, if you have an `A` record `htcondor-ce.chtc.wisc.edu -> 123.4.5.678`, a
-    `PTR` of `123.4.5.678 -> chtc.wisc.edu` would satisfy the GSI authentication requirement.
-
 As noted in the [HTCondor-CE installation document](../installation/htcondor-ce.md), an HTCondor-CE must have forward
 and reverse DNS records.
 To verify DNS, use a tool like `nslookup`:

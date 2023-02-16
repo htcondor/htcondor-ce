@@ -18,6 +18,28 @@ nav:
 - Home:
   - 'Overview': 'index.md'
   - 'Architecture': 'architecture.md'
+- HTCondor-CE 6:
+  - Installation: 'v6/installation/htcondor-ce.md'
+  - Configuration:
+    - Authentication: 'v6/configuration/authentication.md'
+    - Local Batch System: 'v6/configuration/local-batch-system.md'
+    - Job Router:
+      - Overview: 'v6/configuration/job-router-overview.md'
+      - Writing Job Routes: 'v6/configuration/writing-job-routes.md'
+      - For HTCondor Batch Systems: 'v6/configuration/htcondor-routes.md'
+      - For Non-HTCondor Batch Systems: 'v6/configuration/non-htcondor-routes.md'
+    - Optional Configuration: 'v6/configuration/optional-configuration.md'
+  - Operation: 'v6/operation.md'
+  - Troubleshooting:
+    - Common Issues: 'v6/troubleshooting/common-issues.md'
+    - Debugging Tools: 'v6/troubleshooting/debugging-tools.md'
+    - Helpful Logs: 'v6/troubleshooting/logs.md'
+  - Central Grid Operations:
+    - Submit Jobs Remotely: 'v6/remote-job-submission.md'
+    - Remote Troubleshooting: 'v6/troubleshooting/remote-troubleshooting.md'
+    - Install a Central Collector: 'v6/installation/central-collector.md'
+  - Releases: 'v6/releases.md'
+  - Reference: 'v6/reference.md'
 - HTCondor-CE 5:
   - Installation: 'v5/installation/htcondor-ce.md'
   - Configuration:
@@ -72,5 +94,5 @@ plugins:
   - search
   - redirects:
       redirect_maps:
-        'v5/verification.md': 'v5/operation.md'
+        'v6/verification.md': 'v6/operation.md'
   

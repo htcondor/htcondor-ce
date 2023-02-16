@@ -21,7 +21,7 @@ Before starting the installation process, consider the following points
 (consulting [the reference page](../reference.md) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
--   **SSL certificate:** The HTCondor-CE service uses a host certificate and key for SSL and GSI authentication
+-   **SSL certificate:** The HTCondor-CE service uses a host certificate and key for SSL authentication
 -   **DNS entries:** Forward and reverse DNS must resolve for the HTCondor-CE host
 -   **Network ports:** The pilot factories must be able to contact your HTCondor-CE service on port 9619 (TCP)
 -   **Submit host:** HTCondor-CE should be installed on a host that already has the ability to submit jobs into your

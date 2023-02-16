@@ -25,7 +25,7 @@ Before starting the installation process, consider the following points
 (consulting [the reference page](../reference.md) as necessary):
 
 -   **User IDs:** If they do not exist already, the installation will create the `condor` Linux user (UID 4716)
--   **SSL certificate:** The HTCondor-CE Central Collector service uses a host certificate and key for SSL and GSI
+-   **SSL certificate:** The HTCondor-CE Central Collector service uses a host certificate and key for SSL
     authentication
 -   **DNS entries:** Forward and reverse DNS must resolve for the HTCondor-CE Central Collector host
 -   **Network ports:** Site HTCondor-CEs must be able to contact the Central Collector on port 9619 (TCP).
@@ -69,7 +69,7 @@ Configuring a Central Collector
 -------------------------------
 
 Like a site HTCondor-CE, the Central Collector uses X.509 host certificates and certificate authorities (CAs) when
-authenticating SSL and GSI connections.
+authenticating SSL connections.
 By default, the Central Collector uses the default system locations to locate CAs and host certificate when
 authenticating SSL connections, i.e. for SSL authentication methods.
 But traditionally, the Central Collector and HTCondor-CEs have authenticated with each other using specialized grid

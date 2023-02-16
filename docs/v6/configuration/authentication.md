@@ -1,13 +1,8 @@
 Configuring Authentication
 ==========================
 
-To authenticate job submission from external users and VOs, HTCondor-CE can be configured to use
-[built-in mapfiles](#built-in-mapfiles) or to make [Globus callouts](#globus-callout) to an external service like Argus
-or LCMAPS.
-The former option is simpler but the latter option may be preferred if your grid supports it or your site already runs
-such a service.
-
-Additionally, the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SciTokens, SSL, and GSI
+To authenticate job submission from external users and VOs,
+the HTCondor-CE service uses [X.509 certificates](#configuring-certificates) for SciTokens and SSL
 authentication.
 
 Built-in Mapfiles
@@ -44,56 +39,10 @@ in `/etc/condor-ce/mapfiles.d/`:
 SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
 ```
 
-### GSI ###
-
-To allow clients with GSI proxies with to submit jobs to your HTCondor-CE, add lines of the following format:
-
-```
-GSI /^<DISTINGUISHED NAME>$/ <USERNAME>
-```
-
-Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`) and `<USERNAME>` with the distinguished name of the
-incoming certificate and the unix account under which the job should run, respectively.
-VOMS attributes of incoming X.509 proxy certificates can also be used for mapping:
-
-```
-GSI /<DISTINGUISHED NAME>,<VOMS FQAN 1>,<VOMS FQAN 2>,...,<VOMSFQAN N>/ <USERNAME>
-```
-
-Replacing `<DISTINGUISHED NAME>` (escaping any `/` with `\/`), `<VOMSFQAN>` fields, and `<USERNAME>` with the
-distinguished name of the incoming certificate, the VOMS roles and groups, and the unix account under which the job
-should run, respectively.
-For example, to map any certificate from the `GLOW` VO with the `htpc` role to the `glow` user, add the following line
-to a `*.conf` file in `/etc/condor-ce/mapfiles.d/`:
-
-```
-GSI /.*,\/GLOW\/Role=htpc.*/ glow
-```
-
-Globus Callout
---------------
-
-To use a Globus callout to a service like LCMAPS or Argus, you will need to have the relevant library installed as well
-as the following HTCondor-CE configuration:
-
-1. Add the following line to the top of `/etc/condor-ce/condor_mapfile`:
-
-        GSI /(.*)/ GSS_ASSIST_GRIDMAP
-
-1. Create `/etc/grid-security/gsi-authz.conf` with the following content:
-
-    - For LCMAPS:
-
-            globus_mapping liblcas_lcmaps_gt4_mapping.so lcmaps_callout
-
-    - For Argus:
-
-            globus_mapping /usr/lib64/libgsi_pep_callout.so argus_pep_callout
-
 Configuring Certificates
 ------------------------
 
-HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SciToken, SSL, and GSI
+HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SciToken and SSL
 connections.
 By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating
 SciToken and SSL connections.

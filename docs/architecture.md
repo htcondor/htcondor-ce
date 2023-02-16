@@ -54,7 +54,7 @@ owners that want to start contributing to a computing grid with minimal effort.
 ![HTCondor-CE-Bosco](img/bosco.png)
 
 If your site intends to run over 10,000 concurrent pilot jobs, you will need to host your own
-[HTCondor-CE](v5/installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
+[HTCondor-CE](v6/installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
 
 How the CE is Customized
 ------------------------
@@ -63,12 +63,11 @@ Aside from the [basic configuration] required in the CE installation, there are 
 you decide any customization is required at all):
 
 -   **Deciding which Virtual Organizations (VOs) are allowed to run at your site:** HTCondor-CE leverages HTCondor's
-    built-in ability to [authenticate incoming jobs](v5/configuration/authentication.md) based on their GSI or OAuth
+    built-in ability to [authenticate incoming jobs](v6/configuration/authentication.md) based on their OAuth
     token credentials.
-    Additionally, HTCondor may be configured to callout to external authentication services like Argus or LCMAPS. 
 -   **How to filter and transform the pilot jobs to be run on your batch system:** Filtering and transforming pilot jobs
     (i.e., setting site-specific attributes or resource limits), requires configuration of your site’s job routes.
-    For examples of common job routes, consult the [job router configuration](v5/configuration/job-router-overview.md)
+    For examples of common job routes, consult the [job router configuration](v6/configuration/job-router-overview.md)
     pages.
 
 How Security Works
@@ -79,6 +78,5 @@ certificates.
 When these clients and hosts wish to communicate with each other, the identities of each party is confirmed by
 cross-checking their certificates with the signing CA and establishing trust.
 
-In its default configuration, HTCondor-CE supports token-based and GSI-based authentication and authorization to the
+In its default configuration, HTCondor-CE supports token-based authentication and authorization to the
 remote submitter's credentials.
-HTCondor-CE also supports callouts to external authorization technoligies such as LCMAPS or Argus.
