@@ -155,8 +155,7 @@ Distributing Configuration to Site HTCondor-CEs
 
 To make the Central Collector truly useful, each site HTCondor-CE in your organization will need to configure their
 HTCondor-CEs to advertise to your Central Collector(s) along with any custom information that may be of interest.
-For example, the OSG provides default configuration to OSG sites through an `osg-ce`
-[metapackage](https://docs.fedoraproject.org/en-US/Fedora_Contributor_Documentation/1/html/Software_Collections_Guide/sect-Creating_a_Meta_Package.html)
+For example, the OSG provides default configuration to OSG sites through an `osg-ce` metapackage
 and configuration tools.
 Following the [Filesystem Hierarchy Standard](https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard), the
 following configuration should be set by HTCondor-CE administrators in `/etc/condor-ce/config.d/` or by packagers in
