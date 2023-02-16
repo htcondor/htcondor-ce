@@ -559,7 +559,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Thu Feb 16 2022 Tim Theisen <tim@cs.wisc.edu> - 6.0.0-1
+* Thu Feb 16 2023 Tim Theisen <tim@cs.wisc.edu> - 6.0.0-1
 - Align HTCondor-CE security configuration with HTCondor defaults
 - Add example configuration on how to ban users
 - Add condor_ce_transform_ads command
