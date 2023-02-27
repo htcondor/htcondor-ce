@@ -1,4 +1,4 @@
-Installing HTCondor-CE 5
+Installing HTCondor-CE 6
 ========================
 
 !!! tip "Joining the Open Science Grid (OSG)?"
