@@ -1394,19 +1394,8 @@ is different than the default location (<code>/var/lib/condor/spool</code>).</p>
 <h2 id="non-htcondor-batch-systems">Non-HTCondor Batch Systems<a class="headerlink" href="#non-htcondor-batch-systems" title="Permanent link">&para;</a></h2>
 <h3 id="configuring-the-blahp">Configuring the BLAHP<a class="headerlink" href="#configuring-the-blahp" title="Permanent link">&para;</a></h3>
 <p>HTCondor-CE uses the Batch Language ASCII Helper Protocol (BLAHP) to submit and track jobs to non-HTCondor batch systems.
-To work with the HTCondor-CE, modify <code>/usr/libexec/condor/glite/etc/batch_gahp.config</code> using the following steps:</p>
-<ol>
-<li>
-<p>Disable BLAHP handling of certificate proxies:</p>
-<div class="codehilite"><pre><span></span><code>blah_disable_wn_proxy_renewal=yes
-blah_delegate_renewed_proxies=no
-blah_disable_limited_proxy=yes
-</code></pre></div>
-
-</li>
-<li>
-<p><strong>(Optional)</strong> If your batch system tools are installed in a non-standard location (i.e., outside of <code>/usr/bin/</code>),
-   set the corresponding <code>*_binpath</code> variable to the directory containing your batch system tools:</p>
+If your batch system tools are installed in a non-standard location (i.e., outside of <code>/usr/bin/</code>),
+set the corresponding <code>*_binpath</code> variable in <code>/etc/blah.config</code> to the directory containing your batch system tools:</p>
 <table>
 <thead>
 <tr>
@@ -1437,8 +1426,6 @@ blah_disable_limited_proxy=yes
 <div class="codehilite"><pre><span></span><code>slurm_binpath=/opt/slurm/bin/
 </code></pre></div>
 
-</li>
-</ol>
 <h3 id="sharing-the-spool-directory">Sharing the SPOOL directory<a class="headerlink" href="#sharing-the-spool-directory" title="Permanent link">&para;</a></h3>
 <p>Non-HTCondor batch systems require a shared file system configuration to support file transfer from the HTCondor-CE to
 your site's worker nodes.
