@@ -25,27 +25,19 @@ Non-HTCondor Batch Systems
 ### Configuring the BLAHP ###
 
 HTCondor-CE uses the Batch Language ASCII Helper Protocol (BLAHP) to submit and track jobs to non-HTCondor batch systems.
-To work with the HTCondor-CE, modify `/usr/libexec/condor/glite/etc/batch_gahp.config` using the following steps:
+If your batch system tools are installed in a non-standard location (i.e., outside of `/usr/bin/`),
+set the corresponding `*_binpath` variable in `/etc/blah.config` to the directory containing your batch system tools:
 
-1. Disable BLAHP handling of certificate proxies:
+| **If your batch system is...** | **Then change the following configuration variable...** |
+|--------------------------------|---------------------------------------------------------|
+| LSF                            | `lsf_binpath`                                           |
+| PBS/Torque                     | `pbs_binpath`                                           |
+| SGE                            | `sge_binpath`                                           |
+| Slurm                          | `slurm_binpath`                                         |
 
-        blah_disable_wn_proxy_renewal=yes
-        blah_delegate_renewed_proxies=no
-        blah_disable_limited_proxy=yes
+For example, if your Slurm binaries (e.g. `sbatch`) exist in `/opt/slurm/bin`, you would set the following:
 
-1. **(Optional)** If your batch system tools are installed in a non-standard location (i.e., outside of `/usr/bin/`),
-   set the corresponding `*_binpath` variable to the directory containing your batch system tools:
-
-    | **If your batch system is...** | **Then change the following configuration variable...** |
-    |--------------------------------|---------------------------------------------------------|
-    | LSF                            | `lsf_binpath`                                           |
-    | PBS/Torque                     | `pbs_binpath`                                           |
-    | SGE                            | `sge_binpath`                                           |
-    | Slurm                          | `slurm_binpath`                                         |
-
-    For example, if your Slurm binaries (e.g. `sbatch`) exist in `/opt/slurm/bin`, you would set the following:
-
-        slurm_binpath=/opt/slurm/bin/
+    slurm_binpath=/opt/slurm/bin/
 
 ### Sharing the SPOOL directory ###
 
