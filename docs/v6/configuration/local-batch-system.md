@@ -25,7 +25,7 @@ Non-HTCondor Batch Systems
 ### Configuring the BLAHP ###
 
 HTCondor-CE uses the Batch Language ASCII Helper Protocol (BLAHP) to submit and track jobs to non-HTCondor batch systems.
-To work with the HTCondor-CE, modify `/usr/libexec/condor/glite/etc/batch_gahp.config` using the following steps:
+To work with the HTCondor-CE, modify `/etc/blah.config` using the following steps:
 
 1. Disable BLAHP handling of certificate proxies:
 
