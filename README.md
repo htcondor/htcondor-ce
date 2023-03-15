@@ -34,3 +34,12 @@ branch contains the previous version.
 
 - [Development](https://htcondor-ce.readthedocs.io/en/latest/): HTCondor-CE 4
 - [Stable](https://htcondor-ce.readthedocs.io/en/stable/): HTCondor-CE 3
+
+Issues
+------
+
+Please share any issues or questions regarding the HTCondor-CE via the following mailing lists:
+- [htcondor-users@cs.wisc.edu](mailto:htcondor-users@cs.wisc.edu): For issues and questions open to the community.
+- [htcondor-admin@cs.wisc.edu](mailto:htcondor-admin@cs.wisc.edu): For issues and questions containing private information.
+- [htcondor-security@cs.wisc.edu](mailto:htcondor-security@cs.wisc.edu): For issues regarding security problems/vunerabilities.
+  For more information regarding reporting security problems go to [HTCSS Security](https://htcondor.org/security/).
