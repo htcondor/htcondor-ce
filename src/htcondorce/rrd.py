@@ -30,7 +30,7 @@ def create(path, *args):
         rrdtool.create(path, *args)
     except NameError:
         cmd = ['/usr/bin/rrdtool', 'create', path] + list(args)
-        proc = subprocess.Popen(cmd)
+        proc = subprocess.Popen(cmd)  # pylint: disable=used-before-assignment
         proc.communicate()  # wait until 'rrdtool create' completes
 
 
