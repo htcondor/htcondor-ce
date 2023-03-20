@@ -10,8 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - id: python-files
-      run:
-        echo "::set-output name=filelist::$(find . -type f -exec awk ' /^#!.*python/{print FILENAME} {nextfile}' {} + | tr '\n' ' ')"
+      run: |
+        find . -type f -name '*.py' > py_files.txt
+        find . -type f -exec awk ' /^#!.*python/{print FILENAME} {nextfile}' {} + > py_shebangs.txt
+        echo "filelist=$(sort py_files.txt py_shebangs.txt | uniq | tr '\n' ' ')" >> ${GITHUB_OUTPUT}
+
 
   pylint:
     runs-on: ubuntu-20.04
