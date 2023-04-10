@@ -155,6 +155,7 @@ def main():
                  "of the CE. Please run 'osg-configure -c' and restart condor-ce.")
 
     # Ensure that HTCondor back-ends have QUEUE_SUPER_USER_MAY_IMPERSONATE set correctly
+    # and that JOB_ROUTER_SCHEDD2_SPOOL matches the back-end HTCondor's SPOOL
     try:
         htcondor.param['JOB_ROUTER_SCHEDD2_NAME']
     except KeyError:
