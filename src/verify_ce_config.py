@@ -155,13 +155,17 @@ def main():
                  "of the CE. Please run 'osg-configure -c' and restart condor-ce.")
 
     # Ensure that HTCondor back-ends have QUEUE_SUPER_USER_MAY_IMPERSONATE set correctly
+    # and that JOB_ROUTER_SCHEDD2_SPOOL matches the back-end HTCondor's SPOOL
     try:
         htcondor.param['JOB_ROUTER_SCHEDD2_NAME']
     except KeyError:
         pass
     else:
+        ce_spool2 = htcondor.param.get('JOB_ROUTER_SCHEDD2_SPOOL', '')
         os.environ['CONDOR_CONFIG'] = '/etc/condor/condor_config'
         htcondor.reload_config()
+        if ce_spool2 != htcondor.param.get('SPOOL', ''):
+            error("JOB_ROUTER_SCHEDD2_SPOOL in the HTCondor-CE configuration does not match SPOOL in the HTCondor configuration.")
         su_attr = 'QUEUE_SUPER_USER_MAY_IMPERSONATE'
         if htcondor.param.get(su_attr, '') != '.*':
             error("HTCondor batch system is improperly configured for use with HTCondor CE. "
