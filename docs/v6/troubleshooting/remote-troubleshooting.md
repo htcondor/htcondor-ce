@@ -73,7 +73,7 @@ Once you've verified network connectivity, you can start verifying the HTCondor-
 ### Inspecting daemons ###
 
 To inspect the running daemons of a remote HTCondor-CE,
-use [condor_status](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_status.html):
+use [condor_status](https://htcondor.readthedocs.io/en/lts/man-pages/condor_status.html):
 
 ```console
 $ condor_status -any -pool htcondor-ce.chtc.wisc.edu:9619
@@ -112,7 +112,7 @@ CurrentJobsRunningJava = 0
 ### Inspecting resource requests ###
 
 To inspect resource requests submitted to a remote HTCondor-CE,
-use [condor_q](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_q.html):
+use [condor_q](https://htcondor.readthedocs.io/en/lts/man-pages/condor_q.html):
 
 ```console
 $ condor_q -all -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619
@@ -146,7 +146,7 @@ CommittedTime = 0
 ### Retrieving HTCondor-CE configuration ###
 
 To verify a remote HTCondor-CE configuration,
-use [condor_config_val](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_config_val.html):
+use [condor_config_val](https://htcondor.readthedocs.io/en/lts/man-pages/condor_config_val.html):
 
 ```console
 $ condor_config_val -name htcondor-ce.chtc.wisc.edu -pool htcondor-ce.chtc.wisc.edu:9619 -dump
@@ -194,7 +194,7 @@ timeleft  : 3:55:22
 ```
 
 After you have retrieved your credential, verify that you have the ability to submit requests to the remote HTCondor-CE
-(i.e., `WRITE` access) with [condor_ping](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_ping.html):
+(i.e., `WRITE` access) with [condor_ping](https://htcondor.readthedocs.io/en/lts/man-pages/condor_ping.html):
 
 ```console
 $ export _condor_SEC_CLIENT_AUTHENTICATION_METHODS=SCITOKENS,GSI

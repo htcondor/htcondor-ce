@@ -1,3 +1,0 @@
-Installing a Hosted CE
-======================
-

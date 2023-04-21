@@ -7,7 +7,7 @@ Installing HTCondor-CE 5
 
 HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
 grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
-It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html)
+It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
