@@ -42,7 +42,7 @@ As such, upgrades from older versions of HTCondor-CE may require manual interven
     appear in your list of used routes returned by `condor_ce_config_val JOB_ROUTER_ROUTE_NAMES` if you
     intend to use the new transform syntax.
 
-HTCondor-CE now includes default [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/misc-concepts/transforms.html)
+HTCondor-CE now includes default [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/classads/transforms.html)
 equivalent to its `JOB_ROUTER_DEFAULTS`, allowing administrators to write job routes using the transform synatx.
 The old syntax continues to be the default in HTCondor-CE 5.
 Writing routes in the new syntax provides many benefits including:
@@ -193,7 +193,7 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v5.1.0) includes the following new features:
 
--   Add support for [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/misc-concepts/transforms.html)
+-   Add support for [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/classads/transforms.html)
     to the JobRouter ([HTCONDOR-243](https://opensciencegrid.atlassian.net/browse/HTCONDOR-243))
 -   Add mapped user and X.509 attribute to local HTCondor pool AccountingGroup mappings to Job Routers configured to use
     the ClassAd transform syntax ([HTCONDOR-187](https://opensciencegrid.atlassian.net/browse/HTCONDOR-187))

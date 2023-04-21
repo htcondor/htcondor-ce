@@ -26,7 +26,7 @@ to the new syntax as [outlined below](#choosing-a-syntax).
 
 ### ClassAd transforms ###
 
-The HTCondor [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/misc-concepts/transforms.html) were
+The HTCondor [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/classads/transforms.html) were
 originally introduced to HTCondor to perform in-place transformations of user jobs submitted to an HTCondor pool.
 In the HTCondor 8.9 series, the Job Router was updated to support transforms and HTCondor-CE 5 adds the configuration
 necessary to support routes written as ClassAd transforms.

@@ -35,7 +35,7 @@ Updating to HTCondor-CE 6
         root@host # find /etc/condor-ce/ -name '*.rpmnew' -name '*.rpmsave'
 
 HTCondor-CE 6 is a major release that aligns its security model with
-[HTCondor 9.0's improved security model](https://htcondor.readthedocs.io/en/lts/version-history/upgrading-from-88-to-90-series.html).
+[HTCondor 9.0's improved security model](https://htcondor.readthedocs.io/en/v9_0/version-history/upgrading-from-88-to-90-series.html).
 As such, upgrades from older versions of HTCondor-CE may require manual intervention.
 
 HTCondor-CE 6 Version History
