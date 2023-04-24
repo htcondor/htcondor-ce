@@ -283,7 +283,7 @@ syntaxes, respectively.
 Incoming jobs will be evaluated against the ClassAd expression set in the route's requirements and if the expression
 evaluates to `TRUE`, the route will match.
 More information on the syntax of ClassAd's can be found in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html).
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/misc-concepts/classad-mechanism.html).
 For an example on how incoming jobs interact with filtering in job routes, consult
 [this document](../remote-job-submission.md).
 
@@ -564,10 +564,10 @@ HTCondor-CE offers two different methods for setting environment variables of ro
   environment variables:
     - Per job route
     - To values based on incoming job attributes
-    - Using [ClassAd functions](https://htcondor.readthedocs.io/en/v9_0/misc-concepts/classad-mechanism.html#predefined-functions)
+    - Using [ClassAd functions](https://htcondor.readthedocs.io/en/lts/misc-concepts/classad-mechanism.html#predefined-functions)
 
 Both of these methods use the new HTCondor format of the
-[environment command](https://htcondor.readthedocs.io/en/v9_0/man-pages/condor_submit.html#index-14), which is
+[environment command](https://htcondor.readthedocs.io/en/lts/man-pages/condor_submit.html#index-14), which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
@@ -586,7 +586,7 @@ For example, the following HTCondor-CE configuration would result in the followi
     ```
 
 Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
-[$() macro expansion](https://htcondor.readthedocs.io/en/v9_0/admin-manual/introduction-to-configuration.html#configuration-file-macros).
+[$() macro expansion](https://htcondor.readthedocs.io/en/lts/admin-manual/introduction-to-configuration.html#configuration-file-macros).
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:
 
 === "HTCondor-CE Configuration"
@@ -690,7 +690,7 @@ The above operations are evaluated in order differently depending on your chosen
     being set to the empty string in the routed job.
 
 More documentation can be found in the
-[HTCondor manual](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html#routing-table-entry-commands-and-macro-values)
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#routing-table-entry-commands-and-macro-values)
 
 ### Copying attributes
 

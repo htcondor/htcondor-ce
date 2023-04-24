@@ -64,7 +64,7 @@ instead of `Requirements` for ClassAd transform and deprecated syntaxes, respect
 The `Requirements` attribute filters jobs coming into your CE into different job routes whereas the set function will
 set conditions on the routed job that must be met by the worker node it lands on.
 For more information on requirements, consult the
-[HTCondor manual](https://htcondor.readthedocs.io/en/v9_0/users-manual/submitting-a-job.html#about-requirements-and-rank).
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/users-manual/submitting-a-job.html#about-requirements-and-rank).
 
 To ensure that your job lands on a Linux machine in your pool:
 
@@ -144,7 +144,7 @@ Example of setting the accounting group from AuthToken or x509 attributes.
     JOB_ROUTER_PRE_ROUTE_TRANSFORMS = $(JOB_ROUTER_PRE_ROUTE_TRANSFORMS) SetAcctGroup
     ```
 
-Refer to the HTCondor documentation for [information on mapfiles](https://htcondor.readthedocs.io/en/latest/admin-manual/security.html?highlight=mapfile#the-unified-map-file-for-authentication).
+Refer to the HTCondor documentation for [information on mapfiles](https://htcondor.readthedocs.io/en/lts/admin-manual/security.html?highlight=mapfile#the-unified-map-file-for-authentication).
 
 
 Getting Help

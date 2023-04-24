@@ -33,14 +33,14 @@ What is HTCondor-CE?
 --------------------
 
 HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint.
-It is configured to use the HTCondor [Job Router daemon](https://htcondor.readthedocs.io/en/v9_0/grid-computing/job-router.html)
+It is configured to use the HTCondor [Job Router daemon](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 
 Benefits of running the HTCondor-CE:
 
 -   **Scalability:** HTCondor-CE is capable of supporting ~16k concurrent RARs
 -   **Debugging tools:** HTCondor-CE offers
-    [many tools to help troubleshoot](v6/troubleshooting/troubleshooting.md#htcondor-ce-troubleshooting-tools) issues with RARs
+    [many tools to help troubleshoot](v6/troubleshooting/debugging-tools.md) issues with RARs
 -   **Routing as configuration:** HTCondor-CE’s mechanism to transform and submit RARs is customized via configuration
     variables, which means that customizations will persist across upgrades and will not involve modification of
     software internals to route jobs
