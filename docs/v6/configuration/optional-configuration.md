@@ -57,9 +57,12 @@ configuring them in unison.
 Inserting IDTOKENs into the routed job's sandbox
 ------------------------------------------
 
-If you want to insert IDTOKENS into the routed job's sandbox you can use the `SendIDTokens` route command.  Tokens
+If you want to insert IDTOKENS into the routed job's sandbox you can use the `SendIDTokens` route command, or
+the `JOB_ROUTER_SEND_ROUTE_IDTOKENS` global configuration variable. Tokens
 sent using this mechanism must be named and declared using the `JOB_ROUTER_CREATE_IDTOKEN_NAMES`
-and `JOB_ROUTER_CREATE_IDTOKEN_<name>` configuration variables.
+and [`JOB_ROUTER_CREATE_IDTOKEN_<name>`](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_CREATE_IDTOKEN_%3CNAME%3E) configuration variables.  Tokens whose names are declared in
+the `JOB_ROUTER_SEND_ROUTE_IDTOKENS` configuration variable are sent by default for each route that does
+not have a `SendIDTokens` command.
 
 - **To declare IDTOKENS for inclusion in glide-in jobs** for the purpose of advertising to a collector
   add something like the following to `/etc/condor-ce/config.d/99-local-ce-token.conf`:
@@ -86,6 +89,11 @@ and `JOB_ROUTER_CREATE_IDTOKEN_<name>` configuration variables.
 
 - **To insert one of the above IDTOKENS in the sandbox of a routed job**, include the token name in the `SendIDTokens` route
    command like this.
+
+        SendIDTokens = "Name2"
+
+  **To add an IDTOKEN to a routed job in addition to the default tokens**, build a string containing the token name
+   along with the value of the global configuration variable like this.
 
         SendIDTokens = "Name2 $(JOB_ROUTER_SEND_ROUTE_IDTOKENS)"
 
