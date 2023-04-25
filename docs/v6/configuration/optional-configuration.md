@@ -97,6 +97,7 @@ and `JOB_ROUTER_CREATE_IDTOKEN_<name>` configuration variables.
   of that token.  For instance, the Fermilab CE config uses the above `SendIDTokens` expression and
   the following token declarations at the time of this guide.
 
+        JOB_ROUTER_CREATE_IDTOKEN_NAMES = fermilab3 osg
         JOB_ROUTER_CREATE_IDTOKEN_fermilab3 @=end
             sub = "fermilabpilot@fnal.gov"
             kid = "POOL"
