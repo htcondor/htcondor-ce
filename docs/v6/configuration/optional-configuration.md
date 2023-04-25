@@ -78,7 +78,7 @@ not have a `SendIDTokens` command.
             owner = "owner1"
         @end
         JOB_ROUTER_CREATE_IDTOKEN_Name2 @=end
-            sub = "name2_pilot@domain"
+            sub = "name2@users.htcondor.org"
             kid = "POOL"
             lifetime = 3900
             scope = "ADVERTISE_STARTD, ADVERTISE_MASTER, READ"
