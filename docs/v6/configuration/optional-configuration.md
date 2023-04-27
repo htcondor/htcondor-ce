@@ -91,7 +91,10 @@ not have a `SendIDTokens` command.
    command like this.
 
         SendIDTokens = "Name2"
-
+    !!! note "Route commands"
+        `SendIDTokens` is a route command, not a job attribute.
+        This means that you will not be able to manipulate it through
+        [transform verbs](writing-job-routes.md#editing-attributes) such as `EVALSET`.
   **To add an IDTOKEN to a routed job in addition to the default tokens**, build a string containing the token name
    along with the value of the global configuration variable like this.
 
