@@ -69,7 +69,7 @@ not have a `SendIDTokens` command.
 
         JOB_ROUTER_CREATE_IDTOKEN_NAMES = name1 name2
         JOB_ROUTER_CREATE_IDTOKEN_name1 @=end
-            sub = "name1_pilot@domain"
+            sub = "name1@users.htcondor.org"
             kid = "POOL"
             lifetime = 3900
             scope = "ADVERTISE_STARTD, ADVERTISE_MASTER, READ"
