@@ -17,7 +17,7 @@ jobs:
           - osg-3.6-upcoming
           - osg-3.6-upcoming-testing
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
