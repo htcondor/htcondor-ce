@@ -12,7 +12,7 @@ flowchart LR %% Specify diagram type and direction
 %%   while nodes with the same name are lowercase (blahp)
 
 subgraph Bosco Cluster
-  direction LR
+  %%direction LR %% Flowchart direciton statement overrides statements in connected subgraphs; comment these out
   A[schedd] --> B[Grid</br>Manager]
   C[SP] --> B
   B --- D[ssh]
@@ -22,7 +22,7 @@ subgraph Bosco Cluster
 end
 
 subgraph Remote Submit
-  direction LR
+  %%direction LR
   F[sshd] --> G[blahp]
   H[sshd] --> I[FTGahp] %% FTGahp capitalized to be legible
 end
@@ -30,4 +30,10 @@ end
 %% -- External Nodes --
 0>Job Ad]
 %% -- External Nodes --
+
+%% -- Subgraph Links --
+D ===|Blahp:</br>-stdin</br>-stdout</br>-stderr| F
+E ===|File:</br>-stdin</br>-stdout</br>-stderr| H
+0 --> A
+%% -- Subgraph Links --
 ```

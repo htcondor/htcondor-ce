@@ -12,30 +12,37 @@ flowchart LR %% Specify diagram type and direction
 %%   while nodes with the same name are lowercase (blahp)
 
 subgraph HTCondor-CE
-	direction LR
-	A(Job Router) --> B[[CE schedd]]
-	B --> C{Grid Mgr.}
+	%%direction LR %% Flowchart direction statement overrides statements in connected subgraphs; comment these out.
+	A[[SchedD]] --> B(Job Router)
+	B -. Routed Job .-> A
+	A -.-> C{Grid Mgr.}
 	D[(Log)] --> C
 end
 
 subgraph Blahp
-	direction LR
+	%%direction LR
 	subgraph lsf_*.sh %% Configure nested subgraphs above internal nodes
 		direction LR %% Set direction of isolated subgraphs
 		AA[submit] ---|OR| BB[cancel]
 		BB ---|OR| CC[status]
 	end
 	E[[blahp]] --> lsf_*.sh
-	F[common_sub</br>_attr.sh] --> lsf_*.sh
-	lsf_*.sh --> F
+	F[common_sub</br>_attr.sh] -->|attrs| lsf_*.sh
+	lsf_*.sh -->|args| F
 end
 
 subgraph Batch Sys
-	direction LR
+	%%direction LR
 	G((qsub))
 end
 
 %% -- External Nodes --
 0>Job Ad]
 %% -- External Nodes --
+
+%% -- Subgraph Links --
+C <--> E
+lsf_*.sh --> G
+0 --> A
+%% -- Subgraph Links --
 ```
