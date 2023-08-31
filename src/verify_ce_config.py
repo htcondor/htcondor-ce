@@ -78,6 +78,16 @@ def main():
 
     # If no JOB_ROUTER_ROUTE_<name> rules exist, verify JOB_ROUTER_DEFAULTS and JOB_ROUTER_ENTRIES
     else:
+        used_deprecated_knobs = []
+        for knob in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES', 'JOB_ROUTER_ENTRIES_CMD','JOB_ROUTER_ENTRIES_FILE']:
+            if knob in htcondor.param:
+                used_deprecated_knobs.append(knob)
+        if len(used_deprecated_knobs) > 0:
+            warn("%s are deprecated and will be removed for V24 of HTCondor. New configuration"
+                 % ", ".join(used_deprecated_knobs)
+                 + " syntax for the job router is defined using JOB_ROUTER_ROUTE_NAMES and JOB_ROUTER_ROUTE_<name>."
+                 + " Note: The removal will occur during the lifetime of the HTCondor V23 feature series.\n")
+
         for attr in ['JOB_ROUTER_DEFAULTS', 'JOB_ROUTER_ENTRIES']:
             try:
                 config_val = htcondor.param[attr]
