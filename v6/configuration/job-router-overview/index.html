@@ -1132,6 +1132,17 @@ in the following order:</p>
 <li>Each transform in <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> whose requirements are met by the job</li>
 </ol>
 <h3 id="deprecated-syntax">Deprecated syntax<a class="headerlink" href="#deprecated-syntax" title="Permanent link">&para;</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Planned Removal of Deprecated Syntax</p>
+<ul>
+<li><code>JOB_ROUTER_DEFAULTS</code>, <code>JOB_ROUTER_ENTRIES</code>, <code>JOB_ROUTER_ENTRIES_CMD</code>, and <code>JOB_ROUTER_ENTRIES_FILE</code> are
+deprecated and will be removed for <em>V24</em> of the HTCondor Software Suite. New configuration syntax for the job router
+is defined using <code>JOB_ROUTER_ROUTE_NAMES</code> and <code>JOB_ROUTER_ROUTE_[name]</code>.</li>
+<li>For new syntax example vist:
+<a href="https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration">HTCondor Documentation - Job Router</a></li>
+<li><strong>Note:</strong> The removal will occur during the lifetime of the HTCondor <em>V23</em> feature series.</li>
+</ul>
+</div>
 <p>Since the inception of HTCondor-CE, job routes have been written as a
 <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#deprecated-router-configuration">list of ClassAds</a>.
 Each job route’s <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/4_1HTCondor_s_ClassAd.html">ClassAd</a> is constructed

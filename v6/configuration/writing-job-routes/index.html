@@ -1324,6 +1324,17 @@ lexicographic order with subsequent variables overriding earlier ones.</p>
 </div>
 </div>
 <h2 id="syntax-differences">Syntax Differences<a class="headerlink" href="#syntax-differences" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Planned Removal of Deprecated Syntax</p>
+<ul>
+<li><code>JOB_ROUTER_DEFAULTS</code>, <code>JOB_ROUTER_ENTRIES</code>, <code>JOB_ROUTER_ENTRIES_CMD</code>, and <code>JOB_ROUTER_ENTRIES_FILE</code> are
+deprecated and will be removed for <em>V24</em> of the HTCondor Software Suite. New configuration syntax for the job router
+is defined using <code>JOB_ROUTER_ROUTE_NAMES</code> and <code>JOB_ROUTER_ROUTE_[name]</code>.</li>
+<li>For new syntax example vist:
+<a href="https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration">HTCondor Documentation - Job Router</a></li>
+<li><strong>Note:</strong> The removal will occur during the lifetime of the HTCondor <em>V23</em> feature series.</li>
+</ul>
+</div>
 <p>In HTCondor-CE 5, the <a href="../job-router-overview/#deprecated-syntax">deprecated syntax</a> continues to be the default and
 administrator's can move to the <a href="../job-router-overview/#classad-transforms">ClassAd transform syntax</a> by setting the
 following in a file in <code>/etc/condor-ce/config.d/</code>:</p>
