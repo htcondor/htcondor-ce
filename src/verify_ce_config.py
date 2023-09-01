@@ -83,7 +83,7 @@ def main():
             if knob in htcondor.param:
                 used_deprecated_knobs.append(knob)
         if len(used_deprecated_knobs) > 0:
-            warn(f"{', '.join(used_deprecated_knobs)} are deprecated and will be removed for V24 of HTCondor. New configuration"
+            warn(f"{', '.join(used_deprecated_knobs)} are deprecated and will be removed for V24 of the HTCondor Software Suite. New configuration"
                  + " syntax for the job router is defined using JOB_ROUTER_ROUTE_NAMES and JOB_ROUTER_ROUTE_<name>. For example"
                  + " use of new syntax visit:\nhttps://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration\n\n"
                  + "   Note: The removal will occur during the lifetime of the HTCondor V23 feature series.\n")
