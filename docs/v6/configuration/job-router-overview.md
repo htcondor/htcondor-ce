@@ -40,6 +40,12 @@ in the following order:
 
 ### Deprecated syntax ###
 
+!!! warning "Planned Removal of Deprecated Syntax"
+    -   `JOB_ROUTER_DEFAULTS`, `JOB_ROUTER_ENTRIES`, `JOB_ROUTER_ENTRIES_CMD`, and `JOB_ROUTER_ENTRIES_FILE` are
+    deprecated and will be removed for *V24* of HTCondor. New configuration syntax for the job router
+    is defined using `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ROUTE_[name]`.
+    -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
+
 Since the inception of HTCondor-CE, job routes have been written as a
 [list of ClassAds](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#deprecated-router-configuration).
 Each job route’s [ClassAd](http://research.cs.wisc.edu/htcondor/manual/v8.6/4_1HTCondor_s_ClassAd.html) is constructed
