@@ -24,6 +24,15 @@ Each example is displayed in code blocks with tabs to switch between the two syn
 Syntax Differences
 ------------------
 
+!!! warning "Planned Removal of Deprecated Syntax"
+    -   `JOB_ROUTER_DEFAULTS`, `JOB_ROUTER_ENTRIES`, `JOB_ROUTER_ENTRIES_CMD`, and `JOB_ROUTER_ENTRIES_FILE` are
+    deprecated and will be removed for *V24* of the HTCondor Software Suite. New configuration syntax for the job router
+    is defined using `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ROUTE_[name]`.
+    -   For new syntax example vist:
+    [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration)
+    -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
+
+
 In HTCondor-CE 5, the [deprecated syntax](job-router-overview.md#deprecated-syntax) continues to be the default and
 administrator's can move to the [ClassAd transform syntax](job-router-overview.md#classad-transforms) by setting the
 following in a file in `/etc/condor-ce/config.d/`:
