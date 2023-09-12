@@ -78,6 +78,7 @@ printf "%s\n" "%dist .el${OS_VERSION}" >> /etc/rpm/macros.dist
 cp htcondor-ce/rpm/htcondor-ce.spec /tmp/rpmbuild/SPECS
 package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
 pushd htcondor-ce
+git config --global --add safe.directory /htcondor-ce
 git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD | \
     gzip > /tmp/rpmbuild/SOURCES/htcondor-ce-${package_version}.tar.gz
 popd
