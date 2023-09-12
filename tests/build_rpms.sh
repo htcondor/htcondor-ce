@@ -35,8 +35,10 @@ yum install -y epel-release $YUM_PKG_NAME
 # Broken mirror?
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
-if [[ $OS_VERSION != 7 ]]; then
-    yum-config-manager --enable powertools
+if [ $OS_VERSION -eq 8 ]; then
+    dnf config-manager --enable powertools
+elif [ $OS_VERSION -eq 9 ]; then
+    dnf config-manager --enable crb
 fi
 
 # Install packages required for the build

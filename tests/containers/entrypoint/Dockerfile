@@ -28,8 +28,10 @@ RUN \
     yum update -y && \
     yum install -y https://research.cs.wisc.edu/htcondor/repo/${CONDOR_SERIES}/htcondor-release-current.el${EL}.noarch.rpm \
                    $YUM_PKG_NAME && \
-    if [[ $OS_VERSION != 7 ]]; then \
-       yum-config-manager --enable powertools; \
+    if [ $OS_VERSION -eq 8 ]; then \
+       dnf config-manager --enable powertools; \
+    elif [ $OS_VERSION -eq 9 ]; then \
+       dnf config-manager --enable crb; \
     fi && \
     yum install -y git \
                    make \
