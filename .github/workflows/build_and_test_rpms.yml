@@ -10,6 +10,7 @@ jobs:
         platform:
           - centos:7
           - rockylinux:8
+          - almalinux:9
         target_env:
           - uw_build
           - osg-3.6

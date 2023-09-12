@@ -35,8 +35,10 @@ yum install -y epel-release $YUM_PKG_NAME
 # Broken mirror?
 echo "exclude=mirror.beyondhosting.net" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
-if [[ $OS_VERSION != 7 ]]; then
-    yum-config-manager --enable powertools
+if [ $OS_VERSION -eq 8 ]; then
+    dnf config-manager --enable powertools
+elif [ $OS_VERSION -eq 9 ]; then
+    dnf config-manager --enable crb
 fi
 
 # Install packages required for the build
@@ -62,11 +64,11 @@ if [[ $BUILD_ENV == osg* ]]; then
     OSG_SERIES=$(cut -d- -f2 <<< "$BUILD_ENV")
     yum install -y https://repo.opensciencegrid.org/osg/${OSG_SERIES}/osg-${OSG_SERIES}-el${OS_VERSION}-release-latest.rpm
 else
-    # This is currently tracking the 9.0 stable release.
+    # This is currently tracking the 10.x feature release.
     # For the stable release series the version number is required.
     # For the feature series, one can either use the version number (i.e. 9.1)
     # or 'current' which tracks the latest feature series
-    yum install -y https://research.cs.wisc.edu/htcondor/repo/9.0/htcondor-release-current.el${OS_VERSION}.noarch.rpm
+    yum install -y https://research.cs.wisc.edu/htcondor/repo/10.x/htcondor-release-current.el${OS_VERSION}.noarch.rpm
 fi
 
 # Prepare the RPM environment
@@ -78,6 +80,7 @@ printf "%s\n" "%dist .el${OS_VERSION}" >> /etc/rpm/macros.dist
 cp htcondor-ce/rpm/htcondor-ce.spec /tmp/rpmbuild/SPECS
 package_version=`grep Version htcondor-ce/rpm/htcondor-ce.spec | awk '{print $2}'`
 pushd htcondor-ce
+git config --global --add safe.directory /htcondor-ce
 git archive --format=tar --prefix=htcondor-ce-${package_version}/ HEAD | \
     gzip > /tmp/rpmbuild/SOURCES/htcondor-ce-${package_version}.tar.gz
 popd
