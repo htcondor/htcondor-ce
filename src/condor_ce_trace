@@ -87,6 +87,8 @@ def parse_opts():
                       dest="schedd_name")
     parser.add_option("-d", "--debug", help="Print debugging info.",
                       dest="debug", default=False, action="store_true")
+    parser.add_option("--skip-scitokens", help="Skip SCITOKENS authentication.",
+                      dest="skip_scitokens", default=False, action="store_true")
     parser.add_option("-a", "--attribute", help="Add attribute to job ad.",
                       dest="attribute", default=[], action='append')
     parser.add_option("-n", "--no-clean", help="Do not clean temporary "
@@ -196,7 +198,7 @@ def setup_user_creds():
     return results
 
 
-def check_job_submit(job_info, schedd_ad):
+def check_job_submit(job_info, schedd_ad, setup_creds=True):
 
     job_ad = classad.ClassAd()
     job_ad["Cmd"] = '/usr/bin/env'
@@ -211,7 +213,8 @@ def check_job_submit(job_info, schedd_ad):
         # Accept submit format '+AttributeName'
         job_ad[key.lstrip('+').strip()] = set_classad_value_type(value.strip())
 
-    job_ad.update(setup_user_creds())
+    if setup_creds:
+        job_ad.update(setup_user_creds())
 
     if G_DEBUG:
         print(f"Job ad, pre-submit:\n{job_ad}")
@@ -333,7 +336,7 @@ def main():
     check_authz(coll_ad, schedd_ad)
     try:
         job_info.update(ce.generate_job_files())
-        check_job_submit(job_info, schedd_ad)
+        check_job_submit(job_info, schedd_ad, setup_creds=not opts.skip_scitokens)
     finally:
         if opts.clean:
             ce.cleanup_job_files(job_info)
