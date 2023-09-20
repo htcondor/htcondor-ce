@@ -30,7 +30,8 @@ BuildRequires: python3-rpm-macros
 # https://opensciencegrid.atlassian.net/browse/HTCONDOR-244
 # Need 9.0.1 for the C++ collector plugin
 # https://opensciencegrid.atlassian.net/browse/HTCONDOR-1326
-Requires:  condor >= 9.0.1
+# The blahp was moved to the condor package in HTCondor 9.5.0
+Requires:  condor >= 9.5.0
 
 # Init script doesn't function without `which` (which is no longer part of RHEL7 base).
 Requires: which
@@ -113,7 +114,6 @@ Requires: %{name} = %{version}-%{release}
 Group: Applications/System
 Summary: Default routes for submission to PBS
 Requires: %{name} = %{version}-%{release}
-Requires: blahp
 
 %description pbs
 %{summary}
@@ -122,7 +122,6 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to LSF
 Requires: %{name} = %{version}-%{release}
-Requires: blahp
 
 %description lsf
 %{summary}
@@ -131,7 +130,6 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to SGE
 Requires: %{name} = %{version}-%{release}
-Requires: blahp
 
 %description sge
 %{summary}
@@ -140,7 +138,6 @@ Requires: blahp
 Group: Applications/System
 Summary: Default routes for submission to Slurm
 Requires: %{name} = %{version}-%{release}
-Requires: blahp
 
 %description slurm
 %{summary}
