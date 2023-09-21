@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 6.0.0
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 6.0.1
+Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -556,6 +556,13 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Sep 21 2023 Tim Theisen <tim@cs.wisc.edu> - 6.0.1-0.rc1
+- Add grid CA and host certificate/key locations to default SSL search paths
+- Verifies that HTCondor-CE can access the local HTCondor's SPOOL directory
+- Can use condor_ce_trace without SciToken to test batch system integration
+- condor_ce_upgrade_check checks compatibility with next HTCondor version
+- Adds deprecation warnings for old job router configuration syntax
+
 * Thu Feb 16 2023 Tim Theisen <tim@cs.wisc.edu> - 6.0.0-1
 - Align HTCondor-CE security configuration with HTCondor defaults
 - Add example configuration on how to ban users
