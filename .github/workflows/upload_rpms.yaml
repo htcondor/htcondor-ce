@@ -26,7 +26,7 @@ jobs:
 
       - name: Start ${{ matrix.platform }} image
         run: |
-          docker run --detach --env "container=docker" \
+          docker run --privileged --detach --env "container=docker" \
                  --name $GITHUB_SHA \
                  --volume `pwd`:/htcondor-ce:rw \
                  ${{ matrix.platform }} \
