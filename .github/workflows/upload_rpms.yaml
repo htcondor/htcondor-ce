@@ -4,6 +4,7 @@ on:
     # there seems to be contention between 'published' vs 'created' here
     # 'published' occurs with a GitHub release
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-rpms-and-upload:
@@ -25,7 +26,7 @@ jobs:
 
       - name: Start ${{ matrix.platform }} image
         run: |
-          docker run --detach --env "container=docker" \
+          docker run --privileged --detach --env "container=docker" \
                  --name $GITHUB_SHA \
                  --volume `pwd`:/htcondor-ce:rw \
                  ${{ matrix.platform }} \
