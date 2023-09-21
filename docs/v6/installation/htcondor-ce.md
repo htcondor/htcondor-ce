@@ -58,11 +58,6 @@ Installing HTCondor-CE
 
     This command will update **all** packages
 
-1. Install the `fetch-crl` package, available from the EPEL repositories.
-
-        :::console
-        root@host # yum install fetch-crl
-
 1. Select the appropriate convenience RPM:
 
     | If your batch system is... | Then use the following package... |

@@ -12,7 +12,6 @@ The specific services are:
 
 | Software                     | Service name                                |
 |:-----------------------------|:--------------------------------------------|
-| Fetch CRL                    | `fetch-crl-boot` and `fetch-crl-cron`       |
 | Your batch system            | `condor` or `pbs_server` or …               |
 | HTCondor-CE                  | `condor-ce`                                 |
 | **(Optional)** APEL uploader | `condor-ce-apel` and `condor-ce-apel.timer` |

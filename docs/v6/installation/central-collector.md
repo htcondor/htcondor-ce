@@ -55,11 +55,6 @@ Installing a Central Collector
 
     This command will update **all** packages
 
-1.  Install the `fetch-crl` package, available from the EPEL repositories.
-
-        :::console
-        root@host # yum install fetch-crl
-
 1.  Install the Central Collector software:
 
         :::console
@@ -204,7 +199,6 @@ The specific services are:
 
 | Software    | Service name                          |
 |:------------|:--------------------------------------|
-| Fetch CRL   | `fetch-crl-boot` and `fetch-crl-cron` |
 | HTCondor-CE | `condor-ce-collector`                 |
 
 Start and enable the services in the order listed and stop them in reverse order.
