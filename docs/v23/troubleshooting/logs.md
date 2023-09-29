@@ -267,24 +267,6 @@ This log is a good place to check if experiencing connectivity issues with HTCon
             :::console
             root@host # condor_ce_reconfig
 
-Messages Log
-------------
-
-The messages file can include output from lcmaps, which handles mapping of X.509 proxies to Unix usernames. 
-If there are issues with the [authentication setup](../configuration/authentication.md), the
-errors may appear here.
-
-- Location: `/var/log/messages`
-- Key contents: User authentication
-
-### What to look for ###
-
-A user is mapped:
-
-```
-Oct 6 10:35:32 osgserv06 htondor-ce-llgt[12147]: Callout to "LCMAPS" returned local user (service condor): "osgglow01"
-```
-
 BLAHP Configuration File
 ------------------------
 

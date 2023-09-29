@@ -12,7 +12,6 @@ The specific services are:
 
 | Software                     | Service name                                |
 |:-----------------------------|:--------------------------------------------|
-| Fetch CRL                    | `fetch-crl-boot` and `fetch-crl-cron`       |
 | Your batch system            | `condor` or `pbs_server` or …               |
 | HTCondor-CE                  | `condor-ce`                                 |
 | **(Optional)** APEL uploader | `condor-ce-apel` and `condor-ce-apel.timer` |
@@ -62,19 +61,11 @@ before trying to operate the HTCondor-CE again.
 Checking User Authentication
 ----------------------------
 
-There are two primary authentication methods for submitting jobs to
-an HTCondor-CE: GSI (currently being phased out) and SciTokens.
+The authentication method for submitting jobs to
+an HTCondor-CE is SciTokens.
 To see which authentication method and identity were used to submit
 a particular job (or modify existing jobs), you can look in
 `/var/log/condor-ce/AuditLog`.
-
-If GSI authentication was used, you'll see a set of lines like this:
-
-```
-10/15/21 17:52:32 (cid:14) (D_AUDIT) Command=QMGMT_WRITE_CMD, peer=<172.17.0.2:41045>
-10/15/21 17:52:32 (cid:14) (D_AUDIT) AuthMethod=GSI, AuthId=/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=People/CN=testuser, CondorId=testuser@users.htcondor.org
-10/15/21 17:52:32 (cid:14) (D_AUDIT) Submitting new job 1.0
-```
 
 If SciTokens authentication was used, you'll see a set of lines like this:
 
