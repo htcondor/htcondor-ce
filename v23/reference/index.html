@@ -9,21 +9,21 @@
       
       
       
-        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v6/configuration/authentication/">
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v23/reference/">
       
-      <link rel="icon" href="../../../img/favicon-32x32.png">
+      <link rel="icon" href="../../img/favicon-32x32.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
     
     
       
-        <title>Authentication - HTCondor-CE Documentation</title>
+        <title>Reference - HTCondor-CE Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
         
       
     
@@ -38,9 +38,9 @@
     
     
     
-      <link rel="stylesheet" href="../../../css/superfences.css">
+      <link rel="stylesheet" href="../../css/superfences.css">
     
-      <link rel="stylesheet" href="../../../css/extra.css">
+      <link rel="stylesheet" href="../../css/extra.css">
     
     
       
@@ -57,7 +57,7 @@
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
   
     
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configuring-authentication" class="md-skip">
+        <a href="#reference" class="md-skip">
           Skip to content
         </a>
       
@@ -76,7 +76,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="HTCondor-CE Documentation" class="md-header__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+    <a href="../.." title="HTCondor-CE Documentation" class="md-header__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Authentication
+              Reference
             
           </span>
         </div>
@@ -169,24 +169,8 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         Home
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../../v23/installation/htcondor-ce/" class="md-tabs__link">
-        HTCondor-CE 23
       </a>
     </li>
   
@@ -203,7 +187,23 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+      <a href="../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+        HTCondor-CE 23
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../v6/installation/htcondor-ce/" class="md-tabs__link">
         HTCondor-CE 6
       </a>
     </li>
@@ -232,7 +232,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+    <a href="../.." title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -285,7 +285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Overview
       </a>
     </li>
@@ -297,7 +297,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         Architecture
       </a>
     </li>
@@ -316,12 +316,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       <label class="md-nav__link" for="__nav_2">
         HTCondor-CE 23
@@ -339,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/installation/htcondor-ce/" class="md-nav__link">
+      <a href="../installation/htcondor-ce/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -372,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/authentication/" class="md-nav__link">
+      <a href="../configuration/authentication/" class="md-nav__link">
         Authentication
       </a>
     </li>
@@ -384,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/local-batch-system/" class="md-nav__link">
+      <a href="../configuration/local-batch-system/" class="md-nav__link">
         Local Batch System
       </a>
     </li>
@@ -417,7 +419,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/job-router-overview/" class="md-nav__link">
+      <a href="../configuration/job-router-overview/" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -429,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/writing-job-routes/" class="md-nav__link">
+      <a href="../configuration/writing-job-routes/" class="md-nav__link">
         Writing Job Routes
       </a>
     </li>
@@ -441,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/htcondor-routes/" class="md-nav__link">
+      <a href="../configuration/htcondor-routes/" class="md-nav__link">
         For HTCondor Batch Systems
       </a>
     </li>
@@ -453,7 +455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/non-htcondor-routes/" class="md-nav__link">
+      <a href="../configuration/non-htcondor-routes/" class="md-nav__link">
         For Non-HTCondor Batch Systems
       </a>
     </li>
@@ -471,7 +473,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/optional-configuration/" class="md-nav__link">
+      <a href="../configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
       </a>
     </li>
@@ -489,7 +491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/operation/" class="md-nav__link">
+      <a href="../operation/" class="md-nav__link">
         Operation
       </a>
     </li>
@@ -522,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/common-issues/" class="md-nav__link">
+      <a href="../troubleshooting/common-issues/" class="md-nav__link">
         Common Issues
       </a>
     </li>
@@ -534,7 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/debugging-tools/" class="md-nav__link">
+      <a href="../troubleshooting/debugging-tools/" class="md-nav__link">
         Debugging Tools
       </a>
     </li>
@@ -546,7 +548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/logs/" class="md-nav__link">
+      <a href="../troubleshooting/logs/" class="md-nav__link">
         Helpful Logs
       </a>
     </li>
@@ -585,7 +587,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/remote-job-submission/" class="md-nav__link">
+      <a href="../remote-job-submission/" class="md-nav__link">
         Submit Jobs Remotely
       </a>
     </li>
@@ -597,7 +599,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/remote-troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/remote-troubleshooting/" class="md-nav__link">
         Remote Troubleshooting
       </a>
     </li>
@@ -609,7 +611,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/installation/central-collector/" class="md-nav__link">
+      <a href="../installation/central-collector/" class="md-nav__link">
         Install a Central Collector
       </a>
     </li>
@@ -627,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/releases/" class="md-nav__link">
+      <a href="../releases/" class="md-nav__link">
         Releases
       </a>
     </li>
@@ -637,11 +639,70 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../../v23/reference/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Reference
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#users" class="md-nav__link">
+    Users
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#certificates" class="md-nav__link">
+    Certificates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#networking" class="md-nav__link">
+    Networking
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -658,14 +719,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
       <label class="md-nav__link" for="__nav_3">
         HTCondor-CE 6
@@ -683,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/htcondor-ce/" class="md-nav__link">
+      <a href="../../v6/installation/htcondor-ce/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -693,14 +752,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
       
       <label class="md-nav__link" for="__nav_3_2">
         Configuration
@@ -716,76 +773,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Authentication
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../v6/configuration/authentication/" class="md-nav__link">
         Authentication
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#built-in-mapfiles" class="md-nav__link">
-    Built-in Mapfiles
-  </a>
-  
-    <nav class="md-nav" aria-label="Built-in Mapfiles">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#scitokens" class="md-nav__link">
-    SciTokens
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-certificates" class="md-nav__link">
-    Configuring Certificates
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    Next Steps
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -795,7 +787,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../local-batch-system/" class="md-nav__link">
+      <a href="../../v6/configuration/local-batch-system/" class="md-nav__link">
         Local Batch System
       </a>
     </li>
@@ -828,7 +820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../job-router-overview/" class="md-nav__link">
+      <a href="../../v6/configuration/job-router-overview/" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -840,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../writing-job-routes/" class="md-nav__link">
+      <a href="../../v6/configuration/writing-job-routes/" class="md-nav__link">
         Writing Job Routes
       </a>
     </li>
@@ -852,7 +844,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../htcondor-routes/" class="md-nav__link">
+      <a href="../../v6/configuration/htcondor-routes/" class="md-nav__link">
         For HTCondor Batch Systems
       </a>
     </li>
@@ -864,7 +856,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../non-htcondor-routes/" class="md-nav__link">
+      <a href="../../v6/configuration/non-htcondor-routes/" class="md-nav__link">
         For Non-HTCondor Batch Systems
       </a>
     </li>
@@ -882,7 +874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../optional-configuration/" class="md-nav__link">
+      <a href="../../v6/configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
       </a>
     </li>
@@ -900,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operation/" class="md-nav__link">
+      <a href="../../v6/operation/" class="md-nav__link">
         Operation
       </a>
     </li>
@@ -933,7 +925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/common-issues/" class="md-nav__link">
+      <a href="../../v6/troubleshooting/common-issues/" class="md-nav__link">
         Common Issues
       </a>
     </li>
@@ -945,7 +937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/debugging-tools/" class="md-nav__link">
+      <a href="../../v6/troubleshooting/debugging-tools/" class="md-nav__link">
         Debugging Tools
       </a>
     </li>
@@ -957,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/logs/" class="md-nav__link">
+      <a href="../../v6/troubleshooting/logs/" class="md-nav__link">
         Helpful Logs
       </a>
     </li>
@@ -996,7 +988,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../remote-job-submission/" class="md-nav__link">
+      <a href="../../v6/remote-job-submission/" class="md-nav__link">
         Submit Jobs Remotely
       </a>
     </li>
@@ -1008,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/remote-troubleshooting/" class="md-nav__link">
+      <a href="../../v6/troubleshooting/remote-troubleshooting/" class="md-nav__link">
         Remote Troubleshooting
       </a>
     </li>
@@ -1020,7 +1012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/central-collector/" class="md-nav__link">
+      <a href="../../v6/installation/central-collector/" class="md-nav__link">
         Install a Central Collector
       </a>
     </li>
@@ -1038,7 +1030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/" class="md-nav__link">
+      <a href="../../v6/releases/" class="md-nav__link">
         Releases
       </a>
     </li>
@@ -1050,7 +1042,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/" class="md-nav__link">
+      <a href="../../v6/reference/" class="md-nav__link">
         Reference
       </a>
     </li>
@@ -1075,105 +1067,100 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v6/configuration/authentication.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v23/reference.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="configuring-authentication">Configuring Authentication<a class="headerlink" href="#configuring-authentication" title="Permanent link">&para;</a></h1>
-<p>To authenticate job submission from external users and VOs,
-the HTCondor-CE service uses <a href="#configuring-certificates">X.509 certificates</a> for SciTokens and SSL
-authentication.</p>
-<h2 id="built-in-mapfiles">Built-in Mapfiles<a class="headerlink" href="#built-in-mapfiles" title="Permanent link">&para;</a></h2>
-<p>HTCondor-CE uses
-<a href="https://htcondor.readthedocs.io/en/lts/admin-manual/security.html#the-unified-map-file-for-authentication">unified HTCondor mapfiles</a>
-stored in <code>/etc/condor-ce/mapfiles.d/*.conf</code> to map incoming jobs with credentials to local Unix accounts.
-These files are parsed in lexicographic order and HTCondor-CE will use the first line that matches for the
-authentication method that the client and your HTCondor-CE negotiates.
-Each mapfile line consists of three fields:</p>
-<ol>
-<li>HTCondor authentication method</li>
-<li>Incoming credential principal formatted as a Perl Compatible Regular Expression (PCRE)</li>
-<li>Local account</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">Applying mapping changes</p>
-<p>When changing your HTCondor-CE mappings, run <code>condor_ce_reconfig</code> to apply your changes.</p>
-</div>
-<h3 id="scitokens">SciTokens<a class="headerlink" href="#scitokens" title="Permanent link">&para;</a></h3>
-<p>To allow clients with SciToken or WLCG tokens to submit jobs to your HTCondor-CE, add lines of the following format:</p>
-<div class="highlight"><pre><span></span><code>SCITOKENS /&lt;TOKEN ISSUER&gt;,&lt;TOKEN SUBJECT&gt;/ &lt;USERNAME&gt;
+                <h1 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h1>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<p>The following directories contain the configuration for HTCondor-CE.
+The directories are parsed in the order presented and thus configuration within the final directory will override
+configuration specified in the previous directories.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Location</th>
+<th align="left">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>/usr/share/condor-ce/config.d/</code></td>
+<td align="left">Configuration defaults (overwritten on package updates)</td>
+</tr>
+<tr>
+<td align="left"><code>/etc/condor-ce/config.d/</code></td>
+<td align="left">Files in this directory are parsed in alphanumeric order (i.e., <code>99-local.conf</code> will override values in <code>01-ce-auth.conf</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>For a detailed order of the way configuration files are parsed, run the following command:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_config_val -config
 </code></pre></div>
-<p>Replacing <code>&lt;TOKEN ISSUER&gt;</code> (escaping any <code>/</code> with <code>\/</code>, <code>&lt;TOKEN SUBJECT&gt;</code>, and <code>&lt;USERNAME&gt;</code> with the token issuer
-(<code>iss</code>), token subject (<code>sub</code>), and the unix account under which the job should run, respectively.
-For example, to map any token from the <code>OSG</code> VO regardless of the token <code>sub</code>, add the following line to a <code>*.conf</code> file
-in <code>/etc/condor-ce/mapfiles.d/</code>:</p>
-<div class="highlight"><pre><span></span><code>SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
-</code></pre></div>
-<h2 id="configuring-certificates">Configuring Certificates<a class="headerlink" href="#configuring-certificates" title="Permanent link">&para;</a></h2>
-<p>HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SciToken and SSL
-connections.
-By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating
-SciToken and SSL connections.
-But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
-certificates issued by <a href="https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in">IGTF CAs</a>) located
-in <code>/etc/grid-security/</code>.</p>
-<p>Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:</p>
-<ul>
-<li>
-<p>If your SSL or SciTokens clients will be interacting with your CE using grid certificates or you are using a grid
-  certificate as your host certificate:</p>
-<ol>
-<li>
-<p>Set the following configuration in <code>/etc/condor-ce/config.d/01-ce-auth.conf</code>:</p>
-<div class="codehilite"><pre><span></span><code>AUTH_SSL_SERVER_CERTFILE = /etc/grid-security/hostcert.pem
-AUTH_SSL_SERVER_KEYFILE = /etc/grid-security/hostkey.pem
-AUTH_SSL_SERVER_CADIR = /etc/grid-security/certificates
-AUTH_SSL_SERVER_CAFILE =
-AUTH_SSL_CLIENT_CERTFILE = /etc/grid-security/hostcert.pem
-AUTH_SSL_CLIENT_KEYFILE = /etc/grid-security/hostkey.pem
-AUTH_SSL_CLIENT_CADIR = /etc/grid-security/certificates
-AUTH_SSL_CLIENT_CAFILE =
-</code></pre></div>
-
-</li>
-<li>
-<p>Install your host certificate and key into <code>/etc/grid-security/hostcert.pem</code> and <code>/etc/grid-security/hostkey.pem</code>,
-   respectively</p>
-</li>
-<li>
-<p>Set the ownership and Unix permissions of the host certificate and key</p>
-<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>chown root:root /etc/grid-security/hostcert.pem /etc/grid-security/hostkey.pem
-<span class="gp">root@host # </span>chmod <span class="m">644</span> /etc/grid-security/hostcert.pem
-<span class="gp">root@host # </span>chmod <span class="m">600</span> /etc/grid-security/hostkey.pem
-</code></pre></div>
-
-</li>
-</ol>
-</li>
-<li>
-<p>Otherwise, use the default system locations:</p>
-<ol>
-<li>
-<p>Install your host certificate and key into <code>/etc/pki/tls/certs/localhost.crt</code> and
-   <code>/etc/pki/tls/private/localhost.key</code>, respectively</p>
-</li>
-<li>
-<p>Set the ownership and Unix permissions of the host certificate and key</p>
-<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>chown root:root /etc/pki/tls/certs/localhost.crt /etc/pki/tls/private/localhost.key
-<span class="gp">root@host # </span>chmod <span class="m">644</span> /etc/pki/tls/certs/localhost.crt
-<span class="gp">root@host # </span>chmod <span class="m">600</span> /etc/pki/tls/private/localhost.key
-</code></pre></div>
-
-</li>
-</ol>
-</li>
-</ul>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<p>At this point, you should have an HTCondor-CE that will take credentials from incoming jobs and map them to local Unix
-accounts.
-The next step is to <a href="../local-batch-system/">configure the CE for your local batch system</a> so that
-HTCondor-CE knows where to route your jobs.</p>
+<h2 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h2>
+<p>The following users are needed by HTCondor-CE at all sites:</p>
+<table>
+<thead>
+<tr>
+<th align="left">User</th>
+<th align="left">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>condor</code></td>
+<td align="left">The HTCondor-CE will be run as root, but perform most of its operations as the <code>condor</code> user.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="certificates">Certificates<a class="headerlink" href="#certificates" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="left">File</th>
+<th align="left">User that owns certificate</th>
+<th align="left">Path to certificate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Host certificate</td>
+<td align="left"><code>root</code></td>
+<td align="left"><code>/etc/grid-security/hostcert.pem</code></td>
+</tr>
+<tr>
+<td align="left">Host key</td>
+<td align="left"><code>root</code></td>
+<td align="left"><code>/grid-security/hostkey.pem</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="networking">Networking<a class="headerlink" href="#networking" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="left">Service Name</th>
+<th align="center">Protocol</th>
+<th align="center">Port Number</th>
+<th align="center">Inbound</th>
+<th align="center">Outbound</th>
+<th align="left">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Htcondor-CE</td>
+<td align="center">tcp</td>
+<td align="center">9619</td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="left">HTCondor-CE shared port</td>
+</tr>
+</tbody>
+</table>
+<p>Allow inbound and outbound network connection to all internal site servers, such as the batch system head-node only
+ephemeral outgoing ports are necessary.</p>
                 
               
               
@@ -1196,7 +1183,7 @@ HTCondor-CE knows where to route your jobs.</p>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../../installation/htcondor-ce/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../releases/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1205,19 +1192,19 @@ HTCondor-CE knows where to route your jobs.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Installation
+              Releases
             </div>
           </div>
         </a>
       
       
-        <a href="../local-batch-system/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../../v6/installation/htcondor-ce/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Local Batch System
+              Installation
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -1246,10 +1233,10 @@ HTCondor-CE knows where to route your jobs.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
       
     
   </body>

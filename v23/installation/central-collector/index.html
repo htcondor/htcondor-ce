@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v6/configuration/authentication/">
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v23/installation/central-collector/">
       
       <link rel="icon" href="../../../img/favicon-32x32.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
     
     
       
-        <title>Authentication - HTCondor-CE Documentation</title>
+        <title>Install a Central Collector - HTCondor-CE Documentation</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configuring-authentication" class="md-skip">
+        <a href="#installing-an-htcondor-ce-central-collector" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Authentication
+              Install a Central Collector
             
           </span>
         </div>
@@ -179,13 +179,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../../v23/installation/htcondor-ce/" class="md-tabs__link">
+      <a href="../htcondor-ce/" class="md-tabs__link md-tabs__link--active">
         HTCondor-CE 23
       </a>
     </li>
@@ -195,15 +197,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+      <a href="../../../v6/installation/htcondor-ce/" class="md-tabs__link">
         HTCondor-CE 6
       </a>
     </li>
@@ -316,12 +316,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       <label class="md-nav__link" for="__nav_2">
         HTCondor-CE 23
@@ -339,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/installation/htcondor-ce/" class="md-nav__link">
+      <a href="../htcondor-ce/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -372,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/authentication/" class="md-nav__link">
+      <a href="../../configuration/authentication/" class="md-nav__link">
         Authentication
       </a>
     </li>
@@ -384,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/local-batch-system/" class="md-nav__link">
+      <a href="../../configuration/local-batch-system/" class="md-nav__link">
         Local Batch System
       </a>
     </li>
@@ -417,7 +419,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/job-router-overview/" class="md-nav__link">
+      <a href="../../configuration/job-router-overview/" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -429,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/writing-job-routes/" class="md-nav__link">
+      <a href="../../configuration/writing-job-routes/" class="md-nav__link">
         Writing Job Routes
       </a>
     </li>
@@ -441,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/htcondor-routes/" class="md-nav__link">
+      <a href="../../configuration/htcondor-routes/" class="md-nav__link">
         For HTCondor Batch Systems
       </a>
     </li>
@@ -453,7 +455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/non-htcondor-routes/" class="md-nav__link">
+      <a href="../../configuration/non-htcondor-routes/" class="md-nav__link">
         For Non-HTCondor Batch Systems
       </a>
     </li>
@@ -471,418 +473,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v23/configuration/optional-configuration/" class="md-nav__link">
-        Optional Configuration
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/operation/" class="md-nav__link">
-        Operation
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
-      
-      <label class="md-nav__link" for="__nav_2_4">
-        Troubleshooting
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_4">
-          <span class="md-nav__icon md-icon"></span>
-          Troubleshooting
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/common-issues/" class="md-nav__link">
-        Common Issues
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/debugging-tools/" class="md-nav__link">
-        Debugging Tools
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/logs/" class="md-nav__link">
-        Helpful Logs
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
-      
-      <label class="md-nav__link" for="__nav_2_5">
-        Central Grid Operations
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_5">
-          <span class="md-nav__icon md-icon"></span>
-          Central Grid Operations
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/remote-job-submission/" class="md-nav__link">
-        Submit Jobs Remotely
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/troubleshooting/remote-troubleshooting/" class="md-nav__link">
-        Remote Troubleshooting
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/installation/central-collector/" class="md-nav__link">
-        Install a Central Collector
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/releases/" class="md-nav__link">
-        Releases
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../v23/reference/" class="md-nav__link">
-        Reference
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
-      
-      <label class="md-nav__link" for="__nav_3">
-        HTCondor-CE 6
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="HTCondor-CE 6" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          HTCondor-CE 6
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../installation/htcondor-ce/" class="md-nav__link">
-        Installation
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-    
-  
-  
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
-      
-      <label class="md-nav__link" for="__nav_3_2">
-        Configuration
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Configuration" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_2">
-          <span class="md-nav__icon md-icon"></span>
-          Configuration
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Authentication
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Authentication
-      </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#built-in-mapfiles" class="md-nav__link">
-    Built-in Mapfiles
-  </a>
-  
-    <nav class="md-nav" aria-label="Built-in Mapfiles">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#scitokens" class="md-nav__link">
-    SciTokens
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-certificates" class="md-nav__link">
-    Configuring Certificates
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    Next Steps
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../local-batch-system/" class="md-nav__link">
-        Local Batch System
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_3" type="checkbox" id="__nav_3_2_3" >
-      
-      <label class="md-nav__link" for="__nav_3_2_3">
-        Job Router
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Job Router" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_2_3">
-          <span class="md-nav__icon md-icon"></span>
-          Job Router
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../job-router-overview/" class="md-nav__link">
-        Overview
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../writing-job-routes/" class="md-nav__link">
-        Writing Job Routes
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../htcondor-routes/" class="md-nav__link">
-        For HTCondor Batch Systems
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../non-htcondor-routes/" class="md-nav__link">
-        For Non-HTCondor Batch Systems
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../optional-configuration/" class="md-nav__link">
+      <a href="../../configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
       </a>
     </li>
@@ -915,14 +506,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
       
-      <label class="md-nav__link" for="__nav_3_4">
+      <label class="md-nav__link" for="__nav_2_4">
         Troubleshooting
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Troubleshooting" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_4">
+        <label class="md-nav__title" for="__nav_2_4">
           <span class="md-nav__icon md-icon"></span>
           Troubleshooting
         </label>
@@ -973,19 +564,21 @@
             
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" checked>
       
-      <label class="md-nav__link" for="__nav_3_5">
+      <label class="md-nav__link" for="__nav_2_5">
         Central Grid Operations
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_5">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           Central Grid Operations
         </label>
@@ -1018,11 +611,137 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../installation/central-collector/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Install a Central Collector
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Install a Central Collector
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#before-starting" class="md-nav__link">
+    Before Starting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-a-central-collector" class="md-nav__link">
+    Installing a Central Collector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-a-central-collector" class="md-nav__link">
+    Configuring a Central Collector
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring a Central Collector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-configuration" class="md-nav__link">
+    Optional configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#banning-htcondor-ces" class="md-nav__link">
+    Banning HTCondor-CEs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-htcondor-ce-view" class="md-nav__link">
+    Configuring HTCondor-CE View
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distributing-configuration-to-site-htcondor-ces" class="md-nav__link">
+    Distributing Configuration to Site HTCondor-CEs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-a-central-collector" class="md-nav__link">
+    Verifying a Central Collector
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying a Central Collector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#managing-central-collector-services" class="md-nav__link">
+    Managing Central Collector services
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validating-a-central-collector" class="md-nav__link">
+    Validating a Central Collector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1063,6 +782,348 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        HTCondor-CE 6
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HTCondor-CE 6" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          HTCondor-CE 6
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/installation/htcondor-ce/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      <label class="md-nav__link" for="__nav_3_2">
+        Configuration
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Configuration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/authentication/" class="md-nav__link">
+        Authentication
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/local-batch-system/" class="md-nav__link">
+        Local Batch System
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_3" type="checkbox" id="__nav_3_2_3" >
+      
+      <label class="md-nav__link" for="__nav_3_2_3">
+        Job Router
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Job Router" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Job Router
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/job-router-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/writing-job-routes/" class="md-nav__link">
+        Writing Job Routes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/htcondor-routes/" class="md-nav__link">
+        For HTCondor Batch Systems
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/non-htcondor-routes/" class="md-nav__link">
+        For Non-HTCondor Batch Systems
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/configuration/optional-configuration/" class="md-nav__link">
+        Optional Configuration
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/operation/" class="md-nav__link">
+        Operation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      <label class="md-nav__link" for="__nav_3_4">
+        Troubleshooting
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Troubleshooting" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          Troubleshooting
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/troubleshooting/common-issues/" class="md-nav__link">
+        Common Issues
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/troubleshooting/debugging-tools/" class="md-nav__link">
+        Debugging Tools
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/troubleshooting/logs/" class="md-nav__link">
+        Helpful Logs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      <label class="md-nav__link" for="__nav_3_5">
+        Central Grid Operations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Central Grid Operations" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_5">
+          <span class="md-nav__icon md-icon"></span>
+          Central Grid Operations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/remote-job-submission/" class="md-nav__link">
+        Submit Jobs Remotely
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/troubleshooting/remote-troubleshooting/" class="md-nav__link">
+        Remote Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/installation/central-collector/" class="md-nav__link">
+        Install a Central Collector
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../v6/reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1075,54 +1136,82 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v6/configuration/authentication.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v23/installation/central-collector.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="configuring-authentication">Configuring Authentication<a class="headerlink" href="#configuring-authentication" title="Permanent link">&para;</a></h1>
-<p>To authenticate job submission from external users and VOs,
-the HTCondor-CE service uses <a href="#configuring-certificates">X.509 certificates</a> for SciTokens and SSL
-authentication.</p>
-<h2 id="built-in-mapfiles">Built-in Mapfiles<a class="headerlink" href="#built-in-mapfiles" title="Permanent link">&para;</a></h2>
-<p>HTCondor-CE uses
-<a href="https://htcondor.readthedocs.io/en/lts/admin-manual/security.html#the-unified-map-file-for-authentication">unified HTCondor mapfiles</a>
-stored in <code>/etc/condor-ce/mapfiles.d/*.conf</code> to map incoming jobs with credentials to local Unix accounts.
-These files are parsed in lexicographic order and HTCondor-CE will use the first line that matches for the
-authentication method that the client and your HTCondor-CE negotiates.
-Each mapfile line consists of three fields:</p>
+                <h1 id="installing-an-htcondor-ce-central-collector">Installing an HTCondor-CE Central Collector<a class="headerlink" href="#installing-an-htcondor-ce-central-collector" title="Permanent link">&para;</a></h1>
+<p>The HTCondor-CE Central Collector is an information service designed to provide a an overview and descriptions of grid
+services.
+Based on the
+<a href="https://htcondor.readthedocs.io/en/lts/admin-manual/setting-up-special-environments.html#configuring-the-htcondorview-server">HTCondorView Server</a>,
+the Central Collector accepts <a href="https://htcondor.readthedocs.io/en/lts/misc-concepts/classad-mechanism.html">ClassAds</a>
+from site HTCondor-CEs by default but may accept from other services using the
+<a href="https://htcondor.readthedocs.io/en/lts/apis/python-bindings/index.html">HTCondor Python Bindings</a>.
+By distributing configuration to each member site, a central grid team can coordinate the information that site 
+HTCondor-CEs should advertise.</p>
+<p>Additionally, the the HTCondor-CE View web server may be installed alongside a Central Collector to display pilot job
+statistics across its grid, as well as information for each site HTCondor-CE.
+For example, the OSG Central Collector can be viewed at <a href="https://collector.opensciencegrid.org">https://collector.opensciencegrid.org</a>.</p>
+<p>Use this page to learn how to install, configure, and run an HTCondor-CE Central Collector as part of your central
+operations.</p>
+<h2 id="before-starting">Before Starting<a class="headerlink" href="#before-starting" title="Permanent link">&para;</a></h2>
+<p>Before starting the installation process, consider the following points
+(consulting <a href="../../reference/">the reference page</a> as necessary):</p>
+<ul>
+<li><strong>User IDs:</strong> If they do not exist already, the installation will create the <code>condor</code> Linux user (UID 4716)</li>
+<li><strong>SSL certificate:</strong> The HTCondor-CE Central Collector service uses a host certificate and key for SSL
+    authentication</li>
+<li><strong>DNS entries:</strong> Forward and reverse DNS must resolve for the HTCondor-CE Central Collector host</li>
+<li><strong>Network ports:</strong> Site HTCondor-CEs must be able to contact the Central Collector on port 9619 (TCP).
+    Additionally, the optional HTCondor-CE View web server should be accessible on port 80 (TCP).</li>
+</ul>
+<p>There are some one-time (per host) steps to prepare in advance:</p>
+<ul>
+<li>Ensure the host has a supported operating system (Red Hat Enterprise Linux variant 7)</li>
+<li>Obtain root access to the host</li>
+<li>Prepare the <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a> and <a href="https://research.cs.wisc.edu/htcondor/yum/">HTCondor</a> Yum
+  repositories</li>
+<li>Install CA certificates and VO data into <code>/etc/grid-security/certificates</code> and <code>/etc/grid-security/vomsdir</code>,
+  respectively</li>
+</ul>
+<h2 id="installing-a-central-collector">Installing a Central Collector<a class="headerlink" href="#installing-a-central-collector" title="Permanent link">&para;</a></h2>
 <ol>
-<li>HTCondor authentication method</li>
-<li>Incoming credential principal formatted as a Perl Compatible Regular Expression (PCRE)</li>
-<li>Local account</li>
+<li>
+<p>Clean yum cache:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum clean all --enablerepo<span class="o">=</span>*
+</code></pre></div>
+
+</li>
+<li>
+<p>Update software:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum update
+</code></pre></div>
+
+<p>This command will update <strong>all</strong> packages</p>
+</li>
+<li>
+<p>Install the Central Collector software:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install htcondor-ce-collector
+</code></pre></div>
+
+</li>
 </ol>
-<div class="admonition tip">
-<p class="admonition-title">Applying mapping changes</p>
-<p>When changing your HTCondor-CE mappings, run <code>condor_ce_reconfig</code> to apply your changes.</p>
-</div>
-<h3 id="scitokens">SciTokens<a class="headerlink" href="#scitokens" title="Permanent link">&para;</a></h3>
-<p>To allow clients with SciToken or WLCG tokens to submit jobs to your HTCondor-CE, add lines of the following format:</p>
-<div class="highlight"><pre><span></span><code>SCITOKENS /&lt;TOKEN ISSUER&gt;,&lt;TOKEN SUBJECT&gt;/ &lt;USERNAME&gt;
-</code></pre></div>
-<p>Replacing <code>&lt;TOKEN ISSUER&gt;</code> (escaping any <code>/</code> with <code>\/</code>, <code>&lt;TOKEN SUBJECT&gt;</code>, and <code>&lt;USERNAME&gt;</code> with the token issuer
-(<code>iss</code>), token subject (<code>sub</code>), and the unix account under which the job should run, respectively.
-For example, to map any token from the <code>OSG</code> VO regardless of the token <code>sub</code>, add the following line to a <code>*.conf</code> file
-in <code>/etc/condor-ce/mapfiles.d/</code>:</p>
-<div class="highlight"><pre><span></span><code>SCITOKENS /^https:\/\/scitokens.org\/osg-connect,.*/ osg
-</code></pre></div>
-<h2 id="configuring-certificates">Configuring Certificates<a class="headerlink" href="#configuring-certificates" title="Permanent link">&para;</a></h2>
-<p>HTCondor-CE uses X.509 host certificates and certificate authorities (CAs) when authenticating SciToken and SSL
-connections.
-By default, HTCondor-CE uses the default system locations to locate CAs and host certificate when authenticating
-SciToken and SSL connections.
-But traditionally, CEs and their clients have authenticated with each other using specialized grid certificates (e.g.
-certificates issued by <a href="https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in">IGTF CAs</a>) located
-in <code>/etc/grid-security/</code>.</p>
-<p>Choose one of the following options to configure your HTCondor-CE to use grid or system certificates for authentication:</p>
+<h2 id="configuring-a-central-collector">Configuring a Central Collector<a class="headerlink" href="#configuring-a-central-collector" title="Permanent link">&para;</a></h2>
+<p>Like a site HTCondor-CE, the Central Collector uses X.509 host certificates and certificate authorities (CAs) when
+authenticating SSL connections.
+By default, the Central Collector uses the default system locations to locate CAs and host certificate when
+authenticating SSL connections, i.e. for SSL authentication methods.
+But traditionally, the Central Collector and HTCondor-CEs have authenticated with each other using specialized grid
+certificates (e.g. certificates issued by <a href="https://dl.igtf.net/distribution/igtf/current/accredited/accredited.in">IGTF CAs</a>)
+located in <code>/etc/grid-security/</code>.</p>
+<p>Choose one of the following options to configure your Central Collector to use grid or system certificates for
+authentication:</p>
 <ul>
 <li>
-<p>If your SSL or SciTokens clients will be interacting with your CE using grid certificates or you are using a grid
-  certificate as your host certificate:</p>
+<p>If your site HTCondor-CEs will be advertising to your Central Collector using grid certificates or you are using a
+    grid certificate for your Central Collector's host certificate:</p>
 <ol>
 <li>
 <p>Set the following configuration in <code>/etc/condor-ce/config.d/01-ce-auth.conf</code>:</p>
@@ -1139,7 +1228,7 @@ AUTH_SSL_CLIENT_CAFILE =
 </li>
 <li>
 <p>Install your host certificate and key into <code>/etc/grid-security/hostcert.pem</code> and <code>/etc/grid-security/hostkey.pem</code>,
-   respectively</p>
+    respectively</p>
 </li>
 <li>
 <p>Set the ownership and Unix permissions of the host certificate and key</p>
@@ -1156,7 +1245,7 @@ AUTH_SSL_CLIENT_CAFILE =
 <ol>
 <li>
 <p>Install your host certificate and key into <code>/etc/pki/tls/certs/localhost.crt</code> and
-   <code>/etc/pki/tls/private/localhost.key</code>, respectively</p>
+    <code>/etc/pki/tls/private/localhost.key</code>, respectively</p>
 </li>
 <li>
 <p>Set the ownership and Unix permissions of the host certificate and key</p>
@@ -1169,11 +1258,132 @@ AUTH_SSL_CLIENT_CAFILE =
 </ol>
 </li>
 </ul>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<p>At this point, you should have an HTCondor-CE that will take credentials from incoming jobs and map them to local Unix
-accounts.
-The next step is to <a href="../local-batch-system/">configure the CE for your local batch system</a> so that
-HTCondor-CE knows where to route your jobs.</p>
+<h3 id="optional-configuration">Optional configuration<a class="headerlink" href="#optional-configuration" title="Permanent link">&para;</a></h3>
+<p>The following configuration steps are optional and will not be required for all Central Collectors.
+If you do not need any of the following special configurations, skip to
+<a href="#distributing-configuration-to-site-htcondor-ces">the section on next steps</a>.</p>
+<h4 id="banning-htcondor-ces">Banning HTCondor-CEs<a class="headerlink" href="#banning-htcondor-ces" title="Permanent link">&para;</a></h4>
+<p>By default, Central Collectors accept ClassAds from all HTCondor-CEs with a valid and accepted certificate.
+If you want to stop accepting ClassAds from a particular HTCondor-CE, add its hostname to <code>DENY_ADVERTISE_SCHEDD</code> in
+<code>/etc/condor-ce/config.d/01-ce-collector.conf</code>.
+For example:</p>
+<div class="highlight"><pre><span></span><code>DENY_ADVERTISE_SCHEDD = $(DENY_ADVERTISE_SCHEDD), misbehaving-ce-1.bad-domain.com, misbehaving-ce-2.bad-domain.com
+</code></pre></div>
+<h4 id="configuring-htcondor-ce-view">Configuring HTCondor-CE View<a class="headerlink" href="#configuring-htcondor-ce-view" title="Permanent link">&para;</a></h4>
+<p>The HTCondor-CE View is an optional web interface to the status of all HTCondor-CEs advertising to your Central
+Collector.
+To run the HTCondor-CE View, install the appropriate package and set the relevant configuration.</p>
+<ol>
+<li>
+<p>Begin by installing the <code>htcondor-ce-view</code> package:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">root@host # </span>yum install htcondor-ce-view
+</code></pre></div>
+
+</li>
+<li>
+<p>Restart the <code>condor-ce-collector</code> service</p>
+</li>
+<li>
+<p>Verify the service by entering your Central Collector's hostname into your web browser</p>
+</li>
+</ol>
+<p>The website is served on port 80 by default.
+To change this default, edit the value of <code>HTCONDORCE_VIEW_PORT</code> in <code>/etc/condor-ce/config.d/05-ce-view.conf</code>.</p>
+<h2 id="distributing-configuration-to-site-htcondor-ces">Distributing Configuration to Site HTCondor-CEs<a class="headerlink" href="#distributing-configuration-to-site-htcondor-ces" title="Permanent link">&para;</a></h2>
+<p>To make the Central Collector truly useful, each site HTCondor-CE in your organization will need to configure their
+HTCondor-CEs to advertise to your Central Collector(s) along with any custom information that may be of interest.
+For example, the OSG provides default configuration to OSG sites through an <code>osg-ce</code> metapackage
+and configuration tools.
+Following the <a href="https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard">Filesystem Hierarchy Standard</a>, the
+following configuration should be set by HTCondor-CE administrators in <code>/etc/condor-ce/config.d/</code> or by packagers in
+<code>/usr/share/condor-ce/config.d/</code>:</p>
+<ol>
+<li>
+<p>Set <code>CONDOR_VIEW_HOST</code> to a comma-separated list of Central Collectors:</p>
+<div class="codehilite"><pre><span></span><code>CONDOR_VIEW_HOST = collector.htcondor.org:9619, collector1.htcondor.org:9619, collector2.htcondor.org:9619
+</code></pre></div>
+
+</li>
+<li>
+<p>Append arbitrary attributes to <code>SCHEDD_ATTRS</code> containing custom information in any number of arbitrarily
+    configuration attributes:</p>
+<div class="codehilite"><pre><span></span><code>ATTR_NAME_1 = value1
+ATTR_NAME_2 = value2
+SCHEDD_ATTRS = $(SCHEDD_ATTRS) ATTR_NAME_1 ATTR_NAME_2
+</code></pre></div>
+
+<p>For example, OSG sites advertise information describing their <a href="https://topology.opensciencegrid.org">OSG Topology</a>
+registrations, local batch system, and local resourcess:</p>
+<div class="codehilite"><pre><span></span><code>OSG_Resource = &quot;local&quot;
+OSG_ResourceGroup = &quot;&quot;
+OSG_BatchSystems = &quot;condor&quot;
+OSG_ResourceCatalog = { \
+  [ \
+    AllowedVOs = { &quot;osg&quot; }; \
+    CPUs = 2; \
+    MaxWallTime = 1440; \
+    Memory = 10000; \
+    Name = &quot;test&quot;; \
+    Requirements = TARGET.RequestCPUs &lt;= CPUs &amp;&amp; TARGET.RequestMemory &lt;= Memory &amp;&amp; member(TARGET.VO, AllowedVOs); \
+    Transform = [ set_MaxMemory = RequestMemory; set_xcount = RequestCPUs; ]; \
+  ] \
+}
+SCHEDD_ATTRS = $(SCHEDD_ATTRS) OSG_Resource OSG_ResourceGroup OSG_BatchSystems OSG_ResourceCatalog
+</code></pre></div>
+
+</li>
+</ol>
+<h2 id="verifying-a-central-collector">Verifying a Central Collector<a class="headerlink" href="#verifying-a-central-collector" title="Permanent link">&para;</a></h2>
+<p>To verify that you have a working installation of a Central Collector, ensure that all the relevant services are started
+and enabled then perform the validation steps below.</p>
+<h3 id="managing-central-collector-services">Managing Central Collector services<a class="headerlink" href="#managing-central-collector-services" title="Permanent link">&para;</a></h3>
+<p>In addition to the Central Collector service itself, there are a number of supporting services in your installation.
+The specific services are:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Software</th>
+<th align="left">Service name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">HTCondor-CE</td>
+<td align="left"><code>condor-ce-collector</code></td>
+</tr>
+</tbody>
+</table>
+<p>Start and enable the services in the order listed and stop them in reverse order.
+As a reminder, here are common service commands (all run as <code>root</code>):</p>
+<table>
+<thead>
+<tr>
+<th align="left">To...</th>
+<th align="left">On EL7, run the command...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Start a service</td>
+<td align="left"><code>systemctl start &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Stop a  service</td>
+<td align="left"><code>systemctl stop &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Enable a service to start on boot</td>
+<td align="left"><code>systemctl enable &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Disable a service from starting on boot</td>
+<td align="left"><code>systemctl disable &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="validating-a-central-collector">Validating a Central Collector<a class="headerlink" href="#validating-a-central-collector" title="Permanent link">&para;</a></h3>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If you have any questions or issues with the installation process, please <a href="../../..#contact-us">contact us</a> for assistance.</p>
                 
               
               
@@ -1196,7 +1406,7 @@ HTCondor-CE knows where to route your jobs.</p>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../../installation/htcondor-ce/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../../troubleshooting/remote-troubleshooting/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1205,19 +1415,19 @@ HTCondor-CE knows where to route your jobs.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Installation
+              Remote Troubleshooting
             </div>
           </div>
         </a>
       
       
-        <a href="../local-batch-system/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../../releases/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Local Batch System
+              Releases
             </div>
           </div>
           <div class="md-footer__button md-icon">
