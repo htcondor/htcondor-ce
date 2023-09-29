@@ -19,6 +19,28 @@ nav:
 - Home:
   - 'Overview': 'index.md'
   - 'Architecture': 'architecture.md'
+- HTCondor-CE 23:
+  - Installation: 'v23/installation/htcondor-ce.md'
+  - Configuration:
+    - Authentication: 'v23/configuration/authentication.md'
+    - Local Batch System: 'v23/configuration/local-batch-system.md'
+    - Job Router:
+      - Overview: 'v23/configuration/job-router-overview.md'
+      - Writing Job Routes: 'v23/configuration/writing-job-routes.md'
+      - For HTCondor Batch Systems: 'v23/configuration/htcondor-routes.md'
+      - For Non-HTCondor Batch Systems: 'v23/configuration/non-htcondor-routes.md'
+    - Optional Configuration: 'v23/configuration/optional-configuration.md'
+  - Operation: 'v23/operation.md'
+  - Troubleshooting:
+    - Common Issues: 'v23/troubleshooting/common-issues.md'
+    - Debugging Tools: 'v23/troubleshooting/debugging-tools.md'
+    - Helpful Logs: 'v23/troubleshooting/logs.md'
+  - Central Grid Operations:
+    - Submit Jobs Remotely: 'v23/remote-job-submission.md'
+    - Remote Troubleshooting: 'v23/troubleshooting/remote-troubleshooting.md'
+    - Install a Central Collector: 'v23/installation/central-collector.md'
+  - Releases: 'v23/releases.md'
+  - Reference: 'v23/reference.md'
 - HTCondor-CE 6:
   - Installation: 'v6/installation/htcondor-ce.md'
   - Configuration:
@@ -41,28 +63,6 @@ nav:
     - Install a Central Collector: 'v6/installation/central-collector.md'
   - Releases: 'v6/releases.md'
   - Reference: 'v6/reference.md'
-- HTCondor-CE 5:
-  - Installation: 'v5/installation/htcondor-ce.md'
-  - Configuration:
-    - Authentication: 'v5/configuration/authentication.md'
-    - Local Batch System: 'v5/configuration/local-batch-system.md'
-    - Job Router:
-      - Overview: 'v5/configuration/job-router-overview.md'
-      - Writing Job Routes: 'v5/configuration/writing-job-routes.md'
-      - For HTCondor Batch Systems: 'v5/configuration/htcondor-routes.md'
-      - For Non-HTCondor Batch Systems: 'v5/configuration/non-htcondor-routes.md'
-    - Optional Configuration: 'v5/configuration/optional-configuration.md'
-  - Operation: 'v5/operation.md'
-  - Troubleshooting:
-    - Common Issues: 'v5/troubleshooting/common-issues.md'
-    - Debugging Tools: 'v5/troubleshooting/debugging-tools.md'
-    - Helpful Logs: 'v5/troubleshooting/logs.md'
-  - Central Grid Operations:
-    - Submit Jobs Remotely: 'v5/remote-job-submission.md'
-    - Remote Troubleshooting: 'v5/troubleshooting/remote-troubleshooting.md'
-    - Install a Central Collector: 'v5/installation/central-collector.md'
-  - Releases: 'v5/releases.md'
-  - Reference: 'v5/reference.md'
 
 markdown_extensions:
   - admonition
@@ -77,5 +77,5 @@ plugins:
   - search
   - redirects:
       redirect_maps:
-        'v6/verification.md': 'v6/operation.md'
+        'v23/verification.md': 'v23/operation.md'
 

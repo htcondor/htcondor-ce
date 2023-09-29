@@ -54,6 +54,81 @@ configuring them in unison.
         START_LOCAL_UNIVERSE = False
         START_SCHEDULER_UNIVERSE = $(START_LOCAL_UNIVERSE)
 
+Inserting IDTOKENs into the routed job's sandbox
+------------------------------------------
+
+If you want to insert IDTOKENS into the routed job's sandbox you can use the `SendIDTokens` route command, or
+the `JOB_ROUTER_SEND_ROUTE_IDTOKENS` global configuration variable. Tokens
+sent using this mechanism must be named and declared using the `JOB_ROUTER_CREATE_IDTOKEN_NAMES`
+and [`JOB_ROUTER_CREATE_IDTOKEN_<name>`](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_CREATE_IDTOKEN_%3CNAME%3E) configuration variables.  Tokens whose names are declared in
+the `JOB_ROUTER_SEND_ROUTE_IDTOKENS` configuration variable are sent by default for each route that does
+not have a `SendIDTokens` command.
+
+- **To declare IDTOKENS for inclusion in glide-in jobs** for the purpose of advertising to a collector
+  add something like the following to `/etc/condor-ce/config.d/99-local-ce-token.conf`:
+
+        JOB_ROUTER_CREATE_IDTOKEN_NAMES = name1 name2
+        JOB_ROUTER_CREATE_IDTOKEN_name1 @=end
+            sub = "name1@users.htcondor.org"
+            kid = "POOL"
+            lifetime = 3900
+            scope = "ADVERTISE_STARTD, ADVERTISE_MASTER, READ"
+            dir = "/etc/condor-ce/gltokens/name1"
+            filename = "ce_name1.idtoken"
+            owner = "owner1"
+        @end
+        JOB_ROUTER_CREATE_IDTOKEN_Name2 @=end
+            sub = "name2@users.htcondor.org"
+            kid = "POOL"
+            lifetime = 3900
+            scope = "ADVERTISE_STARTD, ADVERTISE_MASTER, READ"
+            dir = "/etc/condor-ce/gltokens/name2"
+            filename = "ce_name2.idtoken"
+            owner = "owner2"
+        @end
+
+- **To insert one of the above IDTOKENS in the sandbox of a routed job**, include the token name in the `SendIDTokens` route
+   command like this.
+
+        SendIDTokens = "Name2"
+    !!! note "Route commands"
+        `SendIDTokens` is a route command, not a job attribute.
+        This means that you will not be able to manipulate it through
+        [transform verbs](writing-job-routes.md#editing-attributes) such as `EVALSET`.
+  **To add an IDTOKEN to a routed job in addition to the default tokens**, build a string containing the token name
+   along with the value of the global configuration variable like this.
+
+        SendIDTokens = "Name2 $(JOB_ROUTER_SEND_ROUTE_IDTOKENS)"
+
+  **You can use an attribute of the source job** to choose the IDTOKEN by writing an expression like this.
+
+        SendIDTokens = strcat( My.Owner, " $(JOB_ROUTER_SEND_ROUTE_IDTOKENS)")
+
+  It is presumed that the value of `My.Owner` above is the same as the `<name>` of an IDTOKEN and as the `owner` field
+  of that token.  For instance, the Fermilab CE config uses the above `SendIDTokens` expression and
+  the following token declarations at the time of this guide.
+
+        JOB_ROUTER_CREATE_IDTOKEN_NAMES = fermilab3 osg
+        JOB_ROUTER_CREATE_IDTOKEN_fermilab3 @=end
+            sub = "fermilabpilot@fnal.gov"
+            kid = "POOL"
+            lifetime = 3900
+            scope = "ADVERTISE_STARTD, ADVERTISE_MASTER, READ"
+            dir = "/etc/condor-ce/gltokens/fermilab"
+            filename = "ce_fermilab3.idtoken"
+            owner = "fermilab"
+        @end
+        JOB_ROUTER_CREATE_IDTOKEN_osg @=end
+            sub = "osgpilot@fnal.gov"
+            kid = "POOL"
+            lifetime = 600
+            scope = "ADVERTISE_STARTD, ADVERTISE_MASTER, READ"
+            dir = "/etc/condor-ce/gltokens/fermilab"
+            filename = "ce_osg.idtoken"
+            owner = "osg"
+        @end
+
+
 Enabling the Monitoring Web Interface
 -------------------------------------
 

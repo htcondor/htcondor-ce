@@ -48,29 +48,10 @@ user@host $ yum reinstall htcondor-ce htcondor-ce-client blahp
 
 ### Verify clocks are synchronized
 
-Like all GSI-based authentication, HTCondor-CE is sensitive to time skews. Make sure the clock on your CE is
+Like all network-based authentication, HTCondor-CE is sensitive to time skews. Make sure the clock on your CE is
 synchronized using a utility such as `ntpd`. 
 Additionally, HTCondor itself is sensitive to time skews on the NFS server.
 If you see empty stdout / err being returned to the submitter, verify there is no NFS server time skew.
-
-### Verify host certificates and CRLs are valid
-
-An expired host certificate or CRLs will cause various issues with GSI authentication. 
-Verify that your host certificate is valid by running:
-
-```console 
-root@host # openssl x509 -in /etc/grid-security/hostcert.pem -noout -dates
-```
-
-Likewise, run the `fetch-crl` script to update your CRLs:
-
-```console
-root@host # fetch-crl
-```
-
-If updating CRLs fix your issues, make sure that the `fetch-crl-cron` and
-`fetch-crl-boot` services are enabled and running.
-
 
 HTCondor-CE Troubleshooting Items
 ---------------------------------
@@ -284,13 +265,6 @@ If a SciToken can't be mapped and the `D_SECURITY` debug level is enabled, then 
     user's authentication method and identity are present (possibly via a
     regular expression), and that the mapped OS account exists on your CE
     and cluster.
-1.  If using GSI, check voms-mapfile or grid-mapfile as an alternate
-    file with a mapping for the user's identity.
-1.  If using LCMAPS, check for LCMAPS errors in `/var/log/messages`.
-1.  If you do not see helpful LCMAPS error messages in `/var/log/messages`,
-    adjust the debug level by adding `export LCMAPS_DEBUG_LEVEL=5` to
-    `/etc/sysconfig/condor-ce`, restarting the condor-ce service, and
-    checking `/var/log/messages` for errors again.
 
 ### Jobs stay idle on the CE
 
