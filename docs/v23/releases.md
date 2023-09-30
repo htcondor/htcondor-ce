@@ -28,7 +28,7 @@ Updating to HTCondor-CE 23
         :::console
         root@host # find /etc/condor-ce/ -name '*.rpmnew' -name '*.rpmsave'
 
-HTCondor-CE 23 is very close in functionality yo HTCondor-CE 6.
+HTCondor-CE 23 is very close in functionality to HTCondor-CE 6.
 As such, upgrading should be very easy.
 
 HTCondor-CE 23 Version History
