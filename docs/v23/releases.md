@@ -17,8 +17,8 @@ Updating to HTCondor-CE 23
 --------------------------
 
 !!! note "Updating from HTCondor-CE < 6"
-    If updating to HTCondor-CE 23 from HTCondor-CE < 5, be sure to also consult the HTCondor-CE 6
-    [upgrade instructions](../v6/releases.md#500).
+    If updating to HTCondor-CE 23 from HTCondor-CE < 6, be sure to also consult the HTCondor-CE 6
+    [upgrade instructions](../v6/releases.md#600).
 
 !!! tip "Finding relevant configuration changes"
     When updating HTCondor-CE RPMs, `.rpmnew` and `.rpmsave` files may be created containing new defaults that you
