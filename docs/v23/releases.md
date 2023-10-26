@@ -42,9 +42,9 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.0) includes the following new features:
 
 -   Add grid CA and host certificate/key locations to default SSL search paths
--   Verifies that HTCondor-CE can access the local HTCondor's SPOOL directory
--   Can use ``condor_ce_trace`` without SciToken to test batch system integration
--   ``condor_ce_upgrade_check`` checks compatibility with HTCondor 23.0
+-   Verifies that HTCondor-CE can access the local HTCondor's `SPOOL` directory
+-   Can use `condor_ce_trace` without SciToken to test batch system integration
+-   `condor_ce_upgrade_check` checks compatibility with HTCondor 23.0
 -   Adds deprecation warnings for old job router configuration syntax
 
 Getting Help
