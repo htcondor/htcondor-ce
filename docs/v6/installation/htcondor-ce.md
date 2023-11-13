@@ -1,18 +1,18 @@
 Installing HTCondor-CE 6
 ========================
 
-!!! tip "Joining the Open Science Grid (OSG)?"
+!!! tip "Joining the OSG Consortium (OSG)?"
     If you are installing an HTCondor-CE for the OSG, consult the
-    [OSG-specific documentation](https://opensciencegrid.org/docs/compute-element/install-htcondor-ce/).
+    [OSG-specific documentation](https://osg-htc.org/docs/compute-element/htcondor-ce-overview/).
 
 HTCondor-CE is a special configuration of the HTCondor software designed as a Compute Entrypoint solution for computing
-grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [Open Science Grid](https://opensciencegrid.org/)).
+grids (e.g. [European Grid Infrastructure](https://www.egi.eu/), [The OSG Consortium](https://osg-htc.org/)).
 It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html)
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
-Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 5 from the
-[HTCondor Yum repositories](http://research.cs.wisc.edu/htcondor/instructions/).
+Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 6 from the
+[CHTC yum repositories](https://htcondor.org/downloads/htcondor-ce.html).
 
 Before Starting
 ---------------

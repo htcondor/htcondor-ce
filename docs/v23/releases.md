@@ -3,8 +3,8 @@ Releases
 
 HTCondor-CE 23 is distributed via RPM and are available from the following Yum repositories:
 
-- [HTCondor stable and current channels](https://research.cs.wisc.edu/htcondor/downloads/)
-- [Open Science Grid](https://opensciencegrid.org/docs/common/yum/)
+- [HTCondor LTS and Feature Releases](https://htcondor.org/htcondor/download/)
+- [The OSG Consortium](https://osg-htc.org/docs/common/yum/)
 
 
 Known Issues
