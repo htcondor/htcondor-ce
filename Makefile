@@ -173,9 +173,6 @@ COLL_DEFAULT_CONFIG_FILES := \
 	config/05-ce-auth-defaults.conf \
 	config/05-ce-collector-auth.conf
 
-COLL_DEFAULT_MAP_FILES := \
-	config/mapfiles.d/50-central-collector.conf
-
 # ------------------------------------------------------------------------------
 # HTCondor-CE View files
 # ------------------------------------------------------------------------------
@@ -340,7 +337,6 @@ collector: client _view
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_WSGI_DIR)/htcondor-ce/			$(COLL_WSGI_FILES)
 
 	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/config.d/		$(COLL_DEFAULT_CONFIG_FILES)
-	install -p -m 0644 -D -t $(DESTDIR)/$(INSTALL_SHARE_DIR)/condor-ce/mapfiles.d/		$(COLL_DEFAULT_MAP_FILES)
 
 
 install: client _view entrypoint collector
