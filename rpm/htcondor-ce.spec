@@ -529,7 +529,6 @@ fi
 
 %{_datadir}/condor-ce/config.d/01-ce-collector-defaults.conf
 %{_datadir}/condor-ce/config.d/05-ce-auth-defaults.conf
-%{_datadir}/condor-ce/mapfiles.d/50-central-collector.conf
 %{_datadir}/condor-ce/condor_ce_create_password
 
 %{_unitdir}/condor-ce-collector.service
