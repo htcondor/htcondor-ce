@@ -60,7 +60,7 @@ JOB_ROUTER_DEFAULTS_GENERATED @=jrd
 
     /* Set new requirements */
     /* set_requirements = LastClientContact - time() < 30*60; */
-    set_requirements = True;
+    set_requirements = (RequestGpus?:0) >= (TARGET.Gpus?:0);
 
     /* Note default memory request of 2GB */
     /* Note yet another nested condition allow pass attributes (maxMemory,xcount,jobtype,queue)
