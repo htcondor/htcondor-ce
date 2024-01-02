@@ -555,7 +555,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Thu Jan 04 2023 Tim Theisen <tim@cs.wisc.edu> - 23.0.3-1
+* Thu Jan 04 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.3-1
 - Ensure that jobs requesting GPUs land on HTCondor EPs with GPUs
 
 * Thu Nov 16 2023 Tim Theisen <tim@cs.wisc.edu> - 23.0.1-1
