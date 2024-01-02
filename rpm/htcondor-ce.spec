@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 23.0.1
+Version: 23.0.3
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -555,6 +555,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Jan 04 2023 Tim Theisen <tim@cs.wisc.edu> - 23.0.3-1
+- Ensure that jobs requesting GPUs land on HTCondor EPs with GPUs
+
 * Thu Nov 16 2023 Tim Theisen <tim@cs.wisc.edu> - 23.0.1-1
 - Add condor_ce_test_token command
 
