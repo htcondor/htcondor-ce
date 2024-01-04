@@ -37,6 +37,12 @@ HTCondor-CE 23 Version History
 This section contains release notes for each version of HTCondor-CE 23.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 23.0.3 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.3) includes the following new features:
+
+-   Ensure that jobs requesting GPUs land on HTCondor EPs with GPUs
+
 ### 23.0.1 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.1) includes the following new features:
