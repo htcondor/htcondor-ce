@@ -48,7 +48,7 @@ Diagrams
 --------
 ### HTCondor-CE workflow
 ``` mermaid
-flowchart LR %% Specify diagram type and direction
+flowchart LR
 
 %% ID FORMAT:
 %% - External nodes are numbered (0 - 100)
@@ -62,13 +62,14 @@ subgraph HTCondor-CE
 	%%direction LR %% Flowchart direction statement overrides statements in connected subgraphs; comment these out.
 	A[[SchedD]] --> B(Job Router)
 	B -. Routed Job .-> A
-	A -.-> C{Grid Mgr.}
-	D[(Log)] --> C
+	A -.-> C{Grid Manager}
+	D[(Log)] --- C
 end
 
 subgraph Blahp
 	%%direction LR
-	subgraph lsf_*.sh %% Configure nested subgraphs above internal nodes
+	%% Configure nested subgraphs above internal nodes
+	subgraph lsf_*.sh
 		direction LR %% Set direction of isolated subgraphs
 		AA[submit] ---|OR| BB[cancel]
 		BB ---|OR| CC[status]
@@ -78,7 +79,7 @@ subgraph Blahp
 	lsf_*.sh -->|args| F
 end
 
-subgraph Batch Sys
+subgraph Batch System
 	%%direction LR
 	G((qsub))
 end
@@ -89,14 +90,14 @@ end
 
 %% -- Subgraph Links --
 C <--> E
-lsf_*.sh --> G
+lsf_*.sh ---> G
 0 --> A
 %% -- Subgraph Links --
 ```
 
 ### Bosco Cluster workflow
 ```mermaid
-flowchart LR %% Specify diagram type and direction
+flowchart LR
 
 %% ID FORMAT:
 %% - External nodes are numbered (0 - 100)
@@ -108,7 +109,7 @@ flowchart LR %% Specify diagram type and direction
 
 subgraph Bosco Cluster
   %%direction LR %% Flowchart direciton statement overrides statements in connected subgraphs; comment these out
-  A[schedd] --> B[Grid</br>Manager]
+  A[[SchedD]] --> B{Grid</br>Manager}
   C[SP] --> B
   B --- D[ssh]
   B --- E[ssh]
@@ -119,7 +120,8 @@ end
 subgraph Remote Submit
   %%direction LR
   F[sshd] --> G[blahp]
-  H[sshd] --> I[FTGahp] %% FTGahp capitalized to be legible
+  %% FTGahp capitalized to be legible
+  H[sshd] --> I[FTGahp]
 end
 
 %% -- External Nodes --
