@@ -143,8 +143,9 @@ Authorized:                  TRUE
 
 !!! note
     If you run the `condor_ce_ping` command on the CE that you are testing, omit the `-name` and `-pool`
-    options. `condor_ce_ping` takes the same arguments as `condor_ping` and is documented in the
-    [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_ping.html).
+    options. `condor_ce_ping` takes the same arguments as
+    `condor_ping`, which is documented in the
+    [HTCondor manual](https://htcondor.readthedocs.io/en/lts/man-pages/condor_ping.html).
 
 ### Troubleshooting ###
 
@@ -182,8 +183,8 @@ user@host $ condor_ce_q -name condorce.example.com -pool condorce.example.com:96
 
 !!! note
     If you run the `condor_ce_q` command on the CE that you are testing, omit the `-name` and `-pool` options.
-    `condor_ce_q` takes the same arguments as `condor_q` and is documented in the
-    [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_q.html).
+    `condor_ce_q` takes the same arguments as `condor_q`, which is documented in the
+    [HTCondor manual](https://htcondor.readthedocs.io/en/lts/man-pages/condor_q.html).
 
 ### Troubleshooting ###
 
@@ -248,8 +249,8 @@ user@host $ condor_ce_history -name condorce.example.com -pool condorce.example.
 
 !!! note
     If you run the `condor_ce_history` command on the CE that you are testing, omit the `-name` and `-pool` options.
-    `condor_ce_history` takes the same arguments as `condor_history` and is documented in the
-    [HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_history.html).
+    `condor_ce_history` takes the same arguments as `condor_history`, which is documented in the
+    [HTCondor manual](https://htcondor.readthedocs.io/en/lts/man-pages/condor_history.html).
 
 
 condor_ce_job_router_info
@@ -343,8 +344,9 @@ and their statuses:
 user@host $ condor_ce_router_q
 ```
 
-`condor_ce_router_q` takes the same options as `condor_router_q` and `condor_q` and is documented in the
-[HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_router_q.html)
+`condor_ce_router_q` takes the same options as `condor_router_q`,
+which is documented in the
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/man-pages/condor_router_q.html)
 
 
 condor_ce_status
@@ -358,8 +360,8 @@ To see the daemons running on a CE, run the following command:
 user@host $ condor_ce_status -any
 ```
 
-`condor_ce_status` takes the same arguments as `condor_status`, which are documented in the
-[HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_status.html).
+`condor_ce_status` takes the same arguments as `condor_status`, which is documented in the
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/man-pages/condor_status.html).
 
 !!! note ""Missing" Worker Nodes"
     An HTCondor-CE will not show any worker nodes (e.g. `Machine` entries in the `condor_ce_status -any` output) if
@@ -404,8 +406,9 @@ following command:
 user@host $ condor_ce_config_val -config
 ```
 
-`condor_ce_config_val` takes the same arguments as `condor_config_val` and is documented in the
-[HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_config_val.html).
+`condor_ce_config_val` takes the same arguments as
+`condor_config_val`, which is documented in the
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/man-pages/condor_config_val.html).
 
 
 condor_ce_reconfig

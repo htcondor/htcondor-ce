@@ -29,7 +29,7 @@ Syntax Differences
     deprecated and will be removed for *V24* of the HTCondor Software Suite. New configuration syntax for the job router
     is defined using `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ROUTE_[name]`.
     -   For new syntax example vist:
-    [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration)
+    [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#an-example-configuration)
     -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
 
 
@@ -836,12 +836,12 @@ This section outlines how to limit the number of total or idle jobs in a specifi
 !!! note
     If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution:
     HTCondor manages fair share on its own via
-    [user priorities and group accounting](http://research.cs.wisc.edu/htcondor/manual/v8.6/3_6User_Priorities.html).
+    [user priorities and group accounting](https://htcondor.readthedocs.io/en/lts/admin-manual/user-priorities-negotiation.html).
 
 ### Total jobs
 
 To set a limit on the number of jobs for a specific route,
-set the [MaxJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134) attribute:
+set the [MaxJobs](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-6) attribute:
 
 === "ClassAd Transform"
 
@@ -871,7 +871,7 @@ set the [MaxJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_J
 ### Idle jobs
 
 To set a limit on the number of idle jobs for a specific route,
-set the [MaxIdleJobs](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135) attribute:
+set the [MaxIdleJobs](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-7) attribute:
 
 === "ClassAd Transform"
 

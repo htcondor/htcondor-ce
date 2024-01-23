@@ -45,12 +45,12 @@ in the following order:
     deprecated and will be removed for *V24* of the HTCondor Software Suite. New configuration syntax for the job router
     is defined using `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ROUTE_[name]`.
     -   For new syntax example vist:
-    [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration)
+    [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#an-example-configuration)
     -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
 
 Since the inception of HTCondor-CE, job routes have been written as a
 [list of ClassAds](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#deprecated-router-configuration).
-Each job route’s [ClassAd](http://research.cs.wisc.edu/htcondor/manual/v8.6/4_1HTCondor_s_ClassAd.html) is constructed
+Each job route’s [ClassAd](https://htcondor.readthedocs.io/en/lts/classads/classad-mechanism.html) is constructed
 by combining each entry from the `JOB_ROUTER_ENTRIES` with the `JOB_ROUTER_DEFAULTS`:
 
 -   `JOB_ROUTER_ENTRIES` is a configuration variable whose default is set in `/etc/condor-ce/config.d/02-ce-*.conf` but

@@ -60,7 +60,7 @@ Inserting IDTOKENs into the routed job's sandbox
 If you want to insert IDTOKENS into the routed job's sandbox you can use the `SendIDTokens` route command, or
 the `JOB_ROUTER_SEND_ROUTE_IDTOKENS` global configuration variable. Tokens
 sent using this mechanism must be named and declared using the `JOB_ROUTER_CREATE_IDTOKEN_NAMES`
-and [`JOB_ROUTER_CREATE_IDTOKEN_<name>`](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_CREATE_IDTOKEN_%3CNAME%3E) configuration variables.  Tokens whose names are declared in
+and [`JOB_ROUTER_CREATE_IDTOKEN_<name>`](https://htcondor.readthedocs.io/en/lts/admin-manual/configuration-macros.html#JOB_ROUTER_CREATE_IDTOKEN_%3CNAME%3E) configuration variables.  Tokens whose names are declared in
 the `JOB_ROUTER_SEND_ROUTE_IDTOKENS` configuration variable are sent by default for each route that does
 not have a `SendIDTokens` command.
 
