@@ -1331,7 +1331,7 @@ lexicographic order with subsequent variables overriding earlier ones.</p>
 deprecated and will be removed for <em>V24</em> of the HTCondor Software Suite. New configuration syntax for the job router
 is defined using <code>JOB_ROUTER_ROUTE_NAMES</code> and <code>JOB_ROUTER_ROUTE_[name]</code>.</li>
 <li>For new syntax example vist:
-<a href="https://htcondor.readthedocs.io/en/latest/grid-computing/job-router.html#an-example-configuration">HTCondor Documentation - Job Router</a></li>
+<a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#an-example-configuration">HTCondor Documentation - Job Router</a></li>
 <li><strong>Note:</strong> The removal will occur during the lifetime of the HTCondor <em>V23</em> feature series.</li>
 </ul>
 </div>
@@ -2004,11 +2004,11 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <p class="admonition-title">Note</p>
 <p>If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution:
 HTCondor manages fair share on its own via
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/3_6User_Priorities.html">user priorities and group accounting</a>.</p>
+<a href="https://htcondor.readthedocs.io/en/lts/admin-manual/user-priorities-negotiation.html">user priorities and group accounting</a>.</p>
 </div>
 <h3 id="total-jobs">Total jobs<a class="headerlink" href="#total-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of jobs for a specific route,
-set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57134">MaxJobs</a> attribute:</p>
+set the <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-6">MaxJobs</a> attribute:</p>
 <div class="tabbed-set" data-tabs="21:2"><input checked="checked" id="__tabbed_21_1" name="__tabbed_21" type="radio" /><label for="__tabbed_21_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   UNIVERSE VANILLA
@@ -2033,7 +2033,7 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </div>
 <h3 id="idle-jobs">Idle jobs<a class="headerlink" href="#idle-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of idle jobs for a specific route,
-set the <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#57135">MaxIdleJobs</a> attribute:</p>
+set the <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-7">MaxIdleJobs</a> attribute:</p>
 <div class="tabbed-set" data-tabs="22:2"><input checked="checked" id="__tabbed_22_1" name="__tabbed_22" type="radio" /><label for="__tabbed_22_1">ClassAd Transform</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   UNIVERSE VANILLA

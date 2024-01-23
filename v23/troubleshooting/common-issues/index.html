@@ -1696,7 +1696,7 @@ The most common cases for this behavior are as follows:</p>
 <li><strong>The route(s) that the job matches to are full:</strong>
   See <a href="../../configuration/writing-job-routes/#limiting-the-number-of-jobs">limiting the number of jobs</a>.</li>
 <li><strong>The job router is throttling submission to your batch system due to submission failures:</strong>
-  See the HTCondor manual for <a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958">FailureRateThreshold</a>.
+  See the HTCondor manual for <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-8">FailureRateThreshold</a>.
   Check for errors in the <a href="../logs/#jobrouterlog">JobRouterLog</a> or <a href="../logs/#gridmanagerlog">GridmanagerLog</a> for HTCondor
   and non-HTCondor batch systems, respectively.</li>
 </ul>
@@ -1714,10 +1714,10 @@ You can check the status of your proxy with the following</p>
 <p><strong>Next actions</strong></p>
 <p>Ensure that the owner of the job generates their proxy with <code>voms-proxy-init</code>.</p>
 <h4 id="held-jobs-invalid-job-universe">Held jobs: Invalid job universe<a class="headerlink" href="#held-jobs-invalid-job-universe" title="Permanent link">&para;</a></h4>
-<p>The HTCondor-CE only accepts jobs that have <code>universe</code> in their submit files set to <code>vanilla</code>, <code>standard</code>, <code>local</code>, or
+<p>The HTCondor-CE only accepts jobs that have <code>universe</code> in their submit files set to <code>vanilla</code>, <code>local</code>, or
 <code>scheduler</code>. 
 These universes also have corresponding integer values that can be found in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/12_Appendix_A.html#104736">HTCondor manual</a>.</p>
+<a href="https://htcondor.readthedocs.io/en/lts/codes-other-values/job-universe-numbers.html">HTCondor manual</a>.</p>
 <p><strong>Next actions</strong></p>
 <ol>
 <li>Ensure jobs submitted locally, from the CE host, are submitted with <code>universe = vanilla</code></li>

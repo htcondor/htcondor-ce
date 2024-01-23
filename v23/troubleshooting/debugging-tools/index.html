@@ -778,6 +778,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#condor_ce_test_token" class="md-nav__link">
+    condor_ce_test_token
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage_8" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#condor_ce_status" class="md-nav__link">
     condor_ce_status
   </a>
@@ -786,7 +800,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#usage_8" class="md-nav__link">
+  <a href="#usage_9" class="md-nav__link">
     Usage
   </a>
   
@@ -813,7 +827,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#usage_9" class="md-nav__link">
+  <a href="#usage_10" class="md-nav__link">
     Usage
   </a>
   
@@ -833,7 +847,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#usage_10" class="md-nav__link">
+  <a href="#usage_11" class="md-nav__link">
     Usage
   </a>
   
@@ -853,7 +867,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#usage_11" class="md-nav__link">
+  <a href="#usage_12" class="md-nav__link">
     Usage
   </a>
   
@@ -1457,8 +1471,9 @@ Mapping: glow@users.opensciencegrid.org</code>):</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you run the <code>condor_ce_ping</code> command on the CE that you are testing, omit the <code>-name</code> and <code>-pool</code>
-options. <code>condor_ce_ping</code> takes the same arguments as <code>condor_ping</code> and is documented in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_ping.html">HTCondor manual</a>.</p>
+options. <code>condor_ce_ping</code> takes the same arguments as
+<code>condor_ping</code>, which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_ping.html">HTCondor manual</a>.</p>
 </div>
 <h3 id="troubleshooting_3">Troubleshooting<a class="headerlink" href="#troubleshooting_3" title="Permanent link">&para;</a></h3>
 <ol>
@@ -1490,8 +1505,8 @@ To list jobs that are queued on a CE:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you run the <code>condor_ce_q</code> command on the CE that you are testing, omit the <code>-name</code> and <code>-pool</code> options.
-<code>condor_ce_q</code> takes the same arguments as <code>condor_q</code> and is documented in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_q.html">HTCondor manual</a>.</p>
+<code>condor_ce_q</code> takes the same arguments as <code>condor_q</code>, which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_q.html">HTCondor manual</a>.</p>
 </div>
 <h3 id="troubleshooting_4">Troubleshooting<a class="headerlink" href="#troubleshooting_4" title="Permanent link">&para;</a></h3>
 <p>If the jobs that you are submiting to a CE are not completing, <code>condor_ce_q</code> can tell you the status of your jobs.</p>
@@ -1548,8 +1563,8 @@ To list jobs that have run on the CE:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you run the <code>condor_ce_history</code> command on the CE that you are testing, omit the <code>-name</code> and <code>-pool</code> options.
-<code>condor_ce_history</code> takes the same arguments as <code>condor_history</code> and is documented in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_history.html">HTCondor manual</a>.</p>
+<code>condor_ce_history</code> takes the same arguments as <code>condor_history</code>, which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_history.html">HTCondor manual</a>.</p>
 </div>
 <h2 id="condor_ce_job_router_info">condor_ce_job_router_info<a class="headerlink" href="#condor_ce_job_router_info" title="Permanent link">&para;</a></h2>
 <h3 id="usage_6">Usage<a class="headerlink" href="#usage_6" title="Permanent link">&para;</a></h3>
@@ -1620,15 +1635,38 @@ Make sure your routes are mutually exclusive, otherwise you may have jobs routed
 and their statuses:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_router_q
 </code></pre></div>
-<p><code>condor_ce_router_q</code> takes the same options as <code>condor_router_q</code> and <code>condor_q</code> and is documented in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_router_q.html">HTCondor manual</a></p>
+<p><code>condor_ce_router_q</code> takes the same options as <code>condor_router_q</code>,
+which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_router_q.html">HTCondor manual</a></p>
+<h2 id="condor_ce_test_token">condor_ce_test_token<a class="headerlink" href="#condor_ce_test_token" title="Permanent link">&para;</a></h2>
+<h2 id="usage_8">Usage<a class="headerlink" href="#usage_8" title="Permanent link">&para;</a></h2>
+<p>Use the <code>condor_ce_test_token</code> command to test SciTokens
+authentication in the CE.
+It will create a token with an issuer and subject that you specify and
+configure the CE daemons to accept that token as if it had been
+generated by the given issuer (for one hour).
+The token is printed to stdout; use it with <code>condor_ce_submit</code> to test
+that SciTokens authentication and user mapping operate correctly.</p>
+<p>To create a temporary SciToken that appears to be issued by the
+SciTokens demo issuer:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">root@host # </span>condor_ce_token_test --issuer https://demo.scitokens.org
+<span class="go">--audience ANY --scope condor:/WRITE --subject alice@foo.edu</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You must run <code>condor_ce_test_token</code> on the CE that you are testing
+as the root user.
+<code>condor_ce_test_token</code> takes the same arguments as
+<code>condor_test_token</code>, which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_test_token.html">HTCondor manual</a>.</p>
+</div>
 <h2 id="condor_ce_status">condor_ce_status<a class="headerlink" href="#condor_ce_status" title="Permanent link">&para;</a></h2>
-<h3 id="usage_8">Usage<a class="headerlink" href="#usage_8" title="Permanent link">&para;</a></h3>
+<h3 id="usage_9">Usage<a class="headerlink" href="#usage_9" title="Permanent link">&para;</a></h3>
 <p>To see the daemons running on a CE, run the following command:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_status -any
 </code></pre></div>
-<p><code>condor_ce_status</code> takes the same arguments as <code>condor_status</code>, which are documented in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_status.html">HTCondor manual</a>.</p>
+<p><code>condor_ce_status</code> takes the same arguments as <code>condor_status</code>, which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_status.html">HTCondor manual</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">"Missing" Worker Nodes</p>
 <p>An HTCondor-CE will not show any worker nodes (e.g. <code>Machine</code> entries in the <code>condor_ce_status -any</code> output) if
@@ -1646,7 +1684,7 @@ worker nodes.</p>
 </ul>
 <p>Increase the <a href="../common-issues/">debug level</a> and consult the <a href="../logs/">HTCondor-CE logs</a> for errors.</p>
 <h2 id="condor_ce_config_val">condor_ce_config_val<a class="headerlink" href="#condor_ce_config_val" title="Permanent link">&para;</a></h2>
-<h3 id="usage_9">Usage<a class="headerlink" href="#usage_9" title="Permanent link">&para;</a></h3>
+<h3 id="usage_10">Usage<a class="headerlink" href="#usage_10" title="Permanent link">&para;</a></h3>
 <p>To see the value of configuration variables and where they are set, use <code>condor_ce_config_val</code>. 
 Primarily, This tool is used with the other troubleshooting tools to make sure your configuration is set properly. 
 To see the value of a single variable and where it is set:</p>
@@ -1659,15 +1697,16 @@ To see the value of a single variable and where it is set:</p>
 following command:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_config_val -config
 </code></pre></div>
-<p><code>condor_ce_config_val</code> takes the same arguments as <code>condor_config_val</code> and is documented in the
-<a href="http://research.cs.wisc.edu/htcondor/manual/v8.6/condor_config_val.html">HTCondor manual</a>.</p>
+<p><code>condor_ce_config_val</code> takes the same arguments as
+<code>condor_config_val</code>, which is documented in the
+<a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_config_val.html">HTCondor manual</a>.</p>
 <h2 id="condor_ce_reconfig">condor_ce_reconfig<a class="headerlink" href="#condor_ce_reconfig" title="Permanent link">&para;</a></h2>
-<h3 id="usage_10">Usage<a class="headerlink" href="#usage_10" title="Permanent link">&para;</a></h3>
+<h3 id="usage_11">Usage<a class="headerlink" href="#usage_11" title="Permanent link">&para;</a></h3>
 <p>To ensure that your configuration changes have taken effect, run <code>condor_ce_reconfig</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_reconfig
 </code></pre></div>
 <h2 id="condor_ce_onoffrestart">condor_ce_{on,off,restart}<a class="headerlink" href="#condor_ce_onoffrestart" title="Permanent link">&para;</a></h2>
-<h3 id="usage_11">Usage<a class="headerlink" href="#usage_11" title="Permanent link">&para;</a></h3>
+<h3 id="usage_12">Usage<a class="headerlink" href="#usage_12" title="Permanent link">&para;</a></h3>
 <p>To turn on/off/restart HTCondor-CE daemons, use the following commands:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">root@host # </span>condor_ce_on
 <span class="gp">root@host # </span>condor_ce_off
