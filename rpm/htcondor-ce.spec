@@ -515,6 +515,7 @@ fi
 %{_bindir}/condor_ce_reconfig
 %{_bindir}/condor_ce_reschedule
 %{_bindir}/condor_ce_status
+%{_bindir}/condor_ce_test_token
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping

@@ -46,6 +46,7 @@ CLIENT_BIN_FILES := \
 	src/condor_ce_scitoken_exchange \
 	src/condor_ce_status \
 	src/condor_ce_submit \
+	src/condor_ce_test_token \
 	src/condor_ce_trace \
 	src/condor_ce_version
 
