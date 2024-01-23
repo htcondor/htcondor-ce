@@ -441,7 +441,7 @@ The most common cases for this behavior are as follows:
 - **The route(s) that the job matches to are full:**
   See [limiting the number of jobs](../configuration/writing-job-routes.md#limiting-the-number-of-jobs).
 - **The job router is throttling submission to your batch system due to submission failures:**
-  See the HTCondor manual for [FailureRateThreshold](http://research.cs.wisc.edu/htcondor/manual/v8.6/5_4HTCondor_Job.html#55958).
+  See the HTCondor manual for [FailureRateThreshold](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-8).
   Check for errors in the [JobRouterLog](logs.md#jobrouterlog) or [GridmanagerLog](logs.md#gridmanagerlog) for HTCondor
   and non-HTCondor batch systems, respectively.
 
@@ -465,10 +465,10 @@ Ensure that the owner of the job generates their proxy with `voms-proxy-init`.
 
 #### Held jobs: Invalid job universe
 
-The HTCondor-CE only accepts jobs that have `universe` in their submit files set to `vanilla`, `standard`, `local`, or
+The HTCondor-CE only accepts jobs that have `universe` in their submit files set to `vanilla`, `local`, or
 `scheduler`. 
 These universes also have corresponding integer values that can be found in the
-[HTCondor manual](http://research.cs.wisc.edu/htcondor/manual/v8.6/12_Appendix_A.html#104736).
+[HTCondor manual](https://htcondor.readthedocs.io/en/lts/codes-other-values/job-universe-numbers.html).
 
 **Next actions**
 
