@@ -69,10 +69,10 @@ subgraph HM[CE & Batch System Host Machine]
     subgraph HTCondor-CE
         %%direction LR %% Flowchart direction statement overrides statements in connected subgraphs; comment these out.
         A[[SchedD]] -- Original Job --> B(Job Router)
-        B -. Routed Job .-> A
-        A -. Routed Job .-> C{Grid Manager}
+        B -- Routed Job --> A
+        A -- Routed Job --> C{Grid Manager}
         %% Note: Used 1 to place Disk higher in ordering
-        A -. </br>-Original Job Ad</br>-Routed Job Ad .-> 1[(Disk)]
+        A -- </br>-Original Job Ad</br>-Routed Job Ad --> 1[(Disk)]
         subgraph Blahp
             %%direction LR
             %% Configure nested subgraphs above internal nodes
@@ -127,13 +127,13 @@ subgraph HM1[CE Host Machine]
     subgraph Bosco Cluster
         %%direction LR %% Flowchart direciton statement overrides statements in connected subgraphs; comment these out
         A[[SchedD]] -- Original Job --> Z(Job Router)
-        Z -. Routed Job .-> A
-        A -. Routed Job .-> B{Grid</br>Manager}
+        Z -- Routed Job --> A
+        A -- Routed Job --> B{Grid</br>Manager}
         B --- D[ssh]
         B --- E[ssh]
-        E -.-> |File Transfer|B
+        E --> |File Transfer|B
         %% Note: Used 1 to place Disk higher in ordering
-        A -. </br>-Original Job Ad</br>-Routed Job Ad .-> 1[(Disk)]
+        A -- </br>-Original Job Ad</br>-Routed Job Ad --> 1[(Disk)]
     end
 end
 subgraph HM2[Remote Batch Sytem Host Machine]
@@ -142,7 +142,7 @@ subgraph HM2[Remote Batch Sytem Host Machine]
         F[sshd] --> G[blahp]
         %% FTGahp capitalized to be legible
         H[sshd] --> I[FTGahp]
-        I -. SSH Tunnel .-> H
+        I -- SSH Tunnel --> H
     end
 end
 %% -- External Nodes --
