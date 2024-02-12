@@ -43,3 +43,118 @@ Please share any issues or questions regarding the HTCondor-CE via the following
 - [htcondor-admin@cs.wisc.edu](mailto:htcondor-admin@cs.wisc.edu): For issues and questions containing private information.
 - [htcondor-security@cs.wisc.edu](mailto:htcondor-security@cs.wisc.edu): For issues regarding security problems/vunerabilities.
   For more information regarding reporting security problems go to [HTCSS Security](https://htcondor.org/security/).
+
+Diagrams
+--------
+
+Below are diagrams to show the flow of a capacity allocation request in the form of a job submitted
+to an HTCondor-CE to being executed in a different batch system. ***Diagram A*** showcases a setup
+where the HTCondor-CE is located on the same host as the destination batch system. While ***Diagram B***
+showcases a setup with the HTCondor-CE submitting a job to a remote batch system over SSH.
+
+> Note: In both setups the HTCondor-CE ***Schedd*** sends Master and Schedd Ads to the ***Central Collector***
+
+### HTCondor-CE workflow (Diagram A)
+``` mermaid
+flowchart LR
+
+%% ID FORMAT:
+%% - External nodes are numbered (0 - 100)
+%% - Internal nodes are alphabetic (A - Z)
+%% - Nodes within nested subgraphs are
+%%   are labelled by double letters (AA - ZZ)
+%% - All subgraph names are capitalized (Blahp)
+%%   while nodes with the same name are lowercase (blahp)
+subgraph HM[CE & Batch System Host Machine]
+    subgraph HTCondor-CE
+        %%direction LR %% Flowchart direction statement overrides statements in connected subgraphs; comment these out.
+        A[[SchedD]] -- Original Job --> B(Job Router)
+        B -- Routed Job --> A
+        A -- Routed Job --> C{Grid Manager}
+        %% Note: Used 1 to place Disk higher in ordering
+        A -- </br>-Original Job Ad</br>-Routed Job Ad --> 1[(Disk)]
+        subgraph Blahp
+            %%direction LR
+            %% Configure nested subgraphs above internal nodes
+            subgraph slurm_*.sh
+                direction LR %% Set direction of isolated subgraphs
+                AA[submit] ---|OR| BB[cancel]
+                BB ---|OR| CC[status]
+            end
+            E[[blahp]] --> slurm_*.sh
+            F[common_sub</br>_attr.sh] -->|attrs| slurm_*.sh
+            slurm_*.sh -->|args| F
+        end
+    end
+    subgraph Batch System
+        %%direction LR
+        G((qsub))
+    end
+end
+%% -- External Nodes --
+0>Job Ad]
+%% -- External Nodes --
+%% -- Subgraph Links --
+C <--> E
+slurm_*.sh ---> G
+0 --> A
+%% Schedd connects to Global Central Collector
+A == Ads ==> Z(((Central Collector)))
+%% Stylize Outer host machine box
+style HM fill:#FFF,stroke:#000
+%% -- Subgraph Links --
+```
+
+### Bosco Cluster workflow (Diagram B)
+
+In this setup where the HTCondor-CE submits to a remote batch system, incoming jobs
+are required to specify ***grid_resource = \<batch\> \<system\> \<hostname\>***.
+
+> Note: The ***Blaph*** on the remote host works exactly the same as in Diagram A
+> except that the ***Grid Manager*** communicates over SSH.
+
+```mermaid
+flowchart LR
+
+%% ID FORMAT:
+%% - External nodes are numbered (0 - 100)
+%% - Internal nodes are alphabetic (A - Z)
+%% - Nodes within nested subgraphs are
+%%   are labelled by double letters (AA - ZZ)
+%% - All subgraph names are capitalized (Blahp)
+%%   while nodes with the same name are lowercase (blahp)
+subgraph HM1[CE Host Machine]
+    subgraph Bosco Cluster
+        %%direction LR %% Flowchart direciton statement overrides statements in connected subgraphs; comment these out
+        A[[SchedD]] -- Original Job --> Z(Job Router)
+        Z -- Routed Job --> A
+        A -- Routed Job --> B{Grid</br>Manager}
+        B --- D[ssh]
+        B --- E[ssh]
+        E --> |File Transfer|B
+        %% Note: Used 1 to place Disk higher in ordering
+        A -- </br>-Original Job Ad</br>-Routed Job Ad --> 1[(Disk)]
+    end
+end
+subgraph HM2[Remote Batch Sytem Host Machine]
+    subgraph Remote Submit
+        %%direction LR
+        F[sshd] --> G[blahp]
+        %% FTGahp capitalized to be legible
+        H[sshd] --> I[FTGahp]
+        I -- SSH Tunnel --> H
+    end
+end
+%% -- External Nodes --
+0>Job Ad]
+%% -- External Nodes --
+%% -- Subgraph Links --
+D ===|Blahp:</br>-stdin</br>-stdout</br>-stderr| F
+E ===|File:</br>-stdin</br>-stdout</br>-stderr| H
+0 --> A
+A == Ads ==> ZZ(((Central Collector)))
+%% Stylize host machine boxes
+style HM1 fill:#FFF,stroke:#000
+style HM2 fill:#FFF,stroke:#000
+%% -- Subgraph Links --
+```

@@ -3,3 +3,4 @@ src/.*
 release_dir
 src/htcondorce/*.pyc
 tmp
+*.DS_STORE
