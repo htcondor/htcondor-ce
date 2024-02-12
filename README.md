@@ -47,10 +47,10 @@ Please share any issues or questions regarding the HTCondor-CE via the following
 Diagrams
 --------
 
-Below are diagrams to show the flow of a Job submitted to an HTCondor-CE to being executed in
-a different batch system. ***Diagram A*** showcases an setup where the HTCondor-CE is located on the
-same host as the destination batch system. While ***Diagram B*** showcases a setup with the HTCondor-CE
-submitting a job to a remote batch system.
+Below are diagrams to show the flow of a capacity allocation request in the form of a job submitted
+to an HTCondor-CE to being executed in a different batch system. ***Diagram A*** showcases a setup
+where the HTCondor-CE is located on the same host as the destination batch system. While ***Diagram B***
+showcases a setup with the HTCondor-CE submitting a job to a remote batch system over SSH.
 
 > Note: In both setups the HTCondor-CE ***Schedd*** sends Master and Schedd Ads to the ***Central Collector***
 
@@ -76,14 +76,14 @@ subgraph HM[CE & Batch System Host Machine]
         subgraph Blahp
             %%direction LR
             %% Configure nested subgraphs above internal nodes
-            subgraph lsf_*.sh
+            subgraph slurm_*.sh
                 direction LR %% Set direction of isolated subgraphs
                 AA[submit] ---|OR| BB[cancel]
                 BB ---|OR| CC[status]
             end
-            E[[blahp]] --> lsf_*.sh
-            F[common_sub</br>_attr.sh] -->|attrs| lsf_*.sh
-            lsf_*.sh -->|args| F
+            E[[blahp]] --> slurm_*.sh
+            F[common_sub</br>_attr.sh] -->|attrs| slurm_*.sh
+            slurm_*.sh -->|args| F
         end
     end
     subgraph Batch System
@@ -96,7 +96,7 @@ end
 %% -- External Nodes --
 %% -- Subgraph Links --
 C <--> E
-lsf_*.sh ---> G
+slurm_*.sh ---> G
 0 --> A
 %% Schedd connects to Global Central Collector
 A == Ads ==> Z(((Central Collector)))
