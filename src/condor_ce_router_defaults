@@ -13,12 +13,16 @@ JOB_ROUTER_CONFIG = r"""JOB_ROUTER_TRANSFORM_Env @=jrt
         default_env = $(default_env) HOME=$(use_ce_home)
     endif
 
+    if ! defined default_pilot_job_env
+        default_pilot_job_env = ""
+    endif
+
     SET osg_environment "{osg_environment}"
     EVALSET environment mergeEnvironment("$(default_env)", \
                                          osg_environment, \
                                          orig_environment, \
-                                         "$(CONDORCE_PILOT_JOB_ENV)", \
-                                         "$(default_pilot_job_env)")
+                                         $(CONDORCE_PILOT_JOB_ENV), \
+                                         $(default_pilot_job_env))
 @jrt
 
 JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES) Env
