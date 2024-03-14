@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 23.0.5
+Version: 23.0.6
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -556,7 +556,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Thu Mar 07 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.5-1
+* Thu Mar 14 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.6-1
 - Fix CE job route transform for job environment
 - Fix CERequirements when the default_CERequirements is not set
 - Add condor_ce_test_token tool to generate short lived SciToken for tests
