@@ -37,6 +37,15 @@ HTCondor-CE 23 Version History
 This section contains release notes for each version of HTCondor-CE 23.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 23.0.6 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.6) includes the following new features:
+
+-   Fix CE job route transform for job environment
+-   Fix `CERequirements` when the `default_CERequirements` is not set
+-   Add `condor_ce_test_token` tool to generate short lived SciToken for tests
+-   Remove GSI from security method list to eliminate annoying warnings
+
 ### 23.0.3 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.3) includes the following new features:
