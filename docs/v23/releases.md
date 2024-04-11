@@ -37,6 +37,12 @@ HTCondor-CE 23 Version History
 This section contains release notes for each version of HTCondor-CE 23.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 23.0.8 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.8) includes the following new features:
+
+-   Fix memory request being ignored for whole node jobs
+
 ### 23.0.6 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.6) includes the following new features:
