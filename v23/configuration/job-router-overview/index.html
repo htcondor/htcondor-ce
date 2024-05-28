@@ -482,6 +482,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#converting-to-new-syntax" class="md-nav__link">
+    Converting To New Syntax
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1123,7 +1130,7 @@ to the new syntax as <a href="#choosing-a-syntax">outlined below</a>.</p>
 originally introduced to HTCondor to perform in-place transformations of user jobs submitted to an HTCondor pool.
 In the HTCondor 8.9 series, the Job Router was updated to support transforms and HTCondor-CE 5 adds the configuration
 necessary to support routes written as ClassAd transforms.
-If configured to use trasnform-based routes, HTCondor-CE routes and transforms jobs that by chaining ClassAd transforms
+If configured to use transform-based routes, HTCondor-CE routes and transforms jobs that by chaining ClassAd transforms
 in the following order:</p>
 <ol>
 <li>Each transform in <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> whose requirements are met by the job</li>
@@ -1183,6 +1190,23 @@ The <a href="#classad-transforms">ClassAd transform</a> syntax provides many ben
 <p>Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
 including transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code>,
 respectively.</p>
+<h3 id="converting-to-new-syntax">Converting To New Syntax<a class="headerlink" href="#converting-to-new-syntax" title="Permanent link">&para;</a></h3>
+<p>For existing HTCondor-CE's utilizing the deprecated old job router syntax can do the following steps to convert
+to using the new syntax:</p>
+<ol>
+<li>Output the current configuration by running <code>condor_ce_config_val -summary &gt; summary-file</code></li>
+<li>Convert the stored configuration by running <code>condor_transform_ads -convert:file summary-file &gt; converted-job-routes.conf</code></li>
+<li>Place the <code>converted-job-routes.conf</code> from the previous command into the HTCondor-CE's configuration.</li>
+<li>Tweak new job routes as needed. For assistance please reach out to <a href="mailto:htcondor-users@cs.wisc.edu">htcondor-users@cs.wisc.edu</a></li>
+<li>Set <a href="https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES">JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES</a>=False
+    in the HTCondor-CE's configuration.</li>
+<li>Restart the HTCondor-CE</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Not Using Custom Job Routes?</p>
+<p>Conversion of job router syntax from the deprecated old version to new only needs to occur
+if custom job routes have been configured.</p>
+</div>
 <h2 id="how-jobs-match-to-routes">How Jobs Match to Routes<a class="headerlink" href="#how-jobs-match-to-routes" title="Permanent link">&para;</a></h2>
 <p>The Job Router considers incoming jobs in the HTCondor-CE SchedD (i.e., jobs visible in
 <a href="../../troubleshooting/debugging-tools/#condor_ce_q">condor_ce_q</a>) that meet the following constraints:</p>
