@@ -30,7 +30,7 @@ The HTCondor [ClassAd transforms](https://htcondor.readthedocs.io/en/lts/classad
 originally introduced to HTCondor to perform in-place transformations of user jobs submitted to an HTCondor pool.
 In the HTCondor 8.9 series, the Job Router was updated to support transforms and HTCondor-CE 5 adds the configuration
 necessary to support routes written as ClassAd transforms.
-If configured to use trasnform-based routes, HTCondor-CE routes and transforms jobs that by chaining ClassAd transforms
+If configured to use transform-based routes, HTCondor-CE routes and transforms jobs that by chaining ClassAd transforms
 in the following order:
 
 1.  Each transform in `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` whose requirements are met by the job
@@ -88,6 +88,23 @@ The [ClassAd transform](#classad-transforms) syntax provides many benefits inclu
 Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
 including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
 respectively.
+
+### Converting To New Syntax ###
+
+For existing HTCondor-CE's utilizing the deprecated old job router syntax can do the following steps to convert
+to using the new syntax:
+
+1.  Output the current configuration by running `condor_ce_config_val -summary > summary-file`
+2.  Convert the stored configuration by running `condor_transform_ads -convert:file summary-file > converted-job-routes.conf`
+3.  Place the `converted-job-routes.conf` from the previous command into the HTCondor-CE's configuration.
+4.  Tweak new job routes as needed. For assistance please reach out to [htcondor-users@cs.wisc.edu](mailto:htcondor-users@cs.wisc.edu)
+5.  Set [JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES)=False
+    in the HTCondor-CE's configuration.
+6.  Restart the HTCondor-CE
+
+!!! note "Not Using Custom Job Routes?"
+    Conversion of job router syntax from the deprecated old version to new only needs to occur
+    if custom job routes have been configured.
 
 How Jobs Match to Routes
 ------------------------
