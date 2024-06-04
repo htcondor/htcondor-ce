@@ -100,9 +100,15 @@ transform syntax:
 
 2.  Convert the stored configuration by running the following:
 
-        condor_transform_ads -convert:file summary-file > converted-job-routes.conf
+        condor_transform_ads -convert:file summary-file > 90-converted-job-routes.conf
 
-3.  Place the `converted-job-routes.conf` from the previous command into the HTCondor-CE's configuration.
+3.  Place the `90-converted-job-routes.conf` from the previous command into the `/etc/condor-ce/config.d`.
+
+    !!! note "Potential need to rename generated config"
+        The files in `/etc/condor-ce/config.d` are read in lexicographical order.
+        So if you define your current job router configuration in `/etc/condor-ce/config.d` in a file that is read
+        later, e.g. `95-local.conf`, you will need to rename your generated config file, e.g. `96-generated-job-routes.conf`.
+
 4.  Tweak new job routes as needed. For assistance please reach out to [htcondor-users@cs.wisc.edu](mailto:htcondor-users@cs.wisc.edu)
 5.  Set `JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False` (see [this documentation](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES)
     in the HTCondor-CE's configuration.
