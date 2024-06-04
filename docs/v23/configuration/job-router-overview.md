@@ -19,7 +19,7 @@ overview of how to configure your HTCondor-CE Job Router
 Route Syntaxes
 --------------
 
-HTCondor-CE 5 introduces the ability to write job routes using [ClassAd transform syntax](#classad-transforms) in
+HTCondor-CE 5 introduced the ability to write job routes using [ClassAd transform syntax](#classad-transforms) in
 addition to the [existing configuration syntax](#deprecated-syntax).
 The old route configuration syntax continues to be the default in HTCondor-CE 5 but there are benefits to transitioning
 to the new syntax as [outlined below](#choosing-a-syntax).
