@@ -19,7 +19,7 @@ overview of how to configure your HTCondor-CE Job Router
 Route Syntaxes
 --------------
 
-HTCondor-CE 5 introduces the ability to write job routes using [ClassAd transform syntax](#classad-transforms) in
+HTCondor-CE 5 introduced the ability to write job routes using [ClassAd transform syntax](#classad-transforms) in
 addition to the [existing configuration syntax](#deprecated-syntax).
 The old route configuration syntax continues to be the default in HTCondor-CE 5 but there are benefits to transitioning
 to the new syntax as [outlined below](#choosing-a-syntax).
@@ -44,7 +44,7 @@ in the following order:
     -   `JOB_ROUTER_DEFAULTS`, `JOB_ROUTER_ENTRIES`, `JOB_ROUTER_ENTRIES_CMD`, and `JOB_ROUTER_ENTRIES_FILE` are
     deprecated and will be removed for *V24* of the HTCondor Software Suite. New configuration syntax for the job router
     is defined using `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ROUTE_[name]`.
-    -   For new syntax example vist:
+    -   For a ClassAd transform syntax example vist:
     [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#an-example-configuration)
     -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
 
@@ -89,22 +89,34 @@ Additionally, it is now easier to include job transformations that should be eva
 including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
 respectively.
 
-### Converting To New Syntax ###
+### Converting to ClassAd transforms ###
 
-For existing HTCondor-CE's utilizing the deprecated old job router syntax can do the following steps to convert
-to using the new syntax:
+For existing HTCondor-CE's utilizing the deprecated syntax can do the following steps to convert to using the ClassAd
+transform syntax:
 
-1.  Output the current configuration by running `condor_ce_config_val -summary > summary-file`
-2.  Convert the stored configuration by running `condor_transform_ads -convert:file summary-file > converted-job-routes.conf`
-3.  Place the `converted-job-routes.conf` from the previous command into the HTCondor-CE's configuration.
+1.  Output the current configuration by running the following:
+
+        condor_ce_config_val -summary > summary-file
+
+2.  Convert the stored configuration by running the following:
+
+        condor_transform_ads -convert:file summary-file > 90-converted-job-routes.conf
+
+3.  Place the `90-converted-job-routes.conf` from the previous command into the `/etc/condor-ce/config.d`.
+
+    !!! note "Potential need to rename generated config"
+        The files in `/etc/condor-ce/config.d` are read in lexicographical order.
+        So if you define your current job router configuration in `/etc/condor-ce/config.d` in a file that is read
+        later, e.g. `95-local.conf`, you will need to rename your generated config file, e.g. `96-generated-job-routes.conf`.
+
 4.  Tweak new job routes as needed. For assistance please reach out to [htcondor-users@cs.wisc.edu](mailto:htcondor-users@cs.wisc.edu)
-5.  Set [JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES)=False
+5.  Set `JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False` (see [this documentation](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES)
     in the HTCondor-CE's configuration.
 6.  Restart the HTCondor-CE
 
 !!! note "Not Using Custom Job Routes?"
-    Conversion of job router syntax from the deprecated old version to new only needs to occur
-    if custom job routes have been configured.
+    Conversion of job router syntax from the deprecated syntax to ClassAd transform syntax needs to occur if custom job
+    routes have been configured.
 
 How Jobs Match to Routes
 ------------------------
