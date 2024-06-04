@@ -94,8 +94,14 @@ respectively.
 For existing HTCondor-CE's utilizing the deprecated syntax can do the following steps to convert to using the ClassAd
 transform syntax:
 
-1.  Output the current configuration by running `condor_ce_config_val -summary > summary-file`
-2.  Convert the stored configuration by running `condor_transform_ads -convert:file summary-file > converted-job-routes.conf`
+1.  Output the current configuration by running the following:
+
+        condor_ce_config_val -summary > summary-file
+
+2.  Convert the stored configuration by running the following:
+
+        condor_transform_ads -convert:file summary-file > converted-job-routes.conf
+
 3.  Place the `converted-job-routes.conf` from the previous command into the HTCondor-CE's configuration.
 4.  Tweak new job routes as needed. For assistance please reach out to [htcondor-users@cs.wisc.edu](mailto:htcondor-users@cs.wisc.edu)
 5.  Set `JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False` (see [this documentation](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES)
