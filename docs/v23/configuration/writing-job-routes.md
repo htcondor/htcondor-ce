@@ -33,7 +33,7 @@ Syntax Differences
     -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
 
 
-In HTCondor-CE 5, the [deprecated syntax](job-router-overview.md#deprecated-syntax) continues to be the default and
+In HTCondor-CE 23, the [deprecated syntax](job-router-overview.md#deprecated-syntax) continues to be the default and
 administrator's can move to the [ClassAd transform syntax](job-router-overview.md#classad-transforms) by setting the
 following in a file in `/etc/condor-ce/config.d/`:
 
