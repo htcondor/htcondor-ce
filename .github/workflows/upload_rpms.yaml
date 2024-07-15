@@ -13,7 +13,6 @@ jobs:
     strategy:
       matrix:
         platform:
-          - centos:7
           - rockylinux:8
           - almalinux:9
     steps:
