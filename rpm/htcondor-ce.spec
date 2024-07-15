@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 23.7.1
-Release: 0.rc2%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 23.8.1
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -556,7 +556,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Thu May 09 2024 Tim Theisen <tim@cs.wisc.edu> - 23.7.1-0.rc2
+* Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.8.1-1
 - Use new Job Router syntax by default
 
 * Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.12-1
