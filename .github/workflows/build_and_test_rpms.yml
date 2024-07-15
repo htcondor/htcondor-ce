@@ -12,7 +12,7 @@ jobs:
           - almalinux:9
         target_env:
           - uw_build
-          - osg-23-main
+          - osg-23
           - osg-23-testing
           - osg-23-upcoming
           - osg-23-upcoming-testing
