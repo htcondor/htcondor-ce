@@ -559,6 +559,9 @@ fi
 * Thu May 09 2024 Tim Theisen <tim@cs.wisc.edu> - 23.7.1-0.rc2
 - Use new Job Router syntax by default
 
+* Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.12-1
+- Fix whole node GPU request expression for non-HTCondor batch systems
+
 * Thu Apr 11 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.8-1
 - Fix memory request being ignored for whole node jobs
 
