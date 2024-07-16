@@ -36,7 +36,7 @@ in the following order:
 1.  Each transform in `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` whose requirements are met by the job
 1.  The first transform from `JOB_ROUTER_ROUTE_NAMES` whose requirements are met by the job.
     See [the section on route matching](#how-jobs-match-to-routes) below.
-1.  Each transform in `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` whose requirements are met by the job
+1.  Each transform in `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES` whose requirements are met by the job
 
 ### Deprecated syntax ###
 
@@ -86,7 +86,7 @@ The [ClassAd transform](#classad-transforms) syntax provides many benefits inclu
 -   Use of simple case statements
 
 Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
-including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
+including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES`,
 respectively.
 
 How Jobs Match to Routes
@@ -103,7 +103,7 @@ whose requirements are satisfied by the job's ClassAd.
 Additionally:
 
 -   **If you are using the [ClassAd transform syntax](#classad-transforms),** transforms in
-    `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` may also have their own
+    `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES` may also have their own
     requirements that determine whether or not that transform is applied.
 -   **If you are using the [deprecated syntax](#deprecated-syntax),** you may configure the Job Router to evenly
     distribute jobs across all matching routes (i.e., round-robin matching).

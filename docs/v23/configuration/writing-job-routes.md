@@ -48,7 +48,7 @@ The [ClassAd transform](job-router-overview.md#classad-transforms) syntax provid
 -   Use of simple case statements
 
 Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
-including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES`,
+including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES`,
 respectively.
 
 For examples of the ClassAd transform syntax, you can inspect default job router transforms packaged with HTCondor-CE
