@@ -1136,7 +1136,7 @@ in the following order:</p>
 <li>Each transform in <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> whose requirements are met by the job</li>
 <li>The first transform from <code>JOB_ROUTER_ROUTE_NAMES</code> whose requirements are met by the job.
     See <a href="#how-jobs-match-to-routes">the section on route matching</a> below.</li>
-<li>Each transform in <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> whose requirements are met by the job</li>
+<li>Each transform in <code>JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES</code> whose requirements are met by the job</li>
 </ol>
 <h3 id="deprecated-syntax">Deprecated syntax<a class="headerlink" href="#deprecated-syntax" title="Permanent link">&para;</a></h3>
 <div class="admonition warning">
@@ -1188,7 +1188,7 @@ The <a href="#classad-transforms">ClassAd transform</a> syntax provides many ben
 <li>Use of simple case statements</li>
 </ul>
 <p>Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
-including transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code>,
+including transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES</code>,
 respectively.</p>
 <h3 id="converting-to-classad-transforms">Converting to ClassAd transforms<a class="headerlink" href="#converting-to-classad-transforms" title="Permanent link">&para;</a></h3>
 <p>For existing HTCondor-CE's utilizing the deprecated syntax can do the following steps to convert to using the ClassAd
@@ -1239,7 +1239,7 @@ whose requirements are satisfied by the job's ClassAd.
 Additionally:</p>
 <ul>
 <li><strong>If you are using the <a href="#classad-transforms">ClassAd transform syntax</a>,</strong> transforms in
-    <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> may also have their own
+    <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES</code> may also have their own
     requirements that determine whether or not that transform is applied.</li>
 <li><strong>If you are using the <a href="#deprecated-syntax">deprecated syntax</a>,</strong> you may configure the Job Router to evenly
     distribute jobs across all matching routes (i.e., round-robin matching).
