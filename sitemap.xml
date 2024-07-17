@@ -1,147 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://htcondor.github.io/htcondor-ce/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/architecture/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/installation/htcondor-ce/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/authentication/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/local-batch-system/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/job-router-overview/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/writing-job-routes/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/htcondor-routes/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/non-htcondor-routes/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/configuration/optional-configuration/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/operation/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/troubleshooting/common-issues/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/troubleshooting/debugging-tools/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/troubleshooting/logs/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/remote-job-submission/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/troubleshooting/remote-troubleshooting/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/installation/central-collector/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/releases/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v23/reference/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/installation/htcondor-ce/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/authentication/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/local-batch-system/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/job-router-overview/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/writing-job-routes/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/htcondor-routes/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/non-htcondor-routes/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/configuration/optional-configuration/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/operation/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/troubleshooting/common-issues/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/troubleshooting/debugging-tools/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/troubleshooting/logs/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/remote-job-submission/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/troubleshooting/remote-troubleshooting/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/installation/central-collector/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/releases/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://htcondor.github.io/htcondor-ce/v6/reference/</loc>
-     <lastmod>2024-07-16</lastmod>
+     <lastmod>2024-07-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
