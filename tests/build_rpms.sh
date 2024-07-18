@@ -62,6 +62,7 @@ yum -y install \
 
 if [[ $BUILD_ENV == osg* ]]; then
     OSG_SERIES=$(cut -d- -f2 <<< "$BUILD_ENV")
+    OSG_SERIES="${OSG_SERIES}-main"
     yum install -y https://repo.opensciencegrid.org/osg/${OSG_SERIES}/osg-${OSG_SERIES}-el${OS_VERSION}-release-latest.rpm
 else
     # This is currently tracking the 10.x feature release.
