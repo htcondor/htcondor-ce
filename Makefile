@@ -48,6 +48,7 @@ CLIENT_BIN_FILES := \
 	src/condor_ce_submit \
 	src/condor_ce_test_token \
 	src/condor_ce_trace \
+	src/condor_ce_upgrade_check \
 	src/condor_ce_version
 
 CLIENT_PYTHON_FILES := \
