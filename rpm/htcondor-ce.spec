@@ -519,6 +519,7 @@ fi
 %{_bindir}/condor_ce_version
 %{_bindir}/condor_ce_trace
 %{_bindir}/condor_ce_ping
+%{_bindir}/condor_ce_upgrade_check
 
 %dir %{python3_sitelib}/htcondorce
 %{python3_sitelib}/htcondorce/__init__.py
