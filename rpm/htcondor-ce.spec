@@ -2,11 +2,11 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 23.0.12
-Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 23.0.13
+Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
-
+0.
 Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/opensciencegrid/htcondor-ce
@@ -557,6 +557,9 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-0.1
+- Package condor_ce_upgrade_check
+
 * Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.12-1
 - Fix whole node GPU request expression for non-HTCondor batch systems
 
