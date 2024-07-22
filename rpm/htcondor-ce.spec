@@ -6,7 +6,7 @@ Version: 23.0.13
 Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
-0.
+
 Group: Applications/System
 License: Apache 2.0
 URL: http://github.com/opensciencegrid/htcondor-ce
