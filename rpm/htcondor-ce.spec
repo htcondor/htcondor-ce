@@ -557,7 +557,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-0.1
+* Mon Jul 22 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-0.1
 - Package condor_ce_upgrade_check
 
 * Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.12-1
