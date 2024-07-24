@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 23.0.13
-Release: 0.1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -557,7 +557,7 @@ fi
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Mon Jul 22 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-0.1
+* Wed Jul 24 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-1
 - Package condor_ce_upgrade_check
 
 * Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.12-1
