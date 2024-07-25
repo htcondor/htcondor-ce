@@ -1123,7 +1123,7 @@ overview of how to configure your HTCondor-CE Job Router</p>
 <h2 id="route-syntaxes">Route Syntaxes<a class="headerlink" href="#route-syntaxes" title="Permanent link">&para;</a></h2>
 <p>HTCondor-CE 5 introduced the ability to write job routes using <a href="#classad-transforms">ClassAd transform syntax</a> in
 addition to the <a href="#deprecated-syntax">existing configuration syntax</a>.
-The old route configuration syntax continues to be the default in HTCondor-CE 5 but there are benefits to transitioning
+The old route configuration syntax is no longer the default in HTCondor-CE 23.x and one should transition
 to the new syntax as <a href="#choosing-a-syntax">outlined below</a>.</p>
 <h3 id="classad-transforms">ClassAd transforms<a class="headerlink" href="#classad-transforms" title="Permanent link">&para;</a></h3>
 <p>The HTCondor <a href="https://htcondor.readthedocs.io/en/lts/classads/transforms.html">ClassAd transforms</a> were
@@ -1178,8 +1178,8 @@ by combining each entry from the <code>JOB_ROUTER_ENTRIES</code> with the <code>
 </ul>
 </div>
 <h3 id="choosing-a-syntax">Choosing a syntax<a class="headerlink" href="#choosing-a-syntax" title="Permanent link">&para;</a></h3>
-<p>For existing HTCondor-CEs, it's recommended that administrators continue to use the deprecated syntax (the default) and
-transition to ClassAd transforms at their own pace.</p>
+<p>For existing HTCondor-CEs, it's recommended that administrators stop using the deprecated syntax and
+transition to ClassAd transforms now.</p>
 <p>For new HTCondor-CEs, it's recommended that administrators start with ClassAd transforms.
 The <a href="#classad-transforms">ClassAd transform</a> syntax provides many benefits including:</p>
 <ul>
