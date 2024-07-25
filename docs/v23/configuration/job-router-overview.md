@@ -21,7 +21,7 @@ Route Syntaxes
 
 HTCondor-CE 5 introduced the ability to write job routes using [ClassAd transform syntax](#classad-transforms) in
 addition to the [existing configuration syntax](#deprecated-syntax).
-The old route configuration syntax continues to be the default in HTCondor-CE 5 but there are benefits to transitioning
+The old route configuration syntax is no longer the default in HTCondor-CE 23.x and one should transition
 to the new syntax as [outlined below](#choosing-a-syntax).
 
 ### ClassAd transforms ###
@@ -75,8 +75,8 @@ Take care when modifying attributes in `JOB_ROUTER_DEFAULTS`: you may
 
 ### Choosing a syntax ###
 
-For existing HTCondor-CEs, it's recommended that administrators continue to use the deprecated syntax (the default) and
-transition to ClassAd transforms at their own pace.
+For existing HTCondor-CEs, it's recommended that administrators stop using the deprecated syntax and
+transition to ClassAd transforms now.
 
 For new HTCondor-CEs, it's recommended that administrators start with ClassAd transforms.
 The [ClassAd transform](#classad-transforms) syntax provides many benefits including:
