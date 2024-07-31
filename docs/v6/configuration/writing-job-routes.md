@@ -45,7 +45,7 @@ The [ClassAd transform](job-router-overview.md#classad-transforms) syntax provid
 
 -   Statements being evaluated in [the order they are written](#editing-attributes)
 -   Use of variables that are not included in the resultant job ad
--   Use of simple case statements
+-   Use simple case-like logic
 
 Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
 including transforms in the lists of `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES`,
