@@ -37,6 +37,13 @@ HTCondor-CE 23 Version History
 This section contains release notes for each version of HTCondor-CE 23.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### 23.9.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.9.1) includes the following new features:
+
+-   Use new Job Router syntax by default
+-   Update configuration files to work with HTCondor 23.9.1 and later
+
 ### 23.0.13 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.13) includes the following new features:
