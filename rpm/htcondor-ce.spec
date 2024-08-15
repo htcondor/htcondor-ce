@@ -561,7 +561,7 @@ fi
 - Use new Job Router syntax by default
 - Update configuration files to work with HTCondor 23.9.1 and later
 
-* Mon Jul 22 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-0.1
+* Wed Jul 24 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-1
 - Package condor_ce_upgrade_check
 
 * Tue Jul 16 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.12-1
