@@ -37,32 +37,32 @@ HTCondor-CE 23 Version History
 This section contains release notes for each version of HTCondor-CE 23.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
-### 23.9.1 ###
+### **August 8, 2024:** 23.9.1 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.9.1) includes the following new features:
 
 -   Use new Job Router syntax by default
 -   Update configuration files to work with HTCondor 23.9.1 and later
 
-### 23.0.13 ###
+### **July 24, 2024:** 23.0.13 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.13) includes the following new features:
 
 -   Package `condor_ce_upgrade_check`
 
-### 23.0.12 ###
+### **July 16, 2024:** 23.0.12 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.12) includes the following new features:
 
 -   Fix whole node GPU request expression for non-HTCondor batch systems
 
-### 23.0.8 ###
+### **April 11, 2024:** 23.0.8 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.8) includes the following new features:
 
 -   Fix memory request being ignored for whole node jobs
 
-### 23.0.6 ###
+### **March 14, 2024:** 23.0.6 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.6) includes the following new features:
 
@@ -71,19 +71,19 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 -   Add `condor_ce_test_token` tool to generate short lived SciToken for tests
 -   Remove GSI from security method list to eliminate annoying warnings
 
-### 23.0.3 ###
+### **January 4, 2024:** 23.0.3 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.3) includes the following new features:
 
 -   Ensure that jobs requesting GPUs land on HTCondor EPs with GPUs
 
-### 23.0.1 ###
+### **November 16, 2023:** 23.0.1 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.1) includes the following new features:
 
 -   Add `condor_ce_test_token` command
 
-### 23.0.0 ###
+### **September 21, 2023:** 23.0.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.0) includes the following new features:
 
