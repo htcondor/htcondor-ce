@@ -560,6 +560,7 @@ fi
 * Thu Aug 08 2024 Tim Theisen <tim@cs.wisc.edu> - 23.9.1-1
 - Use new Job Router syntax by default
 - Update configuration files to work with HTCondor 23.9.1 and later
+- Use BatchQueue job attribute in CE routes
 
 * Wed Jul 24 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-1
 - Package condor_ce_upgrade_check
