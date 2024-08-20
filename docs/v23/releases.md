@@ -43,6 +43,7 @@ Full HTCondor-CE version history can be found on [GitHub](https://github.com/htc
 
 -   Use new Job Router syntax by default
 -   Update configuration files to work with HTCondor 23.9.1 and later
+-   Use `BatchQueue` job attribute in CE routes
 
 ### **July 24, 2024:** 23.0.13 ###
 
