@@ -401,7 +401,7 @@ def main():
     # If the host cert is missing or unreadable, emit a warning but keep going.
     hostcert = htcondor.param.get("GSI_DAEMON_CERT", "/etc/grid-security/hostcert.pem")
     if os.access(hostcert, os.R_OK):
-        fd = os.popen("openssl x509 -in %s -noout -subject" % hostcert)
+        fd = os.popen("openssl x509 -in %s -noout -subject -nameopt compat" % hostcert)
         dn = fd.read().strip()
         if fd.close() or not dn:
             print(f"WARNING: OpenSSL unable to parse host certificate {hostcert}; GSI configuration will likely fail.", file=sys.stderr)
