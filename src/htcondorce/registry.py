@@ -96,7 +96,6 @@ def fetch_tokens(reqid: str, config: Config) -> Dict:
         args.append('-pool', pool)
     req_environ = dict(os.environ)
     req_environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
-    req_environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = "TOKEN"
     req_environ['_condor_SEC_TOKEN_DIRECTORY'] = '/etc/condor-ce/webapp.tokens.d'
     process = subprocess.Popen(args, stderr=subprocess.PIPE,
         stdout=subprocess.PIPE, env=req_environ)
@@ -122,7 +121,6 @@ def approve_token(reqid: str, config: Config):
         args.append('-pool', pool)
     req_environ = dict(os.environ)
     req_environ.setdefault('CONDOR_CONFIG', '/etc/condor-ce/condor_config')
-    req_environ['_condor_SEC_CLIENT_AUTHENTICATION_METHODS'] = "TOKEN"
     req_environ['_condor_SEC_TOKEN_DIRECTORY'] = '/etc/condor-ce/webapp.tokens.d'
     process = subprocess.Popen(args, stderr=subprocess.PIPE,
         stdout=subprocess.PIPE, stdin=subprocess.PIPE, env=req_environ)
