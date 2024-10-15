@@ -550,6 +550,21 @@ This means that the `condor_job_router_info` (note this is not the CE version), 
 2.  You have installed HTCondor in a non-standard location that is not in your `PATH`.
 3.  The `condor_job_router_info` tool itself wasn't available until Condor-8.2.3-1.1 (available in osg-upcoming).
 
+### Troubleshooting removed jobs
+
+As there are two copies of a job in the CE, understanding the root cause of a removed job requires a bit of
+sleuthing.  Given a specific job ID in the CE logs, first find the job ad in the history with the `condor_ce_history`
+tool, and check the value of the `GridJobID` attribute:
+
+``` console
+user@host $ condor_ce_history <JOB_ID> -af GridJobId
+```
+
+If the `GridJobId` is *undefined*, the client gridmanager removed the job, and you need to contact the 
+administrator of that client gridmanager to determine why.
+
+If `GridJobID` is not undefined, and is set to some value, then the CE gridmanager did the removal.
+
 Getting Help
 ------------
 
