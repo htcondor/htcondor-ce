@@ -550,6 +550,40 @@ This means that the `condor_job_router_info` (note this is not the CE version), 
 2.  You have installed HTCondor in a non-standard location that is not in your `PATH`.
 3.  The `condor_job_router_info` tool itself wasn't available until Condor-8.2.3-1.1 (available in osg-upcoming).
 
+### Jobs removed from the local batch system
+
+When the CE removes a job from the local batch system, it may be due to
+a problem the CE encountered with managing the job or it may be at the
+behest of the submitter to the CE (which may be a remote HTCondor
+Access Point).
+
+Given a specific job ID in the CE logs, first find the job ad in CE
+queue with the `condor_ce_q` tool and check the value of the `GridJobID`
+attribute:
+
+``` console
+user@host $ condor_ce_q <JOB_ID> -af GridJobId
+```
+
+If the job is no longer in the queue, you will have to check the history
+using the `condor_ce_history` tool:
+
+``` console
+user@host $ condor_ce_history <JOB_ID> -af GridJobId
+```
+
+If the `GridJobId` is *undefined*, then the CE did the removal due to a
+problem interacting with the local batch system.
+Check the `HoldReason` and `LastHoldReason` attributes for why the CE
+removed the job.
+
+If `GridJobID` is not *undefined*, and is set to some value, then the
+submitter to the CE removed the job.
+If the submitter is a remote HTCondor Access Point, its daemons may have
+done the removal as part of putting its local job on hold.
+In that case, the `HoldReason` attribute in the remote job queue should
+indicate the source of the problem.
+
 Getting Help
 ------------
 
