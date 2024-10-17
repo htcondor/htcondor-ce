@@ -15,10 +15,6 @@
 # /opt/condor
 # export PATH=/opt/condor/bin:/opt/condor/sbin:$PATH
 
-# Example: Have GSI authorization use a different plugin for Condor than the
-# rest of the system.
-# export GSI_AUTHZ_CONF=/etc/condor-ce/gsi-authz.conf
-
 # Example: Have the HTCondor-CE use a different hostname from the rest of
 # the system.
 # export CONDORCE_HOSTNAME=condorce.example.com
