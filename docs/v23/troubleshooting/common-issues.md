@@ -422,13 +422,27 @@ Notice the failures in the above message: `Remote Mapping: gsi@unmapped` and `Au
 
 ### Jobs go on hold
 
-Jobs will be put on held with a `HoldReason` attribute that can be inspected with
+Jobs can be put on hold with a `HoldReason` attribute that can be inspected with
 [condor\_ce\_q](debugging-tools.md#condor_ce_q):
 
 ``` console
 user@host $ condor_ce_q -l <JOB-ID> -attr HoldReason
 HoldReason = "CE job in status 5 put on hold by SYSTEM_PERIODIC_HOLD due to no matching routes, route job limit, or route failure threshold."
 ```
+
+The CE (and CE client) will put a job on hold when it encounters a problem
+with the job that it doesn't know how to resolve.
+
+If the HTCondor schedd believes that the existing job it has submitted
+to a remote queue may be recoverable, then it will leave the remote job
+queued and keep the `GridJobId` attribute defined in the local job ad.
+If you release the local job (with `condor_ce_release`), then the schedd
+will attempt to re-establish contact with the remote scheduler.
+
+If the schedd believes the existing remote job is not recoverable, then it
+willremove the job from the remote queue and set `GridJobId` to `Undefined`     
+in the local job ad. If you release the local job, then a new job instance
+will be submitted to the remote scheduler.
 
 #### Held jobs: no matching routes, route job limit, or route failure threshold
 
