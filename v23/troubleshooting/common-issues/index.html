@@ -829,6 +829,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#jobs-removed-from-the-local-batch-system" class="md-nav__link">
+    Jobs removed from the local batch system
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1681,11 +1688,22 @@ proxy is being mapped to.</p>
 <li>Verify that your user DN is mapped to an existing system user</li>
 </ol>
 <h3 id="jobs-go-on-hold">Jobs go on hold<a class="headerlink" href="#jobs-go-on-hold" title="Permanent link">&para;</a></h3>
-<p>Jobs will be put on held with a <code>HoldReason</code> attribute that can be inspected with
+<p>Jobs can be put on hold with a <code>HoldReason</code> attribute that can be inspected with
 <a href="../debugging-tools/#condor_ce_q">condor_ce_q</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_q -l &lt;JOB-ID&gt; -attr HoldReason
 <span class="go">HoldReason = &quot;CE job in status 5 put on hold by SYSTEM_PERIODIC_HOLD due to no matching routes, route job limit, or route failure threshold.&quot;</span>
 </code></pre></div>
+<p>The CE (and CE client) will put a job on hold when it encounters a problem
+with the job that it doesn't know how to resolve.</p>
+<p>If the HTCondor schedd believes that the existing job it has submitted
+to a remote queue may be recoverable, then it will leave the remote job
+queued and keep the <code>GridJobId</code> attribute defined in the local job ad.
+If you release the local job (with <code>condor_ce_release</code>), then the schedd
+will attempt to re-establish contact with the remote scheduler.</p>
+<p>If the schedd believes the existing remote job is not recoverable, then it
+willremove the job from the remote queue and set <code>GridJobId</code> to <code>Undefined</code>   <br />
+in the local job ad. If you release the local job, then a new job instance
+will be submitted to the remote scheduler.</p>
 <h4 id="held-jobs-no-matching-routes-route-job-limit-or-route-failure-threshold">Held jobs: no matching routes, route job limit, or route failure threshold<a class="headerlink" href="#held-jobs-no-matching-routes-route-job-limit-or-route-failure-threshold" title="Permanent link">&para;</a></h4>
 <p>Jobs on the CE will be put on hold if they are not claimed by the job router within 30 minutes.
 The most common cases for this behavior are as follows:</p>
@@ -1802,6 +1820,30 @@ If you are trying to use HTCondor-CE tools and you see the following error:</p>
 <li>You have installed HTCondor in a non-standard location that is not in your <code>PATH</code>.</li>
 <li>The <code>condor_job_router_info</code> tool itself wasn't available until Condor-8.2.3-1.1 (available in osg-upcoming).</li>
 </ol>
+<h3 id="jobs-removed-from-the-local-batch-system">Jobs removed from the local batch system<a class="headerlink" href="#jobs-removed-from-the-local-batch-system" title="Permanent link">&para;</a></h3>
+<p>When the CE removes a job from the local batch system, it may be due to
+a problem the CE encountered with managing the job or it may be at the
+behest of the submitter to the CE (which may be a remote HTCondor
+Access Point).</p>
+<p>Given a specific job ID in the CE logs, first find the job ad in CE
+queue with the <code>condor_ce_q</code> tool and check the value of the <code>GridJobID</code>
+attribute:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_q &lt;JOB_ID&gt; -af GridJobId
+</code></pre></div>
+<p>If the job is no longer in the queue, you will have to check the history
+using the <code>condor_ce_history</code> tool:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">user@host $ </span>condor_ce_history &lt;JOB_ID&gt; -af GridJobId
+</code></pre></div>
+<p>If the <code>GridJobId</code> is <em>undefined</em>, then the CE did the removal due to a
+problem interacting with the local batch system.
+Check the <code>HoldReason</code> and <code>LastHoldReason</code> attributes for why the CE
+removed the job.</p>
+<p>If <code>GridJobID</code> is not <em>undefined</em>, and is set to some value, then the
+submitter to the CE removed the job.
+If the submitter is a remote HTCondor Access Point, its daemons may have
+done the removal as part of putting its local job on hold.
+In that case, the <code>HoldReason</code> attribute in the remote job queue should
+indicate the source of the problem.</p>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <p>If you have any questions or issues about troubleshooting remote HTCondor-CEs, please <a href="/#contact-us">contact us</a> for
 assistance.</p>
