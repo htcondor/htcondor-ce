@@ -138,9 +138,8 @@ CE_DEFAULT_CONFIG_FILES := \
 	contrib/apelscripts/50-ce-apel-defaults.conf
 
 CE_MAP_FILES := \
-	config/mapfiles.d/10-gsi.conf \
+	config/mapfiles.d/10-ssl.conf \
 	config/mapfiles.d/10-scitokens.conf \
-	config/mapfiles.d/50-gsi-callout.conf \
 	config/mapfiles.d/90-ban.conf
 
 CE_CONDOR_CONFIG_FILES := \
