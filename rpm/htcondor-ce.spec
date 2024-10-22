@@ -303,9 +303,8 @@ getent passwd condorce_webapp >/dev/null || \
 %config(noreplace) %{_sysconfdir}/condor-ce/config.d/03-managed-fork.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/condor-ce
 
-%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-gsi.conf
+%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-ssl.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/10-scitokens.conf
-%config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/50-gsi-callout.conf
 %config(noreplace) %{_sysconfdir}/condor-ce/mapfiles.d/90-ban.conf
 
 %{_datadir}/condor-ce/config.d/01-ce-audit-payloads-defaults.conf
