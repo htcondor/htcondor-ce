@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 23.0.16
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 23.0.17
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -542,8 +542,9 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Fri Oct 11 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.16-0.1
+* Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.17-1
 - Lock down HTCondor-CE IDTOKEN security
+- Remove obsolete GSI configuration
 
 * Wed Jul 24 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.13-1
 - Package condor_ce_upgrade_check
