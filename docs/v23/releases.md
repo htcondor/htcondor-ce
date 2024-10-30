@@ -37,6 +37,18 @@ HTCondor-CE 23 Version History
 This section contains release notes for each version of HTCondor-CE 23.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### **October 30, 2024:** 23.10.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.10.1) includes the following new features:
+
+-   Fix certificate subject parsing in `condor_ce_host_network_check`
+
+### **October 30, 2024:** 23.0.17 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.0.17) includes the following new features:
+
+-   Remove obsolete GSI configuration
+
 ### **August 8, 2024:** 23.9.1 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v23.9.1) includes the following new features:
