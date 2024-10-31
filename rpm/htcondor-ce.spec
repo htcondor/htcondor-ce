@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 24.0.1
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -542,11 +542,13 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Oct 31 2024 Tim Theisen <tim@cs.wisc.edu> - 24.0.1-1
+- Initial HTCondor-CE 24.0.1 release
+
 * Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.10.1-1
 - Fix cert subject parsing in condor_ce_host_network_check
 
 * Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.17-1
-- Lock down HTCondor-CE IDTOKEN security
 - Remove obsolete GSI configuration
 
 * Thu Aug 08 2024 Tim Theisen <tim@cs.wisc.edu> - 23.9.1-1
