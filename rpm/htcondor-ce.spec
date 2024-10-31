@@ -2,8 +2,8 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 24.1.0
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Version: 24.1.2
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
