@@ -16,10 +16,6 @@ Known bugs affecting HTCondor-CEs can be found in
 Updating to HTCondor-CE 23
 --------------------------
 
-!!! note "Updating from HTCondor-CE < 6"
-    If updating to HTCondor-CE 23 from HTCondor-CE < 6, be sure to also consult the HTCondor-CE 6
-    [upgrade instructions](../v6/releases.md#600).
-
 !!! tip "Finding relevant configuration changes"
     When updating HTCondor-CE RPMs, `.rpmnew` and `.rpmsave` files may be created containing new defaults that you
     should merge or new defaults that have replaced your customzations, respectively.

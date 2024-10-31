@@ -54,7 +54,7 @@ owners that want to start contributing to a computing grid with minimal effort.
 ![HTCondor-CE-Bosco](img/bosco.png)
 
 If your site intends to run over 10,000 concurrent pilot jobs, you will need to host your own
-[HTCondor-CE](v23/installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
+[HTCondor-CE](v24/installation/htcondor-ce.md) because the Hosted CE has not yet been optimized for such loads.
 
 How the CE is Customized
 ------------------------
@@ -63,11 +63,11 @@ Aside from the [basic configuration] required in the CE installation, there are 
 you decide any customization is required at all):
 
 -   **Deciding which Virtual Organizations (VOs) are allowed to run at your site:** HTCondor-CE leverages HTCondor's
-    built-in ability to [authenticate incoming jobs](v23/configuration/authentication.md) based on their OAuth
+    built-in ability to [authenticate incoming jobs](v24/configuration/authentication.md) based on their OAuth
     token credentials.
 -   **How to filter and transform the pilot jobs to be run on your batch system:** Filtering and transforming pilot jobs
     (i.e., setting site-specific attributes or resource limits), requires configuration of your site’s job routes.
-    For examples of common job routes, consult the [job router configuration](v23/configuration/job-router-overview.md)
+    For examples of common job routes, consult the [job router configuration](v24/configuration/job-router-overview.md)
     pages.
 
 How Security Works

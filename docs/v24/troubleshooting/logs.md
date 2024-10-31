@@ -253,7 +253,7 @@ SharedPortLog
 The HTCondor-CE shared port log keeps track of all connections to all of the HTCondor-CE daemons other than the
 collector. 
 This log is a good place to check if experiencing connectivity issues with HTCondor-CE. More information can be found
-[here](http://research.cs.wisc.edu/htcondor/manual/v8.6/3_9Networking_includes.html#SECTION00492000000000000000).
+[here](https://htcondor.readthedocs.io/en/lts/admin-manual/networking.html#reducing-port-usage-with-the-condor-shared-port-daemon).
 
 - Location: `/var/log/condor-ce/SharedPortLog`
 - Key contents: Every attempt to connect to HTCondor-CE (except collector queries)

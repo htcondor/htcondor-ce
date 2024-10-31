@@ -1,5 +1,5 @@
-Installing HTCondor-CE 6
-========================
+Installing HTCondor-CE 24
+=========================
 
 !!! tip "Joining the OSG Consortium (OSG)?"
     If you are installing an HTCondor-CE for the OSG, consult the
@@ -11,7 +11,7 @@ It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
-Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 6 from the
+Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 24 from the
 [CHTC yum repositories](https://htcondor.org/downloads/htcondor-ce.html).
 
 Before Starting
@@ -34,7 +34,7 @@ There are some one-time (per host) steps to prepare in advance:
 
 - Ensure the host has a supported operating system (Red Hat Enterprise Linux variant 7)
 - Obtain root access to the host
-- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor Development](https://research.cs.wisc.edu/htcondor/yum/) Yum
+- Prepare the [EPEL](https://fedoraproject.org/wiki/EPEL) and [HTCondor Development](https://htcondor.readthedocs.io/en/lts/getting-htcondor/from-our-repositories.html) Yum
   repositories
 - Install CA certificates and VO data into `/etc/grid-security/certificates` and `/etc/grid-security/vomsdir`,
   respectively

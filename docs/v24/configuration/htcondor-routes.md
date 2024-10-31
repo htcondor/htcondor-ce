@@ -22,8 +22,6 @@ In this example, we set the routed job on hold if the job is idle and has been s
 tried to start more than once.
 This will catch jobs which are starting and stopping multiple times.
 
-=== "ClassAd Transform"
-
     ```hl_lines="5 8"
     JOB_ROUTER_ROUTE_Condor_Pool @=jrt
       UNIVERSE VANILLA
@@ -37,30 +35,11 @@ This will catch jobs which are starting and stopping multiple times.
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
     ```
-=== "Deprecated Syntax"
-
-    ```hl_lines="7 10"
-    JOB_ROUTER_ENTRIES @=jre
-    [
-      TargetUniverse = 5;
-      name = "Condor_Pool";
-      # Puts the routed job on hold if the job's been idle and has been started at least
-      # once or if the job has tried to start more than once
-      set_PeriodicHold = (NumJobStarts >= 1 && JobStatus == 1) || NumJobStarts > 1;
-      # Release routed jobs if the condor_starter couldn't start the executable and
-      # 'VMGAHP_ERR_INTERNAL' is in the HoldReason
-      set_PeriodicRelease = HoldReasonCode == 6 && regexp("VMGAHP_ERR_INTERNAL", HoldReason);
-    ]
-    @jre
-
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
-
 Setting routed job requirements
 -------------------------------
 
-If you need to set requirements on your routed job, you will need to use `SET REQUIREMENTS` or `set_Requirements`
-instead of `Requirements` for ClassAd transform and deprecated syntaxes, respectively.
+If you need to set requirements on your routed job, you will need to use `SET REQUIREMENTS`
+instead of `Requirements`.
 The `Requirements` attribute filters jobs coming into your CE into different job routes whereas the set function will
 set conditions on the routed job that must be met by the worker node it lands on.
 For more information on requirements, consult the
@@ -68,27 +47,11 @@ For more information on requirements, consult the
 
 To ensure that your job lands on a Linux machine in your pool:
 
-=== "ClassAd Transform"
-
     ```hl_lines="3"
     JOB_ROUTER_ROUTE_Condor_Pool @jrt
       UNIVERSE VANILLA
       SET Requirements = (TARGET.OpSys == "LINUX")
     @jrt
-
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
-
-=== "Deprecated Syntax"
-
-    ```hl_lines="5"
-    JOB_ROUTER_ENTRIES @=jre
-    [
-      TargetUniverse = 5;
-      name = "Condor_Pool";
-      set_Requirements =  (TARGET.OpSys == "LINUX");
-    ]
-    @jre
 
     JOB_ROUTER_ROUTE_NAMES = Condor_Pool
     ```
@@ -100,19 +63,9 @@ Requirements` or `copy_Requirements` to store the current value of `Requirements
 `original_requirements`.
 To do this, replace the above `SET Requirements` or `set_Requirements` lines with:
 
-=== "ClassAd Transform"
-
     ```
     SET Requirements = ($(MY.Requirements)) && (<YOUR REQUIREMENTS EXPRESSION>)
     ```
-
-=== "Deprecated Syntax"
-
-    ```
-    copy_Requirements = "original_requirements";
-    set_Requirements = original_requirements && ...;
-    ```
-
 
 ### Setting the accounting group based on the credential of the submitted job ###
 
@@ -128,8 +81,6 @@ original job.  This is different from the way the `x509*` job attributes behaved
 Because of this, the default CE config will copy all attributes that match `AuthToken*` to `orig_AuthToken*` before the route transforms are applied.
 
 Example of setting the accounting group from AuthToken or x509 attributes.
-
-=== "ClassAd Transform"
 
     ```
     JOB_ROUTER_CLASSAD_USER_MAP_NAMES = $(JOB_ROUTER_CLASSAD_USER_MAP_NAMES) AcctGroupMap
