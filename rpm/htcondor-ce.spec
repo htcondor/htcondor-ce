@@ -542,9 +542,14 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Fri Oct 11 2024 Tim Theisen <tim@cs.wisc.edu> - 23.10.1-0.rc1
+* Thu Oct 31 2024 Tim Theisen <tim@cs.wisc.edu> - 24.0.1-1
+- Initial HTCondor-CE 24.0.1 release
+
+* Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.10.1-1
 - Fix cert subject parsing in condor_ce_host_network_check
-- Lock down HTCondor-CE IDTOKEN security
+
+* Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.17-1
+- Remove obsolete GSI configuration
 
 * Thu Aug 08 2024 Tim Theisen <tim@cs.wisc.edu> - 23.9.1-1
 - Use new Job Router syntax by default
