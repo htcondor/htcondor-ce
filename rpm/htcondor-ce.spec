@@ -542,6 +542,9 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Oct 31 2024 Tim Theisen <tim@cs.wisc.edu> - 24.1.2-1
+- Initial HTCondor-CE 24.1.2 release
+
 * Thu Oct 31 2024 Tim Theisen <tim@cs.wisc.edu> - 24.0.1-1
 - Initial HTCondor-CE 24.0.1 release
 
