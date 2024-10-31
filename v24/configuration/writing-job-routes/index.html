@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v23/configuration/writing-job-routes/">
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v24/configuration/writing-job-routes/">
       
       <link rel="icon" href="../../../img/favicon-32x32.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
     
     
       
-        <title>Writing Job Routes - HTCondor-CE Documentation</title>
+        <title>Writing job routes - HTCondor-CE Documentation</title>
       
     
     
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Writing Job Routes
+              Writing job routes
             
           </span>
         </div>
@@ -179,15 +179,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+      <a href="../../../v23/installation/htcondor-ce/" class="md-tabs__link">
         HTCondor-CE 23
       </a>
     </li>
@@ -316,14 +314,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
       <label class="md-nav__link" for="__nav_2">
         HTCondor-CE 23
@@ -341,7 +337,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/htcondor-ce/" class="md-nav__link">
+      <a href="../../../v23/installation/htcondor-ce/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -351,14 +347,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
       
       <label class="md-nav__link" for="__nav_2_2">
         Configuration
@@ -376,7 +370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../authentication/" class="md-nav__link">
+      <a href="../../../v23/configuration/authentication/" class="md-nav__link">
         Authentication
       </a>
     </li>
@@ -388,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../local-batch-system/" class="md-nav__link">
+      <a href="../../../v23/configuration/local-batch-system/" class="md-nav__link">
         Local Batch System
       </a>
     </li>
@@ -398,14 +392,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_3" type="checkbox" id="__nav_2_2_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_3" type="checkbox" id="__nav_2_2_3" >
       
       <label class="md-nav__link" for="__nav_2_2_3">
         Job Router
@@ -423,7 +415,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../job-router-overview/" class="md-nav__link">
+      <a href="../../../v23/configuration/job-router-overview/" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -433,301 +425,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Writing Job Routes
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../v23/configuration/writing-job-routes/" class="md-nav__link">
         Writing Job Routes
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#syntax-differences" class="md-nav__link">
-    Syntax Differences
-  </a>
-  
-    <nav class="md-nav" aria-label="Syntax Differences">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#differences-in-my-and-target" class="md-nav__link">
-    Differences in MY. and TARGET.
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#required-fields" class="md-nav__link">
-    Required Fields
-  </a>
-  
-    <nav class="md-nav" aria-label="Required Fields">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#route-name" class="md-nav__link">
-    Route name
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#batch-system" class="md-nav__link">
-    Batch system
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#writing-multiple-routes" class="md-nav__link">
-    Writing Multiple Routes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#writing-comments" class="md-nav__link">
-    Writing Comments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-attributes-for-all-routes" class="md-nav__link">
-    Setting Attributes for All Routes
-  </a>
-  
-    <nav class="md-nav" aria-label="Setting Attributes for All Routes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#classad-transform" class="md-nav__link">
-    ClassAd transform
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#deprecated-syntax" class="md-nav__link">
-    Deprecated syntax
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filtering-jobs-based-on" class="md-nav__link">
-    Filtering Jobs Based On…
-  </a>
-  
-    <nav class="md-nav" aria-label="Filtering Jobs Based On…">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pilot-job-queue" class="md-nav__link">
-    Pilot job queue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mapped-user" class="md-nav__link">
-    Mapped user
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#voms-attribute" class="md-nav__link">
-    VOMS attribute
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-a-default" class="md-nav__link">
-    Setting a Default…
-  </a>
-  
-    <nav class="md-nav" aria-label="Setting a Default…">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#maximum-number-of-jobs" class="md-nav__link">
-    Maximum number of jobs
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#maximum-memory" class="md-nav__link">
-    Maximum memory
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#number-of-cores-to-request" class="md-nav__link">
-    Number of cores to request
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#number-of-gpus-to-request" class="md-nav__link">
-    Number of gpus to request
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#maximum-walltime" class="md-nav__link">
-    Maximum walltime
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-job-environments" class="md-nav__link">
-    Setting Job Environments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#editing-attributes" class="md-nav__link">
-    Editing Attributes…
-  </a>
-  
-    <nav class="md-nav" aria-label="Editing Attributes…">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#copying-attributes" class="md-nav__link">
-    Copying attributes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#removing-attributes" class="md-nav__link">
-    Removing attributes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setting-attributes" class="md-nav__link">
-    Setting attributes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setting-attributes-with-classad-expressions" class="md-nav__link">
-    Setting attributes with ClassAd expressions
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#limiting-the-number-of-jobs" class="md-nav__link">
-    Limiting the Number of Jobs
-  </a>
-  
-    <nav class="md-nav" aria-label="Limiting the Number of Jobs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#total-jobs" class="md-nav__link">
-    Total jobs
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#idle-jobs" class="md-nav__link">
-    Idle jobs
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging-routes" class="md-nav__link">
-    Debugging Routes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-help" class="md-nav__link">
-    Getting Help
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -737,7 +439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../htcondor-routes/" class="md-nav__link">
+      <a href="../../../v23/configuration/htcondor-routes/" class="md-nav__link">
         For HTCondor Batch Systems
       </a>
     </li>
@@ -749,7 +451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../non-htcondor-routes/" class="md-nav__link">
+      <a href="../../../v23/configuration/non-htcondor-routes/" class="md-nav__link">
         For Non-HTCondor Batch Systems
       </a>
     </li>
@@ -767,7 +469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../optional-configuration/" class="md-nav__link">
+      <a href="../../../v23/configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
       </a>
     </li>
@@ -785,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operation/" class="md-nav__link">
+      <a href="../../../v23/operation/" class="md-nav__link">
         Operation
       </a>
     </li>
@@ -818,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/common-issues/" class="md-nav__link">
+      <a href="../../../v23/troubleshooting/common-issues/" class="md-nav__link">
         Common Issues
       </a>
     </li>
@@ -830,7 +532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/debugging-tools/" class="md-nav__link">
+      <a href="../../../v23/troubleshooting/debugging-tools/" class="md-nav__link">
         Debugging Tools
       </a>
     </li>
@@ -842,7 +544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/logs/" class="md-nav__link">
+      <a href="../../../v23/troubleshooting/logs/" class="md-nav__link">
         Helpful Logs
       </a>
     </li>
@@ -881,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../remote-job-submission/" class="md-nav__link">
+      <a href="../../../v23/remote-job-submission/" class="md-nav__link">
         Submit Jobs Remotely
       </a>
     </li>
@@ -893,7 +595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/remote-troubleshooting/" class="md-nav__link">
+      <a href="../../../v23/troubleshooting/remote-troubleshooting/" class="md-nav__link">
         Remote Troubleshooting
       </a>
     </li>
@@ -905,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/central-collector/" class="md-nav__link">
+      <a href="../../../v23/installation/central-collector/" class="md-nav__link">
         Install a Central Collector
       </a>
     </li>
@@ -923,7 +625,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/" class="md-nav__link">
+      <a href="../../../v23/releases/" class="md-nav__link">
         Releases
       </a>
     </li>
@@ -935,7 +637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/" class="md-nav__link">
+      <a href="../../../v23/reference/" class="md-nav__link">
         Reference
       </a>
     </li>
@@ -1302,98 +1004,39 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v23/configuration/writing-job-routes.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v24/configuration/writing-job-routes.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
                 <h1 id="writing-job-routes">Writing Job Routes<a class="headerlink" href="#writing-job-routes" title="Permanent link">&para;</a></h1>
-<p>This document contains documentation for HTCondor-CE Job Router configurations with equivalent examples for the
-<a href="../job-router-overview/#classad-transforms">ClassAd transform</a> and
-<a href="../job-router-overview/#deprecated-syntax">deprecated</a> syntaxes.
+<p>This document contains documentation for HTCondor-CE Job Router configurations with examples for the
+<a href="../job-router-overview/#classad-transforms">ClassAd transform</a>.
 Configuration from this page should be written to files in <code>/etc/condor-ce/config.d/</code>, whose contents are parsed in
 lexicographic order with subsequent variables overriding earlier ones.</p>
-<p>Each example is displayed in code blocks with tabs to switch between the two syntaxes:</p>
-<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>This is an example for the ClassAd transform syntax
+<p>Each example is displayed in code blocks:</p>
+<div class="codehilite"><pre><span></span><code>```
+This is an example for the ClassAd transform syntax
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>This is an example for the deprecated syntax
-</code></pre></div>
-</div>
-</div>
-<h2 id="syntax-differences">Syntax Differences<a class="headerlink" href="#syntax-differences" title="Permanent link">&para;</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Planned Removal of Deprecated Syntax</p>
-<ul>
-<li><code>JOB_ROUTER_DEFAULTS</code>, <code>JOB_ROUTER_ENTRIES</code>, <code>JOB_ROUTER_ENTRIES_CMD</code>, and <code>JOB_ROUTER_ENTRIES_FILE</code> are
-deprecated and will be removed for <em>V24</em> of the HTCondor Software Suite. New configuration syntax for the job router
-is defined using <code>JOB_ROUTER_ROUTE_NAMES</code> and <code>JOB_ROUTER_ROUTE_[name]</code>.</li>
-<li>For new syntax example vist:
-<a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#an-example-configuration">HTCondor Documentation - Job Router</a></li>
-<li><strong>Note:</strong> The removal will occur during the lifetime of the HTCondor <em>V23</em> feature series.</li>
-</ul>
-</div>
-<p>In HTCondor-CE 23, the <a href="../job-router-overview/#deprecated-syntax">deprecated syntax</a> continues to be the default and
-administrator's can move to the <a href="../job-router-overview/#classad-transforms">ClassAd transform syntax</a> by setting the
-following in a file in <code>/etc/condor-ce/config.d/</code>:</p>
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False
-</code></pre></div>
-<p>The <a href="../job-router-overview/#classad-transforms">ClassAd transform</a> syntax provides many benefits including:</p>
-<ul>
-<li>Statements being evaluated in <a href="#editing-attributes">the order they are written</a></li>
-<li>Use of variables that are not included in the resultant job ad</li>
-<li>Use simple case-like logic</li>
-</ul>
-<p>Additionally, it is now easier to include job transformations that should be evaluated before or after your routes by
-including transforms in the lists of <code>JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES</code> and <code>JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES</code>,
-respectively.</p>
-<p>For examples of the ClassAd transform syntax, you can inspect default job router transforms packaged with HTCondor-CE
-with the following command:</p>
-<div class="highlight"><pre><span></span><code>user@host $ condor_ce_config_val -dump JOB_ROUTER_TRANSFORM_
-</code></pre></div>
-<h3 id="differences-in-my-and-target">Differences in <code>MY.</code> and <code>TARGET.</code><a class="headerlink" href="#differences-in-my-and-target" title="Permanent link">&para;</a></h3>
-<p>In addition to the above, the behavior of the <code>MY.</code> and <code>TARGET.</code> ClassAd attribute prefixes has changed between the two
-different syntaxes:</p>
-<ul>
-<li><strong>In ClassAd transform syntax,</strong> <code>MY.</code> always refers to the incoming job's attributes and can be referenced within
-    <code>$()</code>, e.g. <code>$(MY.Owner)</code> refers to the mapped user of the incoming job.
-    <code>TARGET</code> is only used in <a href="#setting-attributes">SET</a> expressions to refer to attributes in the slot ad (HTCondor
-    pools only).</li>
-<li><strong>In the deprecated syntax,</strong> <code>MY.</code> refers to attributes in the job route and <code>TARGET.</code> refers to attributes in the
-    incoming job ad for <a href="#copying-attributes">copy_</a>, <a href="#removing-attributes">delete_</a>, and
-    <a href="#setting-attributes-with-classad-expressions">eval_set_</a> functions.
-    However, in expressions defined by <a href="#setting-attributes">set_*</a>, <code>MY.</code> refers to the attributes in the incoming job
-    ad and <code>TARGET.</code> refers to the attribute in the slot ad (HTCondor pools only).</li>
-</ul>
+
 <h2 id="required-fields">Required Fields<a class="headerlink" href="#required-fields" title="Permanent link">&para;</a></h2>
 <p>The minimum requirements for a route are that you specify the type of batch system that jobs should be routed to and a
 name for each route.
 Default routes can be found in <code>/usr/share/condor-ce/config.d/02-ce-&lt;batch system&gt;-defaults.conf</code>, provided by the
 <code>htcondor-ce-&lt;batch system&gt;</code> packages.</p>
 <h3 id="route-name">Route name<a class="headerlink" href="#route-name" title="Permanent link">&para;</a></h3>
-<p>To identify routes, you will need to assign a name to the route, either in the name of the configuration macro
-(i.e., <code>JOB_ROUTER_ROUTE_&lt;name&gt;</code>) for the ClassAd transform syntax or with the <code>name</code> attribute for the deprecated syntax:</p>
-<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="hll">JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-</span>  UNIVERSE VANILLA
+<p>To identify routes, you will need to assign a name to the route, in the name of the configuration macro
+(i.e., <code>JOB_ROUTER_ROUTE_&lt;name&gt;</code>):</p>
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;1&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-<span class="hll">  name = &quot;Condor_Pool&quot;;
-</span>]
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <div class="admonition warning">
 <p class="admonition-title">Naming restrictions</p>
 <ul>
@@ -1414,100 +1057,54 @@ For HTCondor batch systems, the <code>UNIVERSE</code> command or <code>TargetUni
 respectively.
 For all other batch systems, the <code>GridResource</code> attribute needs to be set to <code>"batch &lt;batch system&gt;"</code>
 (where <code>&lt;batch system&gt;</code> can be one of <code>pbs</code>, <code>slurm</code>, <code>lsf</code>, or <code>sge</code>).</p>
-<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  UNIVERSE VANILLA
-</span>@jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2 6 7&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+@jrt
 
 JOB_ROUTER_ROUTE_My_Slurm @=jrt
-<span class="hll">  GridResource = &quot;batch slurm&quot;
-</span><span class="hll">@jrt
-</span>
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
-</code></pre></div>
-</div>
-<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-<span class="hll">  TargetUniverse = 5;
-</span>  name = &quot;Condor_Pool&quot;;
-]
-[
-<span class="hll">  GridResource = &quot;batch slurm&quot;;
-</span><span class="hll">  name = &quot;My_Slurm&quot;;
-</span>]
-@jre
+  GridResource = &quot;batch slurm&quot;
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
+```
 </code></pre></div>
-</div>
-</div>
+
 <h2 id="writing-multiple-routes">Writing Multiple Routes<a class="headerlink" href="#writing-multiple-routes" title="Permanent link">&para;</a></h2>
 <p>If your batch system needs incoming jobs to be sorted (e.g. if different VO's need to go to separate queues), you will
-need to write multiple job routes where each route is a separate <code>JOB_ROUTER_ROUTE_*</code> macro in the ClassAd transform
-syntax and enclosed by square brackets in the deprecated syntax.
+need to write multiple job routes where each route is a separate <code>JOB_ROUTER_ROUTE_*</code> macro.
 Additionally, the route names must be added to <code>JOB_ROUTER_ROUTE_NAMES</code> in the order that you want their requirements
 statements compared to incoming jobs.</p>
 <p>The following routes takes incoming jobs that have a <code>queue</code> attribute set to <code>"prod"</code> and sets <code>IsProduction = True</code>.
 All other jobs will be routed with <code>IsProduction = False</code>.</p>
-<div class="tabbed-set" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="hll">JOB_ROUTER_ROUTE_Production_Jobs @=jrt
-</span>  REQUIREMENTS queue == &quot;prod&quot;
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;1 7 12&quot;
+JOB_ROUTER_ROUTE_Production_Jobs @=jrt
+  REQUIREMENTS queue == &quot;prod&quot;
   UNIVERSE VANILLA
   SET IsProduction = True
 @jrt
 
-<span class="hll">JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-</span>  UNIVERSE VANILLA
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
   SET IsProduction = False
 @jrt
 
-<span class="hll">JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
-</span></code></pre></div>
-</div>
-<input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><label for="__tabbed_4_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-<span class="hll">[
-</span>  Requirements = (TARGET.queue == &quot;prod&quot;);
-  TargetUniverse = 5;
-  set_IsProduction = True;
-  name = &quot;Production_Jobs&quot;;
-<span class="hll">]
-</span><span class="hll">[
-</span>  TargetUniverse = 5;
-  set_IsProduction = False;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">]
-</span>@jre
+JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
+```
+</code></pre></div>
 
-<span class="hll">JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
-</span></code></pre></div>
-</div>
-</div>
 <h2 id="writing-comments">Writing Comments<a class="headerlink" href="#writing-comments" title="Permanent link">&para;</a></h2>
 <p>To write comments you can use <code>#</code> to comment a line:</p>
-<div class="tabbed-set" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><label for="__tabbed_5_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  # This is a comment
-</span>  UNIVERSE VANILLA
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  # This is a comment
+  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><label for="__tabbed_5_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  # This is a comment
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h2 id="setting-attributes-for-all-routes">Setting Attributes for All Routes<a class="headerlink" href="#setting-attributes-for-all-routes" title="Permanent link">&para;</a></h2>
 <h3 id="classad-transform">ClassAd transform<a class="headerlink" href="#classad-transform" title="Permanent link">&para;</a></h3>
 <p>With the ClassAd transform syntax, any function from the <a href="#editing-attributes">Editing Attributes section</a> can be
@@ -1527,30 +1124,14 @@ JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES) P
 <code>JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES</code> instead:</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES = $(JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES) Periodic_Hold
 </code></pre></div>
-<h3 id="deprecated-syntax">Deprecated syntax<a class="headerlink" href="#deprecated-syntax" title="Permanent link">&para;</a></h3>
-<p>To set an attribute that will be applied to all routes, you will need to ensure that <code>MERGE_JOB_ROUTER_DEFAULT_ADS</code> is
-set to <code>True</code> (check the value with <a href="../../troubleshooting/debugging-tools/#condor_ce_config_val">condor_ce_config_val</a>)
-and use the <a href="#setting-attributes">set_</a> function in the <code>JOB_ROUTER_DEFAULTS</code>.
-The following configuration sets the <code>Periodic_Hold</code> attribute for all routes:</p>
-<div class="highlight"><pre><span></span><code># Use the defaults generated by the condor_ce_router_defaults script.  To add
-# additional defaults, add additional lines of the form:
-#
-#   JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS) [set_foo = 1;]
-#
-MERGE_JOB_ROUTER_DEFAULT_ADS=True
-<span class="hll">JOB_ROUTER_DEFAULTS = $(JOB_ROUTER_DEFAULTS) [set_Periodic_Hold = (NumJobStarts &gt;= 1 &amp;&amp; JobStatus == 1) || NumJobStarts &gt; 1;]
-</span></code></pre></div>
 <h2 id="filtering-jobs-based-on">Filtering Jobs Based On…<a class="headerlink" href="#filtering-jobs-based-on" title="Permanent link">&para;</a></h2>
-<p>To filter jobs, use the route's <code>REQUIREMENTS</code> or <code>Requirements</code> attribute for ClassAd transforms and deprecated
-syntaxes, respectively.
+<p>To filter jobs, use the route's <code>REQUIREMENTS</code> attribute.
 Incoming jobs will be evaluated against the ClassAd expression set in the route's requirements and if the expression
 evaluates to <code>TRUE</code>, the route will match.
 More information on the syntax of ClassAd's can be found in the
 <a href="https://htcondor.readthedocs.io/en/lts/misc-concepts/classad-mechanism.html">HTCondor manual</a>.
 For an example on how incoming jobs interact with filtering in job routes, consult
 <a href="../../remote-job-submission/">this document</a>.</p>
-<p>In the deprecated syntax, you may need to specify <code>TARGET.</code> to refer to differentiate between job and route attributes. 
-See <a href="#differences-in-my-and-target">this section</a> for more details.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you have an HTCondor batch system, note the difference with
@@ -1560,104 +1141,56 @@ See <a href="#differences-in-my-and-target">this section</a> for more details.</
 <p>To filter jobs based on their pilot job queue attribute, your routes will need a requirements expression using the
 incoming job's <code>queue</code> attribute.
 The following entry routes jobs to HTCondor if the incoming job (specified by <code>TARGET</code>) is an <code>analy</code> (Analysis) glidein:</p>
-<div class="tabbed-set" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS queue == &quot;prod&quot;
-</span>  UNIVERSE VANILLA
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS queue == &quot;prod&quot;
+  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><label for="__tabbed_6_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-<span class="hll">  Requirements = (TARGET.queue == &quot;prod&quot;);
-</span>  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
-</code></pre></div>
-</div>
-</div>
 <h3 id="mapped-user">Mapped user<a class="headerlink" href="#mapped-user" title="Permanent link">&para;</a></h3>
 <p>To filter jobs based on what local account the incoming job was mapped to, your routes will need a requirements
 expression using the incoming job's <code>Owner</code> attribute.
 The following entry routes jobs to the HTCondor batch system if the mapped user is <code>usatlas2</code>:</p>
-<div class="tabbed-set" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><label for="__tabbed_7_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS Owner == &quot;usatlas2&quot;
-</span>  UNIVERSE VANILLA
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS Owner == &quot;usatlas2&quot;
+  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><label for="__tabbed_7_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-<span class="hll">  Requirements = (TARGET.Owner == &quot;usatlas2&quot;);
-</span>  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
-</code></pre></div>
-</div>
-</div>
 <p>Alternatively, you can match based on regular expression.
 The following entry routes jobs to the HTCondor batch system if the mapped user begins with <code>usatlas</code>:</p>
-<div class="tabbed-set" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><label for="__tabbed_8_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS regexp(&quot;^usatlas&quot;, Owner)
-</span>  UNIVERSE VANILLA
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS regexp(&quot;^usatlas&quot;, Owner)
+  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><label for="__tabbed_8_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-<span class="hll">  Requirements = regexp(&quot;^usatlas&quot;, TARGET.Owner);
-</span>  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
-</code></pre></div>
-</div>
-</div>
 <h3 id="voms-attribute">VOMS attribute<a class="headerlink" href="#voms-attribute" title="Permanent link">&para;</a></h3>
 <p>To filter jobs based on the subject of the job's proxy, your routes will need a requirements expression using the
 incoming job's <code>x509UserProxyFirstFQAN</code> attribute.
 The following entry routes jobs to the HTCondor batch system if the proxy subject contains <code>/cms/Role=Pilot</code>:</p>
-<div class="tabbed-set" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><label for="__tabbed_9_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  REQUIREMENTS regexp(&quot;\/cms\/Role\=pilot&quot;, x509UserProxyFirstFQAN)
-</span>  UNIVERSE VANILLA
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS regexp(&quot;\/cms\/Role\=pilot&quot;, x509UserProxyFirstFQAN)
+  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><label for="__tabbed_9_2">Deprecated syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-<span class="hll">  Requirements = regexp(&quot;\/cms\/Role\=pilot&quot;, TARGET.x509UserProxyFirstFQAN);
-</span>  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = My_HTCONDOR
-</code></pre></div>
-</div>
-</div>
 <h2 id="setting-a-default">Setting a Default…<a class="headerlink" href="#setting-a-default" title="Permanent link">&para;</a></h2>
 <p>This section outlines how to set default job limits, memory, cores, and maximum walltime.
 For an example on how users can override these defaults, consult
@@ -1673,102 +1206,60 @@ For an example on how users can override these defaults, consult
 transform.</p>
 </div>
 <h3 id="maximum-memory">Maximum memory<a class="headerlink" href="#maximum-memory" title="Permanent link">&para;</a></h3>
-<p>To set a default maximum memory (in MB) for routed jobs, set the variable or attribute <code>default_maxMemory</code> for the
-ClassAd transform and deprecated syntax, respectively:</p>
-<div class="tabbed-set" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><label for="__tabbed_10_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<p>To set a default maximum memory (in MB) for routed jobs, set the variable <code>default_maxMemory</code>:</p>
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # Set the requested memory to 1 GB
-<span class="hll">  default_maxMemory = 1000
-</span>@jrt
+  default_maxMemory = 1000
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><label for="__tabbed_10_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-  # Set the requested memory to 1 GB
-<span class="hll">  set_default_maxMemory = 1000;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h3 id="number-of-cores-to-request">Number of cores to request<a class="headerlink" href="#number-of-cores-to-request" title="Permanent link">&para;</a></h3>
-<p>To set a default number of cores for routed jobs, set the variable or attribute <code>default_xcount</code> for the ClassAd
-transform and deprecated syntax, respectively:</p>
-<div class="tabbed-set" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><label for="__tabbed_11_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<p>To set a default number of cores for routed jobs, set the variable <code>default_xcount</code>:</p>
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # Set the requested memory to 1 GB
-<span class="hll">  default_xcount = 8
-</span>@jrt
+  default_xcount = 8
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><label for="__tabbed_11_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-  # Set the requested cores to 8
-<span class="hll">  set_default_xcount = 8;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h3 id="number-of-gpus-to-request">Number of gpus to request<a class="headerlink" href="#number-of-gpus-to-request" title="Permanent link">&para;</a></h3>
 <p>To set a default number of GPUs for routed jobs, set the job ClassAd attribute <code>RequestGPUs</code> in the route
 transform:</p>
-<div class="tabbed-set" data-tabs="12:1"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><label for="__tabbed_12_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # If the job does not already have a RequestGPUs value set it to 1
-<span class="hll">  DEFAULT RequestGPUs = 1
-</span>@jrt
+  DEFAULT RequestGPUs = 1
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-</div>
+
 <p>The <code>DEFAULT</code> keyword works for any job attribute other than those mentioned above that require the use of
-alternative names for defaulting in the CE.  The deprecated syntax has no keyword for defaulting.</p>
+alternative names for defaulting in the CE.</p>
 <h3 id="maximum-walltime">Maximum walltime<a class="headerlink" href="#maximum-walltime" title="Permanent link">&para;</a></h3>
-<p>To set a default number of cores for routed jobs, set the variable or attribute <code>default_maxWallTime</code> for the ClassAd
-transform and deprecated syntax, respectively:</p>
-<div class="tabbed-set" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><label for="__tabbed_13_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<p>To set a default number of cores for routed jobs, set the variable <code>default_maxWallTime</code>:</p>
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # Set the max walltime to 1 hr
-<span class="hll">  default_maxWallTime = 60
-</span>@jrt
+  default_maxWallTime = 60
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><label for="__tabbed_13_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-  # Set the max walltime to 1 hr
-<span class="hll">  set_default_maxWallTime = 60;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h2 id="setting-job-environments">Setting Job Environments<a class="headerlink" href="#setting-job-environments" title="Permanent link">&para;</a></h2>
 <p>HTCondor-CE offers two different methods for setting environment variables of routed jobs:</p>
 <ul>
@@ -1786,11 +1277,11 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><label for="__tabbed_14_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu&quot;
 </code></pre></div>
 </div>
-<input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><label for="__tabbed_14_2">Resulting Environment</label><div class="tabbed-content">
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
@@ -1799,52 +1290,38 @@ For example, the following HTCondor-CE configuration would result in the followi
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
 <a href="https://htcondor.readthedocs.io/en/lts/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><label for="__tabbed_15_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
 CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)&quot;
 </code></pre></div>
 </div>
-<input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><label for="__tabbed_15_2">Resulting Environment</label><div class="tabbed-content">
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
 </div>
 </div>
 <p>To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
-<code>default_pilot_job_env</code> or <code>set_default_pilot_job_env</code> to your job route configuration for ClassAd transforms and
-deprecated syntax, respectively.
+<code>default_pilot_job_env</code> to your job route configuration:
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:</p>
-<div class="tabbed-set" data-tabs="16:4"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><label for="__tabbed_16_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_Condor_Pool @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3 4 5&quot; 
+JOB_ROUTER_Condor_Pool @=jrt
   UNIVERSE VANILLA
-<span class="hll">  default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
-</span><span class="hll">                                 &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
-</span><span class="hll">                                 &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO))
-</span>@jrt
+  default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
+                                 &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
+                                 &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO))
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><label for="__tabbed_16_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  set_default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
-</span><span class="hll">                                     &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
-</span><span class="hll">                                     &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO));
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-<input id="__tabbed_16_3" name="__tabbed_16" type="radio" /><label for="__tabbed_16_3">Incoming Job Attributes</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Incoming Job Attributes</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
 JOB_VO = &quot;GLOW&quot;
 </code></pre></div>
 </div>
-<input id="__tabbed_16_4" name="__tabbed_16" type="radio" /><label for="__tabbed_16_4">Resulting Environment</label><div class="tabbed-content">
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">PILOT_COLLECTOR</span><span class="o">=</span>collector.wisc.edu
 <span class="nv">ACCOUNTING_GROUP</span><span class="o">=</span>glow
@@ -1859,144 +1336,80 @@ Make sure to remove <code>debug()</code> after you're done!</p>
 </div>
 <h2 id="editing-attributes">Editing Attributes…<a class="headerlink" href="#editing-attributes" title="Permanent link">&para;</a></h2>
 <p>The following functions are operations that can be used to take incoming job attributes and modify them for the routed
-job for the ClassAd transform and deprecated syntax, respectively:</p>
+job:</p>
 <ol>
 <li><code>COPY</code>, <code>copy_*</code></li>
 <li><code>DELETE</code>, <code>delete_*</code></li>
 <li><code>SET</code>, <code>set_*</code></li>
 <li><code>EVALSET</code>, <code>eval_set_*</code></li>
 </ol>
-<p>The above operations are evaluated in order differently depending on your chosen syntax:</p>
+<p>The above operations are evaluated in order:</p>
 <ul>
-<li>
-<p><strong>If you are using ClassAd transforms</strong>, each function is evaluated in order of appearance.
+<li>Each function is evaluated in order of appearance.
     For example, the following will set <code>FOO</code> in the routed job to the incoming job's <code>Owner</code> attribute and then
-    subsequently remove <code>FOO</code> from the routed job:</p>
-<div class="codehilite"><pre><span></span><code>JOB_ROUTER_Condor_Pool @=jrt
+    subsequently remove <code>FOO</code> from the routed job:<div class="codehilite"><pre><span></span><code>JOB_ROUTER_Condor_Pool @=jrt
   EVALSET FOO = &quot;$(MY.Owner)&quot;
   DELETE FOO
 @jrt
 </code></pre></div>
 
 </li>
-<li>
-<p><strong>If you are using the deprecated syntax</strong>, each class of operations is evaluated in the order specified above,
-    i.e. all <code>copy_*</code>, before <code>delete_*</code>, etc.
-    For example, if the attribute <code>FOO</code> is set using <code>eval_set_FOO</code> in the <code>JOB_ROUTER_DEFAULTS</code>, you'll be unable to use
-    <code>delete_foo</code> to remove it from your jobs since the attribute is set using <code>eval_set_foo</code> after the deletion occurs
-    according to the order of operations.
-    To get around this, we can take advantage of the fact that operations defined in <code>JOB_ROUTER_DEFAULTS</code> get
-    overridden by the same operation in <code>JOB_ROUTER_ENTRIES</code>.
-    So to 'delete' <code>FOO</code>, you could add <code>eval_set_foo = ""</code> to the route in the <code>JOB_ROUTER_ENTRIES</code>, resulting in <code>foo</code>
-    being set to the empty string in the routed job.</p>
-</li>
 </ul>
 <p>More documentation can be found in the
 <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#routing-table-entry-commands-and-macro-values">HTCondor manual</a></p>
 <h3 id="copying-attributes">Copying attributes<a class="headerlink" href="#copying-attributes" title="Permanent link">&para;</a></h3>
-<p>To copy the value of an attribute of the incoming job to an attribute of the routed job, use <code>COPY</code> or <code>copy_</code> for
-ClassAd transform and deprecated syntaxes, respectively..
+<p>To copy the value of an attribute of the incoming job to an attribute of the routed job, use <code>COPY</code>:
 The following route copies the <code>Environment</code> attribute of the incoming job and sets the attribute <code>Original_Environment</code>
 on the routed job to the same value:</p>
-<div class="tabbed-set" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><label for="__tabbed_17_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-<span class="hll">  COPY Environment Original_Environment
-</span>@jrt
+  COPY Environment Original_Environment
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><label for="__tabbed_17_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  copy_Environment = &quot;Original_Environment&quot;;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h3 id="removing-attributes">Removing attributes<a class="headerlink" href="#removing-attributes" title="Permanent link">&para;</a></h3>
-<p>To remove an attribute of the incoming job from the routed job, use <code>DELETE</code> or <code>delete_</code> for ClassAd transform and
-deprecated syntaxes, respectively.
+<p>To remove an attribute of the incoming job from the routed job, use <code>DELETE</code>.
 The following route removes the <code>Environment</code> attribute from the routed job:</p>
-<div class="tabbed-set" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><label for="__tabbed_18_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-<span class="hll">  DELETE Environment
-</span>@jrt
+  DELETE Environment
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><label for="__tabbed_18_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  delete_Environment = True;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h3 id="setting-attributes">Setting attributes<a class="headerlink" href="#setting-attributes" title="Permanent link">&para;</a></h3>
-<p>To set an attribute on the routed job, use <code>SET</code> or <code>set_</code> for ClassAd transform and deprecated syntaxes, respectively.
+<p>To set an attribute on the routed job, use <code>SET</code>.
 The following route sets the Job's <code>Rank</code> attribute to 5:</p>
-<div class="tabbed-set" data-tabs="19:2"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><label for="__tabbed_19_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-<span class="hll">  SET Rank = 5
-</span>@jrt
+  SET Rank = 5
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><label for="__tabbed_19_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  set_Rank = 5;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h3 id="setting-attributes-with-classad-expressions">Setting attributes with ClassAd expressions<a class="headerlink" href="#setting-attributes-with-classad-expressions" title="Permanent link">&para;</a></h3>
-<p>To set an attribute to a ClassAd expression to be evaluated, use <code>EVALSET</code> or <code>eval_set</code> for ClassAd transform and
-deprecated syntaxes, respectively.
+<p>To set an attribute to a ClassAd expression to be evaluated, use <code>EVALSET</code>.
 The following route sets the <code>Experiment</code> attribute to <code>atlas.osguser</code> if the Owner of the incoming job is <code>osguser</code>:</p>
-<div class="tabbed-set" data-tabs="20:2"><input checked="checked" id="__tabbed_20_1" name="__tabbed_20" type="radio" /><label for="__tabbed_20_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-<span class="hll">  EVALSET Experiment = strcat(&quot;atlas.&quot;, Owner)
-</span>@jrt
+  EVALSET Experiment = strcat(&quot;atlas.&quot;, Owner)
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_20_2" name="__tabbed_20" type="radio" /><label for="__tabbed_20_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  eval_set_Experiment = strcat(&quot;atlas.&quot;, Owner);
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h2 id="limiting-the-number-of-jobs">Limiting the Number of Jobs<a class="headerlink" href="#limiting-the-number-of-jobs" title="Permanent link">&para;</a></h2>
 <p>This section outlines how to limit the number of total or idle jobs in a specific route
 (i.e., if this limit is reached, jobs will no longer be placed in this route).</p>
@@ -2009,80 +1422,45 @@ HTCondor manages fair share on its own via
 <h3 id="total-jobs">Total jobs<a class="headerlink" href="#total-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of jobs for a specific route,
 set the <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-6">MaxJobs</a> attribute:</p>
-<div class="tabbed-set" data-tabs="21:2"><input checked="checked" id="__tabbed_21_1" name="__tabbed_21" type="radio" /><label for="__tabbed_21_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
+JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   UNIVERSE VANILLA
-<span class="hll">  MaxJobs = 100
-</span>@jrt
+  MaxJobs = 100
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_21_2" name="__tabbed_21" type="radio" /><label for="__tabbed_21_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  MaxJobs = 100;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h3 id="idle-jobs">Idle jobs<a class="headerlink" href="#idle-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of idle jobs for a specific route,
 set the <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-7">MaxIdleJobs</a> attribute:</p>
-<div class="tabbed-set" data-tabs="22:2"><input checked="checked" id="__tabbed_22_1" name="__tabbed_22" type="radio" /><label for="__tabbed_22_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
+JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   UNIVERSE VANILLA
-<span class="hll">  MaxIdleJobs = 100
-</span>@jrt
+  MaxIdleJobs = 100
+@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_22_2" name="__tabbed_22" type="radio" /><label for="__tabbed_22_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  TargetUniverse = 5;
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  MaxIdleJobs = 100;
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <h2 id="debugging-routes">Debugging Routes<a class="headerlink" href="#debugging-routes" title="Permanent link">&para;</a></h2>
 <p>To help debug expressions in your routes, you can use the <code>debug()</code> function.
 First, set the debug mode for the JobRouter by editing a file in <code>/etc/condor-ce/config.d/</code> to read</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
 </code></pre></div>
 <p>Then wrap the problematic attribute in <code>debug()</code>:</p>
-<div class="tabbed-set" data-tabs="23:2"><input checked="checked" id="__tabbed_23_1" name="__tabbed_23" type="radio" /><label for="__tabbed_23_1">ClassAd Transform</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-<span class="hll">  EVALSET Experiment = debug(strcat(&quot;atlas&quot;, Name))
-</span>
+<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  EVALSET Experiment = debug(strcat(&quot;atlas&quot;, Name))
+
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 </code></pre></div>
-</div>
-<input id="__tabbed_23_2" name="__tabbed_23" type="radio" /><label for="__tabbed_23_2">Deprecated Syntax</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_ENTRIES @=jre
-[
-  name = &quot;Condor_Pool&quot;;
-<span class="hll">  eval_set_Experiment = debug(strcat(&quot;atlas&quot;, Name));
-</span>]
-@jre
 
-JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-</code></pre></div>
-</div>
-</div>
 <p>You will find the debugging output in <code>/var/log/condor-ce/JobRouterLog</code>.</p>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <p>If you have any questions or issues with configuring job routes, please <a href="../../..#contact-us">contact us</a> for assistance.</p>
@@ -2105,39 +1483,6 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
       
         
 <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        <a href="../job-router-overview/" class="md-footer__link md-footer__link--prev" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Overview
-            </div>
-          </div>
-        </a>
-      
-      
-        <a href="../htcondor-routes/" class="md-footer__link md-footer__link--next" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              For HTCondor Batch Systems
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
