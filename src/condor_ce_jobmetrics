@@ -40,8 +40,8 @@ def _newstat():
     return {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
 
 def process_one_schedd(ad):
-    import htcondor
-    import classad
+    import htcondor2 as htcondor
+    import classad2 as classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
     status_map = {1: "Idle", 2: "Running", 5: "Held"}
@@ -52,7 +52,7 @@ def process_one_schedd(ad):
     gpu_job_count = collections.defaultdict(_newstat)
     print(f"Processing CE {ad.get('Name', 'Unknown')}.", file=sys.stderr)
     try:
-        for job in schedd.xquery("RoutedJob is UNDEFINED", ["JobStatus", 'x509UserProxyVOName',
+        for job in schedd.query("RoutedJob is UNDEFINED", ["JobStatus", 'x509UserProxyVOName',
                                           'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
             dn = job.get("x509userproxysubject") or 'Unknown'
             vo = job.get('x509UserProxyVOName') or 'Unknown'

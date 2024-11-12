@@ -52,8 +52,8 @@ def find_malformed_entries(entries_config):
 
 # Verify that the HTCondor Python bindings are in the PYTHONPATH
 try:
-    import classad
-    import htcondor
+    import classad2 as classad
+    import htcondor2 as htcondor
 except ImportError:
     error("Could not load HTCondor Python bindings. "
           + "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
