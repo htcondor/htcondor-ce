@@ -11,7 +11,7 @@ def check_htcondor():
     global htcondor
     if not htcondor:
         os.environ.setdefault('CONDOR_CONFIG', "/etc/condor-ce/condor_config")
-        htcondor = __import__("htcondor")
+        htcondor = __import__("htcondor2")
     return htcondor
 
 
