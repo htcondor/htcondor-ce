@@ -110,7 +110,7 @@ def bearer_token_path():
     #    Punt on this one until we address HTCONDOR-634
 
     try:
-        # 2. BEARER_TOKEN_PATH containing the path to the token
+        # 2. BEARER_TOKEN_FILE containing the path to the token
         path = check_token_path(os.environ['BEARER_TOKEN_FILE'])
     except (KeyError, FileNotFoundError):
         try:

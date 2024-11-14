@@ -9,8 +9,8 @@ import optparse
 
 os.environ.setdefault("CONDOR_CONFIG", "/etc/condor-ce/condor_config")
 
-import classad
-import htcondor
+import classad2 as classad
+import htcondor2 as htcondor
 
 import htcondorce.info_query
 
