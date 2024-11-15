@@ -836,7 +836,7 @@ This section outlines how to limit the number of total or idle jobs in a specifi
 !!! note
     If you are using an HTCondor batch system, limiting the number of jobs is not the preferred solution:
     HTCondor manages fair share on its own via
-    [user priorities and group accounting](https://htcondor.readthedocs.io/en/lts/admin-manual/user-priorities-negotiation.html).
+    [user priorities and group accounting](https://htcondor.readthedocs.io/en/lts/admin-manual/cm-configuration.html#user-priorities-and-negotiation).
 
 ### Total jobs
 
