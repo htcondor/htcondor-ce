@@ -28,8 +28,16 @@ Updating to HTCondor-CE 24
         :::console
         root@host # find /etc/condor-ce/ -name '*.rpmnew' -name '*.rpmsave'
 
-HTCondor-CE 24 is very close in functionality to HTCondor-CE 23.
-As such, upgrading should be very easy.
+HTCondor-CE 24 no longer accepts the original job router syntax.
+If you have custom job routes, you must use the new, more flexible,
+[ClassAd transform](../configuration/job-router-overview/#classad-transforms)
+job router syntax.
+
+If you have added custom job routes, make sure that you
+[convert](../../v23/configuration/job-router-overview/#converting-to-classad-transforms)
+any jobs routes to the new, more flexible,
+[ClassAd transform](../configuration/job-router-overview/#classad-transforms)
+syntax.
 
 HTCondor-CE 24 Version History
 ------------------------------
