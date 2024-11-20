@@ -1116,8 +1116,15 @@ To find these files for HTCondor-CE, run the following command:</p>
 </code></pre></div>
 
 </div>
-<p>HTCondor-CE 24 is very close in functionality to HTCondor-CE 23.
-As such, upgrading should be very easy.</p>
+<p>HTCondor-CE 24 no longer accepts the original job router syntax.
+If you have custom job routes, you must use the new, more flexible,
+<a href="../configuration/job-router-overview/#classad-transforms">ClassAd transform</a>
+job router syntax.</p>
+<p>If you have added custom job routes, make sure that you
+<a href="../../v23/configuration/job-router-overview/#converting-to-classad-transforms">convert</a>
+any jobs routes to the new, more flexible,
+<a href="../configuration/job-router-overview/#classad-transforms">ClassAd transform</a>
+syntax.</p>
 <h2 id="htcondor-ce-24-version-history">HTCondor-CE 24 Version History<a class="headerlink" href="#htcondor-ce-24-version-history" title="Permanent link">&para;</a></h2>
 <p>This section contains release notes for each version of HTCondor-CE 24.
 Full HTCondor-CE version history can be found on <a href="https://github.com/htcondor/htcondor-ce/releases">GitHub</a>.</p>
