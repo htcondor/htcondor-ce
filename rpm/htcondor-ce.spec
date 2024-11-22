@@ -542,6 +542,9 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Fri Nov 22 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.18-0.rc1
+- Does not pass WholeNode request expressions to non-HTCondor batch systems
+
 * Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.10.1-1
 - Fix cert subject parsing in condor_ce_host_network_check
 
