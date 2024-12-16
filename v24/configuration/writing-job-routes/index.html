@@ -1286,11 +1286,8 @@
 Configuration from this page should be written to files in <code>/etc/condor-ce/config.d/</code>, whose contents are parsed in
 lexicographic order with subsequent variables overriding earlier ones.</p>
 <p>Each example is displayed in code blocks:</p>
-<div class="codehilite"><pre><span></span><code>```
-This is an example for the ClassAd transform syntax
-```
+<div class="highlight"><pre><span></span><code>This is an example for the ClassAd transform syntax
 </code></pre></div>
-
 <h2 id="required-fields">Required Fields<a class="headerlink" href="#required-fields" title="Permanent link">&para;</a></h2>
 <p>The minimum requirements for a route are that you specify the type of batch system that jobs should be routed to and a
 name for each route.
@@ -1299,15 +1296,12 @@ Default routes can be found in <code>/usr/share/condor-ce/config.d/02-ce-&lt;bat
 <h3 id="route-name">Route name<a class="headerlink" href="#route-name" title="Permanent link">&para;</a></h3>
 <p>To identify routes, you will need to assign a name to the route, in the name of the configuration macro
 (i.e., <code>JOB_ROUTER_ROUTE_&lt;name&gt;</code>):</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;1&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  UNIVERSE VANILLA
+<div class="highlight"><pre><span></span><code><span class="hll">JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+</span>  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <div class="admonition warning">
 <p class="admonition-title">Naming restrictions</p>
 <ul>
@@ -1328,19 +1322,16 @@ For HTCondor batch systems, the <code>UNIVERSE</code> command or <code>TargetUni
 respectively.
 For all other batch systems, the <code>GridResource</code> attribute needs to be set to <code>"batch &lt;batch system&gt;"</code>
 (where <code>&lt;batch system&gt;</code> can be one of <code>pbs</code>, <code>slurm</code>, <code>lsf</code>, or <code>sge</code>).</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2 6 7&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  UNIVERSE VANILLA
-@jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  UNIVERSE VANILLA
+</span>@jrt
 
 JOB_ROUTER_ROUTE_My_Slurm @=jrt
-  GridResource = &quot;batch slurm&quot;
-@jrt
-
+<span class="hll">  GridResource = &quot;batch slurm&quot;
+</span><span class="hll">@jrt
+</span>
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
-```
 </code></pre></div>
-
 <h2 id="writing-multiple-routes">Writing Multiple Routes<a class="headerlink" href="#writing-multiple-routes" title="Permanent link">&para;</a></h2>
 <p>If your batch system needs incoming jobs to be sorted (e.g. if different VO's need to go to separate queues), you will
 need to write multiple job routes where each route is a separate <code>JOB_ROUTER_ROUTE_*</code> macro.
@@ -1348,34 +1339,28 @@ Additionally, the route names must be added to <code>JOB_ROUTER_ROUTE_NAMES</cod
 statements compared to incoming jobs.</p>
 <p>The following routes takes incoming jobs that have a <code>queue</code> attribute set to <code>"prod"</code> and sets <code>IsProduction = True</code>.
 All other jobs will be routed with <code>IsProduction = False</code>.</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;1 7 12&quot;
-JOB_ROUTER_ROUTE_Production_Jobs @=jrt
-  REQUIREMENTS queue == &quot;prod&quot;
+<div class="highlight"><pre><span></span><code><span class="hll">JOB_ROUTER_ROUTE_Production_Jobs @=jrt
+</span>  REQUIREMENTS queue == &quot;prod&quot;
   UNIVERSE VANILLA
   SET IsProduction = True
 @jrt
 
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  UNIVERSE VANILLA
+<span class="hll">JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+</span>  UNIVERSE VANILLA
   SET IsProduction = False
 @jrt
 
-JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
-```
-</code></pre></div>
-
+<span class="hll">JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
+</span></code></pre></div>
 <h2 id="writing-comments">Writing Comments<a class="headerlink" href="#writing-comments" title="Permanent link">&para;</a></h2>
 <p>To write comments you can use <code>#</code> to comment a line:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  # This is a comment
-  UNIVERSE VANILLA
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  # This is a comment
+</span>  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h2 id="setting-attributes-for-all-routes">Setting Attributes for All Routes<a class="headerlink" href="#setting-attributes-for-all-routes" title="Permanent link">&para;</a></h2>
 <h3 id="classad-transform">ClassAd transform<a class="headerlink" href="#classad-transform" title="Permanent link">&para;</a></h3>
 <p>With the ClassAd transform syntax, any function from the <a href="#editing-attributes">Editing Attributes section</a> can be
@@ -1412,56 +1397,44 @@ For an example on how incoming jobs interact with filtering in job routes, consu
 <p>To filter jobs based on their pilot job queue attribute, your routes will need a requirements expression using the
 incoming job's <code>queue</code> attribute.
 The following entry routes jobs to HTCondor if the incoming job (specified by <code>TARGET</code>) is an <code>analy</code> (Analysis) glidein:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  REQUIREMENTS queue == &quot;prod&quot;
-  UNIVERSE VANILLA
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  REQUIREMENTS queue == &quot;prod&quot;
+</span>  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="mapped-user">Mapped user<a class="headerlink" href="#mapped-user" title="Permanent link">&para;</a></h3>
 <p>To filter jobs based on what local account the incoming job was mapped to, your routes will need a requirements
 expression using the incoming job's <code>Owner</code> attribute.
 The following entry routes jobs to the HTCondor batch system if the mapped user is <code>usatlas2</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  REQUIREMENTS Owner == &quot;usatlas2&quot;
-  UNIVERSE VANILLA
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  REQUIREMENTS Owner == &quot;usatlas2&quot;
+</span>  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <p>Alternatively, you can match based on regular expression.
 The following entry routes jobs to the HTCondor batch system if the mapped user begins with <code>usatlas</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  REQUIREMENTS regexp(&quot;^usatlas&quot;, Owner)
-  UNIVERSE VANILLA
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  REQUIREMENTS regexp(&quot;^usatlas&quot;, Owner)
+</span>  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="voms-attribute">VOMS attribute<a class="headerlink" href="#voms-attribute" title="Permanent link">&para;</a></h3>
 <p>To filter jobs based on the subject of the job's proxy, your routes will need a requirements expression using the
 incoming job's <code>x509UserProxyFirstFQAN</code> attribute.
 The following entry routes jobs to the HTCondor batch system if the proxy subject contains <code>/cms/Role=Pilot</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  REQUIREMENTS regexp(&quot;\/cms\/Role\=pilot&quot;, x509UserProxyFirstFQAN)
-  UNIVERSE VANILLA
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  REQUIREMENTS regexp(&quot;\/cms\/Role\=pilot&quot;, x509UserProxyFirstFQAN)
+</span>  UNIVERSE VANILLA
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h2 id="setting-a-default">Setting a Default…<a class="headerlink" href="#setting-a-default" title="Permanent link">&para;</a></h2>
 <p>This section outlines how to set default job limits, memory, cores, and maximum walltime.
 For an example on how users can override these defaults, consult
@@ -1478,59 +1451,47 @@ transform.</p>
 </div>
 <h3 id="maximum-memory">Maximum memory<a class="headerlink" href="#maximum-memory" title="Permanent link">&para;</a></h3>
 <p>To set a default maximum memory (in MB) for routed jobs, set the variable <code>default_maxMemory</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # Set the requested memory to 1 GB
-  default_maxMemory = 1000
-@jrt
+<span class="hll">  default_maxMemory = 1000
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="number-of-cores-to-request">Number of cores to request<a class="headerlink" href="#number-of-cores-to-request" title="Permanent link">&para;</a></h3>
 <p>To set a default number of cores for routed jobs, set the variable <code>default_xcount</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # Set the requested memory to 1 GB
-  default_xcount = 8
-@jrt
+<span class="hll">  default_xcount = 8
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="number-of-gpus-to-request">Number of gpus to request<a class="headerlink" href="#number-of-gpus-to-request" title="Permanent link">&para;</a></h3>
 <p>To set a default number of GPUs for routed jobs, set the job ClassAd attribute <code>RequestGPUs</code> in the route
 transform:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # If the job does not already have a RequestGPUs value set it to 1
-  DEFAULT RequestGPUs = 1
-@jrt
+<span class="hll">  DEFAULT RequestGPUs = 1
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <p>The <code>DEFAULT</code> keyword works for any job attribute other than those mentioned above that require the use of
 alternative names for defaulting in the CE.</p>
 <h3 id="maximum-walltime">Maximum walltime<a class="headerlink" href="#maximum-walltime" title="Permanent link">&para;</a></h3>
 <p>To set a default number of cores for routed jobs, set the variable <code>default_maxWallTime</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
   # Set the max walltime to 1 hr
-  default_maxWallTime = 60
-@jrt
+<span class="hll">  default_maxWallTime = 60
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h2 id="setting-job-environments">Setting Job Environments<a class="headerlink" href="#setting-job-environments" title="Permanent link">&para;</a></h2>
 <p>HTCondor-CE offers two different methods for setting environment variables of routed jobs:</p>
 <ul>
@@ -1548,57 +1509,51 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content"></div>
+</div>
 <div class="highlight"><pre><span></span><code>CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu&quot;
 </code></pre></div>
+<div class="tabbed-set" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">Resulting Environment</label><div class="tabbed-content"></div>
 </div>
-<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
-</div>
-</div>
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
 <a href="https://htcondor.readthedocs.io/en/lts/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">HTCondor-CE Configuration</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">HTCondor-CE Configuration</label><div class="tabbed-content"></div>
+</div>
 <div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
 CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)&quot;
 </code></pre></div>
+<div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">Resulting Environment</label><div class="tabbed-content"></div>
 </div>
-<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
-</div>
-</div>
 <p>To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 <code>default_pilot_job_env</code> to your job route configuration:
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3 4 5&quot; 
-JOB_ROUTER_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_Condor_Pool @=jrt
   UNIVERSE VANILLA
-  default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
-                                 &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
-                                 &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO))
-@jrt
+<span class="hll">  default_pilot_job_env = strcat(&quot;WN_SCRATCH_DIR=/nobackup&quot;,
+</span><span class="hll">                                 &quot; PILOT_COLLECTOR=&quot;, JOB_COLLECTOR,
+</span><span class="hll">                                 &quot; ACCOUNTING_GROUP=&quot;, toLower(JOB_VO))
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
-<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Incoming Job Attributes</label><div class="tabbed-content">
+<div class="tabbed-set" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><label for="__tabbed_5_1">Incoming Job Attributes</label><div class="tabbed-content"></div>
+</div>
 <div class="highlight"><pre><span></span><code>JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
 JOB_VO = &quot;GLOW&quot;
 </code></pre></div>
+<div class="tabbed-set" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">Resulting Environment</label><div class="tabbed-content"></div>
 </div>
-<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">PILOT_COLLECTOR</span><span class="o">=</span>collector.wisc.edu
 <span class="nv">ACCOUNTING_GROUP</span><span class="o">=</span>glow
 </code></pre></div>
-</div>
-</div>
 <div class="admonition tip">
 <p class="admonition-title">Debugging job route environment expressions</p>
 <p>While constructing <code>default_pilot_job_env</code> or <code>set_default_pilot_job_env</code> expressions, try wrapping your expression
@@ -1632,55 +1587,43 @@ job:</p>
 <p>To copy the value of an attribute of the incoming job to an attribute of the routed job, use <code>COPY</code>:
 The following route copies the <code>Environment</code> attribute of the incoming job and sets the attribute <code>Original_Environment</code>
 on the routed job to the same value:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-  COPY Environment Original_Environment
-@jrt
+<span class="hll">  COPY Environment Original_Environment
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="removing-attributes">Removing attributes<a class="headerlink" href="#removing-attributes" title="Permanent link">&para;</a></h3>
 <p>To remove an attribute of the incoming job from the routed job, use <code>DELETE</code>.
 The following route removes the <code>Environment</code> attribute from the routed job:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-  DELETE Environment
-@jrt
+<span class="hll">  DELETE Environment
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="setting-attributes">Setting attributes<a class="headerlink" href="#setting-attributes" title="Permanent link">&para;</a></h3>
 <p>To set an attribute on the routed job, use <code>SET</code>.
 The following route sets the Job's <code>Rank</code> attribute to 5:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-  SET Rank = 5
-@jrt
+<span class="hll">  SET Rank = 5
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="setting-attributes-with-classad-expressions">Setting attributes with ClassAd expressions<a class="headerlink" href="#setting-attributes-with-classad-expressions" title="Permanent link">&para;</a></h3>
 <p>To set an attribute to a ClassAd expression to be evaluated, use <code>EVALSET</code>.
 The following route sets the <code>Experiment</code> attribute to <code>atlas.osguser</code> if the Owner of the incoming job is <code>osguser</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
   UNIVERSE VANILLA
-  EVALSET Experiment = strcat(&quot;atlas.&quot;, Owner)
-@jrt
+<span class="hll">  EVALSET Experiment = strcat(&quot;atlas.&quot;, Owner)
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h2 id="limiting-the-number-of-jobs">Limiting the Number of Jobs<a class="headerlink" href="#limiting-the-number-of-jobs" title="Permanent link">&para;</a></h2>
 <p>This section outlines how to limit the number of total or idle jobs in a specific route
 (i.e., if this limit is reached, jobs will no longer be placed in this route).</p>
@@ -1693,45 +1636,36 @@ HTCondor manages fair share on its own via
 <h3 id="total-jobs">Total jobs<a class="headerlink" href="#total-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of jobs for a specific route,
 set the <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-6">MaxJobs</a> attribute:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   UNIVERSE VANILLA
-  MaxJobs = 100
-@jrt
+<span class="hll">  MaxJobs = 100
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h3 id="idle-jobs">Idle jobs<a class="headerlink" href="#idle-jobs" title="Permanent link">&para;</a></h3>
 <p>To set a limit on the number of idle jobs for a specific route,
 set the <a href="https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-7">MaxIdleJobs</a> attribute:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Poole @=jrt
   UNIVERSE VANILLA
-  MaxIdleJobs = 100
-@jrt
+<span class="hll">  MaxIdleJobs = 100
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <h2 id="debugging-routes">Debugging Routes<a class="headerlink" href="#debugging-routes" title="Permanent link">&para;</a></h2>
 <p>To help debug expressions in your routes, you can use the <code>debug()</code> function.
 First, set the debug mode for the JobRouter by editing a file in <code>/etc/condor-ce/config.d/</code> to read</p>
 <div class="highlight"><pre><span></span><code>JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
 </code></pre></div>
 <p>Then wrap the problematic attribute in <code>debug()</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;2&quot;
-JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-  EVALSET Experiment = debug(strcat(&quot;atlas&quot;, Name))
-
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+<span class="hll">  EVALSET Experiment = debug(strcat(&quot;atlas&quot;, Name))
+</span>
 @jrt
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-```
 </code></pre></div>
-
 <p>You will find the debugging output in <code>/var/log/condor-ce/JobRouterLog</code>.</p>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
 <p>If you have any questions or issues with configuring job routes, please <a href="../../..#contact-us">contact us</a> for assistance.</p>

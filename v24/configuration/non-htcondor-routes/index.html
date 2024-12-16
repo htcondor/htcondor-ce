@@ -1073,16 +1073,13 @@
 <p>This page contains information about job routes that can be used if you are running a non-HTCondor pool at your site.</p>
 <h2 id="setting-a-default-batch-queue">Setting a default batch queue<a class="headerlink" href="#setting-a-default-batch-queue" title="Permanent link">&para;</a></h2>
 <p>To set a default queue for routed jobs, set the variable <code>default_queue</code>:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;3&quot;
-JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
   GridResource = &quot;batch slurm&quot;
-  default_queue = osg_queue
-@jrt
+<span class="hll">  default_queue = osg_queue
+</span>@jrt
 
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-```
 </code></pre></div>
-
 <h2 id="setting-batch-system-directives">Setting batch system directives<a class="headerlink" href="#setting-batch-system-directives" title="Permanent link">&para;</a></h2>
 <p>To write batch system directives that are not supported in the route examples above, you will need to edit the job
 submit script for your local batch system in <code>/etc/blahp/</code>
@@ -1091,28 +1088,22 @@ This file is sourced during submit time and anything printed to stdout is append
 submit script.
 ClassAd attributes can be passed from the routed job to the local submit attributes script via
 <code>default_CERequirements</code> attribute, which takes a comma-separated list of other attributes:</p>
-<div class="codehilite"><pre><span></span><code>```
-SET foo = &quot;X&quot;
+<div class="highlight"><pre><span></span><code>SET foo = &quot;X&quot;
 SET bar = &quot;Y&quot;
 SET default_CERequirements = &quot;foo,bar&quot;
-```
 </code></pre></div>
-
 <p>This sets <code>foo</code> to the string <code>X</code> and <code>bar</code> to the string <code>Y</code> in the environment of the local submit attributes script.</p>
 <p>The following example sets the maximum walltime to 1 hour and the accounting group to the <code>x509UserProxyFirstFQAN</code>
 attribute of the job submitted to a PBS batch system:</p>
-<div class="codehilite"><pre><span></span><code>```hl_lines=&quot;4 5 6&quot;
-JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
+<div class="highlight"><pre><span></span><code>JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
      GridResource = &quot;batch slurm&quot;
      SET Walltime = 3600
-     SET AccountingGroup = x509UserProxyFirstFQAN
-     SET default_CERequirements = &quot;WallTime,AccountingGroup&quot;
-@jrt
-
+<span class="hll">     SET AccountingGroup = x509UserProxyFirstFQAN
+</span><span class="hll">     SET default_CERequirements = &quot;WallTime,AccountingGroup&quot;
+</span><span class="hll">@jrt
+</span>
 JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-```
 </code></pre></div>
-
 <p>With <code>/etc/blahp/pbs_local_submit_attributes.sh</code> containing:</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
 echo &quot;#PBS -l walltime=$Walltime&quot;
