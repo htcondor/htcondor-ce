@@ -8,14 +8,14 @@ Setting a default batch queue
 
 To set a default queue for routed jobs, set the variable `default_queue`:
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
-      GridResource = "batch slurm"
-      default_queue = osg_queue
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
+  GridResource = "batch slurm"
+  default_queue = osg_queue
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-    ```
+JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
+```
 
 Setting batch system directives
 -------------------------------
@@ -28,27 +28,27 @@ submit script.
 ClassAd attributes can be passed from the routed job to the local submit attributes script via
 `default_CERequirements` attribute, which takes a comma-separated list of other attributes:
 
-    ```
-    SET foo = "X"
-    SET bar = "Y"
-    SET default_CERequirements = "foo,bar"
-    ```
+```
+SET foo = "X"
+SET bar = "Y"
+SET default_CERequirements = "foo,bar"
+```
 
 This sets `foo` to the string `X` and `bar` to the string `Y` in the environment of the local submit attributes script.
 
 The following example sets the maximum walltime to 1 hour and the accounting group to the `x509UserProxyFirstFQAN`
 attribute of the job submitted to a PBS batch system:
 
-    ```hl_lines="4 5 6"
-    JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
-         GridResource = "batch slurm"
-         SET Walltime = 3600
-         SET AccountingGroup = x509UserProxyFirstFQAN
-         SET default_CERequirements = "WallTime,AccountingGroup"
-    @jrt
+```hl_lines="4 5 6"
+JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
+     GridResource = "batch slurm"
+     SET Walltime = 3600
+     SET AccountingGroup = x509UserProxyFirstFQAN
+     SET default_CERequirements = "WallTime,AccountingGroup"
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-    ```
+JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
+```
 
 With `/etc/blahp/pbs_local_submit_attributes.sh` containing:
 
