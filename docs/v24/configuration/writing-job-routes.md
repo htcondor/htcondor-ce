@@ -8,9 +8,9 @@ lexicographic order with subsequent variables overriding earlier ones.
 
 Each example is displayed in code blocks:
 
-    ```
-    This is an example for the ClassAd transform syntax
-    ```
+```
+This is an example for the ClassAd transform syntax
+```
 
 Required Fields
 ---------------
@@ -25,13 +25,13 @@ Default routes can be found in `/usr/share/condor-ce/config.d/02-ce-<batch syste
 To identify routes, you will need to assign a name to the route, in the name of the configuration macro
 (i.e., `JOB_ROUTER_ROUTE_<name>`):
 
-    ```hl_lines="1"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="1"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 !!! warning "Naming restrictions"
     -   Route names should only contain alphanumeric and `_` characters.
@@ -54,17 +54,17 @@ For all other batch systems, the `GridResource` attribute needs to be set to `"b
 (where `<batch system>` can be one of `pbs`, `slurm`, `lsf`, or `sge`).
 
 
-    ```hl_lines="2 6 7"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="2 6 7"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_My_Slurm @=jrt
-      GridResource = "batch slurm"
-    @jrt
+JOB_ROUTER_ROUTE_My_Slurm @=jrt
+  GridResource = "batch slurm"
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool My_Slurm
+```
 
 Writing Multiple Routes
 -----------------------
@@ -77,34 +77,34 @@ statements compared to incoming jobs.
 The following routes takes incoming jobs that have a `queue` attribute set to `"prod"` and sets `IsProduction = True`.
 All other jobs will be routed with `IsProduction = False`.
 
-    ```hl_lines="1 7 12"
-    JOB_ROUTER_ROUTE_Production_Jobs @=jrt
-      REQUIREMENTS queue == "prod"
-      UNIVERSE VANILLA
-      SET IsProduction = True
-    @jrt
+```hl_lines="1 7 12"
+JOB_ROUTER_ROUTE_Production_Jobs @=jrt
+  REQUIREMENTS queue == "prod"
+  UNIVERSE VANILLA
+  SET IsProduction = True
+@jrt
 
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      SET IsProduction = False
-    @jrt
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  SET IsProduction = False
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Production_Jobs Condor_Pool
+```
 
 Writing Comments
 ----------------
 
 To write comments you can use `#` to comment a line:
 
-    ```hl_lines="2"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      # This is a comment
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="2"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  # This is a comment
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 Setting Attributes for All Routes
 ---------------------------------
@@ -155,14 +155,14 @@ To filter jobs based on their pilot job queue attribute, your routes will need a
 incoming job's `queue` attribute.
 The following entry routes jobs to HTCondor if the incoming job (specified by `TARGET`) is an `analy` (Analysis) glidein:
 
-    ```hl_lines="2"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS queue == "prod"
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="2"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS queue == "prod"
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Mapped user ###
 
@@ -170,26 +170,26 @@ To filter jobs based on what local account the incoming job was mapped to, your 
 expression using the incoming job's `Owner` attribute.
 The following entry routes jobs to the HTCondor batch system if the mapped user is `usatlas2`:
 
-    ```hl_lines="2"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS Owner == "usatlas2"
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="2"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS Owner == "usatlas2"
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 Alternatively, you can match based on regular expression.
 The following entry routes jobs to the HTCondor batch system if the mapped user begins with `usatlas`:
 
-    ```hl_lines="2"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS regexp("^usatlas", Owner)
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="2"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS regexp("^usatlas", Owner)
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### VOMS attribute ###
 
@@ -198,14 +198,14 @@ incoming job's `x509UserProxyFirstFQAN` attribute.
 The following entry routes jobs to the HTCondor batch system if the proxy subject contains `/cms/Role=Pilot`:
 
 
-    ```hl_lines="2"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      REQUIREMENTS regexp("\/cms\/Role\=pilot", x509UserProxyFirstFQAN)
-      UNIVERSE VANILLA
-    @jrt
+```hl_lines="2"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  REQUIREMENTS regexp("\/cms\/Role\=pilot", x509UserProxyFirstFQAN)
+  UNIVERSE VANILLA
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 Setting a Default…
 ------------------
@@ -231,45 +231,45 @@ CONDORCE_MAX_JOBS = 10000
 
 To set a default maximum memory (in MB) for routed jobs, set the variable `default_maxMemory`:
 
-    ```hl_lines="4"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      # Set the requested memory to 1 GB
-      default_maxMemory = 1000
-    @jrt
+```hl_lines="4"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  # Set the requested memory to 1 GB
+  default_maxMemory = 1000
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Number of cores to request ###
 
 To set a default number of cores for routed jobs, set the variable `default_xcount`:
 
 
-    ```hl_lines="4"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      # Set the requested memory to 1 GB
-      default_xcount = 8
-    @jrt
+```hl_lines="4"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  # Set the requested memory to 1 GB
+  default_xcount = 8
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Number of gpus to request ###
 
 To set a default number of GPUs for routed jobs, set the job ClassAd attribute `RequestGPUs` in the route
 transform:
 
-    ```hl_lines="4"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      # If the job does not already have a RequestGPUs value set it to 1
-      DEFAULT RequestGPUs = 1
-    @jrt
+```hl_lines="4"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  # If the job does not already have a RequestGPUs value set it to 1
+  DEFAULT RequestGPUs = 1
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 The `DEFAULT` keyword works for any job attribute other than those mentioned above that require the use of
 alternative names for defaulting in the CE.
@@ -278,15 +278,15 @@ alternative names for defaulting in the CE.
 
 To set a default number of cores for routed jobs, set the variable `default_maxWallTime`:
 
-    ```hl_lines="4"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      # Set the max walltime to 1 hr
-      default_maxWallTime = 60
-    @jrt
+```hl_lines="4"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  # Set the max walltime to 1 hr
+  default_maxWallTime = 60
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 Setting Job Environments
 ------------------------
@@ -309,16 +309,16 @@ For example, the following HTCondor-CE configuration would result in the followi
 
 === "HTCondor-CE Configuration"
 
-    ```
-    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
-    ```
+```
+CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
+```
 
 === "Resulting Environment"
 
-    ```bash
-    WN_SCRATCH_DIR=/nobackup/
-    http_proxy=proxy.wisc.edu
-    ```
+```bash
+WN_SCRATCH_DIR=/nobackup/
+http_proxy=proxy.wisc.edu
+```
 
 Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
 [$() macro expansion](https://htcondor.readthedocs.io/en/lts/admin-manual/introduction-to-configuration.html#configuration-file-macros).
@@ -326,47 +326,47 @@ For example, the following HTCondor-CE configuration would result in the followi
 
 === "HTCondor-CE Configuration"
 
-    ```
-    LOCAL_PROXY = proxy.wisc.edu
-    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
-    ```
+```
+LOCAL_PROXY = proxy.wisc.edu
+CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
+```
 
 === "Resulting Environment"
 
-    ```bash
-    WN_SCRATCH_DIR=/nobackup/
-    http_proxy=proxy.wisc.edu
-    ```
+```bash
+WN_SCRATCH_DIR=/nobackup/
+http_proxy=proxy.wisc.edu
+```
 
 To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 `default_pilot_job_env` to your job route configuration:
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:
 
-    ```hl_lines="3 4 5" 
-    JOB_ROUTER_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
-                                     " PILOT_COLLECTOR=", JOB_COLLECTOR,
-                                     " ACCOUNTING_GROUP=", toLower(JOB_VO))
-    @jrt
+```hl_lines="3 4 5" 
+JOB_ROUTER_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  default_pilot_job_env = strcat("WN_SCRATCH_DIR=/nobackup",
+                                 " PILOT_COLLECTOR=", JOB_COLLECTOR,
+                                 " ACCOUNTING_GROUP=", toLower(JOB_VO))
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 === "Incoming Job Attributes"
 
-    ```
-    JOB_COLLECTOR = "collector.wisc.edu"
-    JOB_VO = "GLOW"
-    ```
+```
+JOB_COLLECTOR = "collector.wisc.edu"
+JOB_VO = "GLOW"
+```
 
 === "Resulting Environment"
 
-    ```bash 
-    WN_SCRATCH_DIR=/nobackup/
-    PILOT_COLLECTOR=collector.wisc.edu
-    ACCOUNTING_GROUP=glow
-    ```
+```bash 
+WN_SCRATCH_DIR=/nobackup/
+PILOT_COLLECTOR=collector.wisc.edu
+ACCOUNTING_GROUP=glow
+```
 
 !!!tip "Debugging job route environment expressions"
     While constructing `default_pilot_job_env` or `set_default_pilot_job_env` expressions, try wrapping your expression
@@ -405,14 +405,14 @@ The following route copies the `Environment` attribute of the incoming job and s
 on the routed job to the same value:
 
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      COPY Environment Original_Environment
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  COPY Environment Original_Environment
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Removing attributes
 
@@ -420,42 +420,42 @@ To remove an attribute of the incoming job from the routed job, use `DELETE`.
 The following route removes the `Environment` attribute from the routed job:
 
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      DELETE Environment
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  DELETE Environment
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Setting attributes
 
 To set an attribute on the routed job, use `SET`.
 The following route sets the Job's `Rank` attribute to 5:
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      SET Rank = 5
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  SET Rank = 5
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Setting attributes with ClassAd expressions
 
 To set an attribute to a ClassAd expression to be evaluated, use `EVALSET`.
 The following route sets the `Experiment` attribute to `atlas.osguser` if the Owner of the incoming job is `osguser`:
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      UNIVERSE VANILLA
-      EVALSET Experiment = strcat("atlas.", Owner)
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  UNIVERSE VANILLA
+  EVALSET Experiment = strcat("atlas.", Owner)
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 Limiting the Number of Jobs
 ---------------------------
@@ -473,28 +473,28 @@ This section outlines how to limit the number of total or idle jobs in a specifi
 To set a limit on the number of jobs for a specific route,
 set the [MaxJobs](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-6) attribute:
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Condor_Poole @=jrt
-      UNIVERSE VANILLA
-      MaxJobs = 100
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+  UNIVERSE VANILLA
+  MaxJobs = 100
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 ### Idle jobs
 
 To set a limit on the number of idle jobs for a specific route,
 set the [MaxIdleJobs](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#index-7) attribute:
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Condor_Poole @=jrt
-      UNIVERSE VANILLA
-      MaxIdleJobs = 100
-    @jrt
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Condor_Poole @=jrt
+  UNIVERSE VANILLA
+  MaxIdleJobs = 100
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 Debugging Routes
 ----------------
@@ -508,14 +508,14 @@ JOB_ROUTER_DEBUG = D_ALWAYS:2 D_CAT
 
 Then wrap the problematic attribute in `debug()`:
 
-    ```hl_lines="2"
-    JOB_ROUTER_ROUTE_Condor_Pool @=jrt
-      EVALSET Experiment = debug(strcat("atlas", Name))
+```hl_lines="2"
+JOB_ROUTER_ROUTE_Condor_Pool @=jrt
+  EVALSET Experiment = debug(strcat("atlas", Name))
 
-    @jrt
+@jrt
 
-    JOB_ROUTER_ROUTE_NAMES = Condor_Pool
-    ```
+JOB_ROUTER_ROUTE_NAMES = Condor_Pool
+```
 
 You will find the debugging output in `/var/log/condor-ce/JobRouterLog`.
 
