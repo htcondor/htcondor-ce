@@ -12,10 +12,10 @@ jobs:
           - almalinux:9
         target_env:
           - uw_build
-          - osg-23
-          - osg-23-testing
-          - osg-23-upcoming
-          - osg-23-upcoming-testing
+          - osg-24
+          - osg-24-testing
+          - osg-24-upcoming
+          - osg-24-upcoming-testing
     steps:
       - uses: actions/checkout@v3
         with:
