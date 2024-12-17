@@ -70,8 +70,6 @@ if [[ $BUILD_ENV == uw_build ]]; then
     # The 'minicondor' package now provides that configuration
     extra_packages='minicondor'
 fi
-# ensure that our test users can generate proxies
-yum install -y globus-proxy-utils $extra_packages
 
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
