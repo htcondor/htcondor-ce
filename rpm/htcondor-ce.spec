@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 23.0.18
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 0.rc2%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -542,8 +542,9 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Fri Nov 22 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.18-0.rc1
+* Tue Dec 17 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.18-0.rc2
 - Does not pass WholeNode request expressions to non-HTCondor batch systems
+- Fix certificate subject parsing in condor_ce_host_network_check
 
 * Wed Oct 30 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.17-1
 - Lock down HTCondor-CE IDTOKEN security
