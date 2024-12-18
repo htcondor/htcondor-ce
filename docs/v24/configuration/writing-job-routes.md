@@ -309,16 +309,16 @@ For example, the following HTCondor-CE configuration would result in the followi
 
 === "HTCondor-CE Configuration"
 
-```
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
-```
+    ```
+    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu"
+    ```
 
 === "Resulting Environment"
 
-```bash
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-```
+    ```bash
+    WN_SCRATCH_DIR=/nobackup/
+    http_proxy=proxy.wisc.edu
+    ```
 
 Contents of `CONDORCE_PILOT_JOB_ENV` can reference other HTCondor-CE configuration using HTCondor's configuration
 [$() macro expansion](https://htcondor.readthedocs.io/en/lts/admin-manual/introduction-to-configuration.html#configuration-file-macros).
@@ -326,17 +326,17 @@ For example, the following HTCondor-CE configuration would result in the followi
 
 === "HTCondor-CE Configuration"
 
-```
-LOCAL_PROXY = proxy.wisc.edu
-CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
-```
+    ```
+    LOCAL_PROXY = proxy.wisc.edu
+    CONDORCE_PILOT_JOB_ENV = "WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)"
+    ```
 
 === "Resulting Environment"
 
-```bash
-WN_SCRATCH_DIR=/nobackup/
-http_proxy=proxy.wisc.edu
-```
+    ```bash
+    WN_SCRATCH_DIR=/nobackup/
+    http_proxy=proxy.wisc.edu
+    ```
 
 To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 `default_pilot_job_env` to your job route configuration:
@@ -355,18 +355,18 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 
 === "Incoming Job Attributes"
 
-```
-JOB_COLLECTOR = "collector.wisc.edu"
-JOB_VO = "GLOW"
-```
+    ```
+    JOB_COLLECTOR = "collector.wisc.edu"
+    JOB_VO = "GLOW"
+    ```
 
 === "Resulting Environment"
 
-```bash 
-WN_SCRATCH_DIR=/nobackup/
-PILOT_COLLECTOR=collector.wisc.edu
-ACCOUNTING_GROUP=glow
-```
+    ```bash 
+    WN_SCRATCH_DIR=/nobackup/
+    PILOT_COLLECTOR=collector.wisc.edu
+    ACCOUNTING_GROUP=glow
+    ```
 
 !!!tip "Debugging job route environment expressions"
     While constructing `default_pilot_job_env` or `set_default_pilot_job_env` expressions, try wrapping your expression
