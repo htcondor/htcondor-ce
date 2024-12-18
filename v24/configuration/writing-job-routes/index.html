@@ -1509,28 +1509,30 @@ JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 <a href="https://htcondor.readthedocs.io/en/lts/man-pages/condor_submit.html#index-14">environment command</a>, which is
 described by environment variable/value pairs separated by whitespace and enclosed in double-quotes.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content"></div>
-</div>
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=proxy.wisc.edu&quot;
 </code></pre></div>
-<div class="tabbed-set" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">Resulting Environment</label><div class="tabbed-content"></div>
 </div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
+</div>
+</div>
 <p>Contents of <code>CONDORCE_PILOT_JOB_ENV</code> can reference other HTCondor-CE configuration using HTCondor's configuration
 <a href="https://htcondor.readthedocs.io/en/lts/admin-manual/introduction-to-configuration.html#configuration-file-macros">$() macro expansion</a>.
 For example, the following HTCondor-CE configuration would result in the following environment for all routed jobs:</p>
-<div class="tabbed-set" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">HTCondor-CE Configuration</label><div class="tabbed-content"></div>
-</div>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">HTCondor-CE Configuration</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>LOCAL_PROXY = proxy.wisc.edu
 CONDORCE_PILOT_JOB_ENV = &quot;WN_SCRATCH_DIR=/nobackup/ http_proxy=$(LOCAL_PROXY)&quot;
 </code></pre></div>
-<div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">Resulting Environment</label><div class="tabbed-content"></div>
 </div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">http_proxy</span><span class="o">=</span>proxy.wisc.edu
 </code></pre></div>
+</div>
+</div>
 <p>To set environment variables per job route, based on incoming job attributes, or using ClassAd functions, add
 <code>default_pilot_job_env</code> to your job route configuration:
 For example, the following HTCondor-CE configuration would result in this environment for a job with these attributes:</p>
@@ -1543,17 +1545,18 @@ For example, the following HTCondor-CE configuration would result in this enviro
 
 JOB_ROUTER_ROUTE_NAMES = Condor_Pool
 </code></pre></div>
-<div class="tabbed-set" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><label for="__tabbed_5_1">Incoming Job Attributes</label><div class="tabbed-content"></div>
-</div>
+<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Incoming Job Attributes</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code>JOB_COLLECTOR = &quot;collector.wisc.edu&quot;
 JOB_VO = &quot;GLOW&quot;
 </code></pre></div>
-<div class="tabbed-set" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">Resulting Environment</label><div class="tabbed-content"></div>
 </div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Resulting Environment</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="nv">WN_SCRATCH_DIR</span><span class="o">=</span>/nobackup/
 <span class="nv">PILOT_COLLECTOR</span><span class="o">=</span>collector.wisc.edu
 <span class="nv">ACCOUNTING_GROUP</span><span class="o">=</span>glow
 </code></pre></div>
+</div>
+</div>
 <div class="admonition tip">
 <p class="admonition-title">Debugging job route environment expressions</p>
 <p>While constructing <code>default_pilot_job_env</code> or <code>set_default_pilot_job_env</code> expressions, try wrapping your expression
