@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 24.2.0
-Release: 0.rc1%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -542,6 +542,19 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Wed Dec 18 2024 Tim Theisen <tim@cs.wisc.edu> - 24.2.0-1
+- Does not pass WholeNode request expressions to non-HTCondor batch systems
+
+* Wed Dec 18 2024 Tim Theisen <tim@cs.wisc.edu> - 24.0.2-1
+- Does not pass WholeNode request expressions to non-HTCondor batch systems
+
+* Wed Dec 18 2024 Tim Theisen <tim@cs.wisc.edu> - 23.10.18-1
+- Does not pass WholeNode request expressions to non-HTCondor batch systems
+
+* Wed Dec 18 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.18-1
+- Does not pass WholeNode request expressions to non-HTCondor batch systems
+- Fix certificate subject parsing in condor_ce_host_network_check
+
 * Thu Oct 31 2024 Tim Theisen <tim@cs.wisc.edu> - 24.1.2-1
 - Initial HTCondor-CE 24.1.2 release
 
