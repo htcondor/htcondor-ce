@@ -3,7 +3,7 @@
 
 Name: htcondor-ce
 Version: 23.0.18
-Release: 0.rc2%{?gitrev:.%{gitrev}git}%{?dist}
+Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
 
@@ -542,7 +542,7 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
-* Tue Dec 17 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.18-0.rc2
+* Wed Dec 18 2024 Tim Theisen <tim@cs.wisc.edu> - 23.0.18-1
 - Does not pass WholeNode request expressions to non-HTCondor batch systems
 - Fix certificate subject parsing in condor_ce_host_network_check
 
