@@ -22,7 +22,7 @@ Updating to HTCondor-CE 24
 
 !!! tip "Finding relevant configuration changes"
     When updating HTCondor-CE RPMs, `.rpmnew` and `.rpmsave` files may be created containing new defaults that you
-    should merge or new defaults that have replaced your customzations, respectively.
+    should merge or new defaults that have replaced your customization, respectively.
     To find these files for HTCondor-CE, run the following command:
 
         :::console
@@ -44,6 +44,18 @@ HTCondor-CE 24 Version History
 
 This section contains release notes for each version of HTCondor-CE 24.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
+
+### **December 19, 2024:** 24.2.0 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v24.2.0) includes the following new features:
+
+-   Does not pass WholeNode request expressions to non-HTCondor batch systems
+
+### **December 19, 2024:** 24.0.2 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v24.0.2) includes the following new features:
+
+-   Does not pass WholeNode request expressions to non-HTCondor batch systems
 
 ### **October 31, 2024:** 24.1.1 ###
 
