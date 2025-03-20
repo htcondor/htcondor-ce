@@ -40,8 +40,8 @@ def _newstat():
     return {"Running": 0, "Idle": 0, "Held": 0, "Jobs": 0}
 
 def process_one_schedd(ad):
-    import htcondor
-    import classad
+    import htcondor2 as htcondor
+    import classad2 as classad
     ad = classad.ClassAd(ad)
     schedd = htcondor.Schedd(ad)
     status_map = {1: "Idle", 2: "Running", 5: "Held"}
@@ -52,7 +52,7 @@ def process_one_schedd(ad):
     gpu_job_count = collections.defaultdict(_newstat)
     print(f"Processing CE {ad.get('Name', 'Unknown')}.", file=sys.stderr)
     try:
-        for job in schedd.xquery("RoutedJob is UNDEFINED", ["JobStatus", 'x509UserProxyVOName',
+        for job in schedd.query("RoutedJob is UNDEFINED", ["JobStatus", 'x509UserProxyVOName',
                                           'x509UserProxyFirstFQAN', 'x509userproxysubject', 'RequestGPUs']):
             dn = job.get("x509userproxysubject") or 'Unknown'
             vo = job.get('x509UserProxyVOName') or 'Unknown'
@@ -81,7 +81,7 @@ def process_one_schedd(ad):
     except RuntimeError as e:
         print(f"Failure to query CE {ad.get('Name', 'Unknown')}: {e}", file=sys.stderr)
     return [total_results, vo_results, job_count,
-            gpu_total_results, gpu_job_count, ad]
+            gpu_total_results, gpu_job_count, str(ad)]
 
 
 def get_ads(spooldir):
@@ -119,7 +119,7 @@ def list_job_results_final(job_results):
 def main():
     opts = parse_opts()
 
-    htcondor = __import__("htcondor")
+    htcondor = __import__("htcondor2")
     # Check if the CEVIEW daemon is in the daemon list, exit if it is not
     if htcondor.param["DAEMON_LIST"].find("CEVIEW") == -1:
         print("CEVIEW is not in DAEMON_LIST, exiting...", file=sys.stderr)
@@ -136,8 +136,10 @@ def main():
 
     map_results = pool.map(process_one_schedd, ads, 1)
 
+    import classad2 as classad
+
     for (schedd_total_results, schedd_vo_results, schedd_job_results,
-         schedd_gpu_total_results, schedd_gpu_job_results, ad) in map_results:
+         schedd_gpu_total_results, schedd_gpu_job_results, ad_str) in map_results:
 
         dict_sum1(schedd_total_results,     total_results)
         dict_sum1(schedd_gpu_total_results, gpu_total_results)
@@ -145,6 +147,8 @@ def main():
         dict_sum2(schedd_vo_results,        vo_results)
         dict_sum2(schedd_job_results,       job_results)
         dict_sum2(schedd_gpu_job_results,   gpu_job_results)
+
+        ad = classad.ClassAd(ad_str)
 
         total_fname = rrd.check_rrd(environ, ad['Name'], "jobs")
         if os.isatty(2):

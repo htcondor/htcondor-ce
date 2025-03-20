@@ -10,7 +10,7 @@ from urllib import parse
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-import classad
+import classad2 as classad
 htcondor = None
 
 import htcondorce.rrd
@@ -171,7 +171,7 @@ def totals_ce_json(environ, start_response):
     objs = htcondorce.web_utils.get_schedd_objs(environ)
     results = {"Running": 0, "Idle": 0, "Held": 0, "UpdateDate": time.time()}
     for schedd, name in objs:
-        for job in schedd.xquery("true", ["JobStatus"]):
+        for job in schedd.query("true", ["JobStatus"]):
             if job.get("JobStatus") == 1:
                 results['Idle'] += 1
             elif job.get("JobStatus") == 2:
@@ -194,7 +194,7 @@ def pilots_ce_json(environ, start_response):
     objs = htcondorce.web_utils.get_schedd_objs(environ)
     job_count = {}
     for schedd, name in objs:
-        for job in schedd.xquery('true', ['x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'JobStatus', 'x509userproxysubject']):
+        for job in schedd.query('true', ['x509UserProxyVOName', 'x509UserProxyFirstFQAN', 'JobStatus', 'x509userproxysubject']):
             DN = job.get("x509userproxysubject", 'Unknown')
             VO = job.get('x509UserProxyVOName', 'Unknown')
             VOMS = job.get('x509UserProxyFirstFQAN', '').replace("/Capability=NULL", "").replace("/Role=NULL", "")
@@ -225,7 +225,7 @@ def vos_ce_json(environ, start_response):
     objs = htcondorce.web_utils.get_schedd_objs(environ)
     job_count = {}
     for schedd, name in objs:
-        for job in schedd.xquery('true', ['x509UserProxyVOName', 'JobStatus']):
+        for job in schedd.query('true', ['x509UserProxyVOName', 'JobStatus']):
             VO = job.get('x509UserProxyVOName', 'Unknown')
             job_key = VO
             if job_key not in job_count:

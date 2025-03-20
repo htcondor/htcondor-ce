@@ -5,7 +5,7 @@ import optparse
 
 if 'CONDOR_CONFIG' not in os.environ:
     os.environ['CONDOR_CONFIG'] = '/etc/condor-ce/condor_config'
-import htcondor
+import htcondor2 as htcondor
 
 import htcondorce.agis_compat
 
