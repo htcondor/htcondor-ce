@@ -5,10 +5,10 @@ import subprocess
 import sys
 
 try:
-    import classad
+    import classad2 as classad
 except ImportError:
     sys.exit("ERROR: Could not load HTCondor Python bindings. "
-             "Ensure the 'htcondor' and 'classad' are in PYTHONPATH")
+             "Ensure the 'classad2' module is in PYTHONPATH")
 
 jre    = classad.parseAds('JOB_ROUTER_ENTRIES')
 grs    = ( x["GridResource"] for x in jre )
