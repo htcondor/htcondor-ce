@@ -94,7 +94,7 @@ def get_schedd_statuses(environ={}):
         if 'Status' not in ad:
             results[ad['Name']] = 'Unknown'
         else:
-            results[ad['Name']] = ad['Status'].eval()
+            results[ad['Name']] = ad['Status'].eval(ad)
 
     return results
 
@@ -112,7 +112,7 @@ def ad_to_json(ad):
         if classad.ExprTree("%s =?= UNDEFINED" % key).eval(ad):
             result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
         else:
-            val = val_expr.eval()
+            val = val_expr.eval(ad)
             if isinstance(val, list) or isinstance(val, dict):
                 result[key] = {"_condor_type": "expr", "expr": val_expr.__repr__()}
             else:
