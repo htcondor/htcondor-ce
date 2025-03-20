@@ -23,7 +23,7 @@ class ResourceAd(classad.ClassAd):
 
         for cekey in ['OSG_Resource', 'OSG_ResourceGroup', 'OSG_BatchSystems']:
             self[cekey] = ce_ad[cekey]
-        self['grid_resource'] = ce_ad['grid_resource'].eval()
+        self['grid_resource'] = ce_ad['grid_resource'].eval(ce_ad)
 
         for catkey, catval in catalog_entry.items():
             if isinstance(catval, classad.ClassAd):

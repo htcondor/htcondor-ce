@@ -132,7 +132,7 @@ def ad_to_json(ad):
     for (key, val) in ad.items():
         # Evaluate Condor expressions
         if isinstance(val, classad.ExprTree):
-            val = val.eval()
+            val = val.eval(ad)
         result[key] = val
     # Unfortunately, classad.Value.Undefined is of type int,
     # and json.dumps() converts it to "2".
