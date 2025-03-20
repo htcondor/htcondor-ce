@@ -65,11 +65,11 @@ if [[ $BUILD_ENV == osg* ]]; then
     OSG_SERIES="${OSG_SERIES}-main"
     yum install -y https://repo.opensciencegrid.org/osg/${OSG_SERIES}/osg-${OSG_SERIES}-el${OS_VERSION}-release-latest.rpm
 else
-    # This is currently tracking the 10.x feature release.
+    # This is currently tracking the 24.x feature release.
     # For the stable release series the version number is required.
     # For the feature series, one can either use the version number (i.e. 9.1)
     # or 'current' which tracks the latest feature series
-    yum install -y https://research.cs.wisc.edu/htcondor/repo/10.x/htcondor-release-current.el${OS_VERSION}.noarch.rpm
+    yum install -y https://research.cs.wisc.edu/htcondor/repo/24.x/htcondor-release-current.el${OS_VERSION}.noarch.rpm
 fi
 
 # Prepare the RPM environment

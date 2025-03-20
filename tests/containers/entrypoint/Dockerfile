@@ -3,8 +3,8 @@ ARG BASE_IMAGE=rockylinux:8
 FROM $BASE_IMAGE
 
 # "ARG BASE_IMAGE" needs to be here again because the previous instance has gone out of scope.
-ARG BASE_IMAGE=rockylinux:8
-ARG CONDOR_SERIES=10.x
+ARG BASE_IMAGE=almalinux:9
+ARG CONDOR_SERIES=24.x
 
 RUN groupadd -o -g 9619 testuser && \
     useradd -m -u 9619 -g 9619 -s /bin/bash testuser
