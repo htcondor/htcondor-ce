@@ -136,7 +136,7 @@ def check_job_submit(job_info, schedd_ad, setup_creds=True):
     }
     for attr in job_info['attribute']:
         key, value = attr.split('=', 1)
-        sub.update({key: value})
+        sub[f"MY.{key.strip()}"] = classad.quote(value.strip())
 
     if setup_creds:
         sub.update(setup_user_creds())
