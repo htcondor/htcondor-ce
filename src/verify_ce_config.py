@@ -56,7 +56,7 @@ try:
     import htcondor2 as htcondor
 except ImportError:
     error("Could not load HTCondor Python bindings. "
-          + "Please ensure that the 'htcondor' and 'classad' are in your PYTHONPATH")
+          + "Please ensure that the 'htcondor2' and 'classad2' modules are in your PYTHONPATH")
 
 
 def main():
