@@ -4,11 +4,11 @@ on: [push, pull_request]
 
 jobs:
   python-files:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     outputs:
       filelist: ${{ steps.python-files.outputs.filelist }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - id: python-files
       run: |
         find . -type f -name '*.py' > py_files.txt
@@ -17,37 +17,37 @@ jobs:
 
 
   pylint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: [python-files]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.6
+        python-version: 3.13
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/pip-cache
-        key: pip-3.6-${{ github.sha }}
+        key: pip-3.13-${{ github.sha }}
         # allow cache hits from previous runs of the current branch,
         # parent branch, then upstream branches, in that order
         restore-keys: |
-          pip-3.6-
+          pip-3.13-
 
     - name: Install Requirements
       run: |
         python -m pip install --upgrade pip
-        pip --cache-dir ~/pip-cache install pylint htcondor flask jinja2 gunicorn
+        pip --cache-dir ~/pip-cache install pylint htcondor2 flask jinja2 gunicorn
 
     - name: Run Pylint
       env:
         PYTHON_FILES: ${{ needs.python-files.outputs.filelist }}
       # HACK: in newer versions of HTCondor (at least 8.9.11+),
-      # classad/htcondor modules are placed in python packages where
-      # straight 'import htcondor' works but this causes problems for
-      # pylint unless you use 'from htcondor import htcondor'. Older
+      # classad2/htcondor2 modules are placed in python packages where
+      # straight 'import htcondor2' works but this causes problems for
+      # pylint unless you use 'from htcondor2 import htcondor2'. Older
       # versions of HTCondor don't work with the latter so instead of
       # adding a version requirement to HTCondor-CE, we'll just ignore
       # these errors
@@ -56,29 +56,29 @@ jobs:
         pylint --errors-only --disable no-member $PYTHON_FILES
 
   flake8:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: [python-files]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.6
+        python-version: 3.13
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/pip-cache
-        key: pip-3.6-${{ github.sha }}
+        key: pip-3.13-${{ github.sha }}
         # allow cache hits from previous runs of the current branch,
         # parent branch, then upstream branches, in that order
         restore-keys: |
-          pip-3.6-
+          pip-3.13-
 
     - name: Install Requirements
       run: |
         python -m pip install --upgrade pip
-        pip --cache-dir ~/pip-cache install flake8 htcondor flask jinja2 gunicorn
+        pip --cache-dir ~/pip-cache install flake8 htcondor2 flask jinja2 gunicorn
 
     - name: Run flake8
       env:
