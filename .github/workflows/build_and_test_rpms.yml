@@ -3,21 +3,19 @@ on: [push, pull_request]
 
 jobs:
   build-rpms-and-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         platform:
-          - rockylinux:8
+          - almalinux:8
           - almalinux:9
         target_env:
           - uw_build
-          - osg-23
-          - osg-23-testing
-          - osg-23-upcoming
-          - osg-23-upcoming-testing
+          - osg-24
+          - osg-24-testing
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
