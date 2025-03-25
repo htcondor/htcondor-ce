@@ -31,7 +31,6 @@ def debug(msg):
 
 # Verify that the HTCondor Python bindings are in the PYTHONPATH
 try:
-    import classad2 as classad
     import htcondor2 as htcondor
 except ImportError:
     error("Could not load HTCondor Python bindings. "
@@ -44,7 +43,6 @@ def main():
     is_osg = htcondor.param.get('OSG_CONFIGURE_PRESENT', '').lower() in ('true', 'yes', '1')
 
     # Create dict whose values are lists of ads specified in the relevant JOB_ROUTER_* variables
-    parsed_jr_ads = defaultdict(list)
     jr_transforms = {key : value for key, value in htcondor.param.items() if key.startswith("JOB_ROUTER_ROUTE_")}
 
     # If JOB_ROUTER_ROUTE_<name> rules are defined, verify that these transforms exist
