@@ -47,7 +47,7 @@ def run_ping(collector_name, schedd_name):
     try:
         rc, stdout, _ = ce.run_command(args)
     except RuntimeError as exc:
-        raise ce.CondorRunException('Failed to ping %s due to the following error:\n%s' % (address, exc))
+        raise ce.CondorRunException('Failed to ping %s due to the following error:\n%s' % (schedd_name, exc))
 
     if G_DEBUG:
         print("*"*5, "condor_ping output", "*"*5)
@@ -149,7 +149,6 @@ def check_job_submit(job_info, schedd_ad, setup_creds=True):
     except RuntimeError as exc:
         raise ce.CondorRunException(f"Failed to contact schedd at {schedd_ad['Machine']} due to the following error:\n{exc}")
     print(f"Submitting job to schedd {schedd_ad['MyAddress']}")
-    ad_results = []
     try:
         result = schedd.submit(htcondor.Submit(sub), 1, True)
     except RuntimeError as exc:
