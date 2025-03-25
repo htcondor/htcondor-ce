@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """Unit tests for verify_ce_config.py"""
 
-import importlib
+import importlib.machinery
+import importlib.util
 import os
 import unittest
 
@@ -36,7 +37,10 @@ BAD_ROUTES = '''[
 '''
 
 VERIFY_PATH = os.path.join('..', 'src', 'verify_ce_config.py')
-verify = importlib.load_source('verify_ce_config', VERIFY_PATH)
+loader = importlib.machinery.SourceFileLoader('verify_ce_config', VERIFY_PATH)
+spec = importlib.util.spec_from_loader(loader.name, loader)
+verify = importlib.util.module_from_spec(spec)
+loader.exec_module(verify)
 
 
 class TestVerifyConfig(unittest.TestCase):

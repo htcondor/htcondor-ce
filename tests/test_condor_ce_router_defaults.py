@@ -14,7 +14,7 @@ DEFAULTS_PATH = os.path.join('..', 'src', 'condor_ce_router_defaults')
 loader = importlib.machinery.SourceFileLoader('condor_ce_router_defaults', DEFAULTS_PATH)
 spec = importlib.util.spec_from_loader(loader.name, loader)
 defaults = importlib.util.module_from_spec(spec)
-loader.exec(defaults)
+loader.exec_module(defaults)
 
 class TestDefaults(unittest.TestCase):
     """Unit tests for condor_ce_router_defaults"""
