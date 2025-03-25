@@ -135,9 +135,6 @@ def generate_graph(interval, *args):
 
 def graph(environ, host, plot, interval):
 
-    if plot not in ['jobs', 'vos', 'metrics']:
-        raise ValueError("Unknown plot type requested.")
-
     if plot == "jobs":
         fname = check_rrd(environ, host, plot)
         graph = generate_graph(interval,
@@ -210,7 +207,8 @@ def graph(environ, host, plot, interval):
             "GPRINT:metric:LAST:%-6.0lf",
             "COMMENT:\\n",
             )
-
+    else:
+        raise ValueError("Unknown plot type requested.")
 
     return graph
 
