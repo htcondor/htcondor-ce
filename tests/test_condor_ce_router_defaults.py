@@ -1,7 +1,7 @@
 #/usr/bin/env python3
 """Unit tests for condor_ce_router_defaults"""
 
-import imp
+import importlib
 import os
 import re
 import unittest
@@ -10,7 +10,7 @@ EXTATTR_FILE_PATH = 'extattr_table.txt'
 UID_FILE_PATH = 'uid_table.txt'
 DEFAULTS_PATH = os.path.join('..', 'src', 'condor_ce_router_defaults')
 
-defaults = imp.load_source('condor_ce_router_defaults', DEFAULTS_PATH)
+defaults = importlib.load_source('condor_ce_router_defaults', DEFAULTS_PATH)
 
 class TestDefaults(unittest.TestCase):
     """Unit tests for condor_ce_router_defaults"""

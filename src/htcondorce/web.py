@@ -1,7 +1,7 @@
 
 import os
 import re
-import imp
+import importlib
 import json
 import time
 import logging
@@ -114,7 +114,7 @@ def check_initialized(environ):
                 if not filename.endswith(".py"):
                     continue
                 name = filename[:-3]
-                plugin = imp.load_source(name, os.path.join(plugins_dir, filename))
+                plugin = importlib.load_source(name, os.path.join(plugins_dir, filename))
                 if validate_plugin(name, plugin):
                     log.debug("plugin %s: loaded ok", name)
                     _plugins.append(plugin)

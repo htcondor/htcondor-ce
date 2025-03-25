@@ -4,11 +4,11 @@ on: [push, pull_request]
 
 jobs:
   python-files:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     outputs:
       filelist: ${{ steps.python-files.outputs.filelist }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - id: python-files
       run: |
         find . -type f -name '*.py' > py_files.txt
@@ -17,24 +17,24 @@ jobs:
 
 
   pylint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: [python-files]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.6
+        python-version: 3.12
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/pip-cache
-        key: pip-3.6-${{ github.sha }}
+        key: pip-3.12-${{ github.sha }}
         # allow cache hits from previous runs of the current branch,
         # parent branch, then upstream branches, in that order
         restore-keys: |
-          pip-3.6-
+          pip-3.12-
 
     - name: Install Requirements
       run: |
@@ -56,24 +56,24 @@ jobs:
         pylint --errors-only --disable no-member $PYTHON_FILES
 
   flake8:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: [python-files]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Set up Python 3.6
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.6
+        python-version: 3.12
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/pip-cache
-        key: pip-3.6-${{ github.sha }}
+        key: pip-3.12-${{ github.sha }}
         # allow cache hits from previous runs of the current branch,
         # parent branch, then upstream branches, in that order
         restore-keys: |
-          pip-3.6-
+          pip-3.12-
 
     - name: Install Requirements
       run: |
