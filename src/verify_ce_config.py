@@ -8,8 +8,6 @@ import os
 import re
 import sys
 
-from collections import defaultdict
-
 
 def error(msg):
     """Exit with error 'msg'
