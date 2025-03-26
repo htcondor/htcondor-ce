@@ -22,6 +22,8 @@ _loader = None
 _view = None
 _plugins = []
 OK_STATUS = '200 OK'
+_jinja_env = None
+multice = None
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -90,7 +92,6 @@ def validate_plugin(name, plugin):
 def check_initialized(environ):
     global _initialized
     global _jinja_env
-    global _cp
     global _plugins
     global htcondor
     global multice
