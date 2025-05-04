@@ -42,7 +42,26 @@ To create and publish APEL records, use the following instructions
    STARTD_ATTRS = $(STARTD_ATTRS) ApelScaling
    ```
 
-4. Start and enable the `condor-ce-apel.timer` on each HTCondor-CE
+4. Optionally define mapping for APEL accounting groups for jobs without VOMS proxy
+  ```
+  # in the /etc/condor/apel_acct_group.map map Owner or token issuer & subject, e.g.
+  # map local job owner "dteam" to APEL accounting group /dteam
+  * dteam /dteam
+  # map all local owners starting with "ops" to the APEL accounting group /ops
+  * /^ops.*$/ /ops
+  # map ATLAS token issuer and subject to the APEL accounting group
+  * /^https\:\/\/atlas\-auth\.cern\.ch\/,7dee38a3\-6ab8\-4fe2\-9e4c\-58039c21d817$/ /atlas/Role=production/Capability=NULL
+  * /^https\:\/\/atlas\-auth\.cern\.ch\/,5c5d2a4d\-9177\-3efa\-912f\-1b4e5c9fb660$/ /atlas/Role=lcgadmin/Capability=NULL
+  * /^https\:\/\/atlas\-auth\.cern\.ch\/,750e9609\-485a\-4ed4\-bf16\-d5cc46c71024$/ /atlas/Role=pilot/Capability=NULL
+  * /^https\:\/\/atlas\-auth\.cern\.ch\/,.*$/ /atlas/Role=NULL/Capability=NULL
+  # map DUNE token issuer and subject to the APEL accounting group
+  * /^https\:\/\/cilogon\.org\/dune,dunepilot\@fnal\.gov$/ /dune/Role=pilot/Capability=NULL
+  * /^https\:\/\/cilogon\.org\/dune,.*$/ /dune/Role=NULL/Capability=NULL
+  # no way to map individual Fermilab experiments hidden behind one token identity
+  #* /^https\:\/\/cilogon\.org\/fermilab,fermilabpilot\@fnal\.gov$/ NoVA? Minerva? Mu2e? ...
+  ```
+
+5. Start and enable the `condor-ce-apel.timer` on each HTCondor-CE
 
 The default behaviour when a StartD does not properly report performance information
 changed in HTCondor-CE v 5.1.6 to assume average performance in this case.

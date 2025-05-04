@@ -23,6 +23,7 @@ HTCondor configuration values:
     APEL_CE_ID           APEL identifier for the CE
     APEL_SCALING_ATTR    job attribute for optional performance factor
     APEL_SPEC_ATTR       job attribute for optional absolute performance
+    APEL_USE_WLCG_GROUPS extract accounting group from first wlcg.groups token claim
 """.strip(),
     formatter_class=argparse.RawDescriptionHelpFormatter,
 )
@@ -117,6 +118,10 @@ ce_host = read_ce_config_val("APEL_CE_HOST")
 ce_id = read_ce_config_val("APEL_CE_ID")
 scaling_expr = format_apel_scaling(options.apel_config, ce_id)
 output_datetime = time.strftime("%Y%m%d-%H%M")
+try:
+    use_wlcg_groups = read_ce_config_val("APEL_USE_WLCG_GROUPS").upper() == 'TRUE'
+except CalledProcessError:
+    use_wlcg_groups = False
 
 for directory in (history_dir / "quarantine", output_dir):
     directory.mkdir(exist_ok=True)
@@ -130,6 +135,13 @@ if not dry_run:
 else:
     batch_stream = blah_stream = sys.stdout
 
+accounting_user_expr = "ifThenElse(!isUndefined(x509userproxysubject), x509userproxysubject, orig_AuthTokenSubject)"
+accounting_group_expr = "ifThenElse(!isUndefined(x509UserProxyFirstFQAN), x509UserProxyFirstFQAN, %s)"
+if use_wlcg_groups:
+    accounting_group_expr = accounting_group_expr % 'ifThenElse(!isUndefined(orig_AuthTokenGroups), split(orig_AuthTokenGroups, ",")[0], %s)'
+accounting_group_expr = accounting_group_expr % 'ifThenElse(!isUndefined(userMap("ApelAGMap", Owner)), userMap("ApelAGMap", Owner), %s)'
+accounting_group_expr = accounting_group_expr % 'ifThenElse(!isUndefined(orig_AuthTokenIssuer) && !isUndefined(orig_AuthTokenSubject) && !isUndefined(userMap("ApelAGMap", strcat(orig_AuthTokenIssuer, ",", orig_AuthTokenSubject))), userMap("ApelAGMap", strcat(orig_AuthTokenIssuer, ",", orig_AuthTokenSubject)), %s)'
+accounting_group_expr = accounting_group_expr % 'UNDEFINED'
 
 with batch_stream, blah_stream:
     for history in history_dir.iterdir():
@@ -163,8 +175,8 @@ with batch_stream, blah_stream:
             condor_q_format(
                 history,
                 '"timestamp=%s" ', 'formatTime(EnteredCurrentStatus, "%Y-%m-%d %H:%M:%S")',
-                '"userDN=%s" ', "x509userproxysubject",
-                '"userFQAN=%s" ', "x509UserProxyFirstFQAN",
+                '"userDN=%s" ', accounting_user_expr,
+                '"userFQAN=%s" ', accounting_group_expr,
                 f'"ceID={ce_id}" ', "EMPTY",
                 f'"jobID=%v_{ce_host}" ', "RoutedFromJobId",
                 '"lrmsID=%s" ', "GlobalJobId",
