@@ -92,7 +92,6 @@ def validate_plugin(name, plugin):
 def check_initialized(environ):
     global _initialized
     global _jinja_env
-    global _plugins
     global htcondor
     global multice
 
