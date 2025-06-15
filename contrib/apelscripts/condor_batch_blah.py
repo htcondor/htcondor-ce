@@ -139,8 +139,8 @@ accounting_user_expr = "ifThenElse(!isUndefined(x509userproxysubject), x509userp
 accounting_group_expr = "ifThenElse(!isUndefined(x509UserProxyFirstFQAN), x509UserProxyFirstFQAN, %s)"
 if use_wlcg_groups:
     accounting_group_expr = accounting_group_expr % 'ifThenElse(!isUndefined(orig_AuthTokenGroups), split(orig_AuthTokenGroups, ",")[0], %s)'
-accounting_group_expr = accounting_group_expr % 'ifThenElse(!isUndefined(userMap("ApelAGMap", Owner)), userMap("ApelAGMap", Owner), %s)'
-accounting_group_expr = accounting_group_expr % 'ifThenElse(!isUndefined(orig_AuthTokenIssuer) && !isUndefined(orig_AuthTokenSubject) && !isUndefined(userMap("ApelAGMap", strcat(orig_AuthTokenIssuer, ",", orig_AuthTokenSubject))), userMap("ApelAGMap", strcat(orig_AuthTokenIssuer, ",", orig_AuthTokenSubject)), %s)'
+accounting_group_expr = accounting_group_expr % '(userMap("ApelAGMap", Owner) ?: %s)'
+accounting_group_expr = accounting_group_expr % '(((orig_AuthTokenIssuer isnt UNDEFINED && orig_AuthTokenSubject isnt UNDEFINED) ? userMap("ApelAGMap", strcat(orig_AuthTokenIssuer, ",", orig_AuthTokenSubject)) : UNDEFINED) ?: %s)'
 accounting_group_expr = accounting_group_expr % 'UNDEFINED'
 
 with batch_stream, blah_stream:
