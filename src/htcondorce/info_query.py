@@ -38,8 +38,6 @@ def getSubmitFileAdditions(resource_ad):
     submitted job match the given resource
 
     """
-    global _logger
-
     lines = []
     if 'grid_resource' in resource_ad:
         lines.append('+GridResource = %s' % classad.quote(resource_ad['grid_resource']))
