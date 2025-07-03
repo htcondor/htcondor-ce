@@ -31,7 +31,7 @@ jobs:
                  --volume /sys/fs/cgroup:/sys/fs/cgroup \
                  --volume `pwd`:/htcondor-ce:rw \
                  ${{ matrix.platform }} \
-                 /usr/sbin/init
+                 /usr/bin/sleep infinity
 
       - name: Build ${{ matrix.platform }} RPMs (${{ matrix.target_env }})
         run: |

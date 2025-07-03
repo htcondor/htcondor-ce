@@ -33,11 +33,20 @@ function run_integration_tests {
     chmod 644 $ce_mapfile
 
     echo "------------ Integration Test --------------"
+
+    echo '#!/bin/sh'                                             >  /usr/bin/systemctl
+    echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor' ]; then'    >> /usr/bin/systemctl
+    echo '    /usr/sbin/condor_master'                           >> /usr/bin/systemctl
+    echo 'fi'                                                    >> /usr/bin/systemctl
+    echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor-ce' ]; then' >> /usr/bin/systemctl
+    echo '    /usr/share/condor-ce/condor_ce_startup'            >> /usr/bin/systemctl
+    echo 'fi'
+
     # start necessary services
-    #systemctl start condor-ce
-    /usr/share/condor-ce/condor_ce_startup
-    #systemctl start condor
-    /usr/sbin/condor_master
+    systemctl start condor-ce
+    #/usr/share/condor-ce/condor_ce_startup
+    systemctl start condor
+    #/usr/sbin/condor_master
 
     set +e
     # wait until the schedd is ready before submitting a job
