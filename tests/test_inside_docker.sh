@@ -96,7 +96,7 @@ EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 
 # Fake systemctl (since not running under systemd)
-cat << EOF > /usr/sbin/systemctl
+cat << EOF > /tmp/systemctl
 #!/bin/sh
 if [ "$2" = 'condor' ]; then
     if [ "$1" = 'start' ]; then
@@ -119,6 +119,8 @@ else
     exit 1
 fi
 EOF
+chmod 755 /tmp/systemctl
+mv -f /tmp/systemctl /usr/bin/systemctl
 
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
