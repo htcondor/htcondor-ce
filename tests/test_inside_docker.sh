@@ -32,8 +32,6 @@ function run_integration_tests {
     echo $entry | cat - $ce_mapfile > $tmp_mapfile && mv $tmp_mapfile $ce_mapfile
     chmod 644 $ce_mapfile
 
-    yum install -y sudo # run tests as non-root user
-
     echo "------------ Integration Test --------------"
     # start necessary services
     #systemctl start condor-ce
@@ -51,10 +49,10 @@ function run_integration_tests {
     # submit test job as a normal user
     # TODO: Change this to voms-proxy-init to test VOMS attr mapping
     pushd /tmp
-    sudo -u $test_user /bin/sh -c "echo $test_user | grid-proxy-init -pwstdin"
-    sudo -u $test_user condor_ce_status -any
+    su $test_user /bin/sh -c "echo $test_user | grid-proxy-init -pwstdin"
+    su $test_user condor_ce_status -any
     curl http://127.0.0.1
-    sudo -u $test_user condor_ce_trace -d $(hostname)
+    su $test_user condor_ce_trace -d $(hostname)
     test_exit=$?
     popd
     set -e
