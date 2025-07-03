@@ -34,19 +34,9 @@ function run_integration_tests {
 
     echo "------------ Integration Test --------------"
 
-    echo '#!/bin/sh'                                             >  /usr/bin/systemctl
-    echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor' ]; then'    >> /usr/bin/systemctl
-    echo '    /usr/sbin/condor_master'                           >> /usr/bin/systemctl
-    echo 'fi'                                                    >> /usr/bin/systemctl
-    echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor-ce' ]; then' >> /usr/bin/systemctl
-    echo '    /usr/share/condor-ce/condor_ce_startup'            >> /usr/bin/systemctl
-    echo 'fi'                                                    >> /usr/bin/systemctl
-
     # start necessary services
     systemctl start condor-ce
-    #/usr/share/condor-ce/condor_ce_startup
     systemctl start condor
-    #/usr/sbin/condor_master
 
     set +e
     # wait until the schedd is ready before submitting a job
@@ -104,6 +94,15 @@ SCHEDD_INTERVAL=1
 SCHEDD_MIN_INTERVAL=1
 EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
+
+# Fake systemctl (since not running under systemd)
+echo '#!/bin/sh'                                             >  /usr/bin/systemctl
+echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor' ]; then'    >> /usr/bin/systemctl
+echo '    /usr/sbin/condor_master'                           >> /usr/bin/systemctl
+echo 'fi'                                                    >> /usr/bin/systemctl
+echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor-ce' ]; then' >> /usr/bin/systemctl
+echo '    /usr/share/condor-ce/condor_ce_startup'            >> /usr/bin/systemctl
+echo 'fi'                                                    >> /usr/bin/systemctl
 
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
