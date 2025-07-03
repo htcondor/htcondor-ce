@@ -96,13 +96,29 @@ EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 
 # Fake systemctl (since not running under systemd)
-echo '#!/bin/sh'                                             >  /usr/bin/systemctl
-echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor' ]; then'    >> /usr/bin/systemctl
-echo '    /usr/sbin/condor_master'                           >> /usr/bin/systemctl
-echo 'fi'                                                    >> /usr/bin/systemctl
-echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor-ce' ]; then' >> /usr/bin/systemctl
-echo '    /usr/share/condor-ce/condor_ce_startup'            >> /usr/bin/systemctl
-echo 'fi'                                                    >> /usr/bin/systemctl
+cat << EOF > /usr/sbin/systemctl
+#!/bin/sh
+if [ "$2" = 'condor' ]; then
+    if [ "$1" = 'start' ]; then
+        /usr/sbin/condor_master
+    elif [ "$1" = 'stop' ]; then
+        /usr/sbin/condor_off -fast -master
+    elif [ "$1" = 'is-active' ]; then
+        /usr/bin/condor_status -totals
+    fi
+elif [ "$2" = 'condor-ce' ]; then
+    if [ "$1" = 'start' ]; then
+        /usr/share/condor-ce/condor_ce_startup
+    elif [ "$1" = 'stop' ]; then
+        /usr/sbin/condor_ce_off -fast -master
+    elif [ "$1" = 'is-active' ]; then
+        /usr/bin/condor_ce_status -totals
+    fi
+else
+    echo "ERROR: Unknown service: $2"
+    exit 1
+fi
+EOF
 
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
