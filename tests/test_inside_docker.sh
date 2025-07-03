@@ -36,8 +36,10 @@ function run_integration_tests {
 
     echo "------------ Integration Test --------------"
     # start necessary services
-    systemctl start condor-ce
-    systemctl start condor
+    #systemctl start condor-ce
+    /usr/share/condor-ce/condor_ce_startup
+    #systemctl start condor
+    /usr/sbin/condor_master
 
     set +e
     # wait until the schedd is ready before submitting a job
