@@ -40,7 +40,7 @@ function run_integration_tests {
     echo 'fi'                                                    >> /usr/bin/systemctl
     echo 'if [ "$1" = 'start' ] && [ "$2" = 'condor-ce' ]; then' >> /usr/bin/systemctl
     echo '    /usr/share/condor-ce/condor_ce_startup'            >> /usr/bin/systemctl
-    echo 'fi'
+    echo 'fi'                                                    >> /usr/bin/systemctl
 
     # start necessary services
     systemctl start condor-ce
