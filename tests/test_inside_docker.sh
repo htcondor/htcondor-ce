@@ -96,7 +96,7 @@ EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
 
 # Fake systemctl (since not running under systemd)
-cat << EOF > /tmp/systemctl
+cat << 'EOF' > /tmp/systemctl
 #!/bin/sh
 if [ "$2" = 'condor' ]; then
     if [ "$1" = 'start' ]; then
