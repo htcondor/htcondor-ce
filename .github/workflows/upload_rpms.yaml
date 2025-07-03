@@ -8,12 +8,12 @@ on:
 
 jobs:
   build-rpms-and-upload:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: startsWith(github.repository, 'htcondor/')
     strategy:
       matrix:
         platform:
-          - rockylinux:8
+          - almalinux:8
           - almalinux:9
     steps:
       - uses: actions/checkout@v3
