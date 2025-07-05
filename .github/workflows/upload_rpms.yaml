@@ -16,7 +16,7 @@ jobs:
           - almalinux:8
           - almalinux:9
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Prepare Docker
         run: |

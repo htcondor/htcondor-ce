@@ -28,7 +28,6 @@ jobs:
         run: |
           docker run --privileged --detach --env "container=docker" \
                  --name $GITHUB_SHA \
-                 --volume /sys/fs/cgroup:/sys/fs/cgroup \
                  --volume `pwd`:/htcondor-ce:rw \
                  ${{ matrix.platform }} \
                  /usr/bin/sleep infinity
