@@ -94,7 +94,7 @@ if [ "$2" = 'condor' ]; then
     elif [ "$1" = 'stop' ]; then
         /usr/sbin/condor_off -fast -master && sleep 10 # Max time to bring down condor fast
     elif [ "$1" = 'is-active' ]; then
-        /usr/bin/condor_status -totals
+        /usr/bin/condor_status -totals || exit 3 # osg-scripts look for 0 or 3
     else
         echo "ERROR: Unknown command ($1) for service ($2)"
         exit 1
@@ -105,7 +105,7 @@ elif [ "$2" = 'condor-ce' ]; then
     elif [ "$1" = 'stop' ]; then
         /usr/bin/condor_ce_off -fast -master && sleep 10 # Max time to bring down condor fast
     elif [ "$1" = 'is-active' ]; then
-        /usr/bin/condor_ce_status -totals
+        /usr/bin/condor_ce_status -totals || exit 3 # osg-scripts look for 0 or 3
     else
         echo "ERROR: Unknown command ($1) for service ($2)"
         exit 1
