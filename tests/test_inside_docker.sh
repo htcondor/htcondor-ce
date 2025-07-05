@@ -92,7 +92,7 @@ if [ "$2" = 'condor' ]; then
     if [ "$1" = 'start' ]; then
         /usr/sbin/condor_master
     elif [ "$1" = 'stop' ]; then
-        /usr/sbin/condor_off -fast -master
+        /usr/sbin/condor_off -fast -master && sleep 10 # Max time to bring down condor fast
     elif [ "$1" = 'is-active' ]; then
         /usr/bin/condor_status -totals
     else
@@ -103,7 +103,7 @@ elif [ "$2" = 'condor-ce' ]; then
     if [ "$1" = 'start' ]; then
         /usr/share/condor-ce/condor_ce_startup
     elif [ "$1" = 'stop' ]; then
-        /usr/bin/condor_ce_off -fast -master
+        /usr/bin/condor_ce_off -fast -master && sleep 10 # Max time to bring down condor fast
     elif [ "$1" = 'is-active' ]; then
         /usr/bin/condor_ce_status -totals
     else
