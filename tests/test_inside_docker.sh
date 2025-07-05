@@ -1,6 +1,13 @@
 #!/bin/bash
 
 function run_osg_tests {
+    # Install tooling for creating test certificates
+    git clone -q https://github.com/opensciencegrid/osg-ca-generator.git
+    pushd osg-ca-generator
+    git rev-parse HEAD
+    make install PYTHON=/usr/bin/python3
+    popd
+
     # Source repo version
     git clone -q https://github.com/opensciencegrid/osg-test.git
     pushd osg-test
