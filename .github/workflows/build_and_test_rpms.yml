@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build-rpms-and-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -28,10 +28,9 @@ jobs:
         run: |
           docker run --privileged --detach --env "container=docker" \
                  --name $GITHUB_SHA \
-                 --volume /sys/fs/cgroup:/sys/fs/cgroup \
                  --volume `pwd`:/htcondor-ce:rw \
                  ${{ matrix.platform }} \
-                 /usr/sbin/init
+                 /usr/bin/sleep infinity
 
       - name: Build ${{ matrix.platform }} RPMs (${{ matrix.target_env }})
         run: |
@@ -63,12 +62,6 @@ jobs:
                    "/htcondor-ce/tests/test_inside_docker.sh \
                      ${{ matrix.platform}} \
                      ${{ matrix.target_env}}"
-
-      - name: Host certificate details
-        if: failure() && steps.integration-tests.outcome == 'failure'
-        run: |
-          docker exec $GITHUB_SHA \
-                 openssl x509 -in /etc/grid-security/hostcert.pem -noout -text
 
       - name: HTCondor-CE configuration details
         if: failure() && steps.integration-tests.outcome == 'failure'

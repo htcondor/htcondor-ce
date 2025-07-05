@@ -1,6 +1,13 @@
 #!/bin/bash
 
 function run_osg_tests {
+    # Install tooling for creating test certificates
+    git clone -q https://github.com/opensciencegrid/osg-ca-generator.git
+    pushd osg-ca-generator
+    git rev-parse HEAD
+    make install PYTHON=/usr/bin/python3
+    popd
+
     # Source repo version
     git clone -q https://github.com/opensciencegrid/osg-test.git
     pushd osg-test
@@ -17,22 +24,15 @@ function run_osg_tests {
 }
 
 function run_integration_tests {
-    # create host/user certificates
+    # create host/user token
     test_user=cetest
     useradd -m $test_user
-    yum install -y openssl # centos7 containers don't have openssl by default
-    osg-ca-generator --host --user $test_user --pass $test_user
 
-    # add the host subject DN to the top of the condor_mapfile
-    host_dn=$(python3 -c "import cagen; print(cagen.certificate_info('/etc/grid-security/hostcert.pem')[0])")
-    host_dn=${host_dn//\//\\/} # escape all forward slashes
-    entry="GSI \"${host_dn}\" $(hostname --long)@daemon.htcondor.org"
-    ce_mapfile='/etc/condor-ce/condor_mapfile'
-    tmp_mapfile=$(mktemp)
-    echo $entry | cat - $ce_mapfile > $tmp_mapfile && mv $tmp_mapfile $ce_mapfile
+    ce_mapfile='/etc/condor-ce/mapfiles.d/01-osg-test.conf'
+    issuer='https://demo.scitokens.org'
+    map_string='/https:\/\/demo.scitokens.org,.*/'
+    echo "SCITOKENS $map_string $test_user" > $ce_mapfile
     chmod 644 $ce_mapfile
-
-    yum install -y sudo # run tests as non-root user
 
     echo "------------ Integration Test --------------"
     # start necessary services
@@ -47,12 +47,11 @@ function run_integration_tests {
     done
 
     # submit test job as a normal user
-    # TODO: Change this to voms-proxy-init to test VOMS attr mapping
     pushd /tmp
-    sudo -u $test_user /bin/sh -c "echo $test_user | grid-proxy-init -pwstdin"
-    sudo -u $test_user condor_ce_status -any
+    su $test_user -c "condor_ce_test_token --issuer $issuer --scope condor:/WRITE --sub $test_user --aud ANY > bearer_token_file"
+    su $test_user -c "BEARER_TOKEN_FILE=bearer_token_file condor_ce_status -any"
     curl http://127.0.0.1
-    sudo -u $test_user condor_ce_trace -d $(hostname)
+    su $test_user -c "BEARER_TOKEN_FILE=bearer_token_file condor_ce_trace -d $(hostname)"
     test_exit=$?
     popd
     set -e
@@ -66,35 +65,58 @@ OS_VERSION=${PLATFORM##*:}
 BUILD_ENV=$2
 
 if [[ $BUILD_ENV == uw_build ]]; then
-    # UW build tests run against HTCondor 8.8.0, which does not automatically configure a personal condor
+    # UW build tests run against HTCondor, which does not automatically configure a personal condor.
     # The 'minicondor' package now provides that configuration
-    extra_packages='minicondor'
+    dnf install -y minicondor
 fi
-# ensure that our test users can generate proxies
-yum install -y globus-proxy-utils $extra_packages
 
 # HTCondor really, really wants a domain name.  Fake one.
 sed /etc/hosts -e "s/`hostname`/`hostname`.unl.edu `hostname`/" > /etc/hosts.new
 /bin/cp -f /etc/hosts.new /etc/hosts
 
-# Install tooling for creating test certificates
-git clone -q https://github.com/opensciencegrid/osg-ca-generator.git
-pushd osg-ca-generator
-git rev-parse HEAD
-make install PYTHON=/usr/bin/python3
-popd
-
 # Bind on the right interface and skip hostname checks.
-cat << EOF > /etc/condor/config.d/99-local.conf
+cat << 'EOF' > /etc/condor/config.d/99-local.conf
 BIND_ALL_INTERFACES = true
-GSI_SKIP_HOST_CHECK=true
-ALL_DEBUG=\$(ALL_DEBUG) D_FULLDEBUG D_CAT D_SECURITY:2
-COLLECTOR_DEBUG=\$(ALL_DEBUG)
-SCHEDD_DEBUG=\$(ALL_DEBUG)
+ALL_DEBUG=$(ALL_DEBUG) D_FULLDEBUG D_CAT D_SECURITY:2
+COLLECTOR_DEBUG=$(ALL_DEBUG)
+SCHEDD_DEBUG=$(ALL_DEBUG)
 SCHEDD_INTERVAL=1
 SCHEDD_MIN_INTERVAL=1
 EOF
 cp /etc/condor/config.d/99-local.conf /etc/condor-ce/config.d/99-local.conf
+
+# Fake systemctl (since not running under systemd)
+cat << 'EOF' > /tmp/systemctl
+#!/bin/sh
+if [ "$2" = 'condor' ]; then
+    if [ "$1" = 'start' ]; then
+        /usr/sbin/condor_master
+    elif [ "$1" = 'stop' ]; then
+        /usr/sbin/condor_off -fast -master && sleep 10 # Max time to bring down condor fast
+    elif [ "$1" = 'is-active' ]; then
+        /usr/bin/condor_status -totals || exit 3 # osg-scripts look for 0 or 3
+    else
+        echo "ERROR: Unknown command ($1) for service ($2)"
+        exit 1
+    fi
+elif [ "$2" = 'condor-ce' ]; then
+    if [ "$1" = 'start' ]; then
+        /usr/share/condor-ce/condor_ce_startup
+    elif [ "$1" = 'stop' ]; then
+        /usr/bin/condor_ce_off -fast -master && sleep 10 # Max time to bring down condor fast
+    elif [ "$1" = 'is-active' ]; then
+        /usr/bin/condor_ce_status -totals || exit 3 # osg-scripts look for 0 or 3
+    else
+        echo "ERROR: Unknown command ($1) for service ($2)"
+        exit 1
+    fi
+else
+    echo "ERROR: Unknown service: $2"
+    exit 1
+fi
+EOF
+chmod 755 /tmp/systemctl
+mv -f /tmp/systemctl /usr/bin/systemctl
 
 # Reduce the trace timeouts
 export _condor_CONDOR_CE_TRACE_ATTEMPTS=60
