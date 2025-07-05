@@ -89,7 +89,7 @@ if [ "$2" = 'condor' ]; then
     elif [ "$1" = 'is-active' ]; then
         /usr/bin/condor_status -totals
     else
-        echo "ERROR: Unknown command ($1) for service ($2)
+        echo "ERROR: Unknown command ($1) for service ($2)"
         exit 1
     fi
 elif [ "$2" = 'condor-ce' ]; then
@@ -100,7 +100,7 @@ elif [ "$2" = 'condor-ce' ]; then
     elif [ "$1" = 'is-active' ]; then
         /usr/bin/condor_ce_status -totals
     else
-        echo "ERROR: Unknown command ($1) for service ($2)
+        echo "ERROR: Unknown command ($1) for service ($2)"
         exit 1
     fi
 else
