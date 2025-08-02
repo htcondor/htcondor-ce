@@ -45,6 +45,12 @@ HTCondor-CE 24 Version History
 This section contains release notes for each version of HTCondor-CE 24.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### **July 28, 2025:** 24.10.1 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v24.10.1) includes the following new features:
+
+-   Switch over to using the `htcondor2` Python bindings
+
 ### **December 19, 2024:** 24.2.0 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v24.2.0) includes the following new features:
