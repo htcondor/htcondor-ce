@@ -9,6 +9,47 @@
 # 
 ###############################################################################
 
+##  Where have you installed the bin, sbin and lib condor directories?
+RELEASE_DIR = /usr
+
+##  Where is the local condor directory for each host?  This is where the local config file(s), logs and
+##  spool/execute directories are located. this is the default for Linux and Unix systems.
+LOCAL_DIR = /var
+
+##  The normal way to do configuration with RPM and Debian packaging is to read all of the
+##  files in a given directory that don't match a regex as configuration files.
+##  Config files are read in lexicographic order.
+##  Multiple directories may be specified, separated by commas; directories
+##  are read in left-to-right order.
+LOCAL_CONFIG_DIR = /usr/share/condor-ce/config.d,/etc/condor-ce/config.d
+#LOCAL_CONFIG_DIR_EXCLUDE_REGEXP = ^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew))$
+
+##--------------------------------------------------------------------
+## Values set for linux native packaging:
+##--------------------------------------------------------------------
+
+##  Pathnames
+RUN     = $(LOCAL_DIR)/run/condor-ce
+LOG     = $(LOCAL_DIR)/log/condor-ce
+LOCK    = $(LOCAL_DIR)/lock/condor-ce
+SPOOL   = $(LOCAL_DIR)/lib/condor-ce/spool
+EXECUTE = $(LOCAL_DIR)/lib/condor-ce/execute
+ETC     = /etc/condor-ce
+BIN     = $(RELEASE_DIR)/bin
+LIB     = $(RELEASE_DIR)/lib64/condor
+INCLUDE = $(RELEASE_DIR)/include/condor
+SBIN    = $(RELEASE_DIR)/sbin
+LIBEXEC = $(RELEASE_DIR)/libexec/condor
+SHARE   = $(RELEASE_DIR)/share/condor
+
+JAVA_CLASSPATH_DEFAULT = $(SHARE) .
+
+SINGULARITY = /usr/bin/singularity
+
+##--------------------------------------------------------------------
+## Values specific to the HTCondor-CE:
+##--------------------------------------------------------------------
+
 # Set the collector to run on an alternate port
 CONDOR_HOST = $(FULL_HOSTNAME)
 PORT = 9619
@@ -20,55 +61,15 @@ SHARED_PORT_PORT = $(PORT)
 
 DAEMON_LIST = MASTER COLLECTOR SCHEDD JOB_ROUTER
 
-RELEASE_DIR = /usr
-
-SBIN = $(RELEASE_DIR)/sbin
-LIBEXEC = $(RELEASE_DIR)/libexec/condor
-MASTER       = $(SBIN)/condor_master
-SCHEDD       = $(SBIN)/condor_schedd
-GRIDMANAGER  = $(SBIN)/condor_gridmanager
-GRID_MONITOR = $(SBIN)/grid_monitor.sh
-JOB_ROUTER    = $(LIBEXEC)/condor_job_router
-COLLECTOR     = $(SBIN)/condor_collector
-SHARED_PORT = $(LIBEXEC)/condor_shared_port
-
-LOCAL_DIR = /var
-RUN     = $(LOCAL_DIR)/run/condor-ce
-LOG     = $(LOCAL_DIR)/log/condor-ce
-SPOOL   = $(LOCAL_DIR)/lib/condor-ce/spool
-EXECUTE = $(LOCAL_DIR)/lib/condor-ce/execute
-LOCK    = $(LOCAL_DIR)/lock/condor-ce
-
-MASTER_ADDRESS_FILE = $(LOG)/.master_address
-SCHEDD_ADDRESS_FILE = $(SPOOL)/.schedd_address
-
-LOCAL_CONFIG_DIR = /usr/share/condor-ce/config.d,/etc/condor-ce/config.d
-LOCAL_CONFIG_DIR_EXCLUDE_REGEXP = ^((\..*)|(.*~)|(#.*)|(.*\.rpmsave)|(.*\.rpmnew))$
-
-CONDOR_ADMIN = root@$(FULL_HOSTNAME)
-MAIL         = /bin/mail
-
 EMAIL_DOMAIN = $(FULL_HOSTNAME)
 
-# Basic GAHP configurations
-GRIDMANAGER_LOG = $(LOG)/GridmanagerLog.$(USERNAME)
-GRIDMANAGER_LOCK = $(LOCK)/GridmanagerLock.$(USERNAME)
+# Move GAHP files out of /tmp
 USER_LOG = $(LOG)/user
 USER_LOCK = $(LOCK)/user
-VM_GAHP_LOG = $(LOG)/VMGahpLog
-AMAZON_GAHP_LOG = $(USER_LOG)/user/AmazonGahpLog.$(USERNAME)
-C_GAHP_LOCK = /CGAHPLock.$(USERNAME)
-C_GAHP_LOG = /tmp/CGAHPLog.$(USERNAME)
+C_GAHP_LOCK = $(USER_LOCK)/CGAHPLock.$(USERNAME)
+C_GAHP_LOG = $(USER_LOG)/CGAHPLog.$(USERNAME)
 C_GAHP_WORKER_THREAD_LOCK = $(USER_LOCK)/CGAHPWorkerLock.$(USERNAME)
 C_GAHP_WORKER_THREAD_LOG = $(USER_LOG)/CGAHPWorkerLog.$(USERNAME)
-CONDOR_GAHP = $(SBIN)/condor_c-gahp
-CONDOR_GAHP_WORKER = $(SBIN)/condor_c-gahp_worker_thread
-AMAZON_GAHP = $(SBIN)/amazon_gahp
-CREAM_GAHP = $(SBIN)/cream_gahp
-GT2_GAHP = $(SBIN)/gahp_server
-NORDUGRID_GAHP = $(SBIN)/nordugrid_gahp
-UNICORE_GAHP = $(SBIN)/unicore_gahp
-VM_GAHP_SERVER = $(SBIN)/condor_vm-gahp
 
 # Use wrapper script to set environment in local universe jobs
 DATA_DIR = $(RELEASE_DIR)/share/condor-ce
