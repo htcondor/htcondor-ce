@@ -2,7 +2,7 @@
 #define gitrev osg
 
 Name: htcondor-ce
-Version: 24.10.1
+Version: 25.0.1
 Release: 1%{?gitrev:.%{gitrev}git}%{?dist}
 Summary: A framework to run HTCondor as a CE
 BuildArch: noarch
@@ -542,6 +542,9 @@ getent passwd condorce_webapp >/dev/null || \
 %{_localstatedir}/www/wsgi-scripts/htcondor-ce/htcondor-ce-registry.wsgi
 
 %changelog
+* Thu Jul 24 2025 Tim Theisen <tim@cs.wisc.edu> - 25.0.1-1
+- Initial HTCondor-CE 25.0.1 release
+
 * Thu Jul 24 2025 Tim Theisen <tim@cs.wisc.edu> - 24.10.1-1
 - Convert to htcondor2 Python bindings
 

@@ -15,6 +15,7 @@ jobs:
         platform:
           - almalinux:8
           - almalinux:9
+          - almalinux:10
     steps:
       - uses: actions/checkout@v4
 
