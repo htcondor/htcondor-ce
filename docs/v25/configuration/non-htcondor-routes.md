@@ -6,33 +6,16 @@ This page contains information about job routes that can be used if you are runn
 Setting a default batch queue
 -----------------------------
 
-To set a default queue for routed jobs, set the variable or attribute `default_queue` for the ClassAd
-transform and deprecated syntax, respectively:
+To set a default queue for routed jobs, set the variable `default_queue`:
 
-=== "ClassAd Transform"
+```hl_lines="3"
+JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
+  GridResource = "batch slurm"
+  default_queue = osg_queue
+@jrt
 
-    ```hl_lines="3"
-    JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
-      GridResource = "batch slurm"
-      default_queue = osg_queue
-    @jrt
-
-    JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-    ```
-
-=== "Deprecated Syntax"
-
-    ```hl_lines="5"
-    JOB_ROUTER_ENTRIES @=jre
-    [
-      GridResource = "batch slurm";
-      name = "Slurm_Cluster";
-      set_default_queue = "osg_queue";
-    ]
-    @jre
-
-    JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-    ```
+JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
+```
 
 Setting batch system directives
 -------------------------------
@@ -45,54 +28,27 @@ submit script.
 ClassAd attributes can be passed from the routed job to the local submit attributes script via
 `default_CERequirements` attribute, which takes a comma-separated list of other attributes:
 
-=== "ClassAd Transform"
-
-    ```
-    SET foo = "X"
-    SET bar = "Y"
-    SET default_CERequirements = "foo,bar"
-    ```
-
-=== "Deprecated Syntax"
-
-    ```
-    set_foo = "X";
-    set_bar = "Y";
-    set_default_CERequirements = "foo,bar";
-    ```
+```
+SET foo = "X"
+SET bar = "Y"
+SET default_CERequirements = "foo,bar"
+```
 
 This sets `foo` to the string `X` and `bar` to the string `Y` in the environment of the local submit attributes script.
 
 The following example sets the maximum walltime to 1 hour and the accounting group to the `x509UserProxyFirstFQAN`
 attribute of the job submitted to a PBS batch system:
 
-=== "ClassAd Transform"
+```hl_lines="4 5 6"
+JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
+     GridResource = "batch slurm"
+     SET Walltime = 3600
+     SET AccountingGroup = x509UserProxyFirstFQAN
+     SET default_CERequirements = "WallTime,AccountingGroup"
+@jrt
 
-    ```hl_lines="4 5 6"
-    JOB_ROUTER_ROUTE_Slurm_Cluster @=jrt
-         GridResource = "batch slurm"
-         SET Walltime = 3600
-         SET AccountingGroup = x509UserProxyFirstFQAN
-         SET default_CERequirements = "WallTime,AccountingGroup"
-    @jrt
-
-    JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-    ```
-
-=== "Deprecated Syntax"
-
-    ```hl_lines="5 6 7"
-    JOB_ROUTER_ENTRIES @=jre [
-         GridResource = "batch slurm";
-         name = "Slurm_Cluster";
-         set_Walltime = 3600;
-         set_AccountingGroup = x509UserProxyFirstFQAN;
-         set_default_CERequirements = "WallTime,AccountingGroup";
-    ]
-    @jre
-
-    JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
-    ```
+JOB_ROUTER_ROUTE_NAMES = Slurm_Cluster
+```
 
 With `/etc/blahp/pbs_local_submit_attributes.sh` containing:
 

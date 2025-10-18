@@ -19,10 +19,7 @@ overview of how to configure your HTCondor-CE Job Router
 Route Syntaxes
 --------------
 
-HTCondor-CE 5 introduced the ability to write job routes using [ClassAd transform syntax](#classad-transforms) in
-addition to the [existing configuration syntax](#deprecated-syntax).
-The old route configuration syntax is no longer the default in HTCondor-CE 23.x and one should transition
-to the new syntax as [outlined below](#choosing-a-syntax).
+HTCondor-CE 5 introduced the ability to write job routes using [ClassAd transform syntax](#classad-transforms).
 
 ### ClassAd transforms ###
 
@@ -38,47 +35,12 @@ in the following order:
     See [the section on route matching](#how-jobs-match-to-routes) below.
 1.  Each transform in `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES` whose requirements are met by the job
 
-### Deprecated syntax ###
+### Required syntax ###
 
-!!! warning "Planned Removal of Deprecated Syntax"
-    -   `JOB_ROUTER_DEFAULTS`, `JOB_ROUTER_ENTRIES`, `JOB_ROUTER_ENTRIES_CMD`, and `JOB_ROUTER_ENTRIES_FILE` are
-    deprecated and will be removed for *V24* of the HTCondor Software Suite. New configuration syntax for the job router
-    is defined using `JOB_ROUTER_ROUTE_NAMES` and `JOB_ROUTER_ROUTE_[name]`.
-    -   For a ClassAd transform syntax example vist:
-    [HTCondor Documentation - Job Router](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#an-example-configuration)
-    -   **Note:** The removal will occur during the lifetime of the HTCondor *V23* feature series.
-
-Since the inception of HTCondor-CE, job routes have been written as a
-[list of ClassAds](https://htcondor.readthedocs.io/en/lts/grid-computing/job-router.html#deprecated-router-configuration).
-Each job route’s [ClassAd](https://htcondor.readthedocs.io/en/lts/classads/classad-mechanism.html) is constructed
-by combining each entry from the `JOB_ROUTER_ENTRIES` with the `JOB_ROUTER_DEFAULTS`:
-
--   `JOB_ROUTER_ENTRIES` is a configuration variable whose default is set in `/etc/condor-ce/config.d/02-ce-*.conf` but
-    may be overriden by the administrator in subsequent files in `/etc/condor-ce/config.d/`.
--   `JOB_ROUTER_DEFAULTS` is a generated configuration variable that sets default job route values that are required for
-    HTCondor-CE's functionality.
-    To view its contents in a readable format, run the following command:
-
-        :::console
-        user@host $ condor_ce_config_val JOB_ROUTER_DEFAULTS | sed 's/;/;\n/g'
-
-Take care when modifying attributes in `JOB_ROUTER_DEFAULTS`: you may
-[add new attributes](writing-job-routes.md#setting-attributes-for-all-routes) and override attributes that are
-[set_*](writing-job-routes.md#setting-attributes) in `JOB_ROUTER_DEFAULTS`.
-
-!!! danger "The following may break your HTCondor-CE"
-    -   Do **not** set the `JOB_ROUTER_DEFAULTS` configuration variable yourself. This will cause the CE to stop
-        functioning.
-    -   If a value is set in `JOB_ROUTER_DEFAULTS` with `eval_set_<variable>`, override it by using
-        `eval_set_<variable>` in the `JOB_ROUTER_ENTRIES`.
-        Do this at your own risk as it may cause the CE to break.
-
-### Choosing a syntax ###
-
-For existing HTCondor-CEs, it's recommended that administrators stop using the deprecated syntax and
+For existing HTCondor-CEs, it's required that administrators stop using the deprecated syntax and
 transition to ClassAd transforms now.
 
-For new HTCondor-CEs, it's recommended that administrators start with ClassAd transforms.
+For new HTCondor-CEs, it's required that administrators start with ClassAd transforms.
 The [ClassAd transform](#classad-transforms) syntax provides many benefits including:
 
 -   Statements being evaluated in [the order they are written](writing-job-routes.md#editing-attributes)
@@ -110,8 +72,6 @@ transform syntax:
         later, e.g. `95-local.conf`, you will need to rename your generated config file, e.g. `96-generated-job-routes.conf`.
 
 4.  Tweak new job routes as needed. For assistance please reach out to [htcondor-users@cs.wisc.edu](mailto:htcondor-users@cs.wisc.edu)
-5.  Set `JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES = False` (see [this documentation](https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html#JOB_ROUTER_USE_DEPRECATED_ROUTER_ENTRIES)
-    in the HTCondor-CE's configuration.
 6.  Restart the HTCondor-CE
 
 !!! note "Not Using Custom Job Routes?"
@@ -131,14 +91,9 @@ If the incoming job meets the above constraints, then the job is matched to the 
 whose requirements are satisfied by the job's ClassAd.
 Additionally:
 
--   **If you are using the [ClassAd transform syntax](#classad-transforms),** transforms in
+-   Transforms in
     `JOB_ROUTER_PRE_ROUTE_TRANSFORM_NAMES` and `JOB_ROUTER_POST_ROUTE_TRANSFORM_NAMES` may also have their own
     requirements that determine whether or not that transform is applied.
--   **If you are using the [deprecated syntax](#deprecated-syntax),** you may configure the Job Router to evenly
-    distribute jobs across all matching routes (i.e., round-robin matching).
-    To do so, add the following configuration to a file in `/etc/condor-ce/config.d/`:
-
-        JOB_ROUTER_ROUND_ROBIN_SELECTION = True
 
 Getting Help
 ------------

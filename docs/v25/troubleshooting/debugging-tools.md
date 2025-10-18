@@ -259,8 +259,7 @@ condor_ce_job_router_info
 ### Usage ###
 
 Use the `condor_ce_job_router_info` command to help troubleshoot your routes and how jobs will match to them. 
-To see all of your routes (the output is long because it combines your routes with the
-[JOB\_ROUTER\_DEFAULTS](../configuration/job-router-overview.md#deprecated-syntax) configuration variable):
+To see all of your routes:
 
 ``` console
 root@host # condor_ce_job_router_info -config
