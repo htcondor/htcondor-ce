@@ -1,4 +1,4 @@
-Installing HTCondor-CE 23
+Installing HTCondor-CE 25
 =========================
 
 !!! tip "Joining the OSG Consortium (OSG)?"
@@ -11,7 +11,7 @@ It is configured to use the [Job Router daemon](https://htcondor.readthedocs.io/
 to delegate resource allocation requests by transforming and submitting them to the site’s batch system.
 See the [home page](../../index.md) for more details on the features and architecture of HTCondor-CE.
 
-Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 23 from the
+Use this page to learn how to install, configure, run, test, and troubleshoot HTCondor-CE 25 from the
 [CHTC yum repositories](https://htcondor.org/downloads/htcondor-ce.html).
 
 Before Starting
