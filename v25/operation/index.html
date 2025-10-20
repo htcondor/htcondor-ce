@@ -9,21 +9,21 @@
       
       
       
-        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v24/configuration/local-batch-system/">
+        <link rel="canonical" href="https://htcondor.github.io/htcondor-ce/v25/operation/">
       
-      <link rel="icon" href="../../../img/favicon-32x32.png">
+      <link rel="icon" href="../../img/favicon-32x32.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
     
     
       
-        <title>Local Batch System - HTCondor-CE Documentation</title>
+        <title>Operation - HTCondor-CE Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
         
       
     
@@ -38,9 +38,9 @@
     
     
     
-      <link rel="stylesheet" href="../../../css/superfences.css">
+      <link rel="stylesheet" href="../../css/superfences.css">
     
-      <link rel="stylesheet" href="../../../css/extra.css">
+      <link rel="stylesheet" href="../../css/extra.css">
     
     
       
@@ -57,7 +57,7 @@
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
   
     
-    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configuring-for-the-local-batch-system" class="md-skip">
+        <a href="#operating-an-htcondor-ce" class="md-skip">
           Skip to content
         </a>
       
@@ -76,7 +76,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="HTCondor-CE Documentation" class="md-header__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+    <a href="../.." title="HTCondor-CE Documentation" class="md-header__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Local Batch System
+              Operation
             
           </span>
         </div>
@@ -169,24 +169,8 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         Home
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../../v25/installation/htcondor-ce/" class="md-tabs__link">
-        HTCondor-CE 25
       </a>
     </li>
   
@@ -203,7 +187,23 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+      <a href="../installation/htcondor-ce/" class="md-tabs__link md-tabs__link--active">
+        HTCondor-CE 25
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../v24/installation/htcondor-ce/" class="md-tabs__link">
         HTCondor-CE 24
       </a>
     </li>
@@ -232,7 +232,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
+    <a href="../.." title="HTCondor-CE Documentation" class="md-nav__button md-logo" aria-label="HTCondor-CE Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -285,7 +285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Overview
       </a>
     </li>
@@ -297,7 +297,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         Architecture
       </a>
     </li>
@@ -316,12 +316,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       <label class="md-nav__link" for="__nav_2">
         HTCondor-CE 25
@@ -339,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/installation/htcondor-ce/" class="md-nav__link">
+      <a href="../installation/htcondor-ce/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -372,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/authentication/" class="md-nav__link">
+      <a href="../configuration/authentication/" class="md-nav__link">
         Authentication
       </a>
     </li>
@@ -384,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/local-batch-system/" class="md-nav__link">
+      <a href="../configuration/local-batch-system/" class="md-nav__link">
         Local Batch System
       </a>
     </li>
@@ -417,7 +419,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/job-router-overview/" class="md-nav__link">
+      <a href="../configuration/job-router-overview/" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -429,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/writing-job-routes/" class="md-nav__link">
+      <a href="../configuration/writing-job-routes/" class="md-nav__link">
         Writing Job Routes
       </a>
     </li>
@@ -441,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/htcondor-routes/" class="md-nav__link">
+      <a href="../configuration/htcondor-routes/" class="md-nav__link">
         For HTCondor Batch Systems
       </a>
     </li>
@@ -453,7 +455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/non-htcondor-routes/" class="md-nav__link">
+      <a href="../configuration/non-htcondor-routes/" class="md-nav__link">
         For Non-HTCondor Batch Systems
       </a>
     </li>
@@ -471,7 +473,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/configuration/optional-configuration/" class="md-nav__link">
+      <a href="../configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
       </a>
     </li>
@@ -487,11 +489,77 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../../v25/operation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Operation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Operation
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#managing-htcondor-ce-services" class="md-nav__link">
+    Managing HTCondor-CE services
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validating-htcondor-ce" class="md-nav__link">
+    Validating HTCondor-CE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#draining-an-htcondor-ce" class="md-nav__link">
+    Draining an HTCondor-CE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-user-authentication" class="md-nav__link">
+    Checking User Authentication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    Getting Help
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -522,7 +590,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/troubleshooting/common-issues/" class="md-nav__link">
+      <a href="../troubleshooting/common-issues/" class="md-nav__link">
         Common Issues
       </a>
     </li>
@@ -534,7 +602,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/troubleshooting/debugging-tools/" class="md-nav__link">
+      <a href="../troubleshooting/debugging-tools/" class="md-nav__link">
         Debugging Tools
       </a>
     </li>
@@ -546,7 +614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/troubleshooting/logs/" class="md-nav__link">
+      <a href="../troubleshooting/logs/" class="md-nav__link">
         Helpful Logs
       </a>
     </li>
@@ -585,7 +653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/remote-job-submission/" class="md-nav__link">
+      <a href="../remote-job-submission/" class="md-nav__link">
         Submit Jobs Remotely
       </a>
     </li>
@@ -597,7 +665,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/troubleshooting/remote-troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/remote-troubleshooting/" class="md-nav__link">
         Remote Troubleshooting
       </a>
     </li>
@@ -609,7 +677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/installation/central-collector/" class="md-nav__link">
+      <a href="../installation/central-collector/" class="md-nav__link">
         Install a Central Collector
       </a>
     </li>
@@ -627,7 +695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/releases/" class="md-nav__link">
+      <a href="../releases/" class="md-nav__link">
         Releases
       </a>
     </li>
@@ -639,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../v25/reference/" class="md-nav__link">
+      <a href="../reference/" class="md-nav__link">
         Reference
       </a>
     </li>
@@ -658,14 +726,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
       <label class="md-nav__link" for="__nav_3">
         HTCondor-CE 24
@@ -683,7 +749,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/htcondor-ce/" class="md-nav__link">
+      <a href="../../v24/installation/htcondor-ce/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -693,14 +759,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
       
       <label class="md-nav__link" for="__nav_3_2">
         Configuration
@@ -718,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../authentication/" class="md-nav__link">
+      <a href="../../v24/configuration/authentication/" class="md-nav__link">
         Authentication
       </a>
     </li>
@@ -728,76 +792,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Local Batch System
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../v24/configuration/local-batch-system/" class="md-nav__link">
         Local Batch System
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#htcondor-batch-systems" class="md-nav__link">
-    HTCondor Batch Systems
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#non-htcondor-batch-systems" class="md-nav__link">
-    Non-HTCondor Batch Systems
-  </a>
-  
-    <nav class="md-nav" aria-label="Non-HTCondor Batch Systems">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configuring-the-blahp" class="md-nav__link">
-    Configuring the BLAHP
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sharing-the-spool-directory" class="md-nav__link">
-    Sharing the SPOOL directory
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -828,7 +827,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../job-router-overview/" class="md-nav__link">
+      <a href="../../v24/configuration/job-router-overview/" class="md-nav__link">
         Overview
       </a>
     </li>
@@ -840,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../writing-job-routes/" class="md-nav__link">
+      <a href="../../v24/configuration/writing-job-routes/" class="md-nav__link">
         Writing Job Routes
       </a>
     </li>
@@ -852,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../htcondor-routes/" class="md-nav__link">
+      <a href="../../v24/configuration/htcondor-routes/" class="md-nav__link">
         For HTCondor Batch Systems
       </a>
     </li>
@@ -864,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../non-htcondor-routes/" class="md-nav__link">
+      <a href="../../v24/configuration/non-htcondor-routes/" class="md-nav__link">
         For Non-HTCondor Batch Systems
       </a>
     </li>
@@ -882,7 +881,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../optional-configuration/" class="md-nav__link">
+      <a href="../../v24/configuration/optional-configuration/" class="md-nav__link">
         Optional Configuration
       </a>
     </li>
@@ -900,7 +899,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operation/" class="md-nav__link">
+      <a href="../../v24/operation/" class="md-nav__link">
         Operation
       </a>
     </li>
@@ -933,7 +932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/common-issues/" class="md-nav__link">
+      <a href="../../v24/troubleshooting/common-issues/" class="md-nav__link">
         Common Issues
       </a>
     </li>
@@ -945,7 +944,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/debugging-tools/" class="md-nav__link">
+      <a href="../../v24/troubleshooting/debugging-tools/" class="md-nav__link">
         Debugging Tools
       </a>
     </li>
@@ -957,7 +956,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/logs/" class="md-nav__link">
+      <a href="../../v24/troubleshooting/logs/" class="md-nav__link">
         Helpful Logs
       </a>
     </li>
@@ -996,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../remote-job-submission/" class="md-nav__link">
+      <a href="../../v24/remote-job-submission/" class="md-nav__link">
         Submit Jobs Remotely
       </a>
     </li>
@@ -1008,7 +1007,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/remote-troubleshooting/" class="md-nav__link">
+      <a href="../../v24/troubleshooting/remote-troubleshooting/" class="md-nav__link">
         Remote Troubleshooting
       </a>
     </li>
@@ -1020,7 +1019,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/central-collector/" class="md-nav__link">
+      <a href="../../v24/installation/central-collector/" class="md-nav__link">
         Install a Central Collector
       </a>
     </li>
@@ -1038,7 +1037,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/" class="md-nav__link">
+      <a href="../../v24/releases/" class="md-nav__link">
         Releases
       </a>
     </li>
@@ -1050,7 +1049,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/" class="md-nav__link">
+      <a href="../../v24/reference/" class="md-nav__link">
         Reference
       </a>
     </li>
@@ -1075,80 +1074,119 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v24/configuration/local-batch-system.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/htcondor/htcondor-ce/edit/docs/docs/v25/operation.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="configuring-for-the-local-batch-system">Configuring for the Local Batch System<a class="headerlink" href="#configuring-for-the-local-batch-system" title="Permanent link">&para;</a></h1>
-<p>Before HTCondor-CE can submit jobs to your local batch system, it has to be configured to do so.
-The configuration will differ depending on if your local batch system is HTCondor or one of the other supported batch
-systems.
-Choose the section corresponding to your batch system below.</p>
-<h2 id="htcondor-batch-systems">HTCondor Batch Systems<a class="headerlink" href="#htcondor-batch-systems" title="Permanent link">&para;</a></h2>
-<p>To configure HTCondor-CE for an HTCondor batch system, set <code>JOB_ROUTER_SCHEDD2_POOL</code> to your site's central manager host
-and port:</p>
-<div class="highlight"><pre><span></span><code>JOB_ROUTER_SCHEDD2_POOL = cm.chtc.wisc.edu:9618
-</code></pre></div>
-<p>Additionally, set <code>JOB_ROUTER_SCHEDD2_SPOOL</code> to the location of the local batch <code>SPOOL</code> directory on the CE host if it
-is different than the default location (<code>/var/lib/condor/spool</code>).</p>
-<h2 id="non-htcondor-batch-systems">Non-HTCondor Batch Systems<a class="headerlink" href="#non-htcondor-batch-systems" title="Permanent link">&para;</a></h2>
-<h3 id="configuring-the-blahp">Configuring the BLAHP<a class="headerlink" href="#configuring-the-blahp" title="Permanent link">&para;</a></h3>
-<p>HTCondor-CE uses the Batch Language ASCII Helper Protocol (BLAHP) to submit and track jobs to non-HTCondor batch systems.
-If your batch system tools are installed in a non-standard location (i.e., outside of <code>/usr/bin/</code>),
-set the corresponding <code>*_binpath</code> variable in <code>/etc/blah.config</code> to the directory containing your batch system tools:</p>
+                <h1 id="operating-an-htcondor-ce">Operating an HTCondor-CE<a class="headerlink" href="#operating-an-htcondor-ce" title="Permanent link">&para;</a></h1>
+<p>To verify that you have a working installation of HTCondor-CE, ensure that all the relevant services are started and
+enabled then perform the validation steps below.</p>
+<h2 id="managing-htcondor-ce-services">Managing HTCondor-CE services<a class="headerlink" href="#managing-htcondor-ce-services" title="Permanent link">&para;</a></h2>
+<p>In addition to the HTCondor-CE job gateway service itself, there are a number of supporting services in your installation.
+The specific services are:</p>
 <table>
 <thead>
 <tr>
-<th><strong>If your batch system is...</strong></th>
-<th><strong>Then change the following configuration variable...</strong></th>
+<th align="left">Software</th>
+<th align="left">Service name</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>LSF</td>
-<td><code>lsf_binpath</code></td>
+<td align="left">Your batch system</td>
+<td align="left"><code>condor</code> or <code>pbs_server</code> or …</td>
 </tr>
 <tr>
-<td>PBS/Torque</td>
-<td><code>pbs_binpath</code></td>
+<td align="left">HTCondor-CE</td>
+<td align="left"><code>condor-ce</code></td>
 </tr>
 <tr>
-<td>SGE</td>
-<td><code>sge_binpath</code></td>
-</tr>
-<tr>
-<td>Slurm</td>
-<td><code>slurm_binpath</code></td>
+<td align="left"><strong>(Optional)</strong> APEL uploader</td>
+<td align="left"><code>condor-ce-apel</code> and <code>condor-ce-apel.timer</code></td>
 </tr>
 </tbody>
 </table>
-<p>For example, if your Slurm binaries (e.g. <code>sbatch</code>) exist in <code>/opt/slurm/bin</code>, you would set the following:</p>
-<div class="codehilite"><pre><span></span><code>slurm_binpath=/opt/slurm/bin/
+<p>Start and enable the services in the order listed and stop them in reverse order.
+As a reminder, here are common service commands (all run as <code>root</code>):</p>
+<table>
+<thead>
+<tr>
+<th align="left">To...</th>
+<th align="left">On EL7, run the command...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Start a service</td>
+<td align="left"><code>systemctl start &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Stop a  service</td>
+<td align="left"><code>systemctl stop &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Enable a service to start on boot</td>
+<td align="left"><code>systemctl enable &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Disable a service from starting on boot</td>
+<td align="left"><code>systemctl disable &lt;SERVICE-NAME&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="validating-htcondor-ce">Validating HTCondor-CE<a class="headerlink" href="#validating-htcondor-ce" title="Permanent link">&para;</a></h2>
+<p>To validate an HTCondor-CE, perform the following steps:</p>
+<ol>
+<li>
+<p>Verify that local job submissions complete successfully from the CE host.
+   For example, if you have a Slurm cluster, run <code>sbatch</code> from the CE and verify that it runs and completes with
+   <code>scontrol</code> and <code>sacct</code>.</p>
+</li>
+<li>
+<p>Verify that all the necessary daemons are running with
+   <a href="../troubleshooting/debugging-tools/#condor_ce_status">condor_ce_status -any</a>.</p>
+</li>
+<li>
+<p>Verify the CE's network configuration using
+   <a href="../troubleshooting/debugging-tools/#condor_ce_host_network_check">condor_ce_host_network_check</a>.</p>
+</li>
+<li>
+<p>Verify that jobs can complete successfully using
+   <a href="../troubleshooting/debugging-tools/#condor_ce_trace">condor_ce_trace</a>.</p>
+</li>
+</ol>
+<h2 id="draining-an-htcondor-ce">Draining an HTCondor-CE<a class="headerlink" href="#draining-an-htcondor-ce" title="Permanent link">&para;</a></h2>
+<p>To drain an HTCondor-CE of jobs, perform the following steps:</p>
+<ol>
+<li>
+<p>Set <code>CONDORCE_MAX_JOBS = 0</code> in <code>/etc/condor-ce/config.d</code></p>
+</li>
+<li>
+<p>Run <code>condor_ce_reconfig</code> to apply the configuration change</p>
+</li>
+<li>
+<p>Use <code>condor_ce_rm</code> as needed to stop and remove any jobs that should stop running</p>
+</li>
+</ol>
+<p>Once draining is completed, don't forget to restore the value of <code>CONDORCE_MAX_JOBS</code> to its previous value
+before trying to operate the HTCondor-CE again.</p>
+<h2 id="checking-user-authentication">Checking User Authentication<a class="headerlink" href="#checking-user-authentication" title="Permanent link">&para;</a></h2>
+<p>The authentication method for submitting jobs to
+an HTCondor-CE is SciTokens.
+To see which authentication method and identity were used to submit
+a particular job (or modify existing jobs), you can look in
+<code>/var/log/condor-ce/AuditLog</code>.</p>
+<p>If SciTokens authentication was used, you'll see a set of lines like this:</p>
+<div class="highlight"><pre><span></span><code>10/15/21 17:54:08 (cid:130) (D_AUDIT) Command=QMGMT_WRITE_CMD, peer=&lt;172.17.0.2:37869&gt;
+10/15/21 17:54:08 (cid:130) (D_AUDIT) AuthMethod=SCITOKENS, AuthId=https://demo.scitokens.org,htcondor-ce-dev, CondorId=testuser@users.htcondor.org
+10/15/21 17:54:08 (cid:130) (D_AUDIT) Submitting new job 2.0
 </code></pre></div>
-
-<h3 id="sharing-the-spool-directory">Sharing the SPOOL directory<a class="headerlink" href="#sharing-the-spool-directory" title="Permanent link">&para;</a></h3>
-<p>Non-HTCondor batch systems require a shared file system configuration to support file transfer from the HTCondor-CE to
-your site's worker nodes.
-The current recommendation is to run a dedicated NFS server on the <strong>CE host</strong>.
-In this setup, HTCondor-CE writes to the local spool directory, the NFS server shares the directory, and each worker
-node mounts the directory in the same location as on the CE.
-For example, if your spool directory is <code>/var/lib/condor-ce</code> (the default), you must mount the shared directory to
-<code>/var/lib/condor-ce</code> on the worker nodes.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you choose not to host the NFS server on your CE, you will need to turn off root squash so that the HTCondor-CE
-daemons can write to the spool directory.</p>
-</div>
-<p>You can control the value of the spool directory by setting <code>SPOOL</code> in <code>/etc/condor-ce/config.d/99-local.conf</code> (create
-this file if it doesn't exist).
-For example, the following sets the <code>SPOOL</code> directory to <code>/home/condor</code>:</p>
-<div class="highlight"><pre><span></span><code>SPOOL = /home/condor
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The shared spool directory must be readable and writeable by the <code>condor</code> user for HTCondor-CE to function correctly.</p>
-</div>
+<p>Lines pertaining to the same client request will have the same <code>cid</code> value.
+Lines from different client requests may be interleaved.</p>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<p>If any of the above validation steps fail, consult the <a href="../troubleshooting/common-issues/">troubleshooting guide</a>.
+If that still doesn't resolve your issue, please <a href="../..#contact-us">contact us</a> for assistance.</p>
                 
               
               
@@ -1171,7 +1209,7 @@ For example, the following sets the <code>SPOOL</code> directory to <code>/home/
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../authentication/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../configuration/optional-configuration/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1180,19 +1218,19 @@ For example, the following sets the <code>SPOOL</code> directory to <code>/home/
               <span class="md-footer__direction">
                 Previous
               </span>
-              Authentication
+              Optional Configuration
             </div>
           </div>
         </a>
       
       
-        <a href="../job-router-overview/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../troubleshooting/common-issues/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Overview
+              Common Issues
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -1221,10 +1259,10 @@ For example, the following sets the <code>SPOOL</code> directory to <code>/home/
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
       
     
   </body>
