@@ -51,16 +51,6 @@ Requires: /usr/bin/unshare
 %{summary}
 
 %if ! 0%{?osg}
-%package bdii
-Group: Applications/Internet
-Summary:  GLUE 2.0 infoprovider and CE config for non-OSG sites.
-
-Requires: python3-condor
-Requires: bdii
-
-%description bdii
-%{summary}
-
 %package apel
 Group: Applications/Internet
 Summary: Scripts for writing accounting log files in APEL format, blah (ce) and batch (runtimes)
@@ -210,8 +200,6 @@ make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
 
 %if 0%{?osg}
 rm -rf $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/99-ce-bdii.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/README.md
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor/config.d/50-condor-apel.conf
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/condor-ce/config.d/50-ce-apel.conf
@@ -227,9 +215,6 @@ mv -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.os
       $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.conf
 rm -f $RPM_BUILD_ROOT%{_datadir}/condor-ce/config.d/05-ce-view-table-defaults.nonosg.conf
 %else
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
-mv $RPM_BUILD_ROOT%{_datadir}/condor-ce/htcondor-ce-provider \
-   $RPM_BUILD_ROOT%{_localstatedir}/lib/bdii/gip/provider
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor-ce/apel/
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/condor/history/
@@ -329,12 +314,6 @@ getent passwd condorce_webapp >/dev/null || \
 %attr(1777,condor,condor) %dir %{_localstatedir}/lock/condor-ce/user
 
 %if ! 0%{?osg}
-%files bdii
-%attr(0755, ldap, ldap) %{_localstatedir}/lib/bdii/gip/provider/htcondor-ce-provider
-
-%{_sysconfdir}/condor/config.d/50-ce-bdii-defaults.conf
-%config(noreplace) %{_sysconfdir}/condor/config.d/99-ce-bdii.conf
-
 %files apel
 %{_datadir}/condor-ce/apel/README.md
 %{_datadir}/condor-ce/condor_batch_blah.py

@@ -101,7 +101,6 @@ CE_SHARE_FILES := \
 	src/local-wrapper \
 	contrib/apelscripts/condor_batch_blah.py \
 	contrib/apelscripts/condor_ce_apel.sh \
-	contrib/bdii/htcondor-ce-provider \
 	contrib/bosco/bosco-cluster-remote-hosts.py \
 	contrib/bosco/bosco-cluster-remote-hosts.sh
 
@@ -144,9 +143,7 @@ CE_MAP_FILES := \
 
 CE_CONDOR_CONFIG_FILES := \
 	config/50-condor-ce-defaults.conf \
-	contrib/apelscripts/50-condor-apel.conf \
-	contrib/bdii/50-ce-bdii-defaults.conf \
-	contrib/bdii/99-ce-bdii.conf
+	contrib/apelscripts/50-condor-apel.conf
 
 CE_APEL_README_FILES := contrib/apelscripts/README.md
 
@@ -212,7 +209,6 @@ VIEW_DEFAULT_CONFIG_FILES := \
 
 PYTHON_FILES := \
 	contrib/bosco/bosco-cluster-remote-hosts.py \
-        contrib/bdii/htcondor-ce-provider \
         src/verify_ce_config.py \
         src/condor_ce_view \
         src/condor_ce_trace \
