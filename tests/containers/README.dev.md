@@ -22,8 +22,8 @@ docker build -t entrypoint -f tests/containers/entrypoint/Dockerfile .
 
 You may also specify `--build-arg` for:
 
-- `BASE_IMAGE`: EL-based OS container base image (default: `almalinux:9`, suggested alternative `rockylinux:8`)
-- `CONDOR_SERIES`: HTCondor release series (default `24.x`)
+- `BASE_IMAGE`: EL-based OS container base image (default: `almalinux:9`, suggested alternative `rockylinux:9`)
+- `CONDOR_SERIES`: HTCondor release series (default `25.x`)
 
 ### Starting the CE ###
 
