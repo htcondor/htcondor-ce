@@ -10,7 +10,6 @@ jobs:
         platform:
           - almalinux:8
           - almalinux:9
-          - almalinux:10
         target_env:
           - uw_build
           - osg-25-upcoming
