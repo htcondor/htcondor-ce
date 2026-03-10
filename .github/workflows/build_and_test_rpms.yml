@@ -12,8 +12,8 @@ jobs:
           - almalinux:9
         target_env:
           - uw_build
-          - osg-24-upcoming
-          - osg-24-upcoming-testing
+          - osg-25-upcoming
+          - osg-25-upcoming-testing
     steps:
       - uses: actions/checkout@v4
         with:
