@@ -45,6 +45,12 @@ HTCondor-CE 25 Version History
 This section contains release notes for each version of HTCondor-CE 25.
 Full HTCondor-CE version history can be found on [GitHub](https://github.com/htcondor/htcondor-ce/releases).
 
+### **March 12, 2026:** 25.7.0 ###
+
+[This release](https://github.com/htcondor/htcondor-ce/releases/tag/v25.7.0) includes the following new features:
+
+-   Avoids confusing error messages when no routes are defined
+
 ### **September 29, 2025:** 25.0.1 ###
 
 [This release](https://github.com/htcondor/htcondor-ce/releases/tag/v25.0.1) includes the following new features:
