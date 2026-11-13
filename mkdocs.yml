@@ -19,6 +19,28 @@ nav:
 - Home:
   - 'Overview': 'index.md'
   - 'Architecture': 'architecture.md'
+- HTCondor-CE 26:
+  - Installation: 'v26/installation/htcondor-ce.md'
+  - Configuration:
+    - Authentication: 'v26/configuration/authentication.md'
+    - Local Batch System: 'v26/configuration/local-batch-system.md'
+    - Job Router:
+      - Overview: 'v26/configuration/job-router-overview.md'
+      - Writing Job Routes: 'v26/configuration/writing-job-routes.md'
+      - For HTCondor Batch Systems: 'v26/configuration/htcondor-routes.md'
+      - For Non-HTCondor Batch Systems: 'v26/configuration/non-htcondor-routes.md'
+    - Optional Configuration: 'v26/configuration/optional-configuration.md'
+  - Operation: 'v26/operation.md'
+  - Troubleshooting:
+    - Common Issues: 'v26/troubleshooting/common-issues.md'
+    - Debugging Tools: 'v26/troubleshooting/debugging-tools.md'
+    - Helpful Logs: 'v26/troubleshooting/logs.md'
+  - Central Grid Operations:
+    - Submit Jobs Remotely: 'v26/remote-job-submission.md'
+    - Remote Troubleshooting: 'v26/troubleshooting/remote-troubleshooting.md'
+    - Install a Central Collector: 'v26/installation/central-collector.md'
+  - Releases: 'v26/releases.md'
+  - Reference: 'v26/reference.md'
 - HTCondor-CE 25:
   - Installation: 'v25/installation/htcondor-ce.md'
   - Configuration:
